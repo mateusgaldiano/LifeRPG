@@ -797,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     renderQuests();
     renderRewards();
-    renderChat();
+
     updateUI();
     setupEventListeners();
     
@@ -809,11 +809,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Garante o primeiro draw do radar chart após DOM+fontes carregarem
     setTimeout(() => { drawRadarChart(); }, 150);
 
-    // Mensagem de boas-vindas do Iroh se for a primeira vez
+    // Mensagem de boas-vindas na primeira vez
     if (gameState.messages.length === 0) {
         setTimeout(() => {
-            showSystemToast(IROH_RESPONSES.welcome);
-
+            showSystemToast('Bem-vindo ao LifeRPG. O Sistema está ativo. Complete suas missões.');
         }, 1000);
     }
 });
@@ -1412,7 +1411,7 @@ function triggerLevelUpOverlay() {
     setTimeout(() => {
         const msg = rankChanged
             ? `⚡ LEVEL UP! Nível ${gameState.level} atingido! E mais: ${oldRank.rank} → ${newRank.rank}! O Sistema reconhece sua evolução!`
-            : IROH_RESPONSES.levelUp.replace('{level}', gameState.level);
+            : `⚡ LEVEL UP! Nível ${gameState.level}! O Sistema reconhece sua evolução!`;
         showSystemToast(msg);
 
     }, 1200);
@@ -1597,9 +1596,9 @@ function buyReward(id) {
         updateUI();
         
         alert(`Sucesso! Você liberou: "${reward.title}"`);
-        showSystemToast(IROH_RESPONSES.buyReward);
+        showSystemToast('Recompensa conquistada! Aproveite o descanso merecido.');
     } else {
-        showSystemToast(IROH_RESPONSES.insufficientGold);
+        showSystemToast('Ouro insuficiente. Complete mais missões primeiro.', 'toast-alert');
 
     }
 }
@@ -1706,9 +1705,7 @@ function setupEventListeners() {
         document.getElementById('form-reward').reset();
     });
 
-    // Chat
-    document.getElementById('btn-send-message').addEventListener('click', () => sendUserMessage(document.getElementById('chat-input').value));
-    document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendUserMessage(document.getElementById('chat-input').value); });
+
 
     // Level Up Overlay
     document.getElementById('btn-close-levelup').addEventListener('click', () => {
