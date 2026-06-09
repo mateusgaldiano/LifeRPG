@@ -1302,6 +1302,18 @@ function renderQuests() {
     dailyContainer.innerHTML = '';
     sideContainer.innerHTML  = '';
 
+    const allDailiesDone = gameState.quests.every(q => q.completed);
+    const dailyHeader = dailyContainer.previousElementSibling;
+    if (dailyHeader && dailyHeader.classList.contains('quest-section-header')) {
+        if (allDailiesDone && gameState.quests.length > 0) {
+            dailyHeader.classList.add('all-complete');
+            dailyHeader.innerHTML = 'MISSÕES DIÁRIAS <span style="color:var(--neon-gold); font-size:10px; margin-left:8px; border:1px solid var(--neon-gold); padding:2px 4px; border-radius:4px; filter:drop-shadow(0 0 4px var(--glow-gold));">COMPLETO ✓</span>';
+        } else {
+            dailyHeader.classList.remove('all-complete');
+            dailyHeader.innerHTML = 'MISSÕES DIÁRIAS';
+        }
+    }
+
     // ── Dungeon ativa ────────────────────────────────────────────────────
     checkDungeonExpiry();
     const _d = gameState.activeDungeon;
@@ -1345,10 +1357,16 @@ function renderQuests() {
         const diffLabel = diffMap[quest.skill] || 'RANK E';
 
         let extraHTML = '';
-        if (quest.id === 'q-agua') {
+        if (quest.id === 'q-agua' || quest.id === 'q-agua2') {
+            const pct = Math.min(100, ((quest.current || 0) / 8) * 100);
             extraHTML = `<div class="water-adjust-row">
                 <button class="water-btn btn-minus" data-id="${quest.id}">−</button>
-                <span class="water-val">${quest.current || 0}/8 copos</span>
+                <div style="flex:1; display:flex; flex-direction:column; gap:4px; margin:0 5px;">
+                    <span class="water-val" style="align-self:center; font-size:11px; letter-spacing:1px; color:var(--text-muted);">${quest.current || 0}/8 copos</span>
+                    <div style="width:100%; height:4px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
+                        <div style="height:100%; width:${pct}%; background:var(--neon-blue); box-shadow:0 0 5px var(--glow-blue); transition:width 0.3s ease;"></div>
+                    </div>
+                </div>
                 <button class="water-btn btn-plus" data-id="${quest.id}">+</button>
             </div>`;
         }
