@@ -1113,12 +1113,6 @@ function updateUI() {
     document.getElementById('lbl-daily-progress').innerText = `${completedDailies}/${totalDailies}`;
 
     // RANK badge
-    const rankInfo = getRankForLevel(gameState.level);
-    const rankBadge = document.getElementById('lbl-rank');
-    if (rankBadge) {
-        rankBadge.innerText = rankInfo.rank;
-        rankBadge.className = 'rank-badge ' + rankInfo.css;
-    }
 
     // 3 Barras de atributos (Willpower / Intellect / Health)
     const attrs = computeAttributes();
@@ -2394,6 +2388,19 @@ function setupSettingsListeners() {
                 }
             };
             reader.readAsText(file);
+        });
+    }
+
+    // Hard Reset (Destruição do Sistema)
+    const btnHardReset = document.getElementById('btn-hard-reset');
+    if (btnHardReset) {
+        btnHardReset.addEventListener('click', () => {
+            const confirmed = confirm("🔥 TEM CERTEZA QUE DESEJA APAGAR TODO O SEU PROGRESSO?\n\nEsta ação destruirá seu histórico, atributos, missões e inventário. Você voltará ao nível 1 e o Onboarding será reiniciado.\n\nESTA AÇÃO NÃO PODE SER DESFEITA.");
+            if (confirmed) {
+                localStorage.removeItem('lifeRPG_gameState');
+                alert("O Sistema foi resetado. Reiniciando simulação...");
+                window.location.reload();
+            }
         });
     }
 }
