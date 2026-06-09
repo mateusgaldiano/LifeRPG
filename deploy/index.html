@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LifeRPG OS — The System</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#08090d">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Fontes Arise-style -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Partículas de fundo animadas -->
+    <div class="bg-particles">
+        <div class="particle p1"></div>
+        <div class="particle p2"></div>
+        <div class="particle p3"></div>
+        <div class="particle p4"></div>
+        <div class="particle p5"></div>
+    </div>
+    <div class="ambient-glow-orbs">
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app-container">
+
+        <!-- ═══ SIDEBAR ESQUERDA ═══ -->
+        <aside id="sidebar-panel">
+
+            <!-- Brand -->
+            <div class="brand-header">
+                <div class="brand-logo">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                </div>
+                <span class="brand-title">THE SYSTEM</span>
+                <button id="btn-open-settings" class="btn-settings-icon" title="Configurações do Sistema">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </button>
+            </div>
+
+            <!-- Player Card (estilo Arise) -->
+            <div class="player-card" id="player-card">
+                <div class="player-card-glow"></div>
+
+                <!-- Avatar + Info -->
+                <div class="player-card-top">
+                    <div class="avatar-hex-wrapper" id="char-avatar-img-wrapper">
+                        <div class="avatar-hex-border"></div>
+                        <img id="char-avatar-img" class="avatar-hex-img" src="avatars/1.rank-e.png" alt="Avatar">
+                    </div>
+                    <div class="player-info">
+                        <div class="player-name-row">
+                            <span class="player-name" id="lbl-player-name">GUERREIRO</span>
+                            <span class="rank-badge" id="lbl-rank">RANK E</span>
+                        </div>
+                        <div class="player-title" id="lbl-player-title">Desperto</div>
+                        <div class="level-row">
+                            <span class="level-label">NÍVEL</span>
+                            <span class="level-num" id="lbl-level">1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- XP Bar -->
+                <div class="xp-section">
+                    <div class="xp-bar-header">
+                        <span class="xp-bar-label">EXPERIÊNCIA</span>
+                        <span class="xp-bar-values"><span id="lbl-xp-current">0</span> / <span id="lbl-xp-next">100</span> XP</span>
+                    </div>
+                    <div class="xp-track">
+                        <div id="xp-bar-inner" class="xp-fill" style="width: 0%;"></div>
+                        <div class="xp-glow-pulse"></div>
+                    </div>
+                </div>
+
+                <!-- Recursos -->
+                <div class="player-resources">
+                    <div class="resource-chip gold-chip">
+                        <span class="resource-icon">🪙</span>
+                        <span id="lbl-gold" class="resource-val">15</span>
+                        <span class="resource-unit">OURO</span>
+                    </div>
+                    <div class="resource-chip streak-chip">
+                        <span class="resource-icon">🔥</span>
+                        <span id="lbl-streak" class="resource-val">0</span>
+                        <span class="resource-unit">DIAS</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Atributos — Hexágono + 3 Barras -->
+            <div class="attributes-section">
+                <div class="section-header-label">ATRIBUTOS</div>
+
+                <!-- Radar hexagonal (6 skills) -->
+                <div class="radar-chart-wrapper">
+                    <canvas id="skills-radar-chart" width="260" height="260"></canvas>
+                </div>
+
+                <!-- 3 Barras resumo (estilo Arise) -->
+                <div class="attr-bars">
+                    <div class="attr-bar-item willpower">
+                        <div class="attr-bar-header">
+                            <span class="attr-bar-icon">⚡</span>
+                            <span class="attr-bar-name">FORÇA DE VONTADE</span>
+                            <span class="attr-bar-lvl" id="attr-lvl-willpower">1</span>
+                        </div>
+                        <div class="attr-bar-track">
+                            <div class="attr-bar-fill willpower-fill" id="attr-fill-willpower" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="attr-bar-item intellect">
+                        <div class="attr-bar-header">
+                            <span class="attr-bar-icon">📖</span>
+                            <span class="attr-bar-name">INTELECTO</span>
+                            <span class="attr-bar-lvl" id="attr-lvl-intellect">1</span>
+                        </div>
+                        <div class="attr-bar-track">
+                            <div class="attr-bar-fill intellect-fill" id="attr-fill-intellect" style="width:0%"></div>
+                        </div>
+                    </div>
+                    <div class="attr-bar-item health">
+                        <button class="nav-btn tab-link" data-tab="quests">
+                    <span class="nav-icon">⚔️</span>
+                    <span class="nav-text">MISSÕES</span>
+                </button>
+                <button class="nav-btn tab-link" data-tab="global">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">VISÃO G.</span>
+                </button>
+                <button class="nav-btn tab-link" data-tab="rewards">
+                    <span class="nav-icon">🍺</span>
+                    <span class="nav-text">TAVERNA</span>
+                </button>            <div class="attr-bar-fill health-fill" id="attr-fill-health" style="width:0%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sinergias ativas -->
+                <div id="synergies-container" style="display:none; flex-wrap:wrap; gap:4px; margin-top:8px;"></div>
+                
+                <!-- Rank Perks ativos -->
+                <div id="rank-perks-container" style="display:none; flex-wrap:wrap; gap:4px; margin-top:6px;"></div>
+            </div>
+
+        </aside>
+
+        <!-- ═══ PAINEL PRINCIPAL ═══ -->
+        <div id="main-content-panel">
+
+            <!-- Nav Tabs -->
+            <nav class="dashboard-tabs">
+                <button class="tab-link active" data-tab="quests" id="tab-btn-quests">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H17v1.5c0 .83-.67 1.5-1.5 1.5S14 11.33 14 10.5 14.67 9 15.5 9z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 15H7v-1.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    MISSÕES
+                </button>
+                <button class="tab-link" data-tab="rewards" id="tab-btn-rewards">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    TAVERNA
+                </button>
+
+                <button class="tab-link" data-tab="achievements" id="tab-btn-achievements">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-4 4 1-5-4-3 5-.5L12 6l2 4.5 5 .5-4 3 1 5z"/><path d="M5 21l3-3"/><path d="M19 21l-3-3"/></svg>
+                    TROFÉUS
+                </button>
+            </nav>
+
+            <!-- Tab Content -->
+            <div class="tab-content-container">
+            
+                <!-- ABA: MISSÕES -->
+                <div id="tab-quests" class="tab-content active">
+                    <div class="quest-section-header">
+                        <h2>Missões Diárias</h2>
+                        <span class="quest-count" id="lbl-daily-count">0/0</span>
+                    </div>
+                    <div class="quest-list" id="daily-quests-list">
+                        <!-- Quests renderizadas via JS -->
+                    </div>
+
+                    <div class="quest-section-header" style="margin-top: 30px;">
+                    <h2>Side Quests</h2>
+                    <span class="quest-count" id="lbl-side-count">0</span>
+                </div>
+                <div class="quest-list" id="side-quests-list">
+                    <!-- Side Quests renderizadas via JS -->
+                </div>
+
+                <button class="btn-submit" id="btn-add-sidequest" style="margin-top: 20px; width: 100%;">+ NOVA QUEST</button>
+            </div>
+
+            <!-- ABA: VISÃO GLOBAL (DASHBOARD & HEATMAP) -->
+            <div id="tab-global" class="tab-content">
+                <div class="section-title">
+                    <h2>VISÃO GLOBAL</h2>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">O seu mapa tático da consistência.</p>
+                </div>
+                
+                <!-- HEATMAP DO MÊS -->
+                <div class="dashboard-card" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px;">HEATMAP DO MÊS VIGENTE</h3>
+                    <div id="heatmap-grid" class="heatmap-container">
+                        <!-- Quadradinhos injetados via JS -->
+                    </div>
+                    <div class="heatmap-legend" style="display: flex; gap: 8px; font-size: 0.7rem; justify-content: flex-end; margin-top: 8px; color: var(--text-muted);">
+                        <span>Menos</span>
+                        <span class="hm-block" style="background: #2a2d3e; width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: rgba(255,50,50,0.5); width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: rgba(0,240,255,0.4); width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: var(--neon-cyan); width: 10px; height: 10px; border-radius: 2px; box-shadow: 0 0 5px var(--neon-cyan);"></span>
+                        <span>Mais</span>
+                    </div>
+                </div>
+
+                <!-- MÉTRICAS ANUAIS -->
+                <div class="dashboard-metrics-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                    <div class="metric-box">
+                        <div class="metric-title">TOTAL HÁBITOS</div>
+                        <div class="metric-value" id="dash-total-habits" style="color: var(--neon-cyan);">0</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-title">DIAS PERFEITOS</div>
+                        <div class="metric-value" id="dash-perfect-days" style="color: #0f0;">0</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-title">RITMO DE SUCESSO</div>
+                        <div class="metric-value" id="dash-rhythm" style="color: #ffaa00;">0%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-title">TOTAL MISSÕES</div>
+                        <div class="metric-value" id="dash-total-missed" style="color: #ff3232;">0</div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICO MENSAL -->
+                <div class="dashboard-card" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px;">PROGRESSO MENSAL</h3>
+                    <div class="bar-chart-container" id="dash-bar-chart" style="display: flex; align-items: flex-end; justify-content: space-between; height: 120px; padding: 10px 0; border-bottom: 1px solid var(--border-glass);">
+                        <!-- Barras de JS -->
+                    </div>
+                </div>
+
+                <!-- TOP HÁBITOS -->
+                <div class="dashboard-card">
+                    <h3 style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px;">TOP HÁBITOS</h3>
+                    <div id="dash-top-habits" style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- JS Bars -->
+                    </div>
+                </div>
+            </div>
+                    
+                    <!-- Botão de Instalação do PWA Mobile no Rodapé -->
+                    <div class="pwa-install-mobile-footer">
+                        <button id="btn-pwa-install-footer" class="btn-pwa-install-footer">
+                            📥 INSTALAR APLICATIVO (TELA DE INÍCIO)
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ABA TAVERNA -->
+                <section id="tab-rewards" class="tab-content">
+                    <div class="content-header">
+                        <div class="header-titles">
+                            <h2>A TAVERNA</h2>
+                            <p class="header-desc">Compre vantagens táticas e exiba seu status.</p>
+                        </div>
+                    </div>
+
+                    <!-- LOJA DO ALQUIMISTA -->
+                    <div class="quest-section-header" style="margin-top: 10px;">
+                        <h2>🧪 Loja do Alquimista (Buffs)</h2>
+                    </div>
+                    <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                        <!-- Poção de Cura -->
+                        <div class="reward-card" onclick="buyStoreItem('buff_autoHeal')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Poção de Auto-Cura</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Anula a penalidade caso você perca a ofensiva um dia.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🧪</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">100 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Pergaminho XP -->
+                        <div class="reward-card" onclick="buyStoreItem('buff_doubleXp')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Pergaminho de Sabedoria</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Ganha o dobro de XP em tudo até a meia-noite.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">📜</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">50 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+
+                        <!-- Escudo -->
+                        <div class="reward-card" onclick="buyStoreItem('buff_shield')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Escudo de Ferro</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Garante 1 carga do escudo azul que protege atributos.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🛡️</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">150 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MERCADO CLANDESTINO -->
+                    <div class="quest-section-header">
+                        <h2>💎 Mercado Clandestino (Cosméticos)</h2>
+                    </div>
+                    <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                        
+                        <!-- Título 1 -->
+                        <div class="reward-card" onclick="buyStoreItem('title_implacavel')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3 style="color:var(--neon-purple);">Título: O Implacável</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Exiba este título lendário abaixo do seu nome.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🏷️</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">300 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+
+                        <!-- Título 2 -->
+                        <div class="reward-card" onclick="buyStoreItem('title_mestre')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3 style="color:var(--neon-gold);">Título: Mestre do Tempo</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Um título digno de quem domina a própria rotina.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">⏳</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">300 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+
+                        <!-- Borda Neon -->
+                        <div class="reward-card" onclick="buyStoreItem('border_neonred')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3 style="color:var(--neon-red);">Borda: Demônio Carmesim</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Moldura vermelha brilhante para o seu avatar.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🖼️</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">500 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ABA TROFÉUS (Achievements) -->
+                <section id="tab-achievements" class="tab-content">
+                    <div class="content-header">
+                        <h2>SALA DE TROFÉUS</h2>
+                        <span class="diff-badge" style="background:rgba(251,191,36,0.15); color:#fbbf24; border-color:rgba(251,191,36,0.4);">CONQUISTAS</span>
+                    </div>
+                    <div class="achievements-grid" id="achievements-container">
+                        <!-- Renderizado via JS -->
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+        <!-- ══════ MODAIS ══════ -->
+
+        <!-- Modal: Nova Side Quest -->
+        <div id="modal-sidequest" class="modal">
+            <div class="modal-box">
+                <span class="close-modal-btn" id="close-sq-modal">&times;</span>
+                <h3>⚔️ NOVA QUEST</h3>
+                <form id="form-sidequest">
+                    <div class="form-field">
+                        <label for="sq-title">NOME DA MISSÃO</label>
+                        <input type="text" id="sq-title" placeholder="Ex: Organizar documentação" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="sq-difficulty">DIFICULDADE</label>
+                        <select id="sq-difficulty">
+                            <option value="easy">Rank E — Fácil (+10 XP / +5 Ouro)</option>
+                            <option value="medium" selected>Rank D — Médio (+25 XP / +15 Ouro)</option>
+                            <option value="hard">Rank C — Difícil (+50 XP / +30 Ouro)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">LANÇAR QUEST</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Nova Recompensa -->
+        <div id="modal-reward" class="modal">
+            <div class="modal-box">
+                <span class="close-modal-btn" id="close-rw-modal">&times;</span>
+                <h3>🎁 NOVO ITEM</h3>
+                <form id="form-reward">
+                    <div class="form-field">
+                        <label for="rw-title">RECOMPENSA</label>
+                        <input type="text" id="rw-title" placeholder="Ex: 30min de séries" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="rw-cost">CUSTO (Ouro)</label>
+                        <input type="number" id="rw-cost" value="30" min="5" required>
+                    </div>
+                    <button type="submit" class="btn-submit">REGISTRAR</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Zoom do Avatar -->
+        <div id="modal-avatar-zoom" class="modal avatar-zoom-modal">
+            <div class="avatar-zoom-content">
+                <span class="close-modal-btn" id="close-avatar-zoom">&times;</span>
+                <img id="img-avatar-large" src="avatars/1.rank-e.png" alt="Avatar">
+                <div class="avatar-level-title" id="avatar-zoom-title">RANK E — Nível 1</div>
+            </div>
+        </div>
+
+        <!-- Modal: Configurações do Sistema -->
+        <div id="modal-settings" class="modal">
+            <div class="modal-box modal-box-settings">
+                <span class="close-modal-btn" id="close-settings-modal">&times;</span>
+                <h3>⚙️ CONFIGURAÇÕES</h3>
+                
+                <!-- Notificações -->
+                <div class="settings-group">
+                    <div class="settings-group-title">NOTIFICAÇÕES DIÁRIAS</div>
+                    <div class="notification-status-row">
+                        <span>Permissão:</span>
+                        <span id="notif-permission-badge" class="badge-status-neutral">Verificando...</span>
+                        <button id="btn-request-notif" class="btn-tiny" style="display:none;">Habilitar</button>
+                    </div>
+                    
+                    <div class="notification-inputs">
+                        <div class="form-field form-field-inline">
+                            <label>Manhã (Quests)</label>
+                            <div class="time-input-row">
+                                <input type="number" id="notif-morning-hour" min="0" max="23" placeholder="07">
+                                <span>:</span>
+                                <input type="number" id="notif-morning-min" min="0" max="59" placeholder="00">
+                            </div>
+                        </div>
+                        <div class="form-field form-field-inline">
+                            <label>Noite (Streaks)</label>
+                            <div class="time-input-row">
+                                <input type="number" id="notif-evening-hour" min="0" max="23" placeholder="19">
+                                <span>:</span>
+                                <input type="number" id="notif-evening-min" min="0" max="59" placeholder="00">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-actions-row">
+                        <button id="btn-save-notif" class="btn-submit btn-notif-action">Salvar Horários</button>
+                        <button id="btn-test-notif" class="btn-submit btn-secondary btn-notif-action">Testar</button>
+                    </div>
+                </div>
+
+                <!-- Backup de Dados -->
+                <div class="settings-group">
+                    <div class="settings-group-title">MEMÓRIA & BACKUP (SALVAR BASES)</div>
+                    <p class="settings-group-desc">Exportar seu progresso para um arquivo ou importar de um backup.</p>
+                    <div class="backup-actions">
+                        <button id="btn-export-save" class="btn-submit btn-backup-action">💾 EXPORTAR SAVE</button>
+                        
+                        <label for="import-save-file" class="btn-submit btn-secondary btn-backup-action label-file-import">
+                            📥 IMPORTAR SAVE
+                        </label>
+                        <input type="file" id="import-save-file" accept=".json" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Hard Reset -->
+                <div class="settings-group" style="margin-top: 30px; border-top: 1px solid var(--border-glass); padding-top: 20px;">
+                    <div class="settings-group-title" style="color: var(--neon-red);">🔥 DESTRUIÇÃO DO SISTEMA (RESET GERAL)</div>
+                    <p class="settings-group-desc" style="color: var(--text-muted);">Apaga todo o progresso atual, histórico e configurações e reinicia o onboarding. Esta ação não pode ser desfeita.</p>
+                    <div class="backup-actions" style="margin-top: 10px;">
+                        <button id="btn-hard-reset" class="btn-submit" style="background: var(--neon-red); box-shadow: none;">☠️ APAGAR TUDO E RECOMEÇAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overlay: LEVEL UP (estilo Arise) -->
+        <div id="level-up-overlay" class="levelup-overlay">
+            <div class="levelup-content">
+                <div class="levelup-system-text">— SISTEMA —</div>
+                <div class="levelup-flash"></div>
+                <h2 class="levelup-title">LEVEL UP!</h2>
+                <div class="levelup-new-level">NÍVEL <span id="overlay-lvl">2</span></div>
+                <div class="levelup-rank-up" id="overlay-rank-up" style="display:none">
+                    <span id="overlay-old-rank">RANK E</span> → <span id="overlay-new-rank">RANK D</span>
+                </div>
+                <p class="levelup-desc">O Sistema reconheceu sua evolução.</p>
+                <button id="btn-close-levelup" class="btn-submit">CONTINUAR</button>
+            </div>
+        </div>
+
+        <!-- Overlay: QUEST CLEARED -->
+        <div id="quest-cleared-overlay" class="quest-cleared-overlay">
+            <div class="quest-cleared-content">
+                <div class="quest-cleared-check">✓</div>
+                <div class="quest-cleared-title">QUEST CLEARED!</div>
+                <div class="quest-cleared-rewards" id="quest-cleared-rewards">+30 XP · +15 OURO</div>
+                <div class="quest-cleared-attr" id="quest-cleared-attr">FORÇA DE VONTADE ↑</div>
+            </div>
+        </div>
+
+        <!-- Overlay: PENALIDADE -->
+        <div id="penalty-overlay" class="penalty-overlay">
+            <div class="penalty-content">
+                <div class="penalty-icon">☠️</div>
+                <div class="penalty-title">PENALIDADE APLICADA</div>
+                <div class="penalty-desc">O Sistema não perdoa fraqueza.</div>
+                <div class="penalty-loss" id="penalty-loss-text">−50 XP</div>
+                <button id="btn-close-penalty" class="btn-submit btn-penalty-close">ENTENDIDO</button>
+            </div>
+        </div>
+
+        <!-- Modal: Impact Quote -->
+        <div id="modal-impact-quote" class="modal">
+            <div class="modal-box quote-modal-box">
+                <span class="close-modal-btn" id="close-quote-modal">&times;</span>
+                <div class="quote-content">
+                    <h2 id="impact-quote-text">"They don't know me son!"</h2>
+                    <p id="impact-quote-author">— David Goggins</p>
+                </div>
+                <button class="btn-submit quote-btn-acknowledge" id="btn-quote-acknowledge">ASSIMILAR</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Container de Toasts (Notificações) -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Onboarding Wizard -->
+    <div id="onboarding-wizard" class="modal" style="display: none; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 9999;">
+        <div class="modal-box" style="border: 1px solid var(--neon-cyan); max-width: 500px;">
+            <div id="wizard-step-1" class="wizard-step">
+                <h2 style="color: var(--neon-cyan); text-align: center; text-transform: uppercase;">O Despertar</h2>
+                <p style="text-align: center; margin-bottom: 20px;">O Sistema te escolheu. Qual é o seu nome, guerreiro?</p>
+                <div class="form-group">
+                    <input type="text" id="wizard-name-input" placeholder="Digite seu nome..." autocomplete="off">
+                </div>
+                <button class="btn-submit" id="btn-wizard-next-1" style="width: 100%;">PRÓXIMO</button>
+            </div>
+            
+            <div id="wizard-step-2" class="wizard-step" style="display: none;">
+                <h2 style="color: var(--neon-cyan); text-align: center; text-transform: uppercase;">Arquétipo</h2>
+                <p style="text-align: center; margin-bottom: 20px;">Qual área da sua vida você quer evoluir primeiro?</p>
+                <div class="wizard-archetypes-grid">
+                    <div class="archetype-card" data-arch="corpo">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">⚡</div>
+                        <strong>Alta Performance & Corpo</strong>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 4px;">Força, Emagrecimento, Esportes</div>
+                    </div>
+                    <div class="archetype-card" data-arch="foco">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">🧠</div>
+                        <strong>Foco & Produtividade</strong>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 4px;">Carreira, Concurso, Deep Work</div>
+                    </div>
+                    <div class="archetype-card" data-arch="zen">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">🧘</div>
+                        <strong>Zen & Saúde Mental</strong>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 4px;">Ansiedade, Mindset, Equilíbrio</div>
+                    </div>
+                    <div class="archetype-card" data-arch="rotina">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">📵</div>
+                        <strong>Estilo de Vida & Rotina</strong>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 4px;">Detox, Hábitos, Sono</div>
+                    </div>
+                    <div class="archetype-card archetype-card-other" data-arch="outros" style="padding: 8px;">
+                        ✍️ Outro pilar...
+                    </div>
+                </div>
+                <div id="wizard-other-container" class="form-group" style="display:none; margin-top: 15px;">
+                    <input type="text" id="wizard-other-input" placeholder="Qual a sua missão principal?" autocomplete="off">
+                </div>
+                <button class="btn-submit" id="btn-wizard-next-2" style="width: 100%; margin-top: 20px;" disabled>PRÓXIMO</button>
+            </div>
+
+            <!-- HOOK STEP -->
+            <div id="wizard-step-hook" class="wizard-step" style="display: none; text-align: center;">
+                <h2 style="color: var(--neon-cyan); text-transform: uppercase;">A Primeira Missão</h2>
+                <div style="font-size: 3rem; margin: 15px 0;" id="hook-icon">🎯</div>
+                <p style="margin-bottom: 15px; font-size: 1.1rem;">Excelente escolha.</p>
+                <p style="color: var(--text-light); margin-bottom: 25px;">Com base no arquétipo <strong id="hook-arch-name" style="color: var(--neon-cyan);">Mente Sã</strong>, o Sistema sugere começar com este micro-hábito hoje:</p>
+                
+                <div style="background: rgba(0, 240, 255, 0.1); border: 1px solid var(--neon-cyan); padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                    <strong id="hook-habit-title" style="font-size: 1.2rem;">Meditar por 3 minutos</strong>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">A grande jornada começa com o primeiro passo. Aceita a missão?</p>
+                <button class="btn-submit" id="btn-wizard-next-hook" style="width: 100%;">ACEITAR MISSÃO</button>
+            </div>
+
+            <div id="wizard-step-3" class="wizard-step" style="display: none;">
+                <h2 style="color: var(--neon-cyan); text-align: center; text-transform: uppercase;">O Juramento</h2>
+                <p style="text-align: center; margin-bottom: 15px;">O Sistema não tolera falhas contínuas.</p>
+                
+                <label style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Horas dedicadas por dia:</label>
+                <div class="wizard-hours-grid" style="margin-bottom: 20px;">
+                    <div class="hour-card" data-hours="15">15 min</div>
+                    <div class="hour-card" data-hours="30">30 min</div>
+                    <div class="hour-card" data-hours="60">1-2 horas</div>
+                    <div class="hour-card" data-hours="120">Hardcore (2h+)</div>
+                </div>
+
+                <label style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Quais dias você vai jogar?</label>
+                <p style="font-size: 0.75rem; color: #555; margin-bottom: 10px;">(Dias desmarcados não aplicam penalidade de falha)</p>
+                <div class="wizard-days-grid" style="margin-bottom: 20px; display: flex; gap: 5px; justify-content: space-between;">
+                    <label class="day-checkbox"><input type="checkbox" value="0" checked><span>D</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="1" checked><span>S</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="2" checked><span>T</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="3" checked><span>Q</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="4" checked><span>Q</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="5" checked><span>S</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="6" checked><span>S</span></label>
+                </div>
+
+                <button class="btn-submit" id="btn-wizard-finish" style="width: 100%;" disabled>DESPERTAR</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+
+    <!-- Banner de Instalação PWA -->
+    <div id="pwa-install-banner" class="install-banner">
+        <div class="install-banner-logo">⚡</div>
+        <div class="install-banner-text">
+            <h4>INSTALAR THE SYSTEM</h4>
+            <p id="install-banner-instructions">Adicione à tela inicial para jogar em tela cheia com progresso persistente.</p>
+        </div>
+        <div class="install-banner-actions">
+            <button id="btn-pwa-install" class="btn-submit btn-install-action">INSTALAR</button>
+            <button id="btn-pwa-dismiss" class="btn-close-banner">✕</button>
+        </div>
+    </div>
+</body>
+</html>
