@@ -65,7 +65,7 @@
                             <span class="player-name">MATEUS</span>
                             <span class="rank-badge" id="lbl-rank">RANK E</span>
                         </div>
-                        <div class="player-title">Alta Performance · Estoico</div>
+                        <div class="player-title" id="lbl-player-title">Desperto</div>
                         <div class="level-row">
                             <span class="level-label">NÍVEL</span>
                             <span class="level-num" id="lbl-level">1</span>
@@ -169,6 +169,9 @@
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     IROH
                     <span id="chat-unread-badge" class="chat-badge" style="display:none;"></span>
+                <button class="tab-link" data-tab="achievements" id="tab-btn-achievements">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-4 4 1-5-4-3 5-.5L12 6l2 4.5 5 .5-4 3 1 5z"/><path d="M5 21l3-3"/><path d="M19 21l-3-3"/></svg>
+                    TROFÉUS
                 </button>
             </nav>
 
@@ -232,6 +235,17 @@
                     <div class="chat-input-wrapper">
                         <input type="text" id="chat-input" placeholder="Consulte o Iroh..." autocomplete="off">
                         <button id="btn-send-message" class="btn-send">↑</button>
+                    </div>
+                </section>
+
+                <!-- ABA TROFÉUS (Achievements) -->
+                <section id="tab-achievements" class="tab-content">
+                    <div class="content-header">
+                        <h2>SALA DE TROFÉUS</h2>
+                        <span class="diff-badge" style="background:rgba(251,191,36,0.15); color:#fbbf24; border-color:rgba(251,191,36,0.4);">CONQUISTAS</span>
+                    </div>
+                    <div class="achievements-grid" id="achievements-container">
+                        <!-- Renderizado via JS -->
                     </div>
                 </section>
 

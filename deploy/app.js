@@ -35,6 +35,7 @@ let gameState = {
     bossQuest: null,            // boss quest ativa { id, completed, progress }
     activeDungeon: null,    // dungeon ativa com prazo de 48h
     lastCheckedDate: null,      // controle diário
+    unlockedAchievements: [],   // troféus desbloqueados
     quests: [], // Populado dinamicamente com base no nível
     sideQuests: [],
     rewards: [
@@ -239,6 +240,7 @@ function completeDungeon() {
     d.completed = true;
     gameState.xp   = (gameState.xp   || 0) + d.xp;
     gameState.gold = (gameState.gold || 0) + d.gold;
+    gameState._dungeonsCompleted = (gameState._dungeonsCompleted || 0) + 1;
 
     // Conta para boss quest d-to-c
     if (gameState.bossQuest?.id === 'd-to-c' && !gameState.bossQuest.completed) {
@@ -340,6 +342,31 @@ function computeAttributes() {
     };
 }
 
+function computePlayerTitle(attrs) {
+    const w = attrs.willpower.val;
+    const i = attrs.intellect.val;
+    const h = attrs.health.val;
+
+    if (w < 0.2 && i < 0.2 && h < 0.2) return "Novato";
+
+    const max = Math.max(w, i, h);
+    const epsilon = 0.05;
+    const isW = Math.abs(w - max) < epsilon;
+    const isI = Math.abs(i - max) < epsilon;
+    const isH = Math.abs(h - max) < epsilon;
+
+    if (isW && isI && isH) return "Desperto";
+    if (isW && isH) return "Monge-Atleta";
+    if (isI && isH) return "Sábio Guerreiro";
+    if (isW && isI) return "Mestre da Mente";
+
+    if (isH) return "Guerreiro";
+    if (isI) return "Estrategista";
+    if (isW) return "Estoico";
+
+    return "Desperto";
+}
+
 // ── Definições de Sinergias de Atributos ──────────────────────────────────
 const SYNERGY_DEFS = [
     {
@@ -419,6 +446,121 @@ function getSynergyGoldBonus() {
 // Verifica se a sinergia "Lenda Imortal" está ativa (escudo bônus no 7-streak)
 function hasSynergyShieldBonus() {
     return computeSynergies().some(s => s.shieldBonus);
+}
+
+// ── Conquistas (Achievements) ─────────────────────────────────────────────
+const ACHIEVEMENTS_DEFS = [
+    {
+        id: 'first_quest',
+        title: 'O Início da Jornada',
+        desc: 'Conclua sua primeira Missão',
+        icon: '⚔️',
+        rewardGold: 10,
+        check: (gs) => gs.quests.some(q => q.completed) || (gs.sideQuests && gs.sideQuests.some(q => q.completed))
+    },
+    {
+        id: 'streak_7',
+        title: 'Sangue Frio',
+        desc: 'Atinja um Streak de 7 dias',
+        icon: '🔥',
+        rewardGold: 25,
+        check: (gs) => gs.streak >= 7
+    },
+    {
+        id: 'streak_30',
+        title: 'Disciplina de Ferro',
+        desc: 'Atinja um Streak de 30 dias',
+        icon: '🛡️',
+        rewardGold: 100,
+        check: (gs) => gs.streak >= 30
+    },
+    {
+        id: 'rank_d',
+        title: 'O Despertar',
+        desc: 'Chegue ao Rank D (Nível 5)',
+        icon: '🌅',
+        rewardGold: 30,
+        check: (gs) => gs.level >= 5
+    },
+    {
+        id: 'rank_s',
+        title: 'Caçador de Rank',
+        desc: 'Chegue ao Rank S (Nível 30)',
+        icon: '👑',
+        rewardGold: 500,
+        check: (gs) => gs.level >= 30
+    },
+    {
+        id: 'skill_5',
+        title: 'Especialista',
+        desc: 'Alcance o Nível 5 em qualquer Skill',
+        icon: '⭐',
+        rewardGold: 50,
+        check: (gs) => Object.values(gs.skills || {}).some(s => s.level >= 5)
+    },
+    {
+        id: 'all_skills_3',
+        title: 'Mestre do Sistema',
+        desc: 'Alcance o Nível 3 em TODAS as Skills',
+        icon: '💠',
+        rewardGold: 150,
+        check: (gs) => {
+            const reqs = ['physical', 'mental', 'productivity', 'social', 'wisdom', 'routine'];
+            return reqs.every(k => gs.skills && gs.skills[k] && gs.skills[k].level >= 3);
+        }
+    },
+    {
+        id: 'dungeon_5',
+        title: 'Caçador de Dungeons',
+        desc: 'Complete 5 Dungeons',
+        icon: '💀',
+        rewardGold: 80,
+        check: (gs) => (gs._dungeonsCompleted || 0) >= 5
+    }
+];
+
+function checkAchievements() {
+    if (!gameState.unlockedAchievements) gameState.unlockedAchievements = [];
+    let newlyUnlocked = false;
+
+    ACHIEVEMENTS_DEFS.forEach(ach => {
+        if (!gameState.unlockedAchievements.includes(ach.id)) {
+            if (ach.check(gameState)) {
+                gameState.unlockedAchievements.push(ach.id);
+                gameState.gold = (gameState.gold || 0) + ach.rewardGold;
+                newlyUnlocked = true;
+                setTimeout(() => {
+                    receiveMessage(`🏆 *CONQUISTA DESBLOQUEADA!* Você obteve o troféu *"${ach.title}"*. Recompensa: +${ach.rewardGold} 💰.`);
+                    showChatBadge();
+                }, 1500);
+            }
+        }
+    });
+
+    if (newlyUnlocked) {
+        renderAchievements();
+        // saveGameData já é chamado em todos os pontos que alteram estado.
+    }
+}
+
+function renderAchievements() {
+    const container = document.getElementById('achievements-container');
+    if (!container) return;
+
+    const unlockedIds = gameState.unlockedAchievements || [];
+
+    container.innerHTML = ACHIEVEMENTS_DEFS.map(ach => {
+        const isUnlocked = unlockedIds.includes(ach.id);
+        const lockClass = isUnlocked ? 'unlocked' : '';
+        return `
+            <div class="achievement-card ${lockClass}">
+                <div class="ach-icon">${isUnlocked ? ach.icon : '🔒'}</div>
+                <div class="ach-title">${ach.title}</div>
+                <div class="ach-desc">${ach.desc}</div>
+                ${isUnlocked ? '<div class="ach-date">Desbloqueado</div>' : ''}
+            </div>
+        `;
+    }).join('');
 }
 
 // ── Rank Perks ─────────────────────────────────────────────────────────────
@@ -762,6 +904,12 @@ function updateUI() {
         if (fillEl) fillEl.style.width = `${minPct + (attrs[key].pct * (100 - minPct))}%`;
     });
 
+    // Player Title Dinâmico
+    const titleLabel = document.getElementById('lbl-player-title');
+    if (titleLabel) {
+        titleLabel.innerText = computePlayerTitle(attrs);
+    }
+
     // Avatar e radar chart
     updateAvatarImage();
     renderSkills();
@@ -769,6 +917,7 @@ function updateUI() {
     // ── Sinergias ativas ────────────────────────────────────────────────────
     renderSynergies();
     renderRankPerks();
+    renderAchievements();
 }
 
 // Renderiza badges de sinergias ativas abaixo das barras de atributo
@@ -1713,6 +1862,7 @@ function handleQuestAction(e) {
 // PERSISTÊNCIA DE DADOS (LOCALSTORAGE)
 // ==========================================================================
 function saveGameData() {
+    checkAchievements();
     localStorage.setItem('lifeRPG_gameState_Mateus', JSON.stringify(gameState));
 }
 
@@ -1733,6 +1883,7 @@ function loadGameData() {
             bossQuest: null,
             activeDungeon: null,
             lastCheckedDate: new Date().toDateString(),
+            unlockedAchievements: [],
             quests: [],
             sideQuests: [],
             rewards: [
@@ -1797,6 +1948,8 @@ function loadGameData() {
         if (gameState.consecutiveMisses === undefined) gameState.consecutiveMisses = 0;
         if (gameState.bossQuest === undefined) gameState.bossQuest = null;
         if (gameState.activeDungeon === undefined) gameState.activeDungeon = null;
+        if (gameState.unlockedAchievements === undefined) gameState.unlockedAchievements = [];
+        if (gameState._dungeonsCompleted === undefined) gameState._dungeonsCompleted = 0;
 
         if (!gameState.notificationTimes) {
             gameState.notificationTimes = { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };
