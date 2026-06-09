@@ -226,8 +226,17 @@ function completeDungeon() {
     if (!d || d.completed) return;
 
     d.completed = true;
-    gameState.xp   = (gameState.xp   || 0) + d.xp;
-    gameState.gold = (gameState.gold || 0) + d.gold;
+    let xpGain = d.xp;
+    let goldGain = d.gold;
+
+    // Verifica Double XP Buff
+    if (gameState.buffs && gameState.buffs.doubleXp) {
+        xpGain *= 2;
+        gameState.buffs.doubleXp = false;
+    }
+
+    gameState.xp   = (gameState.xp   || 0) + xpGain;
+    gameState.gold = (gameState.gold || 0) + goldGain;
     gameState._dungeonsCompleted = (gameState._dungeonsCompleted || 0) + 1;
 
     // Conta para boss quest d-to-c
@@ -241,7 +250,7 @@ function completeDungeon() {
     updateUI();
 
     setTimeout(() => {
-        showSystemToast(`🏆 *DUNGEON CONCLUÍDA!* Você completou *"${d.title}"*!\n\n+${d.xp} XP · +${d.gold} 💰 concedidos. Iroh está orgulhoso.`);
+        showSystemToast(`🏆 *DUNGEON CONCLUÍDA!* Você completou *"${d.title}"*!\n\n+${xpGain} XP · +${goldGain} 💰 concedidos. Iroh está orgulhoso.`);
 
     }, 800);
 
@@ -637,7 +646,7 @@ function drawRadarChart() {
 
         const skillTypes  = ['physical','mental','productivity','social','wisdom','routine'];
         const skillLabels = {
-            physical:'FÍSICO', mental:'ESTOICO', productivity:'FOCO',
+            physical:'FÍSICO', mental:'MENTAL', productivity:'FOCO',
             social:'CONEXÃO', wisdom:'SABEDORIA', routine:'ROTINA'
         };
         const N = skillTypes.length;
@@ -810,10 +819,15 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { drawRadarChart(); }, 150);
 
     // Mensagem de boas-vindas na primeira vez
-    if (gameState.messages.length === 0) {
+    if (gameState.messages.length === 0 && gameState.playerName) {
         setTimeout(() => {
-            showSystemToast('Bem-vindo ao LifeRPG. O Sistema está ativo. Complete suas missões.');
+            showSystemToast(`Bem-vindo ao LifeRPG, ${gameState.playerName}. O Sistema está ativo. Complete suas missões.`);
         }, 1000);
+    }
+    
+    // Inicia o Wizard se o usuário não tem nome definido
+    if (!gameState.playerName) {
+        initOnboardingWizard();
     }
 });
 
@@ -834,9 +848,204 @@ function initTabs() {
             btn.classList.add('active');
             document.getElementById(`tab-${tabName}`).classList.add('active');
 
+            // Se for a aba Global, renderiza os gráficos e o heatmap
+            if (tabName === 'global') {
+                renderGlobalDashboard();
+            }
         });
     });
 }
+
+// ==========================================================================
+// ONBOARDING WIZARD
+// ==========================================================================
+function initOnboardingWizard() {
+    const wizardModal = document.getElementById('onboarding-wizard');
+    if (!wizardModal) return;
+    
+    wizardModal.style.display = 'flex';
+    
+    // Passo 1: Nome
+    const btnNext1 = document.getElementById('btn-wizard-next-1');
+    const inputName = document.getElementById('wizard-name-input');
+    
+    btnNext1.addEventListener('click', () => {
+        const name = inputName.value.trim();
+        if (name) {
+            gameState.playerName = name;
+            document.getElementById('lbl-player-name').innerText = name.toUpperCase();
+            document.getElementById('wizard-step-1').style.display = 'none';
+            document.getElementById('wizard-step-2').style.display = 'block';
+        } else {
+            inputName.style.borderColor = 'red';
+        }
+    });
+
+    // Passo 2: Arquétipo
+    const btnNext2 = document.getElementById('btn-wizard-next-2');
+    const archCards = document.querySelectorAll('.archetype-card');
+    const otherInputContainer = document.getElementById('wizard-other-container');
+    const otherInput = document.getElementById('wizard-other-input');
+    let selectedArch = null;
+
+    archCards.forEach(card => {
+        card.addEventListener('click', () => {
+            archCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedArch = card.getAttribute('data-arch');
+            
+            if (selectedArch === 'outros') {
+                otherInputContainer.style.display = 'block';
+                btnNext2.disabled = otherInput.value.trim() === '';
+            } else {
+                otherInputContainer.style.display = 'none';
+                btnNext2.disabled = false;
+            }
+        });
+    });
+
+    otherInput.addEventListener('input', () => {
+        if (selectedArch === 'outros') {
+            btnNext2.disabled = otherInput.value.trim() === '';
+        }
+    });
+
+    btnNext2.addEventListener('click', () => {
+        if (selectedArch) {
+            if (selectedArch === 'outros') {
+                gameState.archetype = otherInput.value.trim() || 'Desconhecido';
+                // Pula direto pro juramento se for 'outros'
+                document.getElementById('wizard-step-2').style.display = 'none';
+                document.getElementById('wizard-step-3').style.display = 'block';
+            } else {
+                gameState.archetype = selectedArch;
+                // Configura a tela de Hook
+                setupHookStep(selectedArch);
+                document.getElementById('wizard-step-2').style.display = 'none';
+                document.getElementById('wizard-step-hook').style.display = 'block';
+            }
+        }
+    });
+
+    // Passo Hook
+    const btnNextHook = document.getElementById('btn-wizard-next-hook');
+    btnNextHook.addEventListener('click', () => {
+        document.getElementById('wizard-step-hook').style.display = 'none';
+        document.getElementById('wizard-step-3').style.display = 'block';
+    });
+
+    // Passo 3: Comprometimento e Finalização
+    const btnFinish = document.getElementById('btn-wizard-finish');
+    const hourCards = document.querySelectorAll('.hour-card');
+    let selectedHours = null;
+
+    hourCards.forEach(card => {
+        card.addEventListener('click', () => {
+            hourCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedHours = card.getAttribute('data-hours');
+            btnFinish.disabled = false;
+        });
+    });
+
+    btnFinish.addEventListener('click', () => {
+        if (selectedHours) {
+            gameState.dailyCommitmentMins = parseInt(selectedHours);
+            
+            // Coletar dias selecionados
+            const dayCheckboxes = document.querySelectorAll('.day-checkbox input:checked');
+            const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
+            gameState.activeDays = selectedDays.length > 0 ? selectedDays : [0,1,2,3,4,5,6]; // Fallback
+            
+            // Adapta o deck de missões com base no arquétipo e no tempo
+            applyArchetypeDeck(selectedArch, gameState.dailyCommitmentMins);
+            
+            wizardModal.style.display = 'none';
+            saveGameData();
+            updateUI();
+            
+            setTimeout(() => {
+                showSystemToast(`Despertar concluído, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
+            }, 1000);
+        }
+    });
+}
+
+function setupHookStep(archetype) {
+    const lblArch = document.getElementById('hook-arch-name');
+    const lblHabit = document.getElementById('hook-habit-title');
+    const icon = document.getElementById('hook-icon');
+
+    if (archetype === 'corpo') {
+        lblArch.innerText = 'Alta Performance & Corpo';
+        lblHabit.innerText = 'Beber 1 copo de água ao acordar';
+        icon.innerText = '💧';
+    } else if (archetype === 'foco') {
+        lblArch.innerText = 'Foco & Produtividade';
+        lblHabit.innerText = '15 minutos de leitura (sem celular)';
+        icon.innerText = '📚';
+    } else if (archetype === 'zen') {
+        lblArch.innerText = 'Zen & Saúde Mental';
+        lblHabit.innerText = 'Meditar por 3 minutos';
+        icon.innerText = '🧘';
+    } else if (archetype === 'rotina') {
+        lblArch.innerText = 'Estilo de Vida & Rotina';
+        lblHabit.innerText = 'Arrumar a cama ao levantar';
+        icon.innerText = '🌅';
+    }
+}
+
+function applyArchetypeDeck(archetype, minutes) {
+    let deck = [];
+    
+    // 1. O Micro-hábito base (sempre garantido pelo Hook)
+    if (archetype === 'corpo') {
+        deck.push({ id: 'q-agua', title: 'Beber 1 copo de água ao acordar', type: 'daily', icon: '💧', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'physical' });
+    } else if (archetype === 'foco') {
+        deck.push({ id: 'q-ler', title: '15 minutos de leitura (sem celular)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' });
+    } else if (archetype === 'zen') {
+        deck.push({ id: 'q-meditar', title: 'Meditar por 3 minutos', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' });
+    } else if (archetype === 'rotina') {
+        deck.push({ id: 'q-cama', title: 'Arrumar a cama ao levantar', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
+    } else {
+        deck.push({ id: 'q-foco', title: 'Dar o primeiro passo no meu objetivo', type: 'daily', icon: '🎯', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'productivity' });
+    }
+
+    // 2. Escalonando a quantidade de hábitos pelo Tempo (minutos)
+    if (minutes >= 30) {
+        // Adiciona mais um hábito rápido
+        deck.push({ id: 'q-acordar', title: 'Acordar Cedo (Horário Fixo)', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
+        if (archetype !== 'corpo') deck.push({ id: 'q-agua2', title: 'Beber Água (8 copos)', type: 'daily', icon: '💧', completed: false, xp: 15, gold: 8, target: 8, current: 0, minLevel: 1, skill: 'physical' });
+    }
+
+    if (minutes >= 60) {
+        // Adiciona hábitos de esforço médio/alto (1 hora permite treino ou estudos intensos)
+        if (archetype === 'corpo' || archetype === 'zen') {
+            deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida (45min)', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
+        } else {
+            deck.push({ id: 'q-estudo', title: 'Deep Work / Foco ininterrupto (1h)', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
+        }
+    }
+
+    if (minutes >= 120) {
+        // Hardcore: Um mix completo (Físico + Mental + Sabedoria + Social)
+        deck.push({ id: 'q-detox', title: '1h sem celular antes de dormir', type: 'daily', icon: '📵', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'mental' });
+        
+        // Se já não tiver Treino, adiciona Treino. Se já não tiver Deep Work, adiciona Deep Work.
+        const hasTreino = deck.some(q => q.id === 'q-malhar');
+        const hasEstudo = deck.some(q => q.id === 'q-estudo');
+        
+        if (!hasTreino) deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
+        if (!hasEstudo) deck.push({ id: 'q-estudo', title: 'Deep Work / Estudos', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
+        
+        deck.push({ id: 'q-social', title: 'Conectar com Família/Amigo (Sem tela)', type: 'daily', icon: '❤️', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' });
+    }
+    
+    // Substitui o banco ativo e re-renderiza
+    gameState.quests = deck;
+    renderQuests();
+}
+
 
 // ==========================================================================
 // RENDERIZADORES DE INTERFACE (UI)
@@ -846,6 +1055,40 @@ function initTabs() {
 function updateUI() {
     document.getElementById('lbl-level').innerText = gameState.level;
     document.getElementById('lbl-gold').innerText = gameState.gold;
+    // RANK badge
+    const rankInfo = getRankForLevel(gameState.level);
+    const rankBadge = document.getElementById('lbl-rank');
+    if (rankBadge) {
+        rankBadge.innerText = rankInfo.rank;
+        rankBadge.className = 'rank-badge ' + rankInfo.css;
+    }
+
+    // COSMÉTICOS (Títulos e Bordas)
+    const titleLabels = {
+        'title_implacavel': 'O Implacável',
+        'title_mestre': 'Mestre do Tempo'
+    };
+    const playerTitle = document.getElementById('lbl-player-title');
+    if (playerTitle) {
+        if (gameState.inventory && gameState.inventory.activeTitle) {
+            playerTitle.innerText = titleLabels[gameState.inventory.activeTitle] || 'Desperto';
+            if (gameState.inventory.activeTitle === 'title_implacavel') playerTitle.style.color = 'var(--neon-purple)';
+            if (gameState.inventory.activeTitle === 'title_mestre') playerTitle.style.color = 'var(--neon-gold)';
+        } else {
+            playerTitle.innerText = 'Desperto';
+            playerTitle.style.color = 'var(--text-muted)';
+        }
+    }
+
+    const avatarBorder = document.querySelector('.avatar-hex-border');
+    if (avatarBorder) {
+        if (gameState.inventory && gameState.inventory.activeBorder === 'border_neonred') {
+            avatarBorder.classList.add('border-neonred');
+        } else {
+            avatarBorder.classList.remove('border-neonred');
+        }
+    }
+
     // Display estendido do streak: dias + multiplicador + escudos
     const streakEl = document.getElementById('lbl-streak');
     if (streakEl) {
@@ -1021,16 +1264,16 @@ function addSkillXP(skillType) {
         skillObj.xpToNext = calcSkillXpToNext(skillObj.level);
         
         const skillNamesPT = {
-            physical: 'Físico / Saúde 🏋️‍♂️',
-            mental: 'Mental / Estoicismo 🧘',
-            productivity: 'Deep Work / Foco 💻',
-            social: 'Conexão / Social ❤️',
-            wisdom: 'Sabedoria / Leitura 📚',
-            routine: 'Rotina / Consistência 🌅'
+            physical: 'Físico 🏋️‍♂️',
+            mental: 'Mental 🧘',
+            productivity: 'Foco 💻',
+            social: 'Conexão ❤️',
+            wisdom: 'Sabedoria 📚',
+            routine: 'Rotina 🌅'
         };
         
         setTimeout(() => {
-            showSystemToast(`📊 *ATRIBUTO UP!* Mateus, seu treino diário elevou o seu nível de *${skillNamesPT[skillType]}* para o *Nível ${skillObj.level}*! A consistência lapida a mente e o corpo. Muito bem!`);
+            showSystemToast(`⭐ *ATRIBUTO UP!* ${gameState.playerName || 'Guerreiro'}, seu treino diário elevou o seu nível de *${skillNamesPT[skillType]}* para o *Nível ${skillObj.level}*! A consistência lapida a mente e o corpo. Muito bem!`);
 
         }, 1200);
     }
@@ -1165,23 +1408,21 @@ function renderQuests() {
 // Renderiza a Taverna (Recompensas)
 function renderRewards() {
     const rewardsContainer = document.getElementById('rewards-list');
-    rewardsContainer.innerHTML = '';
-
-    gameState.rewards.forEach(reward => {
-        const card = document.createElement('div');
-        card.className = 'reward-card';
-        card.innerHTML = `
-            <div>
-                <span style="font-size: 24px; display: block; margin-bottom: 6px;">${reward.icon || '🎁'}</span>
-                <h3>${reward.title}</h3>
-            </div>
-            <div class="reward-bottom">
-                <span class="reward-cost">🪙 ${reward.cost} Ouro</span>
-                <button class="btn-buy" data-id="${reward.id}">Resgatar</button>
-            </div>
-        `;
-        rewardsContainer.appendChild(card);
-    });
+    if (!rewardsContainer) return;
+    rewardsContainer.innerHTML = `
+        <div class="store-item" onclick="buyStoreItem('buff_autoHeal')">
+            <div class="store-info"><span>🧪 Poção de Cura</span><small>Protege o streak por 1 erro</small></div>
+            <button>100 🪙</button>
+        </div>
+        <div class="store-item" onclick="buyStoreItem('buff_doubleXp')">
+            <div class="store-info"><span>📜 Pergaminho de Dobro XP</span><small>XP x2 por um dia</small></div>
+            <button>50 🪙</button>
+        </div>
+        <div class="store-item" onclick="buyStoreItem('buff_shield')">
+            <div class="store-info"><span>🛡️ Carga de Escudo</span><small>Reforce sua defesa</small></div>
+            <button>150 🪙</button>
+        </div>
+    `;
 }
 
 // ==========================================================================
@@ -1225,8 +1466,16 @@ function toggleQuest(id) {
         if (quest.id === 'q-agua') {
             quest.current = 8;
         }
+        
+        // Aplica Double XP Buff se ativo
+        let xpGained = quest.xp;
+        if (gameState.buffs && gameState.buffs.doubleXp) {
+            xpGained *= 2;
+            gameState.buffs.doubleXp = false;
+        }
+
         quest.completed = true;
-        addRewards(quest.xp, quest.gold);
+        addRewards(xpGained, quest.gold);
         addSkillXP(skillType);
 
         // Impact Quote - Primeira do Dia
@@ -1366,7 +1615,7 @@ function syncQuestsByLevel() {
             // Notifica o usuário no chat via Iroh caso não seja a primeira carga do app
             if (gameState.messages.length > 0) {
                 setTimeout(() => {
-                    showSystemToast(`🎉 *Iroh:* Incrível, Mateus! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
+                    showSystemToast(`🔥 *SISTEMA:* Incrível, ${gameState.playerName || 'Guerreiro'}! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
 
                 }, 1500);
             }
@@ -1572,8 +1821,8 @@ function applyDailyPenalty() {
     // ── Mensagem do Iroh por tom ─────────────────────────────────────────────
     setTimeout(() => {
         const irohMessages = {
-            motivational: `☀️ *Iroh:* Você falhou hoje, Mateus. Mas um tropeço não define sua jornada. _"A jornada mais longa começa com um único passo — e você ainda pode dar o de amanhã."_ Penalidade leve aplicada: −${penalty} XP. Levante-se.`,
-            firm: `⚠️ *Iroh:* Dois dias, Mateus. O Sistema registrou. Sua sequência foi zerada. _"O rio que para de correr logo apodrece."_ −${penalty} XP deduzidos. Não deixe virar hábito.`,
+            motivational: `☀️ *SISTEMA:* Você falhou hoje, ${gameState.playerName || 'Guerreiro'}. Mas um tropeço não define sua jornada. _"A jornada mais longa começa com um único passo — e você ainda pode dar o de amanhã."_ Penalidade leve aplicada: −${penalty} XP. Levante-se.`,
+            firm: `⚠️ *SISTEMA:* Dois dias, ${gameState.playerName || 'Guerreiro'}. O Sistema registrou. Sua sequência foi zerada. _"O rio que para de correr logo apodrece."_ −${penalty} XP deduzidos. Não deixe virar hábito.`,
             angry: `☠️ *SISTEMA:* Três dias consecutivos de falha. Penalidade severa aplicada. −${penalty} XP. Suas habilidades sofreram regressão. _"Você conhece seu potencial e ainda assim escolheu a fraqueza."_ Corrija isso agora.`,
             severe: `💀 *SISTEMA — ALERTA CRÍTICO:* Cinco dias ou mais sem cumprir suas missões. Penalidade máxima: −${penalty} XP. Debuff de 48h ativo. Regressão de habilidades aplicada. _"Um guerreiro que abandona sua disciplina por dias não é mais um guerreiro — é apenas alguém com o uniforme."_ Retorne. Agora.`
         };
@@ -1585,22 +1834,79 @@ function applyDailyPenalty() {
     updateUI();
 }
 
-// Resgate de recompensas
-function buyReward(id) {
-    const reward = gameState.rewards.find(r => r.id === id);
-    if (!reward) return;
+// ==========================================================================
+// LOJA E TAVERNA (COMPRA DE BUFFS E COSMÉTICOS)
+// ==========================================================================
+function buyStoreItem(itemId) {
+    const prices = {
+        'buff_autoHeal': 100,
+        'buff_doubleXp': 50,
+        'buff_shield': 150,
+        'title_implacavel': 300,
+        'title_mestre': 300,
+        'border_neonred': 500
+    };
 
-    if (gameState.gold >= reward.cost) {
-        gameState.gold -= reward.cost;
-        saveGameData();
-        updateUI();
-        
-        alert(`Sucesso! Você liberou: "${reward.title}"`);
-        showSystemToast('Recompensa conquistada! Aproveite o descanso merecido.');
-    } else {
-        showSystemToast('Ouro insuficiente. Complete mais missões primeiro.', 'toast-alert');
+    const cost = prices[itemId];
+    if (!cost) return;
 
+    if ((gameState.gold || 0) < cost) {
+        showSystemToast(`⚠️ *OURO INSUFICIENTE.* O Sistema não faz caridade. Você precisa de ${cost} 💰.`);
+        return;
     }
+
+    // Processamento do Item
+    if (itemId.startsWith('buff_')) {
+        if (!gameState.buffs) gameState.buffs = { autoHeal: false, doubleXp: false, shieldDays: 0 };
+        
+        if (itemId === 'buff_autoHeal') {
+            if (gameState.buffs.autoHeal) {
+                showSystemToast("⚠️ Você já possui uma Poção de Cura ativa no inventário.");
+                return;
+            }
+            gameState.buffs.autoHeal = true;
+            showSystemToast("🧪 *POÇÃO COMPRADA!* Seu próximo erro será perdoado. O Sistema protege os preparados.");
+        } 
+        else if (itemId === 'buff_doubleXp') {
+            if (gameState.buffs.doubleXp) {
+                showSystemToast("⚠️ Seu Pergaminho já está ativo até meia-noite!");
+                return;
+            }
+            gameState.buffs.doubleXp = true;
+            showSystemToast("📜 *CONHECIMENTO ADQUIRIDO!* Todo XP ganho hoje será DOBRADO. Vá trabalhar.");
+        }
+        else if (itemId === 'buff_shield') {
+            gameState.shields = (gameState.shields || 0) + 1;
+            showSystemToast(`🛡️ *ESCUDO COMPRADO!* Você adicionou 1 carga ao seu escudo principal. Total: ${gameState.shields}`);
+        }
+    } 
+    else if (itemId.startsWith('title_') || itemId.startsWith('border_')) {
+        if (!gameState.inventory) gameState.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" };
+        
+        const isTitle = itemId.startsWith('title_');
+        const inventoryList = isTitle ? gameState.inventory.unlockedTitles : gameState.inventory.unlockedBorders;
+        const activeKey = isTitle ? 'activeTitle' : 'activeBorder';
+        const displayType = isTitle ? 'Título' : 'Borda';
+
+        if (inventoryList.includes(itemId)) {
+            // Se já tem, apenas equipa
+            gameState.inventory[activeKey] = itemId;
+            showSystemToast(`✨ *${displayType} Equipado(a)!* Atualizado no seu perfil.`);
+            saveGameData();
+            updateUI(); // Vai atualizar a UI do header
+            return; // Retorna para não cobrar ouro de novo
+        } else {
+            // Compra e equipa
+            inventoryList.push(itemId);
+            gameState.inventory[activeKey] = itemId;
+            showSystemToast(`💎 *${displayType} Desbloqueado(a) e Equipado(a)!*`);
+        }
+    }
+
+    // Cobra o ouro
+    gameState.gold -= cost;
+    saveGameData();
+    updateUI();
 }
 
 // ==========================================================================
@@ -1794,7 +2100,7 @@ function handleQuestAction(e) {
 // ==========================================================================
 function saveGameData() {
     checkAchievements();
-    localStorage.setItem('lifeRPG_gameState_Mateus', JSON.stringify(gameState));
+    localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
 }
 
 function loadGameData() {
@@ -1834,25 +2140,74 @@ function loadGameData() {
             notificationTimes: {
                 morningHour: 7, morningMin: 0,
                 eveningHour: 19, eveningMin: 0
-            }
+            },
+            history: {}, // Store daily logs { "2026-06-08": { status: "perfect", count: 3, total: 3, completedIds: [] } }
+            buffs: { autoHeal: false, doubleXp: false, shieldDays: 0 },
+            inventory: { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" }
         };
         saveGameData();
         window.location.reload();
         return;
     }
 
-    const data = localStorage.getItem('lifeRPG_gameState_Mateus');
+    // Migration from old key to new key
+    let data = localStorage.getItem('lifeRPG_gameState');
+    if (!data) {
+        const oldData = localStorage.getItem('lifeRPG_gameState_Mateus');
+        if (oldData) {
+            data = oldData;
+            localStorage.setItem('lifeRPG_gameState', data);
+            localStorage.removeItem('lifeRPG_gameState_Mateus');
+        }
+    }
+
     if (data) {
         const parsed = JSON.parse(data);
         
+        // Migration: Ensure history exists
+        if (!parsed.history) {
+            parsed.history = {};
+        }
+
+        // Migration: Ensure buffs and inventory exist
+        if (!parsed.buffs) {
+            parsed.buffs = { autoHeal: false, doubleXp: false, shieldDays: 0 };
+        }
+        if (!parsed.inventory) {
+            parsed.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" };
+        }
+
         // Verifica reset diário
         const todayStr = new Date().toDateString();
         if (parsed.lastCheckedDate && parsed.lastCheckedDate !== todayStr) {
-            // Verifica penalidade: se havia streak ativo e nem todas as quests foram concluídas
             const completedCount = (parsed.quests || []).filter(q => q.completed).length;
             const totalCount = (parsed.quests || []).length;
             const allWereDone = completedCount >= totalCount && totalCount > 0;
-            if (!allWereDone && (parsed.streak || 0) > 0) {
+            
+            // Grava o Histórico do dia anterior
+            let dailyStatus = 'skipped';
+            if (totalCount > 0) {
+                if (completedCount === totalCount) dailyStatus = 'perfect';
+                else if (completedCount === 0) dailyStatus = 'failed';
+                else dailyStatus = 'partial';
+            }
+
+            // Identifica se era um dia ativo (para evitar punir dias de descanso)
+            const oldDateObj = new Date(parsed.lastCheckedDate);
+            const isRestDay = parsed.activeDays && !parsed.activeDays.includes(oldDateObj.getDay());
+            if (isRestDay && dailyStatus === 'failed') {
+                dailyStatus = 'skipped';
+            }
+
+            parsed.history[parsed.lastCheckedDate] = {
+                status: dailyStatus,
+                count: completedCount,
+                total: totalCount,
+                completedIds: (parsed.quests || []).filter(q => q.completed).map(q => q.title) // salva nomes
+            };
+
+            // Verifica penalidade
+            if (!allWereDone && (parsed.streak || 0) > 0 && !isRestDay) {
                 // Penalidade adiada para depois do DOM estar pronto
                 setTimeout(() => applyDailyPenalty(), 2000);
             }
@@ -2028,7 +2383,7 @@ function setupSettingsListeners() {
                     // Validação simples do save
                     if (parsed.hasOwnProperty('level') && parsed.hasOwnProperty('xp') && parsed.hasOwnProperty('gold')) {
                         // Salva e recarrega
-                        localStorage.setItem('lifeRPG_gameState_Mateus', JSON.stringify(parsed));
+                        localStorage.setItem('lifeRPG_gameState', JSON.stringify(parsed));
                         alert('💾 Save importado com sucesso! Recarregando...');
                         window.location.reload();
                     } else {
@@ -2192,3 +2547,127 @@ function setupInstallPrompt() {
     }
 }
 
+// ==========================================================================
+// ABA VISÃO GLOBAL E HEATMAP
+// ==========================================================================
+function renderGlobalDashboard() {
+    const history = gameState.history || {};
+    const dates = Object.keys(history).sort((a,b) => new Date(a) - new Date(b));
+    
+    // 1. Preencher Heatmap (Mês Atual)
+    const heatmapGrid = document.getElementById('heatmap-grid');
+    if(heatmapGrid) heatmapGrid.innerHTML = '';
+    
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    
+    // Calcula os "blocos" vazios antes do dia 1 (para o grid ficar bonitinho em semanas)
+    const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
+    for (let i = 0; i < firstDayOfWeek; i++) {
+        const emptyBlock = document.createElement('div');
+        emptyBlock.style.visibility = 'hidden';
+        if(heatmapGrid) heatmapGrid.appendChild(emptyBlock);
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const block = document.createElement('div');
+        block.className = 'hm-block';
+        
+        const dateStr = new Date(currentYear, currentMonth, i).toDateString();
+        const log = history[dateStr];
+        
+        if (log) {
+            block.classList.add(`hm-${log.status}`);
+            block.title = `${dateStr}: ${log.count}/${log.total} completos`;
+        } else if (i > now.getDate()) {
+            // Dias futuros
+            block.style.opacity = '0.3';
+        }
+        if(heatmapGrid) heatmapGrid.appendChild(block);
+    }
+
+    // 2. Preencher Métricas de Topo
+    let totalHabitsDone = 0;
+    let totalMissed = 0;
+    let perfectDays = 0;
+    let totalDaysLogged = dates.length;
+
+    let monthlyData = new Array(12).fill(0); // [Jan, Fev, ... Dez]
+    let habitCounts = {};
+
+    dates.forEach(d => {
+        const log = history[d];
+        totalHabitsDone += log.count;
+        totalMissed += (log.total - log.count);
+        if (log.status === 'perfect') perfectDays++;
+        
+        const month = new Date(d).getMonth();
+        monthlyData[month] += log.count;
+
+        (log.completedIds || []).forEach(habitTitle => {
+            habitCounts[habitTitle] = (habitCounts[habitTitle] || 0) + 1;
+        });
+    });
+
+    const elHabits = document.getElementById('dash-total-habits');
+    const elPerfect = document.getElementById('dash-perfect-days');
+    const elMissed = document.getElementById('dash-total-missed');
+    const elRhythm = document.getElementById('dash-rhythm');
+    
+    if(elHabits) elHabits.innerText = totalHabitsDone;
+    if(elPerfect) elPerfect.innerText = perfectDays;
+    if(elMissed) elMissed.innerText = totalMissed;
+    
+    const rhythm = totalDaysLogged > 0 ? Math.round((perfectDays / totalDaysLogged) * 100) : 0;
+    if(elRhythm) elRhythm.innerText = rhythm + '%';
+
+    // 3. Gráfico de Barras Mensais
+    const barChart = document.getElementById('dash-bar-chart');
+    if(barChart) {
+        barChart.innerHTML = '';
+        const monthsNames = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+        const maxMonthly = Math.max(...monthlyData, 1); // Evita divisão por zero
+
+        for (let i = 0; i < 12; i++) {
+            const hPercent = (monthlyData[i] / maxMonthly) * 100;
+            
+            const col = document.createElement('div');
+            col.className = 'dash-bar-col';
+            col.innerHTML = `
+                <div class="dash-bar-fill" style="height: ${hPercent}%" title="${monthlyData[i]} hábitos em ${monthsNames[i]}"></div>
+                <div class="dash-bar-lbl">${monthsNames[i]}</div>
+            `;
+            barChart.appendChild(col);
+        }
+    }
+
+    // 4. Top Hábitos
+    const topHabitsContainer = document.getElementById('dash-top-habits');
+    if(topHabitsContainer) {
+        topHabitsContainer.innerHTML = '';
+        
+        const sortedHabits = Object.entries(habitCounts).sort((a,b) => b[1] - a[1]);
+        const top5 = sortedHabits.slice(0, 5);
+        const maxHabitCount = top5.length > 0 ? top5[0][1] : 1;
+
+        if (top5.length === 0) {
+            topHabitsContainer.innerHTML = '<p style="color:var(--text-muted); font-size:0.8rem; text-align:center;">Nenhum dado registrado ainda.</p>';
+        } else {
+            top5.forEach(([name, count]) => {
+                const wPercent = (count / maxHabitCount) * 100;
+                const row = document.createElement('div');
+                row.className = 'dash-habit-row';
+                row.innerHTML = `
+                    <div class="dash-habit-name" title="${name}">${name}</div>
+                    <div class="dash-habit-bar-bg">
+                        <div class="dash-habit-bar-fill" style="width: ${wPercent}%"></div>
+                    </div>
+                    <div style="font-size:0.7rem; color:var(--text-muted); margin-left:8px; width:20px; text-align:right;">${count}</div>
+                `;
+                topHabitsContainer.appendChild(row);
+            });
+        }
+    }
+}

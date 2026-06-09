@@ -58,11 +58,11 @@
                 <div class="player-card-top">
                     <div class="avatar-hex-wrapper" id="char-avatar-img-wrapper">
                         <div class="avatar-hex-border"></div>
-                        <img id="char-avatar-img" class="avatar-hex-img" src="avatars/1.rank-e.png" alt="Mateus">
+                        <img id="char-avatar-img" class="avatar-hex-img" src="avatars/1.rank-e.png" alt="Avatar">
                     </div>
                     <div class="player-info">
                         <div class="player-name-row">
-                            <span class="player-name">MATEUS</span>
+                            <span class="player-name" id="lbl-player-name">GUERREIRO</span>
                             <span class="rank-badge" id="lbl-rank">RANK E</span>
                         </div>
                         <div class="player-title" id="lbl-player-title">Desperto</div>
@@ -132,13 +132,18 @@
                         </div>
                     </div>
                     <div class="attr-bar-item health">
-                        <div class="attr-bar-header">
-                            <span class="attr-bar-icon">❤️</span>
-                            <span class="attr-bar-name">SAÚDE</span>
-                            <span class="attr-bar-lvl" id="attr-lvl-health">1</span>
-                        </div>
-                        <div class="attr-bar-track">
-                            <div class="attr-bar-fill health-fill" id="attr-fill-health" style="width:0%"></div>
+                        <button class="nav-btn tab-link" data-tab="quests">
+                    <span class="nav-icon">⚔️</span>
+                    <span class="nav-text">MISSÕES</span>
+                </button>
+                <button class="nav-btn tab-link" data-tab="global">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">VISÃO G.</span>
+                </button>
+                <button class="nav-btn tab-link" data-tab="rewards">
+                    <span class="nav-icon">🍺</span>
+                    <span class="nav-text">TAVERNA</span>
+                </button>            <div class="attr-bar-fill health-fill" id="attr-fill-health" style="width:0%"></div>
                         </div>
                     </div>
                 </div>
@@ -174,28 +179,87 @@
 
             <!-- Tab Content -->
             <div class="tab-content-container">
-
-                <!-- ABA MISSÕES -->
-                <section id="tab-quests" class="tab-content active">
-                    <div class="content-header">
-                        <div class="header-titles">
-                            <h2>MISSÕES DIÁRIAS</h2>
-                            <p class="header-desc">Complete todas antes da meia-noite ou sofra as consequências.</p>
-                        </div>
-                        <div class="quest-progress-badge">
-                            <span id="lbl-daily-progress">0/6</span>
-                        </div>
+            
+                <!-- ABA: MISSÕES -->
+                <div id="tab-quests" class="tab-content active">
+                    <div class="quest-section-header">
+                        <h2>Missões Diárias</h2>
+                        <span class="quest-count" id="lbl-daily-count">0/0</span>
                     </div>
-                    <div class="quests-list" id="daily-quests-list"></div>
-
-                    <div class="content-header sidequest-section-header">
-                        <div class="header-titles">
-                            <h2>SIDE QUESTS</h2>
-                            <p class="header-desc">Missões avulsas e desafios especiais.</p>
-                        </div>
-                        <button id="btn-add-sidequest" class="btn-new-quest">+ NOVA QUEST</button>
+                    <div class="quest-list" id="daily-quests-list">
+                        <!-- Quests renderizadas via JS -->
                     </div>
-                    <div class="quests-list" id="side-quests-list"></div>
+
+                    <div class="quest-section-header" style="margin-top: 30px;">
+                    <h2>Side Quests</h2>
+                    <span class="quest-count" id="lbl-side-count">0</span>
+                </div>
+                <div class="quest-list" id="side-quests-list">
+                    <!-- Side Quests renderizadas via JS -->
+                </div>
+
+                <button class="btn-submit" id="btn-add-sidequest" style="margin-top: 20px; width: 100%;">+ NOVA QUEST</button>
+            </div>
+
+            <!-- ABA: VISÃO GLOBAL (DASHBOARD & HEATMAP) -->
+            <div id="tab-global" class="tab-content">
+                <div class="section-title">
+                    <h2>VISÃO GLOBAL</h2>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">O seu mapa tático da consistência.</p>
+                </div>
+                
+                <!-- HEATMAP DO MÊS -->
+                <div class="dashboard-card" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px;">HEATMAP DO MÊS VIGENTE</h3>
+                    <div id="heatmap-grid" class="heatmap-container">
+                        <!-- Quadradinhos injetados via JS -->
+                    </div>
+                    <div class="heatmap-legend" style="display: flex; gap: 8px; font-size: 0.7rem; justify-content: flex-end; margin-top: 8px; color: var(--text-muted);">
+                        <span>Menos</span>
+                        <span class="hm-block" style="background: #2a2d3e; width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: rgba(255,50,50,0.5); width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: rgba(0,240,255,0.4); width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: var(--neon-cyan); width: 10px; height: 10px; border-radius: 2px; box-shadow: 0 0 5px var(--neon-cyan);"></span>
+                        <span>Mais</span>
+                    </div>
+                </div>
+
+                <!-- MÉTRICAS ANUAIS -->
+                <div class="dashboard-metrics-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                    <div class="metric-box">
+                        <div class="metric-title">TOTAL HÁBITOS</div>
+                        <div class="metric-value" id="dash-total-habits" style="color: var(--neon-cyan);">0</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-title">DIAS PERFEITOS</div>
+                        <div class="metric-value" id="dash-perfect-days" style="color: #0f0;">0</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-title">RITMO DE SUCESSO</div>
+                        <div class="metric-value" id="dash-rhythm" style="color: #ffaa00;">0%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-title">TOTAL MISSÕES</div>
+                        <div class="metric-value" id="dash-total-missed" style="color: #ff3232;">0</div>
+                    </div>
+                </div>
+
+                <!-- GRÁFICO MENSAL -->
+                <div class="dashboard-card" style="margin-bottom: 20px;">
+                    <h3 style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px;">PROGRESSO MENSAL</h3>
+                    <div class="bar-chart-container" id="dash-bar-chart" style="display: flex; align-items: flex-end; justify-content: space-between; height: 120px; padding: 10px 0; border-bottom: 1px solid var(--border-glass);">
+                        <!-- Barras de JS -->
+                    </div>
+                </div>
+
+                <!-- TOP HÁBITOS -->
+                <div class="dashboard-card">
+                    <h3 style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px;">TOP HÁBITOS</h3>
+                    <div id="dash-top-habits" style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- JS Bars -->
+                    </div>
+                </div>
+            </div>
                     
                     <!-- Botão de Instalação do PWA Mobile no Rodapé -->
                     <div class="pwa-install-mobile-footer">
@@ -209,13 +273,112 @@
                 <section id="tab-rewards" class="tab-content">
                     <div class="content-header">
                         <div class="header-titles">
-                            <h2>TAVERNA</h2>
-                            <p class="header-desc">Troque seu ouro por recompensas conquistadas.</p>
+                            <h2>A TAVERNA</h2>
+                            <p class="header-desc">Compre vantagens táticas e exiba seu status.</p>
                         </div>
                     </div>
-                    <div class="rewards-grid" id="rewards-list"></div>
-                    <div class="tavern-footer">
-                        <button id="btn-add-reward" class="btn-add-reward">+ ADICIONAR RECOMPENSA</button>
+
+                    <!-- LOJA DO ALQUIMISTA -->
+                    <div class="quest-section-header" style="margin-top: 10px;">
+                        <h2>🧪 Loja do Alquimista (Buffs)</h2>
+                    </div>
+                    <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                        <!-- Poção de Cura -->
+                        <div class="reward-card" onclick="buyStoreItem('buff_autoHeal')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Poção de Auto-Cura</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Anula a penalidade caso você perca a ofensiva um dia.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🧪</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">100 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Pergaminho XP -->
+                        <div class="reward-card" onclick="buyStoreItem('buff_doubleXp')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Pergaminho de Sabedoria</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Ganha o dobro de XP em tudo até a meia-noite.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">📜</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">50 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+
+                        <!-- Escudo -->
+                        <div class="reward-card" onclick="buyStoreItem('buff_shield')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Escudo de Ferro</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Garante 1 carga do escudo azul que protege atributos.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🛡️</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">150 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MERCADO CLANDESTINO -->
+                    <div class="quest-section-header">
+                        <h2>💎 Mercado Clandestino (Cosméticos)</h2>
+                    </div>
+                    <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                        
+                        <!-- Título 1 -->
+                        <div class="reward-card" onclick="buyStoreItem('title_implacavel')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3 style="color:var(--neon-purple);">Título: O Implacável</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Exiba este título lendário abaixo do seu nome.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🏷️</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">300 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+
+                        <!-- Título 2 -->
+                        <div class="reward-card" onclick="buyStoreItem('title_mestre')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3 style="color:var(--neon-gold);">Título: Mestre do Tempo</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Um título digno de quem domina a própria rotina.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">⏳</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">300 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+
+                        <!-- Borda Neon -->
+                        <div class="reward-card" onclick="buyStoreItem('border_neonred')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3 style="color:var(--neon-red);">Borda: Demônio Carmesim</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Moldura vermelha brilhante para o seu avatar.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🖼️</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">500 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -394,6 +557,96 @@
 
     <!-- Container de Toasts (Notificações) -->
     <div id="toast-container" class="toast-container"></div>
+
+    <!-- Onboarding Wizard -->
+    <div id="onboarding-wizard" class="modal" style="display: none; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 9999;">
+        <div class="modal-box" style="border: 1px solid var(--neon-cyan); max-width: 500px;">
+            <div id="wizard-step-1" class="wizard-step">
+                <h2 style="color: var(--neon-cyan); text-align: center; text-transform: uppercase;">O Despertar</h2>
+                <p style="text-align: center; margin-bottom: 20px;">O Sistema te escolheu. Qual é o seu nome, guerreiro?</p>
+                <div class="form-group">
+                    <input type="text" id="wizard-name-input" placeholder="Digite seu nome..." autocomplete="off">
+                </div>
+                <button class="btn-submit" id="btn-wizard-next-1" style="width: 100%;">PRÓXIMO</button>
+            </div>
+            
+            <div id="wizard-step-2" class="wizard-step" style="display: none;">
+                <h2 style="color: var(--neon-cyan); text-align: center; text-transform: uppercase;">Arquétipo</h2>
+                <p style="text-align: center; margin-bottom: 20px;">Qual área da sua vida você quer evoluir primeiro?</p>
+                <div class="wizard-archetypes-grid">
+                    <div class="archetype-card" data-arch="corpo">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">⚡</div>
+                        <strong>Alta Performance & Corpo</strong>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 4px;">Força, Emagrecimento, Esportes</div>
+                    </div>
+                    <div class="archetype-card" data-arch="foco">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">🧠</div>
+                        <strong>Foco & Produtividade</strong>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 4px;">Carreira, Concurso, Deep Work</div>
+                    </div>
+                    <div class="archetype-card" data-arch="zen">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">🧘</div>
+                        <strong>Zen & Saúde Mental</strong>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 4px;">Ansiedade, Mindset, Equilíbrio</div>
+                    </div>
+                    <div class="archetype-card" data-arch="rotina">
+                        <div style="font-size: 1.5rem; margin-bottom: 5px;">📵</div>
+                        <strong>Estilo de Vida & Rotina</strong>
+                        <div style="font-size: 0.7rem; color: #888; margin-top: 4px;">Detox, Hábitos, Sono</div>
+                    </div>
+                    <div class="archetype-card archetype-card-other" data-arch="outros" style="padding: 8px;">
+                        ✍️ Outro pilar...
+                    </div>
+                </div>
+                <div id="wizard-other-container" class="form-group" style="display:none; margin-top: 15px;">
+                    <input type="text" id="wizard-other-input" placeholder="Qual a sua missão principal?" autocomplete="off">
+                </div>
+                <button class="btn-submit" id="btn-wizard-next-2" style="width: 100%; margin-top: 20px;" disabled>PRÓXIMO</button>
+            </div>
+
+            <!-- HOOK STEP -->
+            <div id="wizard-step-hook" class="wizard-step" style="display: none; text-align: center;">
+                <h2 style="color: var(--neon-cyan); text-transform: uppercase;">A Primeira Missão</h2>
+                <div style="font-size: 3rem; margin: 15px 0;" id="hook-icon">🎯</div>
+                <p style="margin-bottom: 15px; font-size: 1.1rem;">Excelente escolha.</p>
+                <p style="color: var(--text-light); margin-bottom: 25px;">Com base no arquétipo <strong id="hook-arch-name" style="color: var(--neon-cyan);">Mente Sã</strong>, o Sistema sugere começar com este micro-hábito hoje:</p>
+                
+                <div style="background: rgba(0, 240, 255, 0.1); border: 1px solid var(--neon-cyan); padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                    <strong id="hook-habit-title" style="font-size: 1.2rem;">Meditar por 3 minutos</strong>
+                </div>
+
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">A grande jornada começa com o primeiro passo. Aceita a missão?</p>
+                <button class="btn-submit" id="btn-wizard-next-hook" style="width: 100%;">ACEITAR MISSÃO</button>
+            </div>
+
+            <div id="wizard-step-3" class="wizard-step" style="display: none;">
+                <h2 style="color: var(--neon-cyan); text-align: center; text-transform: uppercase;">O Juramento</h2>
+                <p style="text-align: center; margin-bottom: 15px;">O Sistema não tolera falhas contínuas.</p>
+                
+                <label style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Horas dedicadas por dia:</label>
+                <div class="wizard-hours-grid" style="margin-bottom: 20px;">
+                    <div class="hour-card" data-hours="15">15 min</div>
+                    <div class="hour-card" data-hours="30">30 min</div>
+                    <div class="hour-card" data-hours="60">1-2 horas</div>
+                    <div class="hour-card" data-hours="120">Hardcore (2h+)</div>
+                </div>
+
+                <label style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Quais dias você vai jogar?</label>
+                <p style="font-size: 0.75rem; color: #555; margin-bottom: 10px;">(Dias desmarcados não aplicam penalidade de falha)</p>
+                <div class="wizard-days-grid" style="margin-bottom: 20px; display: flex; gap: 5px; justify-content: space-between;">
+                    <label class="day-checkbox"><input type="checkbox" value="0" checked><span>D</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="1" checked><span>S</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="2" checked><span>T</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="3" checked><span>Q</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="4" checked><span>Q</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="5" checked><span>S</span></label>
+                    <label class="day-checkbox"><input type="checkbox" value="6" checked><span>S</span></label>
+                </div>
+
+                <button class="btn-submit" id="btn-wizard-finish" style="width: 100%;" disabled>DESPERTAR</button>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 

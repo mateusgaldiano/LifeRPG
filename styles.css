@@ -193,6 +193,10 @@ body::before {
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     transition: all 0.3s;
 }
+.avatar-hex-border.border-neonred {
+    background: linear-gradient(135deg, var(--neon-red), #ff0055);
+    box-shadow: 0 0 15px var(--neon-red);
+}
 .avatar-hex-wrapper:hover .avatar-hex-border {
     filter: drop-shadow(0 0 12px var(--neon-blue));
     transform: scale(1.05);
@@ -1056,6 +1060,71 @@ body::before {
     color: #fff;
 }
 
+/* ── ONBOARDING WIZARD ── */
+.wizard-step {
+    animation: fadeIn 0.4s ease forwards;
+}
+.wizard-archetypes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.archetype-card, .hour-card {
+    background: var(--surface-bg);
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    user-select: none;
+}
+.archetype-card-other {
+    grid-column: span 2;
+}
+.archetype-card:hover, .hour-card:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+.archetype-card.selected, .hour-card.selected {
+    background: rgba(0, 240, 255, 0.1);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+    color: var(--text-light);
+    font-weight: 700;
+}
+.day-checkbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+.day-checkbox input {
+    display: none;
+}
+.day-checkbox span {
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--surface-bg);
+    border: 1px solid var(--border-glass);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+.day-checkbox input:checked + span {
+    background: var(--neon-cyan);
+    color: #000;
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px var(--neon-cyan);
+}
+
 /* ── MOBILE SCROLL OVERRIDES ── */
 @media (max-width: 768px) {
     body {
@@ -1395,3 +1464,81 @@ body::before {
     box-shadow: 0 0 15px var(--neon-red);
 }
 
+/* ── ABA: VISÃO GLOBAL (DASHBOARD & HEATMAP) ────────────────────────────── */
+#tab-global { display: none; flex-direction: column; gap: 15px; }
+#tab-global.active { display: flex; }
+
+.dashboard-card {
+    background: rgba(13, 14, 21, 0.6);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Heatmap Grid */
+.heatmap-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+.hm-block {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    background: #2a2d3e;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.hm-block:hover { transform: scale(1.2); z-index: 10; position: relative; }
+.hm-perfect { background: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); }
+.hm-partial { background: rgba(0,240,255,0.4); }
+.hm-failed { background: rgba(255,50,50,0.5); }
+.hm-skipped { background: #2a2d3e; }
+
+/* Dashboard Metrics Box */
+.metric-box {
+    background: rgba(13, 14, 21, 0.6);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    text-align: center;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+}
+.metric-title {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+.metric-value {
+    font-family: var(--font-hud);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Dashboard Bar Chart (Mensal) */
+.dash-bar-col {
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    height: 100%; flex: 1; margin: 0 2px;
+}
+.dash-bar-fill {
+    width: 100%; background: var(--neon-cyan); border-radius: 2px 2px 0 0;
+    min-height: 2px; transition: height 1s ease-out;
+    box-shadow: 0 0 5px var(--neon-cyan);
+}
+.dash-bar-lbl {
+    font-size: 0.6rem; color: var(--text-muted); margin-top: 5px;
+}
+
+/* Dashboard Top Habits (Barras Horizontais) */
+.dash-habit-row {
+    display: flex; align-items: center; margin-bottom: 8px;
+}
+.dash-habit-name {
+    width: 40%; font-size: 0.75rem; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 10px;
+}
+.dash-habit-bar-bg {
+    width: 60%; background: #2a2d3e; height: 8px; border-radius: 4px; overflow: hidden; display: flex;
+}
+.dash-habit-bar-fill {
+    height: 100%; background: var(--neon-green); box-shadow: 0 0 5px var(--neon-green);
+}
