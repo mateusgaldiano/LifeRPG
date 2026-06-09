@@ -1153,7 +1153,7 @@ function renderSynergies() {
     }
 
     container.style.display = 'flex';
-    container.innerHTML = active.map(s => `
+    container.innerHTML = '<div style="width:100%; font-size:9px; color:var(--neon-cyan); font-family:var(--font-hud); letter-spacing:1px; margin-bottom:2px;">SINERGIAS ATIVAS</div>' + active.map(s => `
         <div class="synergy-badge" title="${s.description}">
             <span class="synergy-icon">${s.icon}</span>
             <span class="synergy-name">${s.name}</span>
@@ -1174,7 +1174,7 @@ function renderRankPerks() {
     }
 
     container.style.display = 'flex';
-    container.innerHTML = active.map(p => `
+    container.innerHTML = '<div style="width:100%; font-size:9px; color:var(--neon-gold); font-family:var(--font-hud); letter-spacing:1px; margin-bottom:2px; margin-top:4px;">RANK PERKS</div>' + active.map(p => `
         <div class="perk-badge" title="${p.description}">
             <span class="perk-icon">${p.icon}</span>
             <span class="perk-name">${p.name}</span>
@@ -1372,7 +1372,8 @@ function renderQuests() {
     });
 
     // ── Side Quests ───────────────────────────────────────────────────────
-    if (gameState.sideQuests.length === 0) {
+    const activeDungeon = gameState.activeDungeon;
+    if (gameState.sideQuests.length === 0 && !(activeDungeon && !activeDungeon.completed)) {
         sideContainer.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:24px;font-family:var(--font-hud);letter-spacing:1px">NENHUMA MISSÃO ATIVA</div>`;
     } else {
         gameState.sideQuests.forEach(quest => {
@@ -1698,6 +1699,7 @@ function checkAllDailies() {
         }
 
         saveGameData();
+        updateUI();
 
         // Tenta gerar dungeon ao completar todas as dailies
         if (!gameState.activeDungeon) spawnDungeon();
