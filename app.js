@@ -29,6 +29,7 @@ let gameState = {
     xpToNext: 100,
     gold: 0,
     streak: 0,
+    history: {},
     shields: 0,              // escudos ativos (0-3)
     consecutiveStreak7Days: 0, // dias acumulados rumo ao próximo escudo
     consecutiveMisses: 0,       // contador de dias não concluídos
@@ -846,11 +847,19 @@ function initTabs() {
             tabContents.forEach(t => t.classList.remove('active'));
 
             btn.classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
+            const targetTab = document.getElementById(`tab-${tabName}`);
+            targetTab.classList.add('active');
 
             // Se for a aba Global, renderiza os gráficos e o heatmap
             if (tabName === 'global') {
                 renderGlobalDashboard();
+            }
+
+            // No Mobile, rola a tela até o conteúdo da aba, respeitando o header fixo
+            if (window.innerWidth <= 1023) {
+                const appContainer = document.getElementById('app-container');
+                const offset = targetTab.getBoundingClientRect().top + appContainer.scrollTop - appContainer.getBoundingClientRect().top - 130;
+                appContainer.scrollTo({ top: offset, behavior: 'smooth' });
             }
         });
     });
@@ -1536,7 +1545,7 @@ function toggleQuest(id) {
             }, 2000);
         }
     }
-
+    saveDailyHistory();
     saveGameData();
     renderQuests();
     updateUI();
@@ -1569,7 +1578,7 @@ function adjustWater(id, operation) {
             quest.current--;
         }
     }
-
+    saveDailyHistory();
     saveGameData();
     renderQuests();
     updateUI();
@@ -1677,6 +1686,26 @@ function triggerLevelUpOverlay() {
         showSystemToast(msg);
 
     }, 1200);
+}
+
+// ── HISTÓRICO DE CONSISTÊNCIA ──────────────────────────────────────────────
+// Salva o status das tarefas de hoje no histórico anual (Heatmap)
+function saveDailyHistory() {
+    if (!gameState.history) gameState.history = {};
+    const total = gameState.quests.length;
+    const count = gameState.quests.filter(q => q.completed).length;
+    
+    let status = 'missed';
+    if (total > 0) {
+        const pct = count / total;
+        if (count === 0) status = 'missed';
+        else if (pct < 0.5) status = 'bad';
+        else if (pct < 1.0) status = 'good';
+        else status = 'perfect';
+    }
+
+    const dateStr = new Date().toDateString();
+    gameState.history[dateStr] = { count, total, status };
 }
 
 function checkAllDailies() {
@@ -2109,6 +2138,7 @@ function loadGameData() {
             xpToNext: 100,
             gold: 0,
             streak: 0,
+            history: {},
             shields: 0,
             consecutiveStreak7Days: 0,
             consecutiveMisses: 0,
@@ -2164,6 +2194,22 @@ function loadGameData() {
             parsed.history = {};
         }
 
+        // MOCK DATA (Gera 90 dias caso não exista histórico e o level for > 1)
+        if (Object.keys(parsed.history).length === 0 && parsed.level > 1) {
+            const now = new Date();
+            const statuses = ['missed', 'bad', 'good', 'perfect', 'perfect', 'good'];
+            for (let i = 1; i <= 90; i++) {
+                const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                let count = 0, total = 8;
+                if (randomStatus === 'perfect') count = 8;
+                else if (randomStatus === 'good') count = 5;
+                else if (randomStatus === 'bad') count = 2;
+                
+                parsed.history[d.toDateString()] = { status: randomStatus, count: count, total: total };
+            }
+        }
+
         // Migration: Ensure buffs and inventory exist
         if (!parsed.buffs) {
             parsed.buffs = { autoHeal: false, doubleXp: false, shieldDays: 0 };
@@ -2180,17 +2226,19 @@ function loadGameData() {
             const allWereDone = completedCount >= totalCount && totalCount > 0;
             
             // Grava o Histórico do dia anterior
-            let dailyStatus = 'skipped';
+            let dailyStatus = 'missed';
             if (totalCount > 0) {
-                if (completedCount === totalCount) dailyStatus = 'perfect';
-                else if (completedCount === 0) dailyStatus = 'failed';
-                else dailyStatus = 'partial';
+                const pct = completedCount / totalCount;
+                if (completedCount === 0) dailyStatus = 'missed';
+                else if (pct < 0.5) dailyStatus = 'bad';
+                else if (pct < 1.0) dailyStatus = 'good';
+                else dailyStatus = 'perfect';
             }
 
             // Identifica se era um dia ativo (para evitar punir dias de descanso)
             const oldDateObj = new Date(parsed.lastCheckedDate);
             const isRestDay = parsed.activeDays && !parsed.activeDays.includes(oldDateObj.getDay());
-            if (isRestDay && dailyStatus === 'failed') {
+            if (isRestDay && dailyStatus === 'missed') {
                 dailyStatus = 'skipped';
             }
 
@@ -2559,41 +2607,56 @@ function setupInstallPrompt() {
 // ABA VISÃO GLOBAL E HEATMAP
 // ==========================================================================
 function renderGlobalDashboard() {
+    const tabGlobal = document.getElementById('tab-global');
+    if (!tabGlobal || !tabGlobal.classList.contains('active')) return;
+
     const history = gameState.history || {};
     const dates = Object.keys(history).sort((a,b) => new Date(a) - new Date(b));
     
-    // 1. Preencher Heatmap (Mês Atual)
+    // 1. Preencher Heatmap Anual (365 dias)
     const heatmapGrid = document.getElementById('heatmap-grid');
     if(heatmapGrid) heatmapGrid.innerHTML = '';
     
     const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
-    // Calcula os "blocos" vazios antes do dia 1 (para o grid ficar bonitinho em semanas)
-    const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
-    for (let i = 0; i < firstDayOfWeek; i++) {
+    // Dia inicial (364 dias atrás + hoje = 365)
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - 364);
+    
+    // Padding para alinhar verticalmente (Semana começa domingo = 0)
+    const startDayOfWeek = startDate.getDay();
+    for (let i = 0; i < startDayOfWeek; i++) {
         const emptyBlock = document.createElement('div');
-        emptyBlock.style.visibility = 'hidden';
+        emptyBlock.className = 'hm-block hm-empty';
         if(heatmapGrid) heatmapGrid.appendChild(emptyBlock);
     }
 
-    for (let i = 1; i <= daysInMonth; i++) {
+    for (let i = 0; i < 365; i++) {
+        const d = new Date(startDate);
+        d.setDate(startDate.getDate() + i);
+        
+        const dateStr = d.toDateString();
+        const log = history[dateStr];
+        
         const block = document.createElement('div');
         block.className = 'hm-block';
-        
-        const dateStr = new Date(currentYear, currentMonth, i).toDateString();
-        const log = history[dateStr];
         
         if (log) {
             block.classList.add(`hm-${log.status}`);
             block.title = `${dateStr}: ${log.count}/${log.total} completos`;
-        } else if (i > now.getDate()) {
-            // Dias futuros
-            block.style.opacity = '0.3';
+        } else {
+            block.title = `${dateStr}: Sem dados`;
         }
         if(heatmapGrid) heatmapGrid.appendChild(block);
+    }
+
+    // Rola para o final para mostrar "hoje"
+    if (heatmapGrid && heatmapGrid.parentElement) {
+        // setTimeout para garantir que a renderização no DOM rolou antes do scroll
+        setTimeout(() => {
+            heatmapGrid.parentElement.scrollLeft = heatmapGrid.parentElement.scrollWidth;
+        }, 10);
     }
 
     // 2. Preencher Métricas de Topo
