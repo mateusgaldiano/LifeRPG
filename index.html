@@ -165,10 +165,7 @@
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                     TAVERNA
                 </button>
-                <button class="tab-link" data-tab="chat" id="tab-btn-chat">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    IROH
-                    <span id="chat-unread-badge" class="chat-badge" style="display:none;"></span>
+
                 <button class="tab-link" data-tab="achievements" id="tab-btn-achievements">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-4 4 1-5-4-3 5-.5L12 6l2 4.5 5 .5-4 3 1 5z"/><path d="M5 21l3-3"/><path d="M19 21l-3-3"/></svg>
                     TROFÉUS
@@ -219,22 +216,6 @@
                     <div class="rewards-grid" id="rewards-list"></div>
                     <div class="tavern-footer">
                         <button id="btn-add-reward" class="btn-add-reward">+ ADICIONAR RECOMPENSA</button>
-                    </div>
-                </section>
-
-                <!-- ABA CHAT IROH -->
-                <section id="tab-chat" class="tab-content">
-                    <div class="chat-header">
-                        <div class="chat-mentor-avatar">I</div>
-                        <div class="chat-mentor-info">
-                            <h3>IROH</h3>
-                            <span class="chat-status-label">● MENTOR · ONLINE</span>
-                        </div>
-                    </div>
-                    <div class="chat-messages-scroll" id="chat-messages-container"></div>
-                    <div class="chat-input-wrapper">
-                        <input type="text" id="chat-input" placeholder="Consulte o Iroh..." autocomplete="off">
-                        <button id="btn-send-message" class="btn-send">↑</button>
                     </div>
                 </section>
 
@@ -397,7 +378,22 @@
             </div>
         </div>
 
+        <!-- Modal: Impact Quote -->
+        <div id="modal-impact-quote" class="modal">
+            <div class="modal-box quote-modal-box">
+                <span class="close-modal-btn" id="close-quote-modal">&times;</span>
+                <div class="quote-content">
+                    <h2 id="impact-quote-text">"They don't know me son!"</h2>
+                    <p id="impact-quote-author">— David Goggins</p>
+                </div>
+                <button class="btn-submit quote-btn-acknowledge" id="btn-quote-acknowledge">ASSIMILAR</button>
+            </div>
+        </div>
+
     </div>
+
+    <!-- Container de Toasts (Notificações) -->
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="app.js"></script>
 

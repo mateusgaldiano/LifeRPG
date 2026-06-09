@@ -54,47 +54,35 @@ let gameState = {
     messages: []
 };
 
-// Respostas pré-configuradas do Iroh
-const IROH_RESPONSES = {
-    welcome: "Ah, meu jovem amigo Mateus! Que alegria vê-lo trilhar este caminho. Uma nova jornada se inicia, combinando a disciplina de um atleta de elite, a mente de um líder de negócios e a busca pela paz interior. Preparei o nosso bule de chá de jasmim e a sua lista de Missões do dia no painel. Lembre-se: o verdadeiro guerreiro foca no processo de cada pequena ação, e não apenas no troféu final. Vamos juntos!",
-    
-    questComplete: [
-        "Excelente! Uma missão concluída é como uma xícara de chá perfeitamente infundida. Cada pequena ação diária o aproxima da harmonia absoluta!",
-        "Incrível, meu jovem! Você demonstrou a força e a determinação do elemento fogo. Disciplina pura. Continue nesse passo!",
-        "Muito bem! A consistência de hoje é o alicerce da sua vitória de amanhã. O rio corta a rocha não pela força, mas pela persistência constante.",
-        "Missão concluída! Até a maior das maratonas é vencida um passo de cada vez. Continue correndo!"
-    ],
-    
-    allDailiesComplete: "TODAS AS MISSÕES CONCLUÍDAS! Um dia perfeito, Mateus. Hoje você jogou no nível de alta performance de um verdadeiro mestre. Agora, vá até a Taverna e saboreie o seu repouso!",
-    
-    levelUp: "LEVEL UP! Nível {level}! Sua chama interior cresceu e seu caráter evoluiu na vida real. Que orgulho ver sua evolução!",
-
-    penalty: [
-        "PENALIDADE REGISTRADA. O Sistema não esquece. Você falhou nas suas missões diárias, Mateus. Não há desculpas — apenas consequências. Recupere-se AGORA e não permita que isso aconteça novamente. A fraqueza de hoje custa caro amanhã.",
-        "O Sistema aplicou uma penalidade. Você quebrou sua sequência. Cada dia perdido é uma oportunidade de evolução desperdiçada. Levante-se. Reagrupe. Não existe amanhã sem o hoje.",
-        "Decepcionante. Você sabe do que é capaz e ainda assim falhou. Isso não é o fim — mas é um aviso. O Sistema está de olho. Não deixe isso se repetir."
-    ],
-    
-    buyReward: "Uma recompensa bem conquistada! Celebrar e descansar é vital para recarregar o chi e manter a energia do dragão. Aproveite!",
-    
-    insufficientGold: "Ouro insuficiente, meu jovem guerreiro. Concentre-se nas próximas missões e logo poderá desfrutar dessa recompensa!",
-    
-    motivation: [
-        "Meu jovem, a motivação o coloca em movimento, mas a consistência dos seus hábitos diários é o que realmente molda o seu destino.",
-        "Se o dia está difícil, respire fundo. Divida em pequenas tarefas. É assim que superamos os maiores desafios.",
-        "Concentre toda a sua energia no momento presente. O foco no agora é a maior força de um guerreiro."
-    ],
-
-    running: [
-        "Correr é como meditar em movimento. Isso limpa as impurezas da mente e fortalece o espírito. Vamos calçar os tênis amanhã?",
-        "Um treino longo nos ensina paciência. Hidrate-se bem e mantenha o ritmo constante."
-    ],
-
-    ai_tech: [
-        "Liderar com agentes de IA é como coordenar um conselho sábio onde cada um domina um elemento. A tecnologia expande nosso poder, mas a sua rotina forte é o centro de tudo.",
-        "A IA acelera as soluções, mas o foco e a força para manter os hábitos vêm do seu próprio espírito."
-    ]
-};
+// Banco de Frases de Impacto
+const IMPACT_QUOTES = [
+    { author: "David Goggins", text: "They don't know me, son!" },
+    { author: "David Goggins", text: "Who's gonna carry the boats and the logs?" },
+    { author: "David Goggins", text: "Stay hard!" },
+    { author: "Kobe Bryant", text: "I have nothing in common with lazy people who blame others for their lack of success." },
+    { author: "Kobe Bryant", text: "Dedication sees dreams come true." },
+    { author: "Madara Uchiha", text: "Wake up to reality! Nothing ever goes as planned in this world." },
+    { author: "Pain", text: "Those who do not understand true pain can never understand true peace." },
+    { author: "Rock Lee", text: "A drop of sweat is a drop of effort! I will not lose!" },
+    { author: "Might Guy", text: "It is not always possible to do what we want to do, but it is important to believe in something before you actually do it." },
+    { author: "Tyrion Lannister", text: "Never forget what you are, the rest of the world will not. Wear it like armor and it can never be used to hurt you." },
+    { author: "Tywin Lannister", text: "A lion doesn't concern himself with the opinions of a sheep." },
+    { author: "Eminem", text: "You only get one shot, do not miss your chance to blow." },
+    { author: "Cristiano Ronaldo", text: "Talent without working hard is nothing." },
+    { author: "Harvey Specter", text: "I don't have dreams, I have goals." },
+    { author: "Clóvis de Barros", text: "A vida é uma só, você vai vivê-la como um espectador ou como protagonista?" },
+    { author: "Tony Robbins", text: "If you do what you've always done, you'll get what you've always gotten." },
+    { author: "Michael Jordan", text: "I can accept failure, everyone fails at something. But I can't accept not trying." },
+    { author: "Gandalf", text: "All we have to decide is what to do with the time that is given us." },
+    { author: "Julius Caesar", text: "Burn the boats." },
+    { author: "Jim Rohn", text: "We must all suffer one of two things: the pain of discipline or the pain of regret." },
+    { author: "Seneca", text: "It is not that we have a short time to live, but that we waste a lot of it." },
+    { author: "Miyamoto Musashi", text: "There is nothing outside of yourself that can ever enable you to get better, stronger, richer, quicker, or smarter." },
+    { author: "Levi Ackerman", text: "The only thing we're allowed to do is believe that we won't regret the choice we made." },
+    { author: "Marcus Aurelius", text: "You have power over your mind - not outside events. Realize this, and you will find strength." },
+    { author: "Joe Rogan", text: "Be the hero of your own movie." },
+    { author: "Yoda", text: "Do or do not. There is no try." }
+];
 
 // ── Sistema de RANK (Solo Leveling) ─────────────────────────────────────────
 const RANK_THRESHOLDS = [
@@ -211,8 +199,8 @@ function spawnDungeon() {
     };
     saveGameData();
     setTimeout(() => {
-        receiveMessage(`⚔️ *DUNGEON DISPONÍVEL!* Uma missão especial surgiu: *"${pick.title}"*\n\nRecompensa: +${pick.xp} XP · +${pick.gold} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
-        showChatBadge();
+        showSystemToast(`⚔️ *DUNGEON DISPONÍVEL!* Uma missão especial surgiu: *"${pick.title}"*\n\nRecompensa: +${pick.xp} XP · +${pick.gold} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
+
     }, 1000);
 }
 
@@ -226,8 +214,8 @@ function checkDungeonExpiry() {
         gameState.xp = Math.max(0, (gameState.xp || 0) - 5);
         saveGameData();
         setTimeout(() => {
-            receiveMessage(`💀 *DUNGEON EXPIRADA.* A missão *"${title}"* foi abandonada. O Sistema cobrou o preço: −5 XP.`);
-            showChatBadge();
+            showSystemToast(`💀 *DUNGEON EXPIRADA.* A missão *"${title}"* foi abandonada. O Sistema cobrou o preço: −5 XP.`);
+
         }, 500);
     }
 }
@@ -253,8 +241,8 @@ function completeDungeon() {
     updateUI();
 
     setTimeout(() => {
-        receiveMessage(`🏆 *DUNGEON CONCLUÍDA!* Você completou *"${d.title}"*!\n\n+${d.xp} XP · +${d.gold} 💰 concedidos. Iroh está orgulhoso.`);
-        showChatBadge();
+        showSystemToast(`🏆 *DUNGEON CONCLUÍDA!* Você completou *"${d.title}"*!\n\n+${d.xp} XP · +${d.gold} 💰 concedidos. Iroh está orgulhoso.`);
+
     }, 800);
 
     renderQuests();
@@ -291,8 +279,8 @@ function checkAndActivateBossQuest() {
         };
         const bq = BOSS_QUESTS[bossId];
         setTimeout(() => {
-            receiveMessage(`⚔️ *BOSS QUEST DESBLOQUEADA!*\n\n*${bq.title}*\n_${bq.description}_\n\nRecompensa: +${bq.xpReward} XP · +${bq.goldReward} 💰\n\nProgresso atual: ${bq.progress()}`);
-            showChatBadge();
+            showSystemToast(`⚔️ *BOSS QUEST DESBLOQUEADA!*\n\n*${bq.title}*\n_${bq.description}_\n\nRecompensa: +${bq.xpReward} XP · +${bq.goldReward} 💰\n\nProgresso atual: ${bq.progress()}`);
+
         }, 2000);
     }
 
@@ -304,8 +292,8 @@ function checkAndActivateBossQuest() {
             gameState.xp += bq.xpReward;
             gameState.gold += bq.goldReward;
             setTimeout(() => {
-                receiveMessage(`🏆 *BOSS QUEST CONCLUÍDA!*\n\n*${bq.title}* foi completada!\n\n_"${getBossVictoryQuote(bq.id)}"_\n\n+${bq.xpReward} XP · +${bq.goldReward} 💰 concedidos. ${bq.rankFrom} → ${bq.rankTo} desbloqueado por mérito!`);
-                showChatBadge();
+                showSystemToast(`🏆 *BOSS QUEST CONCLUÍDA!*\n\n*${bq.title}* foi completada!\n\n_"${getBossVictoryQuote(bq.id)}"_\n\n+${bq.xpReward} XP · +${bq.goldReward} 💰 concedidos. ${bq.rankFrom} → ${bq.rankTo} desbloqueado por mérito!`);
+
             }, 1500);
             saveGameData();
             updateUI();
@@ -530,8 +518,8 @@ function checkAchievements() {
                 gameState.gold = (gameState.gold || 0) + ach.rewardGold;
                 newlyUnlocked = true;
                 setTimeout(() => {
-                    receiveMessage(`🏆 *CONQUISTA DESBLOQUEADA!* Você obteve o troféu *"${ach.title}"*. Recompensa: +${ach.rewardGold} 💰.`);
-                    showChatBadge();
+                    showSystemToast(`🏆 *CONQUISTA DESBLOQUEADA!* Você obteve o troféu *"${ach.title}"*. Recompensa: +${ach.rewardGold} 💰.`);
+
                 }, 1500);
             }
         }
@@ -824,8 +812,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Mensagem de boas-vindas do Iroh se for a primeira vez
     if (gameState.messages.length === 0) {
         setTimeout(() => {
-            receiveMessage(IROH_RESPONSES.welcome);
-            showChatBadge();
+            showSystemToast(IROH_RESPONSES.welcome);
+
         }, 1000);
     }
 });
@@ -847,10 +835,6 @@ function initTabs() {
             btn.classList.add('active');
             document.getElementById(`tab-${tabName}`).classList.add('active');
 
-            if (tabName === 'chat') {
-                hideChatBadge();
-                scrollToBottom();
-            }
         });
     });
 }
@@ -1047,8 +1031,8 @@ function addSkillXP(skillType) {
         };
         
         setTimeout(() => {
-            receiveMessage(`📊 *ATRIBUTO UP!* Mateus, seu treino diário elevou o seu nível de *${skillNamesPT[skillType]}* para o *Nível ${skillObj.level}*! A consistência lapida a mente e o corpo. Muito bem!`);
-            showChatBadge();
+            showSystemToast(`📊 *ATRIBUTO UP!* Mateus, seu treino diário elevou o seu nível de *${skillNamesPT[skillType]}* para o *Nível ${skillObj.level}*! A consistência lapida a mente e o corpo. Muito bem!`);
+
         }, 1200);
     }
     
@@ -1246,6 +1230,14 @@ function toggleQuest(id) {
         addRewards(quest.xp, quest.gold);
         addSkillXP(skillType);
 
+        // Impact Quote - Primeira do Dia
+        const todayStr = new Date().toDateString();
+        const completedDailies = gameState.quests.filter(q => q.completed).length;
+        if (completedDailies === 1 && gameState.lastQuoteDate !== todayStr + '_first') {
+            setTimeout(showImpactQuote, 1500);
+            gameState.lastQuoteDate = todayStr + '_first';
+        }
+
         // Perk: Foco Matinal — +5 XP na primeira quest concluída do dia
         if (hasPerk('foco_matinal') && !gameState._firstQuestBonusGiven) {
             gameState.xp = (gameState.xp || 0) + 5;
@@ -1267,7 +1259,7 @@ function toggleQuest(id) {
         // Quest Cleared animation (Arise-style)
         showQuestCleared(quest);
 
-        triggerIrohReaction(quest.title);
+        
         if (isDaily) {
             checkAllDailies();
         } else {
@@ -1309,7 +1301,7 @@ function adjustWater(id, operation) {
                 quest.completed = true;
                 addRewards(quest.xp, quest.gold);
                 addSkillXP(skillType);
-                triggerIrohReaction(quest.title);
+                
                 checkAllDailies();
             }
         } else if (operation === 'minus' && quest.current > 0) {
@@ -1375,8 +1367,8 @@ function syncQuestsByLevel() {
             // Notifica o usuário no chat via Iroh caso não seja a primeira carga do app
             if (gameState.messages.length > 0) {
                 setTimeout(() => {
-                    receiveMessage(`🎉 *Iroh:* Incrível, Mateus! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
-                    showChatBadge();
+                    showSystemToast(`🎉 *Iroh:* Incrível, Mateus! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
+
                 }, 1500);
             }
         }
@@ -1421,8 +1413,8 @@ function triggerLevelUpOverlay() {
         const msg = rankChanged
             ? `⚡ LEVEL UP! Nível ${gameState.level} atingido! E mais: ${oldRank.rank} → ${newRank.rank}! O Sistema reconhece sua evolução!`
             : IROH_RESPONSES.levelUp.replace('{level}', gameState.level);
-        receiveMessage(msg);
-        showChatBadge();
+        showSystemToast(msg);
+
     }, 1200);
 }
 
@@ -1458,8 +1450,7 @@ function checkAllDailies() {
             if ((gameState.shields || 0) < maxShields) {
                 gameState.shields = (gameState.shields || 0) + 1;
                 setTimeout(() => {
-                    receiveMessage(`🛡️ *ESCUDO GERADO!* Você manteve a consistência por 7 dias seguidos. Um escudo foi adicionado ao seu arsenal — ele protege sua sequência em um dia difícil. Escudos ativos: ${gameState.shields}/${maxShields}`);
-                    showChatBadge();
+                    showSystemToast(`🛡️ *ESCUDO GERADO!* Você manteve a consistência por 7 dias seguidos. Um escudo foi adicionado ao seu arsenal — ele protege sua sequência em um dia difícil. Escudos ativos: ${gameState.shields}/${maxShields}`, 'toast-alert');
                 }, 2000);
             }
         }
@@ -1470,8 +1461,11 @@ function checkAllDailies() {
         if (!gameState.activeDungeon) spawnDungeon();
 
         setTimeout(() => {
-            receiveMessage(IROH_RESPONSES.allDailiesComplete);
-            showChatBadge();
+            const todayStr = new Date().toDateString();
+            if (gameState.lastQuoteDate !== todayStr + '_all') {
+                showImpactQuote();
+                gameState.lastQuoteDate = todayStr + '_all';
+            }
         }, 1500);
     }
 }
@@ -1501,8 +1495,8 @@ function applyDailyPenalty() {
         gameState.consecutiveStreak7Days = 0;
 
         setTimeout(() => {
-            receiveMessage(`🛡️ *ESCUDO ATIVADO!* Você falhou hoje, mas seu escudo absorveu a penalidade. Streak preservada em ${gameState.streak} dias. Escudos restantes: ${gameState.shields}/3. Não abuse dessa proteção.`);
-            showChatBadge();
+            showSystemToast(`🛡️ *ESCUDO ATIVADO!* Você falhou hoje, mas seu escudo absorveu a penalidade. Streak preservada em ${gameState.streak} dias. Escudos restantes: ${gameState.shields}/3. Não abuse dessa proteção.`);
+
         }, 500);
 
         saveGameData();
@@ -1584,8 +1578,8 @@ function applyDailyPenalty() {
             angry: `☠️ *SISTEMA:* Três dias consecutivos de falha. Penalidade severa aplicada. −${penalty} XP. Suas habilidades sofreram regressão. _"Você conhece seu potencial e ainda assim escolheu a fraqueza."_ Corrija isso agora.`,
             severe: `💀 *SISTEMA — ALERTA CRÍTICO:* Cinco dias ou mais sem cumprir suas missões. Penalidade máxima: −${penalty} XP. Debuff de 48h ativo. Regressão de habilidades aplicada. _"Um guerreiro que abandona sua disciplina por dias não é mais um guerreiro — é apenas alguém com o uniforme."_ Retorne. Agora.`
         };
-        receiveMessage(irohMessages[irohTone]);
-        showChatBadge();
+        showSystemToast(irohMessages[irohTone]);
+
     }, 600);
 
     saveGameData();
@@ -1603,119 +1597,59 @@ function buyReward(id) {
         updateUI();
         
         alert(`Sucesso! Você liberou: "${reward.title}"`);
-        receiveMessage(IROH_RESPONSES.buyReward);
+        showSystemToast(IROH_RESPONSES.buyReward);
     } else {
-        receiveMessage(IROH_RESPONSES.insufficientGold);
-        showChatBadge();
+        showSystemToast(IROH_RESPONSES.insufficientGold);
+
     }
 }
 
 // ==========================================================================
-// SIMULADOR DO COMPANHEIRO THIAGO (SISTEMA DE CHAT)
+// SISTEMA DE NOTIFICAÇÕES (TOASTS) E IMPACT QUOTES
 // ==========================================================================
 
-function renderChat() {
-    const chatContainer = document.getElementById('chat-messages-container');
-    chatContainer.innerHTML = '';
-
-    gameState.messages.forEach(msg => {
-        const msgWrapper = document.createElement('div');
-        msgWrapper.className = `msg-wrapper ${msg.sender === 'user' ? 'sent' : 'received'}`;
-        msgWrapper.innerHTML = `
-            <div class="msg-bubble">${msg.text}</div>
-            <span class="msg-time">${msg.time}</span>
-        `;
-        chatContainer.appendChild(msgWrapper);
-    });
-    scrollToBottom();
-}
-
-// Usuário envia mensagem
-function sendUserMessage(text) {
-    if (!text.trim()) return;
-
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    gameState.messages.push({ sender: 'user', text, time });
+function showSystemToast(text, type = '') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
     
-    renderChat();
-    document.getElementById('chat-input').value = '';
-    saveGameData();
-
-    // Analisa a mensagem do usuário e dispara resposta inteligente do Iroh
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    let formattedText = text.replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+                            .replace(/_(.*?)_/g, '<em>$1</em>')
+                            .replace(/\n/g, '<br>');
+    
+    toast.innerHTML = formattedText;
+    container.appendChild(toast);
+    
     setTimeout(() => {
-        processCompanionResponse(text);
-    }, 1000);
+        if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+        }
+    }, 3000);
 }
 
-// Iroh envia mensagem
-function receiveMessage(text) {
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    gameState.messages.push({ sender: 'iroh', text, time });
-    renderChat();
-    saveGameData();
+function showImpactQuote() {
+    const modal = document.getElementById('modal-impact-quote');
+    if (!modal) return;
+    const textEl = document.getElementById('impact-quote-text');
+    const authorEl = document.getElementById('impact-quote-author');
+    
+    const randomQuote = IMPACT_QUOTES[Math.floor(Math.random() * IMPACT_QUOTES.length)];
+    textEl.innerText = `"${randomQuote.text}"`;
+    authorEl.innerText = `— ${randomQuote.author}`;
+    
+    modal.style.display = 'flex';
 }
 
-// Resposta inteligente simulada
-function processCompanionResponse(userText) {
-    const text = userText.toLowerCase();
+document.getElementById('btn-quote-acknowledge')?.addEventListener('click', () => {
+    document.getElementById('modal-impact-quote').style.display = 'none';
+});
+document.getElementById('close-quote-modal')?.addEventListener('click', () => {
+    document.getElementById('modal-impact-quote').style.display = 'none';
+});
 
-    // Casos de comando /off
-    if (text.startsWith('/off') || text.startsWith('[off-topic]')) {
-        const query = userText.substring(5).trim();
-        receiveMessage(`⚡ *[/off]* Salve, Mateus! Tio Iroh aqui no controle. Fazendo uma pausa rápida na nossa preparação de alta performance para responder à sua dúvida com precisão e sabedoria técnica:\n\n_"Estou simulando esse fluxo perfeitamente no cliente. Em uma fase posterior, nosso agente de backend rodará sobre APIs robustas de LLM e bancos persistentes na nuvem. Mas lembre-se: a sabedoria reside em voltar sua mente para o foco principal da sua jornada diária!"_\n\n*🍵 [Fim do modo off-topic. De volta para a arena!]*`);
-        return;
-    }
 
-    // Respostas Contextuais baseadas na persona
-    if (text.includes('ajuda') || text.includes('comandos') || text.includes('o que fazer')) {
-        receiveMessage(`Ah, Mateus, meu jovem! Como seu mentor, estou aqui para lembrá-lo do poder da constância. Você tem quests diárias para cumprir hoje no painel. Que tal beber um copo d'água ou fazer aquele treino de força? Digite "status" para vermos o seu progresso.`);
-    } else if (text.includes('status') || text.includes('progresso') || text.includes('meu nivel')) {
-        const completedCount = gameState.quests.filter(q => q.completed).length;
-        receiveMessage(`🛡️ *Status de Evolução do Mateus*:\n- Nível: *${gameState.level}*\n- Experiência: *${gameState.xp}/${gameState.xpToNext} XP*\n- Ouro na Sacola: *🪙 ${gameState.gold}*\n- Sequência diária: *🔥 ${gameState.streak} dias de consistência*\n- Quests diárias concluídas hoje: *${completedCount}/5*.\n\nSeu espírito de guerreiro está mais forte a cada nascer do sol!`);
-    } else if (text.includes('treino') || text.includes('correr') || text.includes('corrida') || text.includes('ironman') || text.includes('maratona')) {
-        const randomMsg = IROH_RESPONSES.running[Math.floor(Math.random() * IROH_RESPONSES.running.length)];
-        receiveMessage(randomMsg);
-    } else if (text.includes('ia') || text.includes('agente') || text.includes('programar') || text.includes('javascript') || text.includes('desenvolvimento')) {
-        const randomMsg = IROH_RESPONSES.ai_tech[Math.floor(Math.random() * IROH_RESPONSES.ai_tech.length)];
-        receiveMessage(randomMsg);
-    } else if (text.includes('obrigado') || text.includes('valeu') || text.includes('tmj') || text.includes('iroh')) {
-        receiveMessage(`Eu é que agradeço a sua excelente companhia nesta jornada, Mateus. O caminho da alta performance é melhor quando compartilhado. Tamo junto! 👊`);
-    } else {
-        // Resposta motivacional geral
-        const randomMsg = IROH_RESPONSES.motivation[Math.floor(Math.random() * IROH_RESPONSES.motivation.length)];
-        receiveMessage(randomMsg);
-    }
-}
-
-// Iroh reage à conclusão de hábitos
-function triggerIrohReaction(questTitle) {
-    setTimeout(() => {
-        const responses = IROH_RESPONSES.questComplete;
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        receiveMessage(`⚡ *Iroh:* ${randomResponse.replace('Quest', `"${questTitle}"`)}`);
-        showChatBadge();
-    }, 1200);
-}
-
-// Auxiliares do Chat
-function scrollToBottom() {
-    const container = document.getElementById('chat-messages-container');
-    container.scrollTop = container.scrollHeight;
-}
-
-function showChatBadge() {
-    // Mostra bolinha de não lida apenas se o usuário não estiver na aba do chat
-    const activeTab = document.querySelector('.tab-link.active').getAttribute('data-tab');
-    if (activeTab !== 'chat') {
-        const badge = document.getElementById('chat-unread-badge');
-        badge.style.display = 'flex';
-    }
-}
-
-function hideChatBadge() {
-    const badge = document.getElementById('chat-unread-badge');
-    badge.style.display = 'none';
-}
 
 // ==========================================================================
 // PROCESSAMENTO DE EVENTOS E MODAIS
@@ -2260,3 +2194,4 @@ function setupInstallPrompt() {
         });
     }
 }
+
