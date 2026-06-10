@@ -122,8 +122,6 @@ body::before {
     position: relative;
     z-index: 10;
     background: rgba(8,9,13,0.85);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
     box-shadow: 0 0 0 1px var(--border-glass), 0 40px 100px -20px rgba(0,0,0,0.9);
     overflow: hidden;
 }
