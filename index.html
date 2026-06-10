@@ -158,6 +158,25 @@
 
         <!-- ═══ PAINEL PRINCIPAL ═══ -->
         <div id="main-content-panel">
+            <!-- Nav Tabs -->
+            <nav class="dashboard-tabs">
+                <button class="tab-link active" data-tab="quests" id="tab-btn-quests">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H17v1.5c0 .83-.67 1.5-1.5 1.5S14 11.33 14 10.5 14.67 9 15.5 9z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 15H7v-1.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    MISSÕES
+                </button>
+                <button class="tab-link" data-tab="global" id="tab-btn-global">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                    VISÃO G.
+                </button>
+                <button class="tab-link" data-tab="rewards" id="tab-btn-rewards">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    TAVERNA
+                </button>
+                <button class="tab-link" data-tab="achievements" id="tab-btn-achievements">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-4 4 1-5-4-3 5-.5L12 6l2 4.5 5 .5-4 3 1 5z"/><path d="M5 21l3-3"/><path d="M19 21l-3-3"/></svg>
+                    TROFÉUS
+                </button>
+            </nav>
 
 
             <!-- Tab Content -->
@@ -170,22 +189,29 @@
                     <!-- Dungeon Ativa -->
                     <div id="dungeon-active-banner" style="display:none; margin-bottom: 20px;"></div>
                     <div class="quest-section-header">
-                        <h2>Missões Diárias</h2>
-                        <span class="quest-count" id="lbl-daily-count">0/0</span>
+                        <div>
+                            <h2>Missões Diárias</h2>
+                            <p style="color: var(--text-muted); font-size: 0.7rem; margin-top: 2px;">Hábitos gerados pelo seu nível para manter sua rotina diária.</p>
+                        </div>
+                        <span class="quest-count" id="lbl-daily-count" title="Missões concluídas hoje / Total de missões">0/0</span>
                     </div>
                     <div class="quest-list" id="daily-quests-list">
                         <!-- Quests renderizadas via JS -->
                     </div>
 
                     <div class="quest-section-header" style="margin-top: 30px;">
-                    <h2>Side Quests</h2>
-                    <span class="quest-count" id="lbl-side-count">0</span>
-                </div>
-                <div class="quest-list" id="side-quests-list">
-                    <!-- Side Quests renderizadas via JS -->
-                </div>
+                        <div>
+                            <h2>Side Quests</h2>
+                            <p style="color: var(--text-muted); font-size: 0.7rem; margin-top: 2px;">Objetivos secundários criados por você para acelerar sua evolução.</p>
+                        </div>
+                        <span class="quest-count" id="lbl-side-count">0</span>
+                    </div>
+                    <div class="quest-list" id="side-quests-list">
+                        <!-- Side Quests renderizadas via JS -->
+                    </div>
 
-                <button class="btn-submit" id="btn-add-sidequest" style="margin-top: 20px; width: 100%;">+ NOVA QUEST</button>
+                    <button class="btn-submit" id="btn-add-sidequest" style="margin-top: 20px; width: 100%;">+ NOVA QUEST</button>
+                    <p style="color: var(--text-muted); font-size: 0.7rem; text-align: center; margin-top: 6px;">Adicione uma missão pessoal para realizar a qualquer momento.</p>
             </div>
 
             <!-- ABA: VISÃO GLOBAL (DASHBOARD & HEATMAP) -->
@@ -263,6 +289,7 @@
                         <div class="header-titles">
                             <h2>A TAVERNA</h2>
                             <p class="header-desc">Compre vantagens táticas e exiba seu status.</p>
+                            <p style="color: var(--neon-gold); font-size: 0.7rem; margin-top: 4px; font-family: var(--font-body);">💡 Complete suas missões diárias para ganhar Ouro e adquirir itens ou buffs aqui!</p>
                         </div>
                     </div>
 
@@ -376,6 +403,57 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- LOJA DE SKINS (AVATARES EXTRAS) -->
+                        <div class="quest-section-header" style="margin-top: 10px;">
+                            <h2>🎭 Loja de Avatares (Skins)</h2>
+                        </div>
+                        <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                            <!-- Mestre das Sombras -->
+                            <div class="reward-card" onclick="buyStoreItem('skin_shadow_master')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h3 style="color:var(--neon-purple);">Mestre das Sombras</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Guerreiro envolto em sombras com brilho roxo. (Requer Rank C)</p>
+                                    </div>
+                                    <span style="font-size: 1.5rem;">👤</span>
+                                </div>
+                                <div class="reward-bottom">
+                                    <span class="reward-cost">250 OURO</span>
+                                    <button class="btn-buy">COMPRAR</button>
+                                </div>
+                            </div>
+
+                            <!-- Monarca da Névoa -->
+                            <div class="reward-card" onclick="buyStoreItem('skin_mist_monarch')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h3 style="color:var(--neon-cyan);">Monarca da Névoa</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Guerreiro envolto em névoa azul brilhante. (Requer Rank B)</p>
+                                    </div>
+                                    <span style="font-size: 1.5rem;">👥</span>
+                                </div>
+                                <div class="reward-bottom">
+                                    <span class="reward-cost">400 OURO</span>
+                                    <button class="btn-buy">COMPRAR</button>
+                                </div>
+                            </div>
+
+                            <!-- Imperador Arise -->
+                            <div class="reward-card" onclick="buyStoreItem('skin_arise_emperor')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h3 style="color:var(--neon-gold);">Imperador Arise</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Guerreiro dourado com asas de pura energia. (Requer Rank A)</p>
+                                    </div>
+                                    <span style="font-size: 1.5rem;">👑</span>
+                                </div>
+                                <div class="reward-bottom">
+                                    <span class="reward-cost">600 OURO</span>
+                                    <button class="btn-buy">COMPRAR</button>
+                                </div>
+                            </div>
+                        </div>
                     </div> <!-- fim taverna-shop -->
 
                     <!-- MODO INVENTÁRIO -->
@@ -392,7 +470,10 @@
                 <!-- ABA TROFÉUS (Achievements) -->
                 <section id="tab-achievements" class="tab-content">
                     <div class="content-header">
-                        <h2>SALA DE TROFÉUS</h2>
+                        <div>
+                            <h2>SALA DE TROFÉUS</h2>
+                            <p style="color: var(--text-muted); font-size: 0.7rem; margin-top: 4px; font-family: var(--font-body);">💡 Seus feitos heroicos e conquistas especiais são registrados aqui.</p>
+                        </div>
                         <span class="diff-badge" style="background:rgba(251,191,36,0.15); color:#fbbf24; border-color:rgba(251,191,36,0.4);">CONQUISTAS</span>
                     </div>
                     <div class="achievements-grid" id="achievements-container">
@@ -414,6 +495,20 @@
                     <div class="form-field">
                         <label for="sq-title">NOME DA MISSÃO</label>
                         <input type="text" id="sq-title" placeholder="Ex: Organizar documentação" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="sq-icon">ÍCONE / EMOJI</label>
+                        <select id="sq-icon">
+                            <option value="⚔️">⚔️ Combate / Geral</option>
+                            <option value="💻">💻 Programação / Trabalho</option>
+                            <option value="📚">📚 Estudo / Leitura</option>
+                            <option value="🏋️‍♂️">🏋️‍♂️ Treino / Saúde</option>
+                            <option value="🎯">🎯 Objetivo / Foco</option>
+                            <option value="💧">💧 Hidratação / Rotina</option>
+                            <option value="🧘">🧘 Meditação / Descanso</option>
+                            <option value="💰">💰 Finanças</option>
+                            <option value="🧹">🧹 Limpeza / Organização</option>
+                        </select>
                     </div>
                     <div class="form-field">
                         <label for="sq-difficulty">DIFICULDADE</label>
@@ -716,25 +811,62 @@
         </div>
     </div>
 
-    <!-- Nav Tabs -->
-    <nav class="dashboard-tabs">
-        <button class="tab-link active" data-tab="quests" id="tab-btn-quests">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H17v1.5c0 .83-.67 1.5-1.5 1.5S14 11.33 14 10.5 14.67 9 15.5 9z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 15H7v-1.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            MISSÕES
-        </button>
-        <button class="tab-link" data-tab="global" id="tab-btn-global">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-            VISÃO G.
-        </button>
-        <button class="tab-link" data-tab="rewards" id="tab-btn-rewards">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-            TAVERNA
-        </button>
-        <button class="tab-link" data-tab="achievements" id="tab-btn-achievements">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-4 4 1-5-4-3 5-.5L12 6l2 4.5 5 .5-4 3 1 5z"/><path d="M5 21l3-3"/><path d="M19 21l-3-3"/></svg>
-            TROFÉUS
-        </button>
-    </nav>
+    <!-- Modal: Relatório Semanal (Weekly Report) -->
+    <div id="modal-weekly-report" class="modal" style="display:none;">
+        <div class="modal-box weekly-report-modal-box">
+            <span class="close-modal-btn" id="btn-close-weekly-report">&times;</span>
+            <h3 class="neon-purple-text font-hud" style="letter-spacing: 2px; text-align: center; margin-bottom: 8px;">[ AVALIAÇÃO DO SISTEMA ]</h3>
+            <div id="report-period-text" style="color: var(--neon-cyan); font-family: var(--font-hud); font-size: 11px; text-align: center; margin-bottom: 20px; letter-spacing: 1px;">SEMANA 23 (08/06 a 14/06)</div>
+            
+            <!-- Resumo de Desempenho -->
+            <div style="background: rgba(8, 9, 13, 0.6); border: 1px solid rgba(255,255,255,0.05); padding: 18px; border-radius: 8px; margin-bottom: 18px; text-align: center;">
+                <div style="font-size: 9px; color: rgba(255,255,255,0.4); font-family: var(--font-hud); letter-spacing: 1px; margin-bottom: 6px;">TAXA DE SOBREVIVÊNCIA</div>
+                <div class="font-hud" id="report-rate-val" style="font-size: 38px; font-weight: bold; color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0,240,255,0.3); line-height: 1;">0%</div>
+                <div class="progress-bar-track" style="margin: 12px auto 8px auto; width: 85%; height: 6px; background: rgba(255,255,255,0.05);">
+                    <div class="progress-bar-fill" id="report-rate-bar" style="width: 0%; background: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); height: 100%; transition: width 0.8s ease-in-out;"></div>
+                </div>
+                <div style="font-size: 11px; color: rgba(255,255,255,0.6);" id="report-quests-count">Concluiu 0 de 0 missões</div>
+            </div>
+            
+            <!-- Dias de Desempenho -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; text-align: center;">
+                <div class="report-stat-card" style="background: rgba(147, 51, 234, 0.03); border: 1px solid rgba(147, 51, 234, 0.15); padding: 8px 4px; border-radius: 6px;">
+                    <div style="font-size: 16px; margin-bottom: 2px;">👑</div>
+                    <div class="font-hud" id="report-days-perfect" style="font-size: 14px; font-weight: bold; color: var(--neon-purple);">0</div>
+                    <div style="font-size: 8px; color: rgba(255,255,255,0.4); font-family: var(--font-hud); letter-spacing: 0.5px;">PERFEITOS</div>
+                </div>
+                <div class="report-stat-card" style="background: rgba(0, 240, 255, 0.03); border: 1px solid rgba(0, 240, 255, 0.15); padding: 8px 4px; border-radius: 6px;">
+                    <div style="font-size: 16px; margin-bottom: 2px;">🟢</div>
+                    <div class="font-hud" id="report-days-good" style="font-size: 14px; font-weight: bold; color: var(--neon-cyan);">0</div>
+                    <div style="font-size: 8px; color: rgba(255,255,255,0.4); font-family: var(--font-hud); letter-spacing: 0.5px;">BONS</div>
+                </div>
+                <div class="report-stat-card" style="background: rgba(239, 68, 68, 0.03); border: 1px solid rgba(239, 68, 68, 0.15); padding: 8px 4px; border-radius: 6px;">
+                    <div style="font-size: 16px; margin-bottom: 2px;">💀</div>
+                    <div class="font-hud" id="report-days-missed" style="font-size: 14px; font-weight: bold; color: #ef4444;">0</div>
+                    <div style="font-size: 8px; color: rgba(255,255,255,0.4); font-family: var(--font-hud); letter-spacing: 0.5px;">FALHADOS</div>
+                </div>
+            </div>
+
+            <!-- Foco de Atividade -->
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.03); padding: 12px; border-radius: 6px; margin-bottom: 18px; font-size: 12px;">
+                <div style="font-size: 8px; color: rgba(255,255,255,0.3); font-family: var(--font-hud); letter-spacing: 1px; margin-bottom: 4px;">⚡ FOCO EM HABILIDADES</div>
+                <div style="color: rgba(255,255,255,0.8); line-height: 1.4;" id="report-skill-focus">
+                    Nenhuma missão realizada no período.
+                </div>
+            </div>
+
+            <!-- Veredito -->
+            <div id="report-verdict-box" style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(0, 240, 255, 0.1) 100%); border: 1px solid var(--neon-purple); padding: 14px; border-radius: 8px; margin-bottom: 22px; text-align: center;">
+                <div style="font-size: 9px; color: rgba(255,255,255,0.5); font-family: var(--font-hud); letter-spacing: 1.5px; margin-bottom: 2px;">VEREDITO DE AVALIAÇÃO</div>
+                <div class="font-hud" id="report-verdict-rank" style="font-size: 22px; font-weight: bold; margin: 4px 0;">RANK D</div>
+                <div style="font-size: 11px; line-height: 1.4; color: rgba(255,255,255,0.5); padding: 0 4px;" id="report-verdict-desc">"..."</div>
+            </div>
+
+            <button class="btn-submit" id="btn-claim-weekly-report" style="width: 100%; letter-spacing: 2px; font-family: var(--font-hud); font-size: 12px; padding: 14px;">CONFIRMAR AVALIAÇÃO</button>
+        </div>
+    </div>
+
+    </div><!-- fim #app-container -->
 
 </body>
 </html>

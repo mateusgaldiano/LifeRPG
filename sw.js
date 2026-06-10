@@ -77,11 +77,23 @@ self.addEventListener('fetch', (event) => {
 });
 
 // ── NOTIFICATIONS: Schedule local notifications ───────────────────────────────
-// Called from app.js via postMessage when user configures notification times
+// Quests pendentes guardadas em memória
+let pendingQuestsCount = 0;
+let lastMorningHour = 7, lastMorningMin = 0, lastEveningHour = 19, lastEveningMin = 0;
+
+// Called from app.js via postMessage when user configures notification times or updates quest status
 self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SCHEDULE_NOTIFICATIONS') {
         const { morningHour, morningMin, eveningHour, eveningMin } = event.data;
+        lastMorningHour = morningHour;
+        lastMorningMin = morningMin;
+        lastEveningHour = eveningHour;
+        lastEveningMin = eveningMin;
         scheduleNotifications(morningHour, morningMin, eveningHour, eveningMin);
+    }
+    if (event.data && event.data.type === 'UPDATE_QUEST_STATUS') {
+        pendingQuestsCount = event.data.pendingCount;
+        console.log(`[SW] Quests pendentes atualizadas no SW: ${pendingQuestsCount}`);
     }
     if (event.data && event.data.type === 'TEST_NOTIFICATION') {
         showNotification(
@@ -112,7 +124,7 @@ function scheduleNotifications(morningHour = 7, morningMin = 0, eveningHour = 19
         scheduleNotifications(morningHour, morningMin, eveningHour, eveningMin);
     }, morningMs));
 
-    // Agenda notificação da noite
+    // Agenda notificação da noite (alerta geral)
     const eveningMs = msUntil(eveningHour, eveningMin);
     notifTimers.push(setTimeout(() => {
         showNotification(
@@ -122,7 +134,21 @@ function scheduleNotifications(morningHour = 7, morningMin = 0, eveningHour = 19
         );
     }, eveningMs));
 
-    console.log(`[SW] Notificações agendadas: manhã em ${morningMs/1000/60} min, noite em ${eveningMs/1000/60} min`);
+    // Agenda notificação de Streak Ameaçado (21h30)
+    const warningMs = msUntil(21, 30);
+    notifTimers.push(setTimeout(() => {
+        if (pendingQuestsCount > 0) {
+            showNotification(
+                '⚠️ OFFENSIVE EM RISCO!',
+                `Ainda restam ${pendingQuestsCount} missões diárias pendentes. Complete-as antes da meia-noite para manter o seu streak!`,
+                'streak-danger'
+            );
+        }
+        // Re-agenda
+        scheduleNotifications(morningHour, morningMin, eveningHour, eveningMin);
+    }, warningMs));
+
+    console.log(`[SW] Notificações agendadas: manhã em ${morningMs/1000/60} min, noite em ${eveningMs/1000/60} min, streak-warning em ${warningMs/1000/60} min`);
 }
 
 function msUntil(targetHour, targetMin) {
