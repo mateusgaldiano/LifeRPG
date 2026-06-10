@@ -22,6 +22,51 @@ const ALL_HABITS_DATABASE = [
     { id: 'q-db-producao', baseId: null, title: 'Produção: Criar 1 conteúdo autoral', type: 'daily', icon: '✍️', completed: false, xp: 25, gold: 12, minLevel: 10, skill: 'productivity' }
 ];
 
+// Biblioteca mestre de 30 hábitos curados para a aba Biblioteca do modal
+const HABIT_LIBRARY = [
+    // Físico (Physical)
+    { id: 'lib-corrida', title: 'Treino de Corrida de 20 min', icon: '🏃', difficulty: 'easy', skill: 'physical' },
+    { id: 'lib-forca', title: 'Treino de Força (Calistenia/Academia)', icon: '🏋️‍♂️', difficulty: 'medium', skill: 'physical' },
+    { id: 'lib-alongamento', title: 'Alongamento / Mobilidade (10 min)', icon: '🧘', difficulty: 'easy', skill: 'physical' },
+    { id: 'lib-caminhada', title: 'Caminhada de 5.000 passos', icon: '🚶', difficulty: 'easy', skill: 'physical' },
+    { id: 'lib-alimentacao', title: 'Refeição 100% limpa (Sem doces)', icon: '🥦', difficulty: 'medium', skill: 'physical' },
+
+    // Mental (Mental)
+    { id: 'lib-meditacao', title: 'Meditação Guiada (10 min)', icon: '🧘', difficulty: 'easy', skill: 'mental' },
+    { id: 'lib-gratidao', title: 'Diário de Gratidão (3 coisas)', icon: '📝', difficulty: 'easy', skill: 'mental' },
+    { id: 'lib-humor', title: 'Fazer check-in de humor', icon: '💭', difficulty: 'easy', skill: 'mental' },
+    { id: 'lib-respiracao', title: 'Respiração controlada (5 min)', icon: '🌬️', difficulty: 'easy', skill: 'mental' },
+    { id: 'lib-visualizacao', title: 'Visualização de metas', icon: '🔮', difficulty: 'easy', skill: 'mental' },
+
+    // Foco / Produtividade (Productivity)
+    { id: 'lib-deepwork', title: 'Deep Work (Foco total por 45 min)', icon: '💻', difficulty: 'medium', skill: 'productivity' },
+    { id: 'lib-organizar', title: 'Organizar mesa de trabalho / Quarto', icon: '🧹', difficulty: 'easy', skill: 'productivity' },
+    { id: 'lib-planejar', title: 'Planejar tarefas do dia seguinte', icon: '📅', difficulty: 'easy', skill: 'productivity' },
+    { id: 'lib-revisar', title: 'Revisar objetivos semanais', icon: '🎯', difficulty: 'easy', skill: 'productivity' },
+    { id: 'lib-estudar-ferramenta', title: 'Estudar nova ferramenta (30 min)', icon: '🌐', difficulty: 'medium', skill: 'productivity' },
+
+    // Saber / Sabedoria (Wisdom)
+    { id: 'lib-ler-livro', title: 'Ler 10 páginas de um livro', icon: '📚', difficulty: 'easy', skill: 'wisdom' },
+    { id: 'lib-aula-podcast', title: 'Assistir 1 aula/podcast educativo', icon: '🎧', difficulty: 'easy', skill: 'wisdom' },
+    { id: 'lib-escrita-criativa', title: 'Praticar escrita criativa (15 min)', icon: '✍️', difficulty: 'easy', skill: 'wisdom' },
+    { id: 'lib-curso-online', title: 'Fazer um curso online (30 min)', icon: '🧠', difficulty: 'medium', skill: 'wisdom' },
+    { id: 'lib-logica-xadrez', title: 'Resolver 3 problemas de xadrez', icon: '🧩', difficulty: 'easy', skill: 'wisdom' },
+
+    // Rotina (Routine)
+    { id: 'lib-sem-celular', title: 'Sem celular ao acordar por 30 min', icon: '🚫', difficulty: 'medium', skill: 'routine' },
+    { id: 'lib-cama', title: 'Arrumei a cama ao levantar', icon: '🛏️', difficulty: 'easy', skill: 'routine' },
+    { id: 'lib-dormir-cedo', title: 'Dormir antes das 23h', icon: '💤', difficulty: 'medium', skill: 'routine' },
+    { id: 'lib-skincare', title: 'Skincare matinal / noturno', icon: '🧴', difficulty: 'easy', skill: 'routine' },
+    { id: 'lib-preparar-dia', title: 'Preparar roupas para amanhã', icon: '💼', difficulty: 'easy', skill: 'routine' },
+
+    // Social (Social)
+    { id: 'lib-familia-msg', title: 'Mensagem carinhosa para família', icon: '❤️', difficulty: 'easy', skill: 'social' },
+    { id: 'lib-amigo-ligar', title: 'Ligar para um amigo antigo', icon: '📞', difficulty: 'medium', skill: 'social' },
+    { id: 'lib-escuta-ativa', title: 'Praticar escuta ativa', icon: '👂', difficulty: 'easy', skill: 'social' },
+    { id: 'lib-ajudar-alguem', title: 'Ajudar alguém de forma altruísta', icon: '🤝', difficulty: 'medium', skill: 'social' },
+    { id: 'lib-evento-grupo', title: 'Participar de grupo comunitário', icon: '👥', difficulty: 'hard', skill: 'social' }
+];
+
 // 📆 Utilitário de Data Local (timezone-safe) 📆
 // Gera um string de data no formato YYYY-MM-DD baseado no fuso do dispositivo,
 // evitando o bug clássico do toDateString() que reseta ao viajar entre fusos.
@@ -1080,6 +1125,8 @@ document.addEventListener('DOMContentLoaded', () => {
     registerServiceWorker();
     setupSettingsListeners();
     setupInstallPrompt();
+    setupHabitLibraryAndTabs();
+    initChatListeners();
 
     // Garante o primeiro draw do radar chart após DOM+fontes carregarem
     setTimeout(() => { drawRadarChart(); }, 150);
@@ -1140,6 +1187,9 @@ function initTabs() {
             // Se for a aba Global, renderiza os gráficos e o heatmap
             if (tabName === 'global') {
                 renderGlobalDashboard();
+            }
+            if (tabName === 'chat') {
+                renderChat();
             }
 
             // No Mobile, rola a tela até o conteúdo da aba, respeitando o header fixo
@@ -3005,6 +3055,29 @@ function setupSettingsListeners() {
             modalSettings.style.display = 'none';
         });
 
+        // Salvar configurações do Claude IA
+        const btnSaveClaude = document.getElementById('btn-save-claude');
+        if (btnSaveClaude) {
+            btnSaveClaude.addEventListener('click', () => {
+                const keyInput = document.getElementById('settings-claude-key');
+                const urlInput = document.getElementById('settings-claude-url');
+                if (keyInput && urlInput) {
+                    localStorage.setItem('lifeRPG_claude_key', keyInput.value.trim());
+                    localStorage.setItem('lifeRPG_claude_url', urlInput.value.trim());
+                    showSystemToast('🍵 Configurações do Mentor salvas com sucesso!');
+                    
+                    // UI feedback
+                    const originalText = btnSaveClaude.innerText;
+                    btnSaveClaude.innerText = '✓ SALVO';
+                    btnSaveClaude.style.background = 'linear-gradient(90deg, var(--neon-green), #34d399)';
+                    setTimeout(() => {
+                        btnSaveClaude.innerText = originalText;
+                        btnSaveClaude.style.background = '';
+                    }, 1500);
+                }
+            });
+        }
+
         // Clique fora para fechar
         window.addEventListener('click', (e) => {
             if (e.target === modalSettings) {
@@ -3139,6 +3212,14 @@ function loadSettingsToUI() {
     document.getElementById('notif-morning-min').value = pad(times.morningMin);
     document.getElementById('notif-evening-hour').value = times.eveningHour;
     document.getElementById('notif-evening-min').value = pad(times.eveningMin);
+
+    // Claude IA credentials loading
+    const key = localStorage.getItem('lifeRPG_claude_key') || '';
+    const url = localStorage.getItem('lifeRPG_claude_url') || 'https://api.anthropic.com/v1/messages';
+    const keyInput = document.getElementById('settings-claude-key');
+    const urlInput = document.getElementById('settings-claude-url');
+    if (keyInput) keyInput.value = key;
+    if (urlInput) urlInput.value = url;
 }
 
 // Atualiza a badge visual de permissão
@@ -3794,4 +3875,356 @@ function claimWeeklyReport(rewards, weekStr) {
     const modal = document.getElementById('modal-weekly-report');
     if (modal) modal.style.display = 'none';
     showSystemToast(`🏆 Avaliação finalizada. Recompensas recebidas.`);
+}
+
+
+// ==========================================================================
+// BIBLIOTECA DE HÁBITOS & CONVERSA COM MENTOR IA (CLAUDE)
+// ==========================================================================
+
+let selectedLibraryHabit = null;
+let activeLibraryFilter = 'all';
+
+function setupHabitLibraryAndTabs() {
+    const modalSq = document.getElementById('modal-sidequest');
+    const tabCreateBtn = document.getElementById('modal-tab-create');
+    const tabLibraryBtn = document.getElementById('modal-tab-library');
+    const panelCreate = document.getElementById('modal-panel-create');
+    const panelLibrary = document.getElementById('modal-panel-library');
+    const searchInput = document.getElementById('library-search');
+
+    if (!modalSq || !tabCreateBtn || !tabLibraryBtn || !panelCreate || !panelLibrary) return;
+
+    // Reset when modal opens
+    document.getElementById('btn-add-sidequest')?.addEventListener('click', () => {
+        tabCreateBtn.classList.add('active');
+        tabLibraryBtn.classList.remove('active');
+        panelCreate.classList.add('active');
+        panelCreate.style.display = 'flex';
+        panelLibrary.classList.remove('active');
+        panelLibrary.style.display = 'none';
+        activeLibraryFilter = 'all';
+        if (searchInput) searchInput.value = '';
+    });
+
+    tabCreateBtn.addEventListener('click', () => {
+        tabCreateBtn.classList.add('active');
+        tabLibraryBtn.classList.remove('active');
+        panelCreate.classList.add('active');
+        panelCreate.style.display = 'flex';
+        panelLibrary.classList.remove('active');
+        panelLibrary.style.display = 'none';
+    });
+
+    tabLibraryBtn.addEventListener('click', () => {
+        tabLibraryBtn.classList.add('active');
+        tabCreateBtn.classList.remove('active');
+        panelLibrary.classList.add('active');
+        panelLibrary.style.display = 'flex';
+        panelCreate.classList.remove('active');
+        panelCreate.style.display = 'none';
+        renderHabitLibrary('all', '');
+    });
+
+    // Filtros de Categoria
+    const filterBtns = document.querySelectorAll('.library-filters .filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeLibraryFilter = btn.getAttribute('data-filter');
+            renderHabitLibrary(activeLibraryFilter, searchInput?.value || '');
+        });
+    });
+
+    // Busca ao vivo
+    searchInput?.addEventListener('input', (e) => {
+        renderHabitLibrary(activeLibraryFilter, e.target.value);
+    });
+
+    // Confirmation Modal setup
+    const modalConfirm = document.getElementById('modal-confirm-habit');
+    const closeConfirm = document.getElementById('close-confirm-modal');
+    const cancelConfirm = document.getElementById('btn-cancel-add-habit');
+    const confirmBtn = document.getElementById('btn-confirm-add-habit');
+
+    const hideConfirm = () => {
+        if (modalConfirm) modalConfirm.style.display = 'none';
+    };
+
+    closeConfirm?.addEventListener('click', hideConfirm);
+    cancelConfirm?.addEventListener('click', hideConfirm);
+    window.addEventListener('click', (e) => {
+        if (e.target === modalConfirm) hideConfirm();
+    });
+
+    confirmBtn?.addEventListener('click', () => {
+        if (!selectedLibraryHabit) return;
+
+        const id = 'sq-lib-' + Date.now();
+        const { title, icon, difficulty, skill } = selectedLibraryHabit;
+        let xp = 25, gold = 15;
+        if (difficulty === 'easy') { xp = 10; gold = 5; }
+        else if (difficulty === 'hard') { xp = 50; gold = 30; }
+
+        gameState.sideQuests.push({
+            id,
+            title,
+            type: 'side',
+            icon,
+            difficulty,
+            completed: false,
+            xp,
+            gold,
+            skill
+        });
+
+        saveGameData();
+        renderQuests();
+        
+        showSystemToast('⚔️ Hábito adicionado às Missões Paralelas!');
+        
+        hideConfirm();
+        modalSq.style.display = 'none';
+        selectedLibraryHabit = null;
+    });
+}
+
+function renderHabitLibrary(filter = 'all', search = '') {
+    const listContainer = document.getElementById('library-habits-list');
+    if (!listContainer) return;
+
+    const query = search.toLowerCase().trim();
+    
+    // Filter habits
+    const filtered = HABIT_LIBRARY.filter(habit => {
+        const matchesFilter = filter === 'all' || habit.skill === filter;
+        const matchesSearch = habit.title.toLowerCase().includes(query);
+        return matchesFilter && matchesSearch;
+    });
+
+    if (filtered.length === 0) {
+        listContainer.innerHTML = '<div style="text-align:center; padding:20px; font-size:11px; color:var(--text-muted);">Nenhum hábito encontrado.</div>';
+        return;
+    }
+
+    const skillNames = {
+        physical: 'Físico',
+        mental: 'Mental',
+        productivity: 'Foco',
+        wisdom: 'Saber',
+        routine: 'Rotina',
+        social: 'Social'
+    };
+
+    let html = '';
+    filtered.forEach(habit => {
+        let diffLabel = 'MÉDIO', diffClass = 'diff-medium', xp = 25, gold = 15;
+        if (habit.difficulty === 'easy') {
+            diffLabel = 'FÁCIL'; diffClass = 'diff-easy'; xp = 10; gold = 5;
+        } else if (habit.difficulty === 'hard') {
+            diffLabel = 'DIFÍCIL'; diffClass = 'diff-hard'; xp = 50; gold = 30;
+        }
+
+        html += '<div class="library-item">' +
+            '<div class="library-item-main">' +
+                '<div class="library-item-icon">' + habit.icon + '</div>' +
+                '<div class="library-item-info">' +
+                    '<span class="library-item-title">' + habit.title + '</span>' +
+                    '<div class="library-item-meta">' +
+                        '<span class="library-badge category">' + (skillNames[habit.skill] || habit.skill) + '</span>' +
+                        '<span class="library-badge ' + diffClass + '">' + diffLabel + '</span>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+            '<button type="button" class="btn-library-add" data-id="' + habit.id + '">ADICIONAR</button>' +
+        '</div>';
+    });
+
+    listContainer.innerHTML = html;
+
+    // Attach click listeners to Add buttons
+    listContainer.querySelectorAll('.btn-library-add').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const habitId = btn.getAttribute('data-id');
+            const habit = HABIT_LIBRARY.find(h => h.id === habitId);
+            if (habit) {
+                selectedLibraryHabit = habit;
+                
+                const modalConfirm = document.getElementById('modal-confirm-habit');
+                const confirmDesc = document.getElementById('confirm-habit-desc');
+                if (modalConfirm && confirmDesc) {
+                    let diffLabel = 'Médio', xp = 25, gold = 15;
+                    if (habit.difficulty === 'easy') { diffLabel = 'Fácil'; xp = 10; gold = 5; }
+                    else if (habit.difficulty === 'hard') { diffLabel = 'Difícil'; xp = 50; gold = 30; }
+
+                    confirmDesc.innerHTML = 'Deseja adicionar o hábito <b>"' + habit.title + '"</b>?<br><br>Recompensas ao concluir: <b>+' + xp + ' XP</b> · <b>+' + gold + ' Ouro</b> · <b>+' + xp + ' Skill XP</b>';
+                    modalConfirm.style.display = 'flex';
+                }
+            }
+        });
+    });
+}
+
+// Lógica de Chat com IA Real (Claude)
+function initChatListeners() {
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send-btn');
+
+    if (!chatInput || !sendBtn) return;
+
+    sendBtn.addEventListener('click', sendChatMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendChatMessage();
+        }
+    });
+}
+
+function renderChat() {
+    const container = document.getElementById('chat-messages-container');
+    if (!container) return;
+
+    if (!gameState.messages) gameState.messages = [];
+
+    // Se estiver vazio, adiciona a mensagem padrão acolhedora do Tio Iroh
+    if (gameState.messages.length === 0) {
+        gameState.messages.push({
+            role: 'assistant',
+            content: 'Olá, meu jovem. Sente-se, tome uma xícara de chá de jasmim 🍵. Como está sendo sua jornada hoje? Lembre-se, às vezes o melhor caminho é aquele que construímos um dia de cada vez, com paciência e clareza.'
+        });
+        saveGameData();
+    }
+
+    let html = '';
+    gameState.messages.forEach(msg => {
+        const isUser = msg.role === 'user';
+        const wrapperClass = isUser ? 'sent' : 'received';
+        
+        // Substitui quebras de linha por tag <br> para formatação correta
+        const formattedContent = msg.content.replace(/\n/g, '<br>');
+
+        html += '<div class="msg-wrapper ' + wrapperClass + '">' +
+            '<div class="msg-bubble">' +
+                formattedContent +
+            '</div>' +
+        '</div>';
+    });
+
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight;
+}
+
+function sendChatMessage() {
+    const chatInput = document.getElementById('chat-input');
+    const container = document.getElementById('chat-messages-container');
+    if (!chatInput || !container) return;
+
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    // Adiciona a mensagem do usuário
+    gameState.messages.push({ role: 'user', content: text });
+    chatInput.value = '';
+    renderChat();
+    saveGameData();
+
+    // Insere o indicador de "digitando" temporário do Iroh
+    const typingHtml = '<div class="msg-wrapper received" id="chat-typing-indicator">' +
+        '<div class="msg-bubble" style="font-style: italic; color: var(--text-muted); opacity: 0.8; display: flex; align-items: center; gap: 8px;">' +
+            '<span>Tio Iroh está servindo o chá...</span>' +
+            '<span class="cloud-dot online" style="animation: pulse 1s infinite alternate;"></span>' +
+        '</div>' +
+    '</div>';
+    container.innerHTML += typingHtml;
+    container.scrollTop = container.scrollHeight;
+
+    const apiKey = localStorage.getItem('lifeRPG_claude_key');
+    const apiUrl = localStorage.getItem('lifeRPG_claude_url') || 'https://api.anthropic.com/v1/messages';
+
+    // Se não há chave de API cadastrada, Iroh responde localmente de forma educativa
+    if (!apiKey) {
+        setTimeout(() => {
+            const indicator = document.getElementById('chat-typing-indicator');
+            if (indicator) indicator.remove();
+
+            const promptConfigMsg = 'Olá, meu jovem! Fico muito contente em ver o seu empenho. No entanto, para que possamos ter conversas dinâmicas e inteligentes em tempo real sobre seu progresso, por favor insira sua <b>Chave de API do Claude</b> nas Configurações ⚙️ (localizadas no topo lateral direito). Enquanto isso, continue firme nas suas missões e tome um pouco mais de chá! 🍵';
+            
+            gameState.messages.push({ role: 'assistant', content: promptConfigMsg });
+            renderChat();
+            saveGameData();
+        }, 1500);
+        return;
+    }
+
+    // Monta o prompt de sistema personalizado com o estado do jogador
+    const activeDailies = gameState.quests.map(q => `- ${q.title} (${q.completed ? 'Concluída' : 'Pendente'})`).join('\n');
+    const activeSides = gameState.sideQuests.map(q => `- ${q.title} (${q.completed ? 'Concluída' : 'Pendente'})`).join('\n');
+    const skillsList = Object.entries(gameState.skills).map(([k, v]) => `- ${k.toUpperCase()}: Nível ${v.level} (XP: ${v.xp}/${v.xpToNext})`).join('\n');
+    const rankName = getRankForLevel(gameState.level).css.replace('rank-', '').toUpperCase();
+    
+    const systemPrompt = `Você é o Tio Iroh, o sábio mentor do desenho Avatar: A Lenda de Aang.
+Você está conversando com o jogador no aplicativo de produtividade gamificada LifeRPG OS.
+O jogador se chama ${gameState.playerName || 'Guerreiro'}.
+Seu objetivo é dar conselhos sábios, confortantes e motivadores de forma calma, usando metáforas sobre chá, caminhos, natureza e paciência. Fale sempre em português (PT-BR). Seja encorajador, sábio e paciente. Use citações de sabedoria.
+
+ESTADO ATUAL DO JOGADOR NO RPG:
+- Nível Geral: ${gameState.level} (Rank: ${rankName})
+- Streak de Dailies: ${gameState.streak} dias consecutivos
+- Gold acumulado: ${gameState.gold} moedas de ouro
+- Dailies do Dia:
+${activeDailies || 'Nenhuma daily hoje.'}
+- Side Quests:
+${activeSides || 'Nenhuma missão paralela.'}
+- Níveis de Atributos (Skills):
+${skillsList}
+
+Lembre-se de comentar sobre o progresso real do jogador se for relevante (ex: se ele tem um alto streak, elogie; se ele está com quests pendentes, encoraje de forma gentil). Responda sempre como o Tio Iroh de forma imersiva e natural. Não quebre o personagem. Mantenha as respostas curtas e acolhedoras, tipicamente 2 a 4 parágrafos.`;
+
+    // Filtra as últimas 10 mensagens para manter o histórico otimizado
+    const chatHistory = gameState.messages.slice(-10).map(msg => ({
+        role: msg.role,
+        content: msg.content
+    }));
+
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'dangerously-allow-browser': 'true'
+        },
+        body: JSON.stringify({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 1024,
+            system: systemPrompt,
+            messages: chatHistory
+        })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('API Error: Status ' + res.status);
+        return res.json();
+    })
+    .then(data => {
+        const indicator = document.getElementById('chat-typing-indicator');
+        if (indicator) indicator.remove();
+
+        const responseText = data.content[0].text;
+        gameState.messages.push({ role: 'assistant', content: responseText });
+        renderChat();
+        saveGameData();
+    })
+    .catch(err => {
+        console.error('Claude API Error:', err);
+        const indicator = document.getElementById('chat-typing-indicator');
+        if (indicator) indicator.remove();
+
+        gameState.messages.push({
+            role: 'assistant',
+            content: `Hum... parece que nossas xícaras de chá se desentenderam, meu jovem. O vento soprou forte e a conexão com o servidor falhou. Certifique-se de que sua Chave de API está correta e que você configurou um Proxy CORS ou Gateway adequado nas configurações para que possamos nos comunicar sem impedimentos no navegador.\n\n*(Erro técnico: ${err.message})*`
+        });
+        renderChat();
+        saveGameData();
+    });
 }
