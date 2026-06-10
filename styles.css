@@ -225,6 +225,7 @@ body::before {
     object-fit: cover;
     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     z-index: 2;
+    background: var(--bg-deep);
 }
 
 .player-info { flex: 1; min-width: 0; }
@@ -1999,7 +2000,7 @@ body::before {
 
     /* 1. Base Layout Overrides */
     body { overflow-y: auto !important; height: auto !important; overflow-x: hidden !important; }
-    #app-container { display: flex !important; flex-direction: column !important; height: auto !important; overflow: visible !important; }
+    #app-container { display: flex !important; flex-direction: column !important; height: auto !important; overflow: visible !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
     #sidebar-panel { border-bottom: none !important; height: auto !important; max-height: none !important; overflow: clip !important; flex-shrink: 0 !important; padding-top: 75px !important; }
     #main-content-panel { height: auto !important; overflow: visible !important; flex: none !important; }
     .tab-content-container { padding-bottom: 90px !important; height: auto !important; overflow: visible !important; }
