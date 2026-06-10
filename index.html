@@ -136,13 +136,18 @@
                         </div>
                     </div>
                     <div class="attr-bar-item health">
-                        <div class="attr-bar-header">
-                            <span class="attr-bar-icon">❤️</span>
-                            <span class="attr-bar-name">VITALIDADE</span>
-                            <span class="attr-bar-lvl" id="attr-lvl-health">1</span>
-                        </div>
-                        <div class="attr-bar-track">
-                            <div class="attr-bar-fill health-fill" id="attr-fill-health" style="width:0%"></div>
+                        <button class="nav-btn tab-link" data-tab="quests">
+                    <span class="nav-icon">⚔️</span>
+                    <span class="nav-text">MISSÕES</span>
+                </button>
+                <button class="nav-btn tab-link" data-tab="global">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">VISÃO G.</span>
+                </button>
+                <button class="nav-btn tab-link" data-tab="rewards">
+                    <span class="nav-icon">🍺</span>
+                    <span class="nav-text">TAVERNA</span>
+                </button>            <div class="attr-bar-fill health-fill" id="attr-fill-health" style="width:0%"></div>
                         </div>
                     </div>
                 </div>
@@ -159,16 +164,28 @@
         <!-- ═══ PAINEL PRINCIPAL ═══ -->
         <div id="main-content-panel">
 
+            <!-- Nav Tabs -->
+            <nav class="dashboard-tabs">
+                <button class="tab-link active" data-tab="quests" id="tab-btn-quests">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H17v1.5c0 .83-.67 1.5-1.5 1.5S14 11.33 14 10.5 14.67 9 15.5 9z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 15H7v-1.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    MISSÕES
+                </button>
+                <button class="tab-link" data-tab="rewards" id="tab-btn-rewards">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    TAVERNA
+                </button>
+
+                <button class="tab-link" data-tab="achievements" id="tab-btn-achievements">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-4 4 1-5-4-3 5-.5L12 6l2 4.5 5 .5-4 3 1 5z"/><path d="M5 21l3-3"/><path d="M19 21l-3-3"/></svg>
+                    TROFÉUS
+                </button>
+            </nav>
 
             <!-- Tab Content -->
             <div class="tab-content-container">
             
                 <!-- ABA: MISSÕES -->
                 <div id="tab-quests" class="tab-content active">
-                    <!-- Weekly Boss ativo -->
-                    <div id="weekly-boss-container" style="display:none; margin-bottom: 20px;"></div>
-                    <!-- Dungeon Ativa -->
-                    <div id="dungeon-active-banner" style="display:none; margin-bottom: 20px;"></div>
                     <div class="quest-section-header">
                         <h2>Missões Diárias</h2>
                         <span class="quest-count" id="lbl-daily-count">0/0</span>
@@ -195,19 +212,17 @@
                     <p style="color: var(--text-muted); font-size: 0.8rem;">O seu mapa tático da consistência.</p>
                 </div>
                 
-                <!-- HEATMAP ANUAL -->
+                <!-- HEATMAP DO MÊS -->
                 <div class="dashboard-card" style="margin-bottom: 20px;">
-                    <h3 style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px;">CONSISTÊNCIA ANUAL (365 DIAS)</h3>
-                    <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
-                        <div id="heatmap-grid" class="heatmap-container" style="min-width: max-content;">
-                            <!-- Quadradinhos injetados via JS -->
-                        </div>
+                    <h3 style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px;">HEATMAP DO MÊS VIGENTE</h3>
+                    <div id="heatmap-grid" class="heatmap-container">
+                        <!-- Quadradinhos injetados via JS -->
                     </div>
                     <div class="heatmap-legend" style="display: flex; gap: 8px; font-size: 0.7rem; justify-content: flex-end; margin-top: 8px; color: var(--text-muted);">
                         <span>Menos</span>
-                        <span class="hm-block" style="background: #1a1b26; width: 10px; height: 10px; border-radius: 2px;"></span>
-                        <span class="hm-block" style="background: rgba(0,240,255,0.2); width: 10px; height: 10px; border-radius: 2px;"></span>
-                        <span class="hm-block" style="background: rgba(0,240,255,0.6); width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: #2a2d3e; width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: rgba(255,50,50,0.5); width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: rgba(0,240,255,0.4); width: 10px; height: 10px; border-radius: 2px;"></span>
                         <span class="hm-block" style="background: var(--neon-cyan); width: 10px; height: 10px; border-radius: 2px; box-shadow: 0 0 5px var(--neon-cyan);"></span>
                         <span>Mais</span>
                     </div>
@@ -256,6 +271,7 @@
                             📥 INSTALAR APLICATIVO (TELA DE INÍCIO)
                         </button>
                     </div>
+                </section>
 
                 <!-- ABA TAVERNA -->
                 <section id="tab-rewards" class="tab-content">
@@ -266,125 +282,106 @@
                         </div>
                     </div>
 
-                    <!-- SUB-ABAS TAVERNA -->
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <button class="tab-link active" id="subtab-btn-shop" onclick="switchTavernaTab('shop')" style="flex: 1; justify-content: center;">LOJA</button>
-                        <button class="tab-link" id="subtab-btn-inventory" onclick="switchTavernaTab('inventory')" style="flex: 1; justify-content: center;">INVENTÁRIO</button>
+                    <!-- LOJA DO ALQUIMISTA -->
+                    <div class="quest-section-header" style="margin-top: 10px;">
+                        <h2>🧪 Loja do Alquimista (Buffs)</h2>
+                    </div>
+                    <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                        <!-- Poção de Cura -->
+                        <div class="reward-card" onclick="buyStoreItem('buff_autoHeal')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Poção de Auto-Cura</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Anula a penalidade caso você perca a ofensiva um dia.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🧪</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">100 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Pergaminho XP -->
+                        <div class="reward-card" onclick="buyStoreItem('buff_doubleXp')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Pergaminho de Sabedoria</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Ganha o dobro de XP em tudo até a meia-noite.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">📜</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">50 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
+
+                        <!-- Escudo -->
+                        <div class="reward-card" onclick="buyStoreItem('buff_shield')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3>Escudo de Ferro</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Garante 1 carga do escudo azul que protege atributos.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🛡️</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">150 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- MODO LOJA -->
-                    <div id="taverna-shop">
-                        <!-- LOJA DO ALQUIMISTA -->
-                        <div class="quest-section-header" style="margin-top: 10px;">
-                            <h2>🧪 Loja do Alquimista (Buffs)</h2>
-                        </div>
-                        <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
-                            <!-- Poção de Cura -->
-                            <div class="reward-card" onclick="buyStoreItem('buff_autoHeal')">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                    <div>
-                                        <h3>Poção de Auto-Cura</h3>
-                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Anula a penalidade caso você perca a ofensiva um dia.</p>
-                                    </div>
-                                    <span style="font-size: 1.5rem;">🧪</span>
+                    <!-- MERCADO CLANDESTINO -->
+                    <div class="quest-section-header">
+                        <h2>💎 Mercado Clandestino (Cosméticos)</h2>
+                    </div>
+                    <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                        
+                        <!-- Título 1 -->
+                        <div class="reward-card" onclick="buyStoreItem('title_implacavel')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3 style="color:var(--neon-purple);">Título: O Implacável</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Exiba este título lendário abaixo do seu nome.</p>
                                 </div>
-                                <div class="reward-bottom">
-                                    <span class="reward-cost">100 OURO</span>
-                                    <button class="btn-buy">COMPRAR</button>
-                                </div>
+                                <span style="font-size: 1.5rem;">🏷️</span>
                             </div>
-                            
-                            <!-- Pergaminho XP -->
-                            <div class="reward-card" onclick="buyStoreItem('buff_doubleXp')">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                    <div>
-                                        <h3>Pergaminho de Sabedoria</h3>
-                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Ganha o dobro de XP em tudo até a meia-noite.</p>
-                                    </div>
-                                    <span style="font-size: 1.5rem;">📜</span>
-                                </div>
-                                <div class="reward-bottom">
-                                    <span class="reward-cost">50 OURO</span>
-                                    <button class="btn-buy">COMPRAR</button>
-                                </div>
-                            </div>
-
-                            <!-- Escudo -->
-                            <div class="reward-card" onclick="buyStoreItem('buff_shield')">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                    <div>
-                                        <h3>Escudo de Ferro</h3>
-                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Garante 1 carga do escudo azul que protege atributos.</p>
-                                    </div>
-                                    <span style="font-size: 1.5rem;">🛡️</span>
-                                </div>
-                                <div class="reward-bottom">
-                                    <span class="reward-cost">150 OURO</span>
-                                    <button class="btn-buy">COMPRAR</button>
-                                </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">300 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
                             </div>
                         </div>
 
-                        <!-- MERCADO CLANDESTINO -->
-                        <div class="quest-section-header">
-                            <h2>💎 Mercado Clandestino (Cosméticos)</h2>
-                        </div>
-                        <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
-                            
-                            <!-- Título 1 -->
-                            <div class="reward-card" onclick="buyStoreItem('title_implacavel')">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                    <div>
-                                        <h3 style="color:var(--neon-purple);">Título: O Implacável</h3>
-                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Exiba este título lendário abaixo do seu nome.</p>
-                                    </div>
-                                    <span style="font-size: 1.5rem;">🏷️</span>
+                        <!-- Título 2 -->
+                        <div class="reward-card" onclick="buyStoreItem('title_mestre')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3 style="color:var(--neon-gold);">Título: Mestre do Tempo</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Um título digno de quem domina a própria rotina.</p>
                                 </div>
-                                <div class="reward-bottom">
-                                    <span class="reward-cost">300 OURO</span>
-                                    <button class="btn-buy">COMPRAR</button>
-                                </div>
+                                <span style="font-size: 1.5rem;">⏳</span>
                             </div>
-
-                            <!-- Título 2 -->
-                            <div class="reward-card" onclick="buyStoreItem('title_mestre')">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                    <div>
-                                        <h3 style="color:var(--neon-gold);">Título: Mestre do Tempo</h3>
-                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Um título digno de quem domina a própria rotina.</p>
-                                    </div>
-                                    <span style="font-size: 1.5rem;">⏳</span>
-                                </div>
-                                <div class="reward-bottom">
-                                    <span class="reward-cost">300 OURO</span>
-                                    <button class="btn-buy">COMPRAR</button>
-                                </div>
-                            </div>
-
-                            <!-- Borda Neon -->
-                            <div class="reward-card" onclick="buyStoreItem('border_neonred')">
-                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                    <div>
-                                        <h3 style="color:var(--neon-red);">Borda: Demônio Carmesim</h3>
-                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Moldura vermelha brilhante para o seu avatar.</p>
-                                    </div>
-                                    <span style="font-size: 1.5rem;">🖼️</span>
-                                </div>
-                                <div class="reward-bottom">
-                                    <span class="reward-cost">500 OURO</span>
-                                    <button class="btn-buy">COMPRAR</button>
-                                </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">300 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
                             </div>
                         </div>
-                    </div> <!-- fim taverna-shop -->
 
-                    <!-- MODO INVENTÁRIO -->
-                    <div id="taverna-inventory" style="display: none;">
-                        <div class="quest-section-header">
-                            <h2>🎒 Cosméticos Desbloqueados</h2>
-                        </div>
-                        <div id="inventory-grid" class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
-                            <!-- Injetado via JS -->
+                        <!-- Borda Neon -->
+                        <div class="reward-card" onclick="buyStoreItem('border_neonred')">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div>
+                                    <h3 style="color:var(--neon-red);">Borda: Demônio Carmesim</h3>
+                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Moldura vermelha brilhante para o seu avatar.</p>
+                                </div>
+                                <span style="font-size: 1.5rem;">🖼️</span>
+                            </div>
+                            <div class="reward-bottom">
+                                <span class="reward-cost">500 OURO</span>
+                                <button class="btn-buy">COMPRAR</button>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -462,24 +459,6 @@
                 <span class="close-modal-btn" id="close-settings-modal">&times;</span>
                 <h3>⚙️ CONFIGURAÇÕES</h3>
                 
-                <!-- Cloud Sync -->
-                <div class="settings-group">
-                    <div class="settings-group-title">☁️ SINCRONIZAÇÃO NA NUVEM</div>
-                    <div id="cloud-sync-status" class="cloud-status-row">
-                        <span class="cloud-dot offline"></span> Não sincronizado
-                    </div>
-                    <div class="backup-actions">
-                        <button id="btn-cloud-login" class="btn-submit btn-backup-action">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg>
-                            ENTRAR COM GOOGLE
-                        </button>
-                        <button id="btn-cloud-logout" class="btn-submit btn-secondary btn-backup-action" style="display:none">
-                            SAIR DA CONTA
-                        </button>
-                    </div>
-                    <p class="settings-group-desc">Salva automaticamente seu progresso na nuvem e sincroniza entre dispositivos.</p>
-                </div>
-
                 <!-- Notificações -->
                 <div class="settings-group">
                     <div class="settings-group-title">NOTIFICAÇÕES DIÁRIAS</div>
@@ -587,7 +566,6 @@
             </div>
         </div>
 
-
     </div>
 
     <!-- Container de Toasts (Notificações) -->
@@ -683,13 +661,6 @@
         </div>
     </div>
 
-    <!-- Firebase (Cloud Save) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script src="firebase-config.js"></script>
-
-    <!-- Script Principal -->
     <script src="app.js"></script>
 
     <!-- Banner de Instalação PWA -->
@@ -704,37 +675,5 @@
             <button id="btn-pwa-dismiss" class="btn-close-banner">✕</button>
         </div>
     </div>
-    
-    <!-- Modal: Weekly Boss Chegou -->
-    <div id="weekly-boss-modal" class="modal" style="display:none;">
-        <div class="modal-box weekly-boss-modal-box">
-            <div class="boss-modal-icon">💀</div>
-            <h3 class="boss-modal-title">O SISTEMA INVOCOU UM CHEFE</h3>
-            <p class="boss-modal-desc">Sua consistência atraiu um inimigo digno. Você tem <strong>72 horas</strong> para completar 3 dias perfeitos e derrotá-lo.</p>
-            <p class="boss-modal-penalty">Falhar custará <strong>20% do seu Ouro</strong> e <strong>30 XP</strong>.</p>
-            <button class="btn-submit boss-modal-btn" id="btn-close-boss-modal">ACEITAR O DESAFIO</button>
-        </div>
-    </div>
-
-    <!-- Nav Tabs -->
-    <nav class="dashboard-tabs">
-        <button class="tab-link active" data-tab="quests" id="tab-btn-quests">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H17v1.5c0 .83-.67 1.5-1.5 1.5S14 11.33 14 10.5 14.67 9 15.5 9z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 15H7v-1.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-            MISSÕES
-        </button>
-        <button class="tab-link" data-tab="global" id="tab-btn-global">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-            VISÃO G.
-        </button>
-        <button class="tab-link" data-tab="rewards" id="tab-btn-rewards">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-            TAVERNA
-        </button>
-        <button class="tab-link" data-tab="achievements" id="tab-btn-achievements">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-4 4 1-5-4-3 5-.5L12 6l2 4.5 5 .5-4 3 1 5z"/><path d="M5 21l3-3"/><path d="M19 21l-3-3"/></svg>
-            TROFÉUS
-        </button>
-    </nav>
-
 </body>
 </html>

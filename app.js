@@ -2,24 +2,24 @@
    LIFERPG - CORE GAME LOGIC & COMPANION SYSTEM (2026)
    ========================================================================== */
 
-// Banco de dados mestre de hÃ¡bitos por nÃ­vel do LifeRPG
+// Banco de dados mestre de hábitos por nível do LifeRPG
 const ALL_HABITS_DATABASE = [
-    // Bracket 1 (NÃ­vel 1 ao 4)
-    { id: 'q-acordar', title: 'Acordar Cedo', type: 'daily', icon: 'ðŸŒ…', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' },
-    { id: 'q-malhar', title: 'Treinar de ForÃ§a / Corrida', type: 'daily', icon: 'ðŸ‹ï¸â€â™‚ï¸', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' },
-    { id: 'q-ler', title: 'Leitura (MÃ­nimo 15min)', type: 'daily', icon: 'ðŸ“š', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' },
-    { id: 'q-meditar', title: 'Meditar (10 min)', type: 'daily', icon: 'ðŸ§˜', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' },
-    { id: 'q-agua', title: 'Beber Ãgua (8 copos)', type: 'daily', icon: 'ðŸ’§', completed: false, xp: 20, gold: 10, target: 8, current: 0, minLevel: 1, skill: 'physical' },
-    { id: 'q-familia', title: 'Mandar mensagem/ligar para FamÃ­lia', type: 'daily', icon: 'â¤ï¸', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' },
+    // Bracket 1 (Nível 1 ao 4)
+    { id: 'q-acordar', title: 'Acordar Cedo', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' },
+    { id: 'q-malhar', title: 'Treinar de Força / Corrida', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' },
+    { id: 'q-ler', title: 'Leitura (Mínimo 15min)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' },
+    { id: 'q-meditar', title: 'Meditar (10 min)', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' },
+    { id: 'q-agua', title: 'Beber Água (8 copos)', type: 'daily', icon: '💧', completed: false, xp: 20, gold: 10, target: 8, current: 0, minLevel: 1, skill: 'physical' },
+    { id: 'q-familia', title: 'Mandar mensagem/ligar para Família', type: 'daily', icon: '❤️', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' },
     
-    // Bracket 2 (NÃ­vel 5 ao 9)
-    { id: 'q-deepwork', title: 'Deep Work: 30min no projeto pessoal', type: 'daily', icon: 'ðŸ’»', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'productivity' },
-    { id: 'q-estudo', title: 'Estudo: 30min na Ã¡rea profissional', type: 'daily', icon: 'ðŸ§ ', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'wisdom' },
-    { id: 'q-checkin', title: 'Check-in Emocional no DiÃ¡rio', type: 'daily', icon: 'ðŸ“', completed: false, xp: 15, gold: 8, minLevel: 5, skill: 'mental' },
+    // Bracket 2 (Nível 5 ao 9)
+    { id: 'q-deepwork', title: 'Deep Work: 30min no projeto pessoal', type: 'daily', icon: '💻', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'productivity' },
+    { id: 'q-estudo', title: 'Estudo: 30min na área profissional', type: 'daily', icon: '🧠', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'wisdom' },
+    { id: 'q-checkin', title: 'Check-in Emocional no Diário', type: 'daily', icon: '📝', completed: false, xp: 15, gold: 8, minLevel: 5, skill: 'mental' },
     
-    // Bracket 3 (NÃ­vel 10+)
-    { id: 'q-estoico', title: 'Estoicismo: 10min de leitura filosÃ³fica', type: 'daily', icon: 'ðŸ›ï¸', completed: false, xp: 20, gold: 10, minLevel: 10, skill: 'mental' },
-    { id: 'q-producao', title: 'ProduÃ§Ã£o: Criar 1 conteÃºdo autoral', type: 'daily', icon: 'âœï¸', completed: false, xp: 25, gold: 12, minLevel: 10, skill: 'productivity' }
+    // Bracket 3 (Nível 10+)
+    { id: 'q-estoico', title: 'Estoicismo: 10min de leitura filosófica', type: 'daily', icon: '🏛️', completed: false, xp: 20, gold: 10, minLevel: 10, skill: 'mental' },
+    { id: 'q-producao', title: 'Produção: Criar 1 conteúdo autoral', type: 'daily', icon: '✍️', completed: false, xp: 25, gold: 12, minLevel: 10, skill: 'productivity' }
 ];
 
 // Estado Global do Jogo
@@ -29,21 +29,19 @@ let gameState = {
     xpToNext: 100,
     gold: 0,
     streak: 0,
-    history: {},
     shields: 0,              // escudos ativos (0-3)
-    consecutiveStreak7Days: 0, // dias acumulados rumo ao prÃ³ximo escudo
-    consecutiveMisses: 0,       // contador de dias nÃ£o concluÃ­dos
+    consecutiveStreak7Days: 0, // dias acumulados rumo ao próximo escudo
+    consecutiveMisses: 0,       // contador de dias não concluídos
     bossQuest: null,            // boss quest ativa { id, completed, progress }
     activeDungeon: null,    // dungeon ativa com prazo de 48h
-    weeklyBoss: null,       // { spawnedAt, expiresAt, hp, defeated, penaltyApplied }
-    lastCheckedDate: null,      // controle diÃ¡rio
-    unlockedAchievements: [],   // trofÃ©us desbloqueados
-    quests: [], // Populado dinamicamente com base no nÃ­vel
+    lastCheckedDate: null,      // controle diário
+    unlockedAchievements: [],   // troféus desbloqueados
+    quests: [], // Populado dinamicamente com base no nível
     sideQuests: [],
     rewards: [
-        { id: 'r-serie', title: 'Assistir 1 Hora de SÃ©rie', cost: 35, icon: 'ðŸ“º' },
-        { id: 'r-cheat', title: 'RefeiÃ§Ã£o Livre / Doce', cost: 80, icon: 'ðŸ”' },
-        { id: 'r-game', title: 'Jogar Videogame por 1h', cost: 45, icon: 'ðŸŽ®' }
+        { id: 'r-serie', title: 'Assistir 1 Hora de Série', cost: 35, icon: '📺' },
+        { id: 'r-cheat', title: 'Refeição Livre / Doce', cost: 80, icon: '🍔' },
+        { id: 'r-game', title: 'Jogar Videogame por 1h', cost: 45, icon: '🎮' }
     ],
     skills: {
         physical: { level: 1, xp: 0, xpToNext: 5 },
@@ -53,11 +51,7 @@ let gameState = {
         wisdom: { level: 1, xp: 0, xpToNext: 5 },
         routine: { level: 1, xp: 0, xpToNext: 5 }
     },
-    messages: [],
-    history: {},
-    buffs: { autoHeal: false, doubleXp: false, shieldDays: 0 },
-    inventory: { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null },
-    notificationTimes: { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 }
+    messages: []
 };
 
 // Banco de Frases de Impacto
@@ -76,7 +70,7 @@ const IMPACT_QUOTES = [
     { author: "Eminem", text: "You only get one shot, do not miss your chance to blow." },
     { author: "Cristiano Ronaldo", text: "Talent without working hard is nothing." },
     { author: "Harvey Specter", text: "I don't have dreams, I have goals." },
-    { author: "ClÃ³vis de Barros", text: "A vida Ã© uma sÃ³, vocÃª vai vivÃª-la como um espectador ou como protagonista?" },
+    { author: "Clóvis de Barros", text: "A vida é uma só, você vai vivê-la como um espectador ou como protagonista?" },
     { author: "Tony Robbins", text: "If you do what you've always done, you'll get what you've always gotten." },
     { author: "Michael Jordan", text: "I can accept failure, everyone fails at something. But I can't accept not trying." },
     { author: "Gandalf", text: "All we have to decide is what to do with the time that is given us." },
@@ -90,7 +84,7 @@ const IMPACT_QUOTES = [
     { author: "Yoda", text: "Do or do not. There is no try." }
 ];
 
-// â”€â”€ Sistema de RANK (Solo Leveling) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Sistema de RANK (Solo Leveling) ─────────────────────────────────────────
 const RANK_THRESHOLDS = [
     { min: 30, rank: 'RANK S', css: 'rank-s' },
     { min: 20, rank: 'RANK A', css: 'rank-a' },
@@ -100,12 +94,12 @@ const RANK_THRESHOLDS = [
     { min: 1,  rank: 'RANK E', css: 'rank-e' }
 ];
 
-// â”€â”€ Boss Quests por Rank Up â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Boss Quests por Rank Up ──────────────────────────────────────────────────
 const BOSS_QUESTS = {
     'e-to-d': {
         id: 'e-to-d',
         title: 'Despertar do Guerreiro',
-        description: 'Complete todas as suas missÃµes diÃ¡rias por 3 dias seguidos.',
+        description: 'Complete todas as suas missões diárias por 3 dias seguidos.',
         rankFrom: 'RANK E', rankTo: 'RANK D',
         xpReward: 150, goldReward: 50,
         check: () => (gameState.streak || 0) >= 3,
@@ -114,7 +108,7 @@ const BOSS_QUESTS = {
     'd-to-c': {
         id: 'd-to-c',
         title: 'Batismo do Foco',
-        description: 'Complete 5 side quests (missÃµes avulsas).',
+        description: 'Complete 5 side quests (missões avulsas).',
         rankFrom: 'RANK D', rankTo: 'RANK C',
         xpReward: 250, goldReward: 80,
         check: () => (gameState.bossQuest?.sideQuestsCompleted || 0) >= 5,
@@ -122,8 +116,8 @@ const BOSS_QUESTS = {
     },
     'c-to-b': {
         id: 'c-to-b',
-        title: 'AscensÃ£o do Atributo',
-        description: 'Eleve pelo menos 4 das suas 6 skills para o NÃ­vel 3.',
+        title: 'Ascensão do Atributo',
+        description: 'Eleve pelo menos 4 das suas 6 skills para o Nível 3.',
         rankFrom: 'RANK C', rankTo: 'RANK B',
         xpReward: 400, goldReward: 120,
         check: () => {
@@ -139,8 +133,8 @@ const BOSS_QUESTS = {
     },
     'b-to-a': {
         id: 'b-to-a',
-        title: 'VigÃ­lia do Estoico',
-        description: 'Mantenha uma sequÃªncia de 14 dias consecutivos.',
+        title: 'Vigília do Estoico',
+        description: 'Mantenha uma sequência de 14 dias consecutivos.',
         rankFrom: 'RANK B', rankTo: 'RANK A',
         xpReward: 600, goldReward: 180,
         check: () => (gameState.streak || 0) >= 14,
@@ -149,7 +143,7 @@ const BOSS_QUESTS = {
     'a-to-s': {
         id: 'a-to-s',
         title: 'O Sistema Completo',
-        description: 'Eleve TODAS as 6 skills para o NÃ­vel 5 simultaneamente.',
+        description: 'Eleve TODAS as 6 skills para o Nível 5 simultaneamente.',
         rankFrom: 'RANK A', rankTo: 'RANK S',
         xpReward: 1000, goldReward: 300,
         check: () => {
@@ -164,20 +158,20 @@ const BOSS_QUESTS = {
     }
 };
 
-// â”€â”€ Banco de Dungeons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Banco de Dungeons ─────────────────────────────────────────────────────
 const DUNGEON_POOL = [
-    { title: 'Treino SolitÃ¡rio',   skill: 'physical',     xp: 80,  gold: 40 },
-    { title: 'Hora do SilÃªncio',   skill: 'mental',       xp: 75,  gold: 35 },
+    { title: 'Treino Solitário',   skill: 'physical',     xp: 80,  gold: 40 },
+    { title: 'Hora do Silêncio',   skill: 'mental',       xp: 75,  gold: 35 },
     { title: 'Projeto Expresso',   skill: 'productivity', xp: 90,  gold: 45 },
-    { title: 'ConexÃ£o Rara',       skill: 'social',       xp: 70,  gold: 35 },
+    { title: 'Conexão Rara',       skill: 'social',       xp: 70,  gold: 35 },
     { title: 'Leitura Profunda',   skill: 'wisdom',       xp: 80,  gold: 40 },
     { title: 'Ritual Perfeito',    skill: 'routine',      xp: 75,  gold: 38 },
-    { title: 'Corrida do DragÃ£o',  skill: 'physical',     xp: 100, gold: 50 },
-    { title: 'MeditaÃ§Ã£o Extrema',  skill: 'mental',       xp: 95,  gold: 48 },
+    { title: 'Corrida do Dragão',  skill: 'physical',     xp: 100, gold: 50 },
+    { title: 'Meditação Extrema',  skill: 'mental',       xp: 95,  gold: 48 },
     { title: 'Sprint de Foco',     skill: 'productivity', xp: 110, gold: 55 },
-    { title: 'AlianÃ§a Inesperada', skill: 'social',       xp: 85,  gold: 42 },
+    { title: 'Aliança Inesperada', skill: 'social',       xp: 85,  gold: 42 },
     { title: 'Tomo Proibido',      skill: 'wisdom',       xp: 95,  gold: 48 },
-    { title: 'SequÃªncia Sagrada',  skill: 'routine',      xp: 90,  gold: 45 },
+    { title: 'Sequência Sagrada',  skill: 'routine',      xp: 90,  gold: 45 },
 ];
 
 const DUNGEON_DURATION_MS = 48 * 60 * 60 * 1000; // 48 horas em ms
@@ -188,7 +182,7 @@ function hasSkillLV3() {
     return Object.values(skills).some(s => s.level >= 3);
 }
 
-// Gera uma nova dungeon aleatÃ³ria
+// Gera uma nova dungeon aleatória
 function spawnDungeon() {
     if (!hasSkillLV3()) return;
     if (gameState.activeDungeon && !gameState.activeDungeon.completed) return;
@@ -205,12 +199,12 @@ function spawnDungeon() {
     };
     saveGameData();
     setTimeout(() => {
-        showSystemToast(`âš”ï¸ *DUNGEON DISPONÃVEL!* Uma missÃ£o especial surgiu: *"${pick.title}"*\n\nRecompensa: +${pick.xp} XP Â· +${pick.gold} ðŸ’°\nâ³ Prazo: 48 horas. Conclua antes que expire.`);
+        showSystemToast(`⚔️ *DUNGEON DISPONÍVEL!* Uma missão especial surgiu: *"${pick.title}"*\n\nRecompensa: +${pick.xp} XP · +${pick.gold} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
 
     }, 1000);
 }
 
-// Verifica e aplica expiraÃ§Ã£o da dungeon ativa
+// Verifica e aplica expiração da dungeon ativa
 function checkDungeonExpiry() {
     const d = gameState.activeDungeon;
     if (!d || d.completed) return;
@@ -220,7 +214,7 @@ function checkDungeonExpiry() {
         gameState.xp = Math.max(0, (gameState.xp || 0) - 5);
         saveGameData();
         setTimeout(() => {
-            showSystemToast(`ðŸ’€ *DUNGEON EXPIRADA.* A missÃ£o *"${title}"* foi abandonada. O Sistema cobrou o preÃ§o: âˆ’5 XP.`);
+            showSystemToast(`💀 *DUNGEON EXPIRADA.* A missão *"${title}"* foi abandonada. O Sistema cobrou o preço: −5 XP.`);
 
         }, 500);
     }
@@ -254,117 +248,16 @@ function completeDungeon() {
     checkAndActivateBossQuest();
     saveGameData();
     updateUI();
-}
-
-// â”€â”€ Weekly Boss â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const WEEKLY_BOSS_DURATION_MS = 72 * 60 * 60 * 1000; // 72h
-
-function spawnWeeklyBoss() {
-    if (gameState.weeklyBoss && !gameState.weeklyBoss.defeated && Date.now() < gameState.weeklyBoss.expiresAt) return;
-
-    gameState.weeklyBoss = {
-        spawnedAt: Date.now(),
-        expiresAt: Date.now() + WEEKLY_BOSS_DURATION_MS,
-        hp: 3,
-        defeated: false,
-        penaltyApplied: false
-    };
-    saveGameData();
-    showWeeklyBossModal();
-}
-
-function checkWeeklyBossExpiry() {
-    const wb = gameState.weeklyBoss;
-    if (!wb || wb.defeated || wb.penaltyApplied) return;
-    if (Date.now() >= wb.expiresAt) {
-        wb.penaltyApplied = true;
-        const goldLost = Math.floor((gameState.gold || 0) * 0.20);
-        gameState.gold = Math.max(0, (gameState.gold || 0) - goldLost);
-        gameState.xp   = Math.max(0, (gameState.xp   || 0) - 30);
-        saveGameData();
-        updateUI();
-        setTimeout(() => {
-            receiveMessage(`ðŸ’€ *O CHEFE DA SEMANA NÃƒO FOI DERROTADO.*\n\nO Sistema cobrou o preÃ§o da sua fraqueza: -${goldLost} Ouro e -30 XP foram consumidos. Que isso sirva de liÃ§Ã£o.`);
-            showChatBadge();
-        }, 600);
-    }
-}
-
-function hitWeeklyBoss() {
-    const wb = gameState.weeklyBoss;
-    if (!wb || wb.defeated || wb.penaltyApplied || Date.now() >= wb.expiresAt) return;
-
-    wb.hp = Math.max(0, wb.hp - 1);
-
-    if (wb.hp <= 0) {
-        wb.defeated = true;
-        gameState.xp   = (gameState.xp   || 0) + 150;
-        gameState.gold = (gameState.gold || 0) + 80;
-        saveGameData();
-        updateUI();
-        renderWeeklyBoss();
-        setTimeout(() => {
-            receiveMessage(`ðŸ† *CHEFE SEMANAL DERROTADO!*\n\nVocÃª enfrentou o Sistema e venceu. Recompensa: +150 XP e +80 Ouro. O streak continua protegido.`);
-            showChatBadge();
-        }, 800);
-    } else {
-        saveGameData();
-        renderWeeklyBoss();
-    }
-}
-
-function showWeeklyBossModal() {
-    const modal = document.getElementById('weekly-boss-modal');
-    if (modal) modal.style.display = 'flex';
-}
-
-function renderWeeklyBoss() {
-    const container = document.getElementById('weekly-boss-container');
-    if (!container) return;
-
-    const wb = gameState.weeklyBoss;
-
-    if (!wb || wb.defeated || wb.penaltyApplied || Date.now() >= wb.expiresAt) {
-        container.style.display = 'none';
-        return;
-    }
-
-    const remMs  = Math.max(0, wb.expiresAt - Date.now());
-    const remH   = Math.floor(remMs / 3600000);
-    const remMin = Math.floor((remMs % 3600000) / 60000);
-    const hpPct  = (wb.hp / 3) * 100;
-    const urgent = remMs < 12 * 3600000;
-
-    container.style.display = 'block';
-    container.innerHTML = `
-        <div class="weekly-boss-card${urgent ? ' boss-urgent' : ''}">
-            <div class="boss-header">
-                <span class="boss-icon">ðŸ’€</span>
-                <div class="boss-title-wrap">
-                    <span class="boss-title">CHEFE DA SEMANA</span>
-                    <span class="boss-timer${urgent ? ' boss-timer-urgent' : ''}">â³ ${remH}h ${remMin}min restantes</span>
-                </div>
-                <span class="boss-badge">BOSS</span>
-            </div>
-            <div class="boss-desc">Derrote completando 3 dias perfeitos (100% das dailies)</div>
-            <div class="boss-hp-bar-track">
-                <div class="boss-hp-bar-fill" style="width: ${hpPct}%"></div>
-            </div>
-            <div class="boss-hp-label">${wb.hp}/3 HP restantes</div>
-            <div class="boss-rewards-preview">Recompensa: +150 XP Â· +80 ðŸ’° Â· Streak protegido</div>
-        </div>
-    `;
-}
 
     setTimeout(() => {
-        showSystemToast(`ðŸ† *DUNGEON CONCLUÃDA!* VocÃª completou *"${d.title}"*!\n\n+${xpGain} XP Â· +${goldGain} ðŸ’° concedidos. Iroh estÃ¡ orgulhoso.`);
+        showSystemToast(`🏆 *DUNGEON CONCLUÍDA!* Você completou *"${d.title}"*!\n\n+${xpGain} XP · +${goldGain} 💰 concedidos. Iroh está orgulhoso.`);
 
     }, 800);
 
     renderQuests();
 }
 
-// Mapeia nÃ­vel mÃ­nimo do rank atual â†’ boss quest a ser ativada
+// Mapeia nível mínimo do rank atual → boss quest a ser ativada
 const BOSS_QUEST_BY_LEVEL = {
     5:  'e-to-d',
     10: 'd-to-c',
@@ -384,7 +277,7 @@ function getRankForLevel(level) {
 function checkAndActivateBossQuest() {
     const level = gameState.level;
 
-    // Verifica se o nÃ­vel atual tem uma boss quest associada
+    // Verifica se o nível atual tem uma boss quest associada
     const bossId = BOSS_QUEST_BY_LEVEL[level];
     if (bossId && (!gameState.bossQuest || gameState.bossQuest.id !== bossId)) {
         // Ativa a nova Boss Quest
@@ -395,12 +288,12 @@ function checkAndActivateBossQuest() {
         };
         const bq = BOSS_QUESTS[bossId];
         setTimeout(() => {
-            showSystemToast(`âš”ï¸ *BOSS QUEST DESBLOQUEADA!*\n\n*${bq.title}*\n_${bq.description}_\n\nRecompensa: +${bq.xpReward} XP Â· +${bq.goldReward} ðŸ’°\n\nProgresso atual: ${bq.progress()}`);
+            showSystemToast(`⚔️ *BOSS QUEST DESBLOQUEADA!*\n\n*${bq.title}*\n_${bq.description}_\n\nRecompensa: +${bq.xpReward} XP · +${bq.goldReward} 💰\n\nProgresso atual: ${bq.progress()}`);
 
         }, 2000);
     }
 
-    // Verifica se a boss quest ativa foi concluÃ­da
+    // Verifica se a boss quest ativa foi concluída
     if (gameState.bossQuest && !gameState.bossQuest.completed) {
         const bq = BOSS_QUESTS[gameState.bossQuest.id];
         if (bq && bq.check()) {
@@ -408,7 +301,7 @@ function checkAndActivateBossQuest() {
             gameState.xp += bq.xpReward;
             gameState.gold += bq.goldReward;
             setTimeout(() => {
-                showSystemToast(`ðŸ† *BOSS QUEST CONCLUÃDA!*\n\n*${bq.title}* foi completada!\n\n_"${getBossVictoryQuote(bq.id)}"_\n\n+${bq.xpReward} XP Â· +${bq.goldReward} ðŸ’° concedidos. ${bq.rankFrom} â†’ ${bq.rankTo} desbloqueado por mÃ©rito!`);
+                showSystemToast(`🏆 *BOSS QUEST CONCLUÍDA!*\n\n*${bq.title}* foi completada!\n\n_"${getBossVictoryQuote(bq.id)}"_\n\n+${bq.xpReward} XP · +${bq.goldReward} 💰 concedidos. ${bq.rankFrom} → ${bq.rankTo} desbloqueado por mérito!`);
 
             }, 1500);
             saveGameData();
@@ -417,19 +310,19 @@ function checkAndActivateBossQuest() {
     }
 }
 
-// BordÃ£o do Iroh ao concluir cada Boss Quest
+// Bordão do Iroh ao concluir cada Boss Quest
 function getBossVictoryQuote(bossId) {
     const quotes = {
-        'e-to-d': 'TrÃªs dias. Simples assim. E vocÃª provou que tem o que Ã© preciso para continuar.',
-        'd-to-c': 'MissÃµes extras revelam o carÃ¡ter. VocÃª foi alÃ©m do mÃ­nimo â€” isso Ã© tudo.',
-        'c-to-b': 'Quatro atributos forjados. NÃ£o Ã© sorte. Ã‰ consistÃªncia transformada em forÃ§a.',
-        'b-to-a': 'Catorze dias sem parar. Isso nÃ£o Ã© disciplina â€” isso Ã© identidade.',
-        'a-to-s': 'O Sistema Encarnado. VocÃª nÃ£o segue mais o mÃ©todo â€” vocÃª virou o mÃ©todo.'
+        'e-to-d': 'Três dias. Simples assim. E você provou que tem o que é preciso para continuar.',
+        'd-to-c': 'Missões extras revelam o caráter. Você foi além do mínimo — isso é tudo.',
+        'c-to-b': 'Quatro atributos forjados. Não é sorte. É consistência transformada em força.',
+        'b-to-a': 'Catorze dias sem parar. Isso não é disciplina — isso é identidade.',
+        'a-to-s': 'O Sistema Encarnado. Você não segue mais o método — você virou o método.'
     };
-    return quotes[bossId] || 'A vitÃ³ria pertence a quem persiste.';
+    return quotes[bossId] || 'A vitória pertence a quem persiste.';
 }
 
-// â”€â”€ Mapeamento 6 Skills â†’ 3 Atributos Arise â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Mapeamento 6 Skills → 3 Atributos Arise ─────────────────────────────────
 function computeAttributes() {
     const s = gameState.skills || {};
     const get = (k) => s[k] ? (s[k].level - 1) + (s[k].xp / (s[k].xpToNext || 5)) : 0;
@@ -461,7 +354,7 @@ function computePlayerTitle(attrs) {
 
     if (isW && isI && isH) return "Desperto";
     if (isW && isH) return "Monge-Atleta";
-    if (isI && isH) return "SÃ¡bio Guerreiro";
+    if (isI && isH) return "Sábio Guerreiro";
     if (isW && isI) return "Mestre da Mente";
 
     if (isH) return "Guerreiro";
@@ -471,12 +364,12 @@ function computePlayerTitle(attrs) {
     return "Desperto";
 }
 
-// â”€â”€ DefiniÃ§Ãµes de Sinergias de Atributos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Definições de Sinergias de Atributos ──────────────────────────────────
 const SYNERGY_DEFS = [
     {
         id: 'willpower_iron',
         name: 'Vontade de Ferro',
-        icon: 'ðŸ”¥',
+        icon: '🔥',
         description: '+10% XP em todas as quests',
         check: (attrs) => attrs.willpower.level >= 3,
         bonusXpPct: 0.10,
@@ -486,7 +379,7 @@ const SYNERGY_DEFS = [
     {
         id: 'sharp_mind',
         name: 'Mente Afiada',
-        icon: 'ðŸ§ ',
+        icon: '🧠',
         description: '+1 Skill XP em cada quest',
         check: (attrs) => attrs.intellect.level >= 3,
         bonusXpPct: 0,
@@ -496,7 +389,7 @@ const SYNERGY_DEFS = [
     {
         id: 'body_mind',
         name: 'Corpo e Mente',
-        icon: 'âš–ï¸',
+        icon: '⚖️',
         description: '+5% Ouro em todas as quests',
         check: (attrs) => attrs.willpower.level >= 3 && attrs.health.level >= 3,
         bonusXpPct: 0,
@@ -506,7 +399,7 @@ const SYNERGY_DEFS = [
     {
         id: 'the_system',
         name: 'O Sistema',
-        icon: 'âš¡',
+        icon: '⚡',
         description: '+15% XP, +1 Skill XP, +5% Ouro',
         check: (attrs) => attrs.willpower.level >= 3 && attrs.intellect.level >= 3 && attrs.health.level >= 3,
         bonusXpPct: 0.15,
@@ -516,8 +409,8 @@ const SYNERGY_DEFS = [
     {
         id: 'immortal_legend',
         name: 'Lenda Imortal',
-        icon: 'ðŸ‘‘',
-        description: '+25% XP + Escudo bÃ´nus a cada 7-streak',
+        icon: '👑',
+        description: '+25% XP + Escudo bônus a cada 7-streak',
         check: (attrs) => attrs.willpower.level >= 5 && attrs.intellect.level >= 5 && attrs.health.level >= 5,
         bonusXpPct: 0.25,
         bonusSkillXp: 0,
@@ -532,136 +425,95 @@ function computeSynergies() {
     return SYNERGY_DEFS.filter(s => s.check(attrs));
 }
 
-// Calcula o bÃ´nus total de XP de sinergias (somativo, ex: 0.10 + 0.15 = 0.25)
+// Calcula o bônus total de XP de sinergias (somativo, ex: 0.10 + 0.15 = 0.25)
 function getSynergyXpBonus() {
     return computeSynergies().reduce((sum, s) => sum + (s.bonusXpPct || 0), 0);
 }
 
-// Calcula o bÃ´nus total de Skill XP de sinergias
+// Calcula o bônus total de Skill XP de sinergias
 function getSynergySkillXpBonus() {
     return computeSynergies().reduce((sum, s) => sum + (s.bonusSkillXp || 0), 0);
 }
 
-// Calcula o bÃ´nus total de Ouro de sinergias
+// Calcula o bônus total de Ouro de sinergias
 function getSynergyGoldBonus() {
     return computeSynergies().reduce((sum, s) => sum + (s.bonusGoldPct || 0), 0);
 }
 
-// Verifica se a sinergia "Lenda Imortal" estÃ¡ ativa (escudo bÃ´nus no 7-streak)
+// Verifica se a sinergia "Lenda Imortal" está ativa (escudo bônus no 7-streak)
 function hasSynergyShieldBonus() {
     return computeSynergies().some(s => s.shieldBonus);
 }
 
-// â”€â”€ Conquistas (Achievements) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Conquistas (Achievements) ─────────────────────────────────────────────
 const ACHIEVEMENTS_DEFS = [
-    // CONSISTÃŠNCIA
     {
-        id: 'first_quest', category: 'consistÃªncia',
-        title: 'O InÃ­cio da Jornada', desc: 'Conclua sua primeira MissÃ£o',
-        icon: 'âš”ï¸', rewardGold: 10, rarity: 'comum',
-        check: (gs) => gs.quests.some(q => q.completed) || (gs.sideQuests && gs.sideQuests.some(q => q.completed)),
-        progress: (gs) => ({ cur: Math.min(gs.quests.filter(q => q.completed).length + (gs.sideQuests || []).filter(q => q.completed).length, 1), max: 1 })
+        id: 'first_quest',
+        title: 'O Início da Jornada',
+        desc: 'Conclua sua primeira Missão',
+        icon: '⚔️',
+        rewardGold: 10,
+        check: (gs) => gs.quests.some(q => q.completed) || (gs.sideQuests && gs.sideQuests.some(q => q.completed))
     },
     {
-        id: 'streak_3', category: 'consistÃªncia',
-        title: 'Primeiros Passos', desc: 'Atinja um Streak de 3 dias',
-        icon: 'ðŸ”¥', rewardGold: 15, rarity: 'comum',
-        check: (gs) => gs.streak >= 3,
-        progress: (gs) => ({ cur: Math.min(gs.streak || 0, 3), max: 3 })
+        id: 'streak_7',
+        title: 'Sangue Frio',
+        desc: 'Atinja um Streak de 7 dias',
+        icon: '🔥',
+        rewardGold: 25,
+        check: (gs) => gs.streak >= 7
     },
     {
-        id: 'streak_7', category: 'consistÃªncia',
-        title: 'Sangue Frio', desc: 'Atinja um Streak de 7 dias',
-        icon: 'ðŸ”¥', rewardGold: 25, rarity: 'incomum',
-        check: (gs) => gs.streak >= 7,
-        progress: (gs) => ({ cur: Math.min(gs.streak || 0, 7), max: 7 })
+        id: 'streak_30',
+        title: 'Disciplina de Ferro',
+        desc: 'Atinja um Streak de 30 dias',
+        icon: '🛡️',
+        rewardGold: 100,
+        check: (gs) => gs.streak >= 30
     },
     {
-        id: 'streak_30', category: 'consistÃªncia',
-        title: 'Disciplina de Ferro', desc: 'Atinja um Streak de 30 dias',
-        icon: 'ðŸ›¡ï¸', rewardGold: 100, rarity: 'raro',
-        check: (gs) => gs.streak >= 30,
-        progress: (gs) => ({ cur: Math.min(gs.streak || 0, 30), max: 30 })
+        id: 'rank_d',
+        title: 'O Despertar',
+        desc: 'Chegue ao Rank D (Nível 5)',
+        icon: '🌅',
+        rewardGold: 30,
+        check: (gs) => gs.level >= 5
     },
     {
-        id: 'streak_100', category: 'consistÃªncia',
-        title: 'A Lenda NÃ£o Para', desc: 'Atinja um Streak de 100 dias',
-        icon: 'ðŸ‘‘', rewardGold: 400, rarity: 'lendÃ¡rio',
-        check: (gs) => gs.streak >= 100,
-        progress: (gs) => ({ cur: Math.min(gs.streak || 0, 100), max: 100 })
-    },
-    // RANK
-    {
-        id: 'rank_d', category: 'rank',
-        title: 'O Despertar', desc: 'Chegue ao Rank D (NÃ­vel 5)',
-        icon: 'ðŸŒ…', rewardGold: 30, rarity: 'incomum',
-        check: (gs) => gs.level >= 5,
-        progress: (gs) => ({ cur: Math.min(gs.level || 1, 5), max: 5 })
+        id: 'rank_s',
+        title: 'Caçador de Rank',
+        desc: 'Chegue ao Rank S (Nível 30)',
+        icon: '👑',
+        rewardGold: 500,
+        check: (gs) => gs.level >= 30
     },
     {
-        id: 'rank_c', category: 'rank',
-        title: 'AscensÃ£o', desc: 'Chegue ao Rank C (NÃ­vel 10)',
-        icon: 'ðŸŒŸ', rewardGold: 80, rarity: 'raro',
-        check: (gs) => gs.level >= 10,
-        progress: (gs) => ({ cur: Math.min(gs.level || 1, 10), max: 10 })
+        id: 'skill_5',
+        title: 'Especialista',
+        desc: 'Alcance o Nível 5 em qualquer Skill',
+        icon: '⭐',
+        rewardGold: 50,
+        check: (gs) => Object.values(gs.skills || {}).some(s => s.level >= 5)
     },
     {
-        id: 'rank_s', category: 'rank',
-        title: 'CaÃ§ador de Rank', desc: 'Chegue ao Rank S (NÃ­vel 30)',
-        icon: 'ðŸ‘‘', rewardGold: 500, rarity: 'lendÃ¡rio',
-        check: (gs) => gs.level >= 30,
-        progress: (gs) => ({ cur: Math.min(gs.level || 1, 30), max: 30 })
-    },
-    // HABILIDADES
-    {
-        id: 'skill_3', category: 'habilidades',
-        title: 'Especialista Iniciante', desc: 'Alcance o NÃ­vel 3 em qualquer Skill',
-        icon: 'â­', rewardGold: 20, rarity: 'comum',
-        check: (gs) => Object.values(gs.skills || {}).some(s => s.level >= 3),
-        progress: (gs) => ({ cur: Math.min(Math.max(...Object.values(gs.skills || {1:1}).map(s => s.level || 1)), 3), max: 3 })
-    },
-    {
-        id: 'skill_5', category: 'habilidades',
-        title: 'Especialista', desc: 'Alcance o NÃ­vel 5 em qualquer Skill',
-        icon: 'â­', rewardGold: 50, rarity: 'raro',
-        check: (gs) => Object.values(gs.skills || {}).some(s => s.level >= 5),
-        progress: (gs) => ({ cur: Math.min(Math.max(...Object.values(gs.skills || {1:1}).map(s => s.level || 1)), 5), max: 5 })
-    },
-    {
-        id: 'all_skills_3', category: 'habilidades',
-        title: 'Mestre do Sistema', desc: 'Alcance o NÃ­vel 3 em TODAS as Skills',
-        icon: 'ðŸ’ ', rewardGold: 150, rarity: 'lendÃ¡rio',
+        id: 'all_skills_3',
+        title: 'Mestre do Sistema',
+        desc: 'Alcance o Nível 3 em TODAS as Skills',
+        icon: '💠',
+        rewardGold: 150,
         check: (gs) => {
             const reqs = ['physical', 'mental', 'productivity', 'social', 'wisdom', 'routine'];
             return reqs.every(k => gs.skills && gs.skills[k] && gs.skills[k].level >= 3);
-        },
-        progress: (gs) => {
-            const reqs = ['physical', 'mental', 'productivity', 'social', 'wisdom', 'routine'];
-            return { cur: reqs.filter(k => gs.skills && gs.skills[k] && gs.skills[k].level >= 3).length, max: 6 };
         }
     },
-    // MASMORRAS
     {
-        id: 'dungeon_1', category: 'masmorras',
-        title: 'Primeiro Sangue', desc: 'Complete 1 Dungeon',
-        icon: 'ðŸ’€', rewardGold: 20, rarity: 'comum',
-        check: (gs) => (gs._dungeonsCompleted || 0) >= 1,
-        progress: (gs) => ({ cur: Math.min(gs._dungeonsCompleted || 0, 1), max: 1 })
-    },
-    {
-        id: 'dungeon_5', category: 'masmorras',
-        title: 'CaÃ§ador de Dungeons', desc: 'Complete 5 Dungeons',
-        icon: 'âš”ï¸', rewardGold: 80, rarity: 'raro',
-        check: (gs) => (gs._dungeonsCompleted || 0) >= 5,
-        progress: (gs) => ({ cur: Math.min(gs._dungeonsCompleted || 0, 5), max: 5 })
-    },
-    {
-        id: 'boss_defeated', category: 'masmorras',
-        title: 'Mata-Boss', desc: 'Derrote 1 Chefe Semanal',
-        icon: 'ðŸ†', rewardGold: 100, rarity: 'raro',
-        check: (gs) => gs.weeklyBoss && gs.weeklyBoss.defeated,
-        progress: (gs) => ({ cur: gs.weeklyBoss?.defeated ? 1 : 0, max: 1 })
-    },
+        id: 'dungeon_5',
+        title: 'Caçador de Dungeons',
+        desc: 'Complete 5 Dungeons',
+        icon: '💀',
+        rewardGold: 80,
+        check: (gs) => (gs._dungeonsCompleted || 0) >= 5
+    }
 ];
 
 function checkAchievements() {
@@ -675,7 +527,7 @@ function checkAchievements() {
                 gameState.gold = (gameState.gold || 0) + ach.rewardGold;
                 newlyUnlocked = true;
                 setTimeout(() => {
-                    showSystemToast(`ðŸ† *CONQUISTA DESBLOQUEADA!* VocÃª obteve o trofÃ©u *"${ach.title}"*. Recompensa: +${ach.rewardGold} ðŸ’°.`);
+                    showSystemToast(`🏆 *CONQUISTA DESBLOQUEADA!* Você obteve o troféu *"${ach.title}"*. Recompensa: +${ach.rewardGold} 💰.`);
 
                 }, 1500);
             }
@@ -684,7 +536,7 @@ function checkAchievements() {
 
     if (newlyUnlocked) {
         renderAchievements();
-        // saveGameData jÃ¡ Ã© chamado em todos os pontos que alteram estado.
+        // saveGameData já é chamado em todos os pontos que alteram estado.
     }
 }
 
@@ -693,142 +545,91 @@ function renderAchievements() {
     if (!container) return;
 
     const unlockedIds = gameState.unlockedAchievements || [];
-    const totalUnlocked = unlockedIds.length;
-    const totalAchs = ACHIEVEMENTS_DEFS.length;
 
-    // Agrupa por categoria
-    const categories = {
-        'consistÃªncia': { label: 'CONSISTÃŠNCIA', icon: 'ðŸ”¥' },
-        'rank':         { label: 'RANK & NÃVEL', icon: 'ðŸŒŸ' },
-        'habilidades':  { label: 'HABILIDADES', icon: 'â­' },
-        'masmorras':    { label: 'MASMORRAS & BOSS', icon: 'âš”ï¸' }
-    };
-
-    const rarityColors = {
-        'comum':     { bg: 'rgba(120,120,140,0.1)', border: 'rgba(120,120,140,0.3)', label: 'rgba(170,170,190,0.7)' },
-        'incomum':   { bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.35)',  label: 'rgba(34,197,94,0.8)' },
-        'raro':      { bg: 'rgba(99,102,241,0.1)',  border: 'rgba(99,102,241,0.4)',  label: 'rgba(129,140,248,0.9)' },
-        'lendÃ¡rio':  { bg: 'rgba(251,191,36,0.1)',  border: 'rgba(251,191,36,0.5)',  label: 'rgba(251,191,36,1)' }
-    };
-
-    let html = `
-        <div class="ach-summary-bar">
-            <span class="ach-summary-count">${totalUnlocked}<span class="ach-summary-total">/${totalAchs}</span></span>
-            <span class="ach-summary-label">CONQUISTAS DESBLOQUEADAS</span>
-            <div class="ach-summary-track"><div class="ach-summary-fill" style="width:${(totalUnlocked/totalAchs*100).toFixed(0)}%"></div></div>
-        </div>
-    `;
-
-    Object.entries(categories).forEach(([catKey, catInfo]) => {
-        const catAchs = ACHIEVEMENTS_DEFS.filter(a => a.category === catKey);
-        const catUnlocked = catAchs.filter(a => unlockedIds.includes(a.id)).length;
-
-        html += `<div class="ach-category">
-            <div class="ach-category-header">
-                <span class="ach-category-icon">${catInfo.icon}</span>
-                <span class="ach-category-label">${catInfo.label}</span>
-                <span class="ach-category-count">${catUnlocked}/${catAchs.length}</span>
-            </div>
-            <div class="ach-cards-row">`;
-
-        catAchs.forEach(ach => {
-            const isUnlocked = unlockedIds.includes(ach.id);
-            const prog = ach.progress ? ach.progress(gameState) : null;
-            const progPct = prog ? Math.min(100, Math.round((prog.cur / prog.max) * 100)) : 0;
-            const rc = rarityColors[ach.rarity] || rarityColors['comum'];
-
-            html += `
-            <div class="achievement-card ${isUnlocked ? 'unlocked' : ''}" style="
-                ${isUnlocked ? `background:${rc.bg}; border-color:${rc.border};` : ''}
-            ">
-                <div class="ach-icon">${isUnlocked ? ach.icon : 'ðŸ”’'}</div>
+    container.innerHTML = ACHIEVEMENTS_DEFS.map(ach => {
+        const isUnlocked = unlockedIds.includes(ach.id);
+        const lockClass = isUnlocked ? 'unlocked' : '';
+        return `
+            <div class="achievement-card ${lockClass}">
+                <div class="ach-icon">${isUnlocked ? ach.icon : '🔒'}</div>
                 <div class="ach-title">${ach.title}</div>
                 <div class="ach-desc">${ach.desc}</div>
-                ${isUnlocked
-                    ? `<div class="ach-rarity-badge" style="color:${rc.label}; border-color:${rc.border}">${ach.rarity.toUpperCase()}</div>
-                       <div class="ach-reward">+${ach.rewardGold} ðŸ’°</div>`
-                    : prog ? `<div class="ach-prog-track"><div class="ach-prog-fill" style="width:${progPct}%"></div></div>
-                              <div class="ach-prog-label">${prog.cur}/${prog.max}</div>` : ''
-                }
-            </div>`;
-        });
-
-        html += `</div></div>`;
-    });
-
-    container.innerHTML = html;
+                ${isUnlocked ? '<div class="ach-date">Desbloqueado</div>' : ''}
+            </div>
+        `;
+    }).join('');
 }
 
-// â”€â”€ Rank Perks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Rank Perks ─────────────────────────────────────────────────────────────
 const RANK_PERKS = {
     'd': {
         id: 'foco_matinal',
         name: 'Foco Matinal',
-        icon: 'ðŸŒ…',
-        description: '+5 XP bÃ´nus na primeira quest do dia',
+        icon: '🌅',
+        description: '+5 XP bônus na primeira quest do dia',
         rank: 'RANK D'
     },
     'c': {
         id: 'mente_diamante',
         name: 'Mente de Diamante',
-        icon: 'ðŸ’Ž',
-        description: '+10 XP bÃ´nus ao completar todas as dailies',
+        icon: '💎',
+        description: '+10 XP bônus ao completar todas as dailies',
         rank: 'RANK C'
     },
     'b': {
         id: 'momentum',
         name: 'Momentum',
-        icon: 'âš¡',
-        description: '+1 XP por quest consecutiva (acumula atÃ© 5)',
+        icon: '⚡',
+        description: '+1 XP por quest consecutiva (acumula até 5)',
         rank: 'RANK B'
     },
     'a': {
         id: 'o_sistema',
         name: 'O Sistema',
-        icon: 'ðŸ”„',
-        description: '1 skill XP de bÃ´nus ao completar todas as dailies',
+        icon: '🔄',
+        description: '1 skill XP de bônus ao completar todas as dailies',
         rank: 'RANK A'
     },
     's': {
         id: 'lenda_imortal',
         name: 'Lenda Imortal',
-        icon: 'ðŸ‘‘',
+        icon: '👑',
         description: '+25% XP em todas as recompensas',
         rank: 'RANK S'
     }
 };
 
-// Retorna os perks ativos com base no rank atual (todos os ranks atingidos atÃ© o atual)
+// Retorna os perks ativos com base no rank atual (todos os ranks atingidos até o atual)
 function getActivePerks() {
     const rankKey = getRankForLevel(gameState.level).css.replace('rank-', ''); // 'e','d','c','b','a','s'
     const rankOrder = ['e', 'd', 'c', 'b', 'a', 's'];
     const currentIndex = rankOrder.indexOf(rankKey);
-    // Inclui todos os perks dos ranks atingidos (exceto 'e' que nÃ£o tem perk)
+    // Inclui todos os perks dos ranks atingidos (exceto 'e' que não tem perk)
     return rankOrder
         .slice(0, currentIndex + 1)
         .filter(r => RANK_PERKS[r])
         .map(r => RANK_PERKS[r]);
 }
 
-// Verifica se um perk especÃ­fico estÃ¡ ativo
+// Verifica se um perk específico está ativo
 function hasPerk(perkId) {
     return getActivePerks().some(p => p.id === perkId);
 }
 
-// BÃ´nus de XP do perk Lenda Imortal
+// Bônus de XP do perk Lenda Imortal
 function getPerkXpBonus() {
     return hasPerk('lenda_imortal') ? 0.25 : 0;
 }
 
 // ==========================================================================
-// RADAR CHART â€” declarada no topo para garantir escopo global total
+// RADAR CHART — declarada no topo para garantir escopo global total
 // ==========================================================================
 function drawRadarChart() {
     try {
         const canvas = document.getElementById('skills-radar-chart');
-        if (!canvas) { console.error('[Radar] canvas nÃ£o encontrado!'); return; }
+        if (!canvas) { console.error('[Radar] canvas não encontrado!'); return; }
 
-        // ForÃ§a display:block via JS (algo sobrescrevia para 'inline')
+        // Força display:block via JS (algo sobrescrevia para 'inline')
         canvas.width  = 260;
         canvas.height = 260;
         canvas.style.display = 'block';
@@ -845,8 +646,8 @@ function drawRadarChart() {
 
         const skillTypes  = ['physical','mental','productivity','social','wisdom','routine'];
         const skillLabels = {
-            physical:'FÃSICO', mental:'MENTAL', productivity:'FOCO',
-            social:'CONEXÃƒO', wisdom:'SABEDORIA', routine:'ROTINA'
+            physical:'FÍSICO', mental:'MENTAL', productivity:'FOCO',
+            social:'CONEXÃO', wisdom:'SABEDORIA', routine:'ROTINA'
         };
         const N = skillTypes.length;
 
@@ -856,13 +657,13 @@ function drawRadarChart() {
                 || { level: 1, xp: 0, xpToNext: 5 };
             const val  = (skill.level - 1) + (skill.xp / (skill.xpToNext || 5));
             const frac = Math.min(val / 5, 1.0);
-            // Raio mÃ­nimo de 4px apenas para manter o marcador visÃ­vel no vÃ©rtice
-            // Escala real comeÃ§a do zero
+            // Raio mínimo de 4px apenas para manter o marcador visível no vértice
+            // Escala real começa do zero
             const minR = 4;
             return { r: minR + (frac * (maxR - minR)), skill };
         };
 
-        // 1. Grades concÃªntricas
+        // 1. Grades concêntricas
         for (let g = 1; g <= 5; g++) {
             const r = (g / 5) * maxR;
             ctx.beginPath();
@@ -889,7 +690,7 @@ function drawRadarChart() {
             ctx.stroke();
         }
 
-        // 3. PolÃ­gono preenchido com gradiente
+        // 3. Polígono preenchido com gradiente
         ctx.beginPath();
         for (let i = 0; i < N; i++) {
             const { r } = getR(skillTypes[i]);
@@ -906,7 +707,7 @@ function drawRadarChart() {
         ctx.fillStyle = grad;
         ctx.fill();
 
-        // Contorno usa a cor da skill de maior nÃ­vel
+        // Contorno usa a cor da skill de maior nível
         const maxSkillLevel = Math.max(...skillTypes.map(t =>
             (gameState.skills && gameState.skills[t]) ? gameState.skills[t].level : 1
         ));
@@ -914,7 +715,7 @@ function drawRadarChart() {
         ctx.lineWidth   = 2;
         ctx.stroke();
 
-        // 4. Marcadores nos vÃ©rtices (polÃ­gono evolutivo)
+        // 4. Marcadores nos vértices (polígono evolutivo)
         for (let i = 0; i < N; i++) {
             const { r, skill } = getR(skillTypes[i]);
             const a = (i * 2 * Math.PI / N) - Math.PI / 2;
@@ -924,7 +725,7 @@ function drawRadarChart() {
             drawVertexMarker(ctx, vx, vy, skill.level, color);
         }
 
-        // 5. RÃ³tulos (nome + nÃ­vel)
+        // 5. Rótulos (nome + nível)
         for (let i = 0; i < N; i++) {
             const { skill } = getR(skillTypes[i]);
             const a    = (i * 2 * Math.PI / N) - Math.PI / 2;
@@ -950,17 +751,17 @@ function drawRadarChart() {
         console.error('[Radar] Erro ao desenhar:', err);
     }
 }
-// ExpÃµe no window para garantir acesso global em qualquer contexto
+// Expõe no window para garantir acesso global em qualquer contexto
 window.drawRadarChart = drawRadarChart;
 
-// Retorna a cor da ponta do hexÃ¡gono baseada no nÃ­vel da skill
+// Retorna a cor da ponta do hexágono baseada no nível da skill
 function getSkillColor(level) {
     if (level >= 5) return '#fbbf24'; // Dourado
     if (level >= 3) return '#C0C0C0'; // Prata
-    return '#00f0ff';                 // Ciano (padrÃ£o)
+    return '#00f0ff';                 // Ciano (padrão)
 }
 
-// Desenha o marcador no vÃ©rtice do hexÃ¡gono â€” polÃ­gono com N lados = nÃ­vel da skill
+// Desenha o marcador no vértice do hexágono — polígono com N lados = nível da skill
 function drawVertexMarker(ctx, x, y, level, color) {
     ctx.beginPath();
     ctx.fillStyle = color;
@@ -968,23 +769,23 @@ function drawVertexMarker(ctx, x, y, level, color) {
     ctx.lineWidth = 1.5;
 
     if (level <= 1) {
-        // LV1: cÃ­rculo vazio (apenas contorno)
+        // LV1: círculo vazio (apenas contorno)
         ctx.arc(x, y, 4, 0, 2 * Math.PI);
         ctx.stroke();
         return;
     }
 
     if (level === 2) {
-        // LV2: cÃ­rculo preenchido
+        // LV2: círculo preenchido
         ctx.arc(x, y, 4, 0, 2 * Math.PI);
         ctx.fill();
         return;
     }
 
-    // LV3+: polÃ­gono com N = level lados
-    const sides = level; // LV3 = triÃ¢ngulo, LV4 = quadrado, LV5 = pentÃ¡gono...
+    // LV3+: polígono com N = level lados
+    const sides = level; // LV3 = triângulo, LV4 = quadrado, LV5 = pentágono...
     const radius = 5;
-    const startAngle = -Math.PI / 2; // ComeÃ§a do topo
+    const startAngle = -Math.PI / 2; // Começa do topo
 
     ctx.beginPath();
     for (let s = 0; s < sides; s++) {
@@ -998,11 +799,10 @@ function drawVertexMarker(ctx, x, y, level, color) {
 }
 
 // ==========================================================================
-// INICIALIZAÃ‡ÃƒO DO APLICATIVO
+// INICIALIZAÇÃO DO APLICATIVO
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     loadGameData();
-    if (typeof initFirebase === 'function') initFirebase();
     initTabs();
     renderQuests();
     renderRewards();
@@ -1010,29 +810,29 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
     setupEventListeners();
     
-    // Inicializa motor PWA e ConfiguraÃ§Ãµes
+    // Inicializa motor PWA e Configurações
     registerServiceWorker();
     setupSettingsListeners();
     setupInstallPrompt();
 
-    // Garante o primeiro draw do radar chart apÃ³s DOM+fontes carregarem
+    // Garante o primeiro draw do radar chart após DOM+fontes carregarem
     setTimeout(() => { drawRadarChart(); }, 150);
 
     // Mensagem de boas-vindas na primeira vez
     if (gameState.messages.length === 0 && gameState.playerName) {
         setTimeout(() => {
-            showSystemToast(`Bem-vindo ao LifeRPG, ${gameState.playerName}. O Sistema estÃ¡ ativo. Complete suas missÃµes.`);
+            showSystemToast(`Bem-vindo ao LifeRPG, ${gameState.playerName}. O Sistema está ativo. Complete suas missões.`);
         }, 1000);
     }
     
-    // Inicia o Wizard se o usuÃ¡rio nÃ£o tem nome definido
+    // Inicia o Wizard se o usuário não tem nome definido
     if (!gameState.playerName) {
         initOnboardingWizard();
     }
 });
 
 // ==========================================================================
-// SELEÃ‡ÃƒO E GERENCIAMENTO DE ABAS
+// SELEÇÃO E GERENCIAMENTO DE ABAS
 // ==========================================================================
 function initTabs() {
     const navButtons = document.querySelectorAll('.tab-link');
@@ -1046,142 +846,15 @@ function initTabs() {
             tabContents.forEach(t => t.classList.remove('active'));
 
             btn.classList.add('active');
-            const targetTab = document.getElementById(`tab-${tabName}`);
-            targetTab.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
 
-            // Se for a aba Global, renderiza os grÃ¡ficos e o heatmap
+            // Se for a aba Global, renderiza os gráficos e o heatmap
             if (tabName === 'global') {
                 renderGlobalDashboard();
-            }
-
-            // No Mobile, rola a tela atÃ© o conteÃºdo da aba, respeitando o header fixo
-            if (window.innerWidth <= 1023) {
-                const appContainer = document.getElementById('app-container');
-                const offset = targetTab.getBoundingClientRect().top + appContainer.scrollTop - appContainer.getBoundingClientRect().top - 130;
-                appContainer.scrollTo({ top: offset, behavior: 'smooth' });
             }
         });
     });
 }
-
-// â”€â”€ Tab Gating: Unlock tabs progressively by level â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// NÃ­vel 1-2: SÃ³ MissÃµes visÃ­vel
-// NÃ­vel 3+:  VisÃ£o Global desbloqueada
-// NÃ­vel 5+:  Taverna desbloqueada
-// NÃ­vel 7+:  TrofÃ©us desbloqueados
-function updateTabVisibility() {
-    const level = gameState.level || 1;
-
-    const tabGlobal = document.getElementById('tab-btn-global');
-    const tabRewards = document.getElementById('tab-btn-rewards');
-    const tabAch = document.getElementById('tab-btn-achievements');
-
-    const setTabState = (btn, unlocked, unlockLevel) => {
-        if (!btn) return;
-        if (unlocked) {
-            btn.disabled = false;
-            btn.classList.remove('tab-locked');
-            btn.removeAttribute('title');
-        } else {
-            btn.disabled = true;
-            btn.classList.add('tab-locked');
-            btn.setAttribute('title', `Desbloqueado no NÃ­vel ${unlockLevel}`);
-        }
-    };
-
-    setTabState(tabGlobal,  level >= 3,  3);
-    setTabState(tabRewards, level >= 5,  5);
-    setTabState(tabAch,     level >= 7,  7);
-}
-
-// ==========================================================================
-// SUB-ABAS DA TAVERNA E INVENTÃRIO
-// ==========================================================================
-window.switchTavernaTab = function(mode) {
-    const btnShop = document.getElementById('subtab-btn-shop');
-    const btnInventory = document.getElementById('subtab-btn-inventory');
-    const panelShop = document.getElementById('taverna-shop');
-    const panelInventory = document.getElementById('taverna-inventory');
-
-    if (!btnShop || !btnInventory) return;
-
-    if (mode === 'shop') {
-        btnShop.classList.add('active');
-        btnInventory.classList.remove('active');
-        panelShop.style.display = 'block';
-        panelInventory.style.display = 'none';
-    } else {
-        btnShop.classList.remove('active');
-        btnInventory.classList.add('active');
-        panelShop.style.display = 'none';
-        panelInventory.style.display = 'block';
-        renderInventory();
-    }
-};
-
-window.equipItem = function(type, itemId) {
-    if (type === 'title') {
-        gameState.inventory.activeTitle = itemId;
-    } else if (type === 'border') {
-        gameState.inventory.activeBorder = itemId;
-    }
-    
-    saveGameData();
-    renderInventory();
-    updateUI();
-};
-
-window.renderInventory = function() {
-    const grid = document.getElementById('inventory-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    const inv = gameState.inventory || { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null };
-    
-    const catalog = {
-        'title_implacavel': { name: 'O ImplacÃ¡vel', type: 'title', icon: 'ðŸ·ï¸', color: 'var(--neon-purple)' },
-        'title_mestre': { name: 'Mestre do Tempo', type: 'title', icon: 'â³', color: 'var(--neon-gold)' },
-        'border_neonred': { name: 'DemÃ´nio Carmesim', type: 'border', icon: 'ðŸ–¼ï¸', color: 'var(--neon-red)' }
-    };
-
-    const allUnlocked = [...inv.unlockedTitles, ...inv.unlockedBorders];
-    
-    if (allUnlocked.length === 0) {
-        grid.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%; padding: 20px;">Seu armazÃ©m estÃ¡ vazio. Compre itens no Mercado Clandestino.</p>';
-        return;
-    }
-
-    allUnlocked.forEach(itemId => {
-        const item = catalog[itemId];
-        if (!item) return;
-
-        const isEquipped = (item.type === 'title' && inv.activeTitle === itemId) || 
-                           (item.type === 'border' && inv.activeBorder === itemId);
-
-        const card = document.createElement('div');
-        card.className = 'reward-card';
-        card.style.border = isEquipped ? `1px solid ${item.color}` : '1px solid var(--border-glass)';
-        if (isEquipped) {
-            card.style.boxShadow = `0 0 10px ${item.color}`;
-        }
-
-        const btnLabel = isEquipped ? 'EQUIPADO' : 'EQUIPAR';
-        const btnStyle = isEquipped ? `background: ${item.color}; color: #fff;` : '';
-
-        card.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <div>
-                    <h3 style="color: ${item.color};">${item.type === 'title' ? 'TÃ­tulo' : 'Borda'}: ${item.name}</h3>
-                </div>
-                <span style="font-size: 1.5rem;">${item.icon}</span>
-            </div>
-            <div class="reward-bottom" style="margin-top: 15px; justify-content: flex-end;">
-                <button class="btn-buy" style="${btnStyle}" onclick="equipItem('${item.type}', '${itemId}')">${btnLabel}</button>
-            </div>
-        `;
-        grid.appendChild(card);
-    });
-};
 
 // ==========================================================================
 // ONBOARDING WIZARD
@@ -1208,7 +881,7 @@ function initOnboardingWizard() {
         }
     });
 
-    // Passo 2: ArquÃ©tipo
+    // Passo 2: Arquétipo
     const btnNext2 = document.getElementById('btn-wizard-next-2');
     const archCards = document.querySelectorAll('.archetype-card');
     const otherInputContainer = document.getElementById('wizard-other-container');
@@ -1261,7 +934,7 @@ function initOnboardingWizard() {
         document.getElementById('wizard-step-3').style.display = 'block';
     });
 
-    // Passo 3: Comprometimento e FinalizaÃ§Ã£o
+    // Passo 3: Comprometimento e Finalização
     const btnFinish = document.getElementById('btn-wizard-finish');
     const hourCards = document.querySelectorAll('.hour-card');
     let selectedHours = null;
@@ -1284,7 +957,7 @@ function initOnboardingWizard() {
             const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
             gameState.activeDays = selectedDays.length > 0 ? selectedDays : [0,1,2,3,4,5,6]; // Fallback
             
-            // Adapta o deck de missÃµes com base no arquÃ©tipo e no tempo
+            // Adapta o deck de missões com base no arquétipo e no tempo
             applyArchetypeDeck(selectedArch, gameState.dailyCommitmentMins);
             
             wizardModal.style.display = 'none';
@@ -1292,7 +965,7 @@ function initOnboardingWizard() {
             updateUI();
             
             setTimeout(() => {
-                showSystemToast(`Despertar concluÃ­do, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
+                showSystemToast(`Despertar concluído, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
             }, 1000);
         }
     });
@@ -1305,67 +978,67 @@ function setupHookStep(archetype) {
 
     if (archetype === 'corpo') {
         lblArch.innerText = 'Alta Performance & Corpo';
-        lblHabit.innerText = 'Beber 1 copo de Ã¡gua ao acordar';
-        icon.innerText = 'ðŸ’§';
+        lblHabit.innerText = 'Beber 1 copo de água ao acordar';
+        icon.innerText = '💧';
     } else if (archetype === 'foco') {
         lblArch.innerText = 'Foco & Produtividade';
         lblHabit.innerText = '15 minutos de leitura (sem celular)';
-        icon.innerText = 'ðŸ“š';
+        icon.innerText = '📚';
     } else if (archetype === 'zen') {
-        lblArch.innerText = 'Zen & SaÃºde Mental';
+        lblArch.innerText = 'Zen & Saúde Mental';
         lblHabit.innerText = 'Meditar por 3 minutos';
-        icon.innerText = 'ðŸ§˜';
+        icon.innerText = '🧘';
     } else if (archetype === 'rotina') {
         lblArch.innerText = 'Estilo de Vida & Rotina';
         lblHabit.innerText = 'Arrumar a cama ao levantar';
-        icon.innerText = 'ðŸŒ…';
+        icon.innerText = '🌅';
     }
 }
 
 function applyArchetypeDeck(archetype, minutes) {
     let deck = [];
     
-    // 1. O Micro-hÃ¡bito base (sempre garantido pelo Hook)
+    // 1. O Micro-hábito base (sempre garantido pelo Hook)
     if (archetype === 'corpo') {
-        deck.push({ id: 'q-agua', title: 'Beber 1 copo de Ã¡gua ao acordar', type: 'daily', icon: 'ðŸ’§', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'physical' });
+        deck.push({ id: 'q-agua', title: 'Beber 1 copo de água ao acordar', type: 'daily', icon: '💧', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'physical' });
     } else if (archetype === 'foco') {
-        deck.push({ id: 'q-ler', title: '15 minutos de leitura (sem celular)', type: 'daily', icon: 'ðŸ“š', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' });
+        deck.push({ id: 'q-ler', title: '15 minutos de leitura (sem celular)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' });
     } else if (archetype === 'zen') {
-        deck.push({ id: 'q-meditar', title: 'Meditar por 3 minutos', type: 'daily', icon: 'ðŸ§˜', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' });
+        deck.push({ id: 'q-meditar', title: 'Meditar por 3 minutos', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' });
     } else if (archetype === 'rotina') {
-        deck.push({ id: 'q-cama', title: 'Arrumar a cama ao levantar', type: 'daily', icon: 'ðŸŒ…', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
+        deck.push({ id: 'q-cama', title: 'Arrumar a cama ao levantar', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
     } else {
-        deck.push({ id: 'q-foco', title: 'Dar o primeiro passo no meu objetivo', type: 'daily', icon: 'ðŸŽ¯', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'productivity' });
+        deck.push({ id: 'q-foco', title: 'Dar o primeiro passo no meu objetivo', type: 'daily', icon: '🎯', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'productivity' });
     }
 
-    // 2. Escalonando a quantidade de hÃ¡bitos pelo Tempo (minutos)
+    // 2. Escalonando a quantidade de hábitos pelo Tempo (minutos)
     if (minutes >= 30) {
-        // Adiciona mais um hÃ¡bito rÃ¡pido
-        deck.push({ id: 'q-acordar', title: 'Acordar Cedo (HorÃ¡rio Fixo)', type: 'daily', icon: 'ðŸŒ…', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
-        if (archetype !== 'corpo') deck.push({ id: 'q-agua2', title: 'Beber Ãgua (8 copos)', type: 'daily', icon: 'ðŸ’§', completed: false, xp: 15, gold: 8, target: 8, current: 0, minLevel: 1, skill: 'physical' });
+        // Adiciona mais um hábito rápido
+        deck.push({ id: 'q-acordar', title: 'Acordar Cedo (Horário Fixo)', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
+        if (archetype !== 'corpo') deck.push({ id: 'q-agua2', title: 'Beber Água (8 copos)', type: 'daily', icon: '💧', completed: false, xp: 15, gold: 8, target: 8, current: 0, minLevel: 1, skill: 'physical' });
     }
 
     if (minutes >= 60) {
-        // Adiciona hÃ¡bitos de esforÃ§o mÃ©dio/alto (1 hora permite treino ou estudos intensos)
+        // Adiciona hábitos de esforço médio/alto (1 hora permite treino ou estudos intensos)
         if (archetype === 'corpo' || archetype === 'zen') {
-            deck.push({ id: 'q-malhar', title: 'Treinar de ForÃ§a / Corrida (45min)', type: 'daily', icon: 'ðŸ‹ï¸â€â™‚ï¸', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
+            deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida (45min)', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
         } else {
-            deck.push({ id: 'q-estudo', title: 'Deep Work / Foco ininterrupto (1h)', type: 'daily', icon: 'ðŸ’»', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
+            deck.push({ id: 'q-estudo', title: 'Deep Work / Foco ininterrupto (1h)', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
         }
     }
 
     if (minutes >= 120) {
-        // Hardcore: Um mix completo (FÃ­sico + Mental + Sabedoria + Social)
-        deck.push({ id: 'q-detox', title: '1h sem celular antes de dormir', type: 'daily', icon: 'ðŸ“µ', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'mental' });
+        // Hardcore: Um mix completo (Físico + Mental + Sabedoria + Social)
+        deck.push({ id: 'q-detox', title: '1h sem celular antes de dormir', type: 'daily', icon: '📵', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'mental' });
         
-        // Se jÃ¡ nÃ£o tiver Treino, adiciona Treino. Se jÃ¡ nÃ£o tiver Deep Work, adiciona Deep Work.
+        // Se já não tiver Treino, adiciona Treino. Se já não tiver Deep Work, adiciona Deep Work.
         const hasTreino = deck.some(q => q.id === 'q-malhar');
         const hasEstudo = deck.some(q => q.id === 'q-estudo');
         
-        if (!hasTreino) deck.push({ id: 'q-malhar', title: 'Treinar de ForÃ§a / Corrida', type: 'daily', icon: 'ðŸ‹ï¸â€â™‚ï¸', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
-        if (!hasEstudo) deck.push({ id: 'q-estudo', title: 'Deep Work / Estudos', type: 'daily', icon: 'ðŸ’»', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
+        if (!hasTreino) deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
+        if (!hasEstudo) deck.push({ id: 'q-estudo', title: 'Deep Work / Estudos', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
         
-        deck.push({ id: 'q-social', title: 'Conectar com FamÃ­lia/Amigo (Sem tela)', type: 'daily', icon: 'â¤ï¸', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' });
+        deck.push({ id: 'q-social', title: 'Conectar com Família/Amigo (Sem tela)', type: 'daily', icon: '❤️', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' });
     }
     
     // Substitui o banco ativo e re-renderiza
@@ -1378,7 +1051,7 @@ function applyArchetypeDeck(archetype, minutes) {
 // RENDERIZADORES DE INTERFACE (UI)
 // ==========================================================================
 
-// Atualiza informaÃ§Ãµes gerais do Personagem
+// Atualiza informações gerais do Personagem
 function updateUI() {
     document.getElementById('lbl-level').innerText = gameState.level;
     document.getElementById('lbl-gold').innerText = gameState.gold;
@@ -1390,9 +1063,9 @@ function updateUI() {
         rankBadge.className = 'rank-badge ' + rankInfo.css;
     }
 
-    // COSMÃ‰TICOS (TÃ­tulos e Bordas)
+    // COSMÉTICOS (Títulos e Bordas)
     const titleLabels = {
-        'title_implacavel': 'O ImplacÃ¡vel',
+        'title_implacavel': 'O Implacável',
         'title_mestre': 'Mestre do Tempo'
     };
     const playerTitle = document.getElementById('lbl-player-title');
@@ -1408,14 +1081,11 @@ function updateUI() {
     }
 
     const avatarBorder = document.querySelector('.avatar-hex-border');
-    const avatarWrapper = document.querySelector('.avatar-hex-wrapper');
-    if (avatarBorder && avatarWrapper) {
+    if (avatarBorder) {
         if (gameState.inventory && gameState.inventory.activeBorder === 'border_neonred') {
             avatarBorder.classList.add('border-neonred');
-            avatarWrapper.classList.add('glow-neonred');
         } else {
             avatarBorder.classList.remove('border-neonred');
-            avatarWrapper.classList.remove('glow-neonred');
         }
     }
 
@@ -1423,10 +1093,10 @@ function updateUI() {
     const streakEl = document.getElementById('lbl-streak');
     if (streakEl) {
         const mult = calcStreakMultiplier();
-        const multStr = mult > 1 ? ` Â· x${mult.toFixed(2)}` : '';
+        const multStr = mult > 1 ? ` · x${mult.toFixed(2)}` : '';
         const shields = gameState.shields || 0;
         const shieldStr = shields > 0
-            ? '  ' + 'ðŸ›¡ï¸'.repeat(shields) + 'â–‘'.repeat(3 - shields)
+            ? '  ' + '🛡️'.repeat(shields) + '░'.repeat(3 - shields)
             : '';
         streakEl.innerText = `${gameState.streak}${multStr}${shieldStr}`;
     }
@@ -1437,7 +1107,7 @@ function updateUI() {
     const xpPercent = Math.min((gameState.xp / gameState.xpToNext) * 100, 100);
     document.getElementById('xp-bar-inner').style.width = `${xpPercent}%`;
 
-    // Progresso diÃ¡rio
+    // Progresso diário
     const totalDailies = gameState.quests.length;
     const completedDailies = gameState.quests.filter(q => q.completed).length;
     document.getElementById('lbl-daily-progress').innerText = `${completedDailies}/${totalDailies}`;
@@ -1446,7 +1116,7 @@ function updateUI() {
 
     // 3 Barras de atributos (Willpower / Intellect / Health)
     const attrs = computeAttributes();
-    const minPct = 0; // Preenchimento diretamente proporcional ao nÃ­vel/progresso
+    const minPct = 0; // Preenchimento diretamente proporcional ao nível/progresso
     ['willpower', 'intellect', 'health'].forEach(key => {
         const lvlEl  = document.getElementById(`attr-lvl-${key}`);
         const fillEl = document.getElementById(`attr-fill-${key}`);
@@ -1454,7 +1124,7 @@ function updateUI() {
         if (fillEl) fillEl.style.width = `${minPct + (attrs[key].pct * (100 - minPct))}%`;
     });
 
-    // Player Title DinÃ¢mico
+    // Player Title Dinâmico
     const titleLabel = document.getElementById('lbl-player-title');
     if (titleLabel) {
         titleLabel.innerText = computePlayerTitle(attrs);
@@ -1464,18 +1134,16 @@ function updateUI() {
     updateAvatarImage();
     renderSkills();
 
-    // â”€â”€ Sinergias ativas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Sinergias ativas ────────────────────────────────────────────────────
     renderSynergies();
     renderRankPerks();
-    renderWeeklyBoss();
     renderAchievements();
-    updateTabVisibility();
 }
 
 // Renderiza badges de sinergias ativas abaixo das barras de atributo
 function renderSynergies() {
     const container = document.getElementById('synergies-container');
-    if (!container) return; // Elemento ainda nÃ£o existe no HTML â€” seguro ignorar
+    if (!container) return; // Elemento ainda não existe no HTML — seguro ignorar
 
     const active = computeSynergies();
     if (active.length === 0) {
@@ -1514,12 +1182,12 @@ function renderRankPerks() {
     `).join('');
 }
 
-// Atualiza a imagem do avatar de acordo com o nÃ­vel atual
+// Atualiza a imagem do avatar de acordo com o nível atual
 function updateAvatarImage() {
     const avatarEl = document.getElementById('char-avatar-img');
     if (!avatarEl) return;
     
-    // Usa os nomes de rank combinados com prefixo numÃ©rico (1.rank-e.png, 2.rank-d.png, ...)
+    // Usa os nomes de rank combinados com prefixo numérico (1.rank-e.png, 2.rank-d.png, ...)
     const rank = getRankForLevel(gameState.level);
     const rankKey = rank.css.replace('rank-', ''); // 'e', 'd', 'c', etc.
     const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
@@ -1529,16 +1197,16 @@ function updateAvatarImage() {
     avatarEl.onerror = () => { avatarEl.src = 'avatars/1.rank-e.png'; }; // fallback
 }
 
-// Renderiza a Ã¡rvore de atributos (Hexagonal Radar Chart) dinamicamente
+// Renderiza a árvore de atributos (Hexagonal Radar Chart) dinamicamente
 function renderSkills() {
-    // Inicializa se nÃ£o existir no save
+    // Inicializa se não existir no save
     initSkillsState();
     
-    // Desenha o grÃ¡fico Radar Hexagonal no Canvas
+    // Desenha o gráfico Radar Hexagonal no Canvas
     drawRadarChart();
 }
 
-// Inicializa a Ã¡rvore de skills caso nÃ£o esteja presente no estado (retrocompatibilidade robusta)
+// Inicializa a árvore de skills caso não esteja presente no estado (retrocompatibilidade robusta)
 function initSkillsState() {
     if (!gameState.skills) {
         gameState.skills = {};
@@ -1548,18 +1216,18 @@ function initSkillsState() {
         if (!gameState.skills[type]) {
             gameState.skills[type] = { level: 1, xp: 0, xpToNext: 5 };
         } else {
-            // Recalcula xpToNext com a nova fÃ³rmula (migra saves antigos automaticamente)
+            // Recalcula xpToNext com a nova fórmula (migra saves antigos automaticamente)
             gameState.skills[type].xpToNext = calcSkillXpToNext(gameState.skills[type].level);
         }
     });
 }
 
-// FÃ³rmula de XP necessÃ¡rio para subir de nÃ­vel de skill (curva x1.4)
+// Fórmula de XP necessário para subir de nível de skill (curva x1.4)
 function calcSkillXpToNext(level) {
     return Math.max(5, Math.round(5 * Math.pow(1.4, level - 1)));
 }
 
-// XP ganho por conclusÃ£o de quest escala com o level geral do personagem
+// XP ganho por conclusão de quest escala com o level geral do personagem
 function calcSkillXpGain() {
     const lvl = gameState.level;
     if (lvl >= 30) return 4;
@@ -1590,21 +1258,21 @@ function addSkillXP(skillType) {
         skillObj.xpToNext = calcSkillXpToNext(skillObj.level);
         
         const skillNamesPT = {
-            physical: 'FÃ­sico ðŸ‹ï¸â€â™‚ï¸',
-            mental: 'Mental ðŸ§˜',
-            productivity: 'Foco ðŸ’»',
-            social: 'ConexÃ£o â¤ï¸',
-            wisdom: 'Sabedoria ðŸ“š',
-            routine: 'Rotina ðŸŒ…'
+            physical: 'Físico 🏋️‍♂️',
+            mental: 'Mental 🧘',
+            productivity: 'Foco 💻',
+            social: 'Conexão ❤️',
+            wisdom: 'Sabedoria 📚',
+            routine: 'Rotina 🌅'
         };
         
         setTimeout(() => {
-            showSystemToast(`â­ *ATRIBUTO UP!* ${gameState.playerName || 'Guerreiro'}, seu treino diÃ¡rio elevou o seu nÃ­vel de *${skillNamesPT[skillType]}* para o *NÃ­vel ${skillObj.level}*! A consistÃªncia lapida a mente e o corpo. Muito bem!`);
+            showSystemToast(`⭐ *ATRIBUTO UP!* ${gameState.playerName || 'Guerreiro'}, seu treino diário elevou o seu nível de *${skillNamesPT[skillType]}* para o *Nível ${skillObj.level}*! A consistência lapida a mente e o corpo. Muito bem!`);
 
         }, 1200);
     }
     
-    checkAndActivateBossQuest(); // â† NOVO: verifica conclusÃ£o de boss quest ao evoluir skill
+    checkAndActivateBossQuest(); // ← NOVO: verifica conclusão de boss quest ao evoluir skill
     saveGameData();
 }
 
@@ -1634,23 +1302,10 @@ function renderQuests() {
     dailyContainer.innerHTML = '';
     sideContainer.innerHTML  = '';
 
-    const allDailiesDone = gameState.quests.every(q => q.completed);
-    const dailyHeader = dailyContainer.previousElementSibling;
-    if (dailyHeader && dailyHeader.classList.contains('quest-section-header')) {
-        if (allDailiesDone && gameState.quests.length > 0) {
-            dailyHeader.classList.add('all-complete');
-            dailyHeader.innerHTML = 'MISSÃ•ES DIÃRIAS <span style="color:var(--neon-gold); font-size:10px; margin-left:8px; border:1px solid var(--neon-gold); padding:2px 4px; border-radius:4px; filter:drop-shadow(0 0 4px var(--glow-gold));">COMPLETO âœ“</span>';
-        } else {
-            dailyHeader.classList.remove('all-complete');
-            dailyHeader.innerHTML = 'MISSÃ•ES DIÃRIAS';
-        }
-    }
-
-    // â”€â”€ Dungeon ativa â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Dungeon ativa ────────────────────────────────────────────────────
     checkDungeonExpiry();
     const _d = gameState.activeDungeon;
-    const dungeonBanner = document.getElementById('dungeon-active-banner');
-    if (_d && !_d.completed && dungeonBanner) {
+    if (_d && !_d.completed) {
         const _now = Date.now();
         const _remMs  = Math.max(0, _d.expiresAt - _now);
         const _remH   = Math.floor(_remMs / 3600000);
@@ -1663,24 +1318,24 @@ function renderQuests() {
         _dc.setAttribute('data-skill', _d.skill);
         _dc.innerHTML = `
             <div class="quest-details">
-                <div class="quest-icon">âš”ï¸</div>
+                <div class="quest-icon">⚔️</div>
                 <div class="quest-title-wrap">
                     <span class="quest-title">${_d.title}</span>
                     <div class="quest-payouts">
                         <span class="diff-badge dungeon-badge">DUNGEON</span>
                         <span class="payout-xp">+${_d.xp} XP</span>
-                        <span class="payout-gold">+${_d.gold} ðŸ’°</span>
+                        <span class="payout-gold">+${_d.gold} 💰</span>
                     </div>
-                    <div class="dungeon-timer${_urgent ? ' dungeon-timer-urgent' : ''}">â³ ${_timeLabel}</div>
+                    <div class="dungeon-timer${_urgent ? ' dungeon-timer-urgent' : ''}">⏳ ${_timeLabel}</div>
                 </div>
             </div>
-            <button class="quest-complete-btn dungeon-btn" data-dungeon="true">âœ“</button>
+            <button class="quest-complete-btn dungeon-btn" data-dungeon="true">✓</button>
         `;
         sideContainer.appendChild(_dc);
     }
-    // â”€â”€ fim dungeon â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── fim dungeon ──────────────────────────────────────────────────────
 
-    // â”€â”€ Daily Quests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Daily Quests ──────────────────────────────────────────────────────
     gameState.quests.forEach(quest => {
         const card = document.createElement('div');
         card.className = `quest-card ${quest.completed ? 'completed' : ''}`;
@@ -1690,16 +1345,10 @@ function renderQuests() {
         const diffLabel = diffMap[quest.skill] || 'RANK E';
 
         let extraHTML = '';
-        if (quest.id === 'q-agua' || quest.id === 'q-agua2') {
-            const pct = Math.min(100, ((quest.current || 0) / 8) * 100);
+        if (quest.id === 'q-agua') {
             extraHTML = `<div class="water-adjust-row">
-                <button class="water-btn btn-minus" data-id="${quest.id}">âˆ’</button>
-                <div style="flex:1; display:flex; flex-direction:column; gap:4px; margin:0 5px;">
-                    <span class="water-val" style="align-self:center; font-size:11px; letter-spacing:1px; color:var(--text-muted);">${quest.current || 0}/8 copos</span>
-                    <div style="width:100%; height:4px; background:rgba(255,255,255,0.05); border-radius:2px; overflow:hidden;">
-                        <div style="height:100%; width:${pct}%; background:var(--neon-blue); box-shadow:0 0 5px var(--glow-blue); transition:width 0.3s ease;"></div>
-                    </div>
-                </div>
+                <button class="water-btn btn-minus" data-id="${quest.id}">−</button>
+                <span class="water-val">${quest.current || 0}/8 copos</span>
                 <button class="water-btn btn-plus" data-id="${quest.id}">+</button>
             </div>`;
         }
@@ -1712,20 +1361,20 @@ function renderQuests() {
                     <div class="quest-payouts">
                         <span class="diff-badge">${diffLabel}</span>
                         <span class="payout-xp">+${quest.xp} XP</span>
-                        <span class="payout-gold">+${quest.gold} ðŸª™</span>
+                        <span class="payout-gold">+${quest.gold} 🪙</span>
                     </div>
                     ${extraHTML}
                 </div>
             </div>
-            <button class="quest-complete-btn" data-id="${quest.id}">âœ“</button>
+            <button class="quest-complete-btn" data-id="${quest.id}">✓</button>
         `;
         dailyContainer.appendChild(card);
     });
 
-    // â”€â”€ Side Quests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Side Quests ───────────────────────────────────────────────────────
     const activeDungeon = gameState.activeDungeon;
     if (gameState.sideQuests.length === 0 && !(activeDungeon && !activeDungeon.completed)) {
-        sideContainer.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:24px;font-family:var(--font-hud);letter-spacing:1px">NENHUMA MISSÃƒO ATIVA</div>`;
+        sideContainer.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:24px;font-family:var(--font-hud);letter-spacing:1px">NENHUMA MISSÃO ATIVA</div>`;
     } else {
         gameState.sideQuests.forEach(quest => {
             const card = document.createElement('div');
@@ -1734,17 +1383,17 @@ function renderQuests() {
             const diffLabel = quest.difficulty === 'hard' ? 'RANK C' : quest.difficulty === 'medium' ? 'RANK D' : 'RANK E';
             card.innerHTML = `
                 <div class="quest-details">
-                    <div class="quest-icon">âš”ï¸</div>
+                    <div class="quest-icon">⚔️</div>
                     <div class="quest-title-wrap">
                         <span class="quest-title">${quest.title}</span>
                         <div class="quest-payouts">
                             <span class="diff-badge">${diffLabel}</span>
                             <span class="payout-xp">+${quest.xp} XP</span>
-                            <span class="payout-gold">+${quest.gold} ðŸª™</span>
+                            <span class="payout-gold">+${quest.gold} 🪙</span>
                         </div>
                     </div>
                 </div>
-                <button class="quest-complete-btn" data-id="${quest.id}">âœ“</button>
+                <button class="quest-complete-btn" data-id="${quest.id}">✓</button>
             `;
             sideContainer.appendChild(card);
         });
@@ -1757,22 +1406,22 @@ function renderRewards() {
     if (!rewardsContainer) return;
     rewardsContainer.innerHTML = `
         <div class="store-item" onclick="buyStoreItem('buff_autoHeal')">
-            <div class="store-info"><span>ðŸ§ª PoÃ§Ã£o de Cura</span><small>Protege o streak por 1 erro</small></div>
-            <button>100 ðŸª™</button>
+            <div class="store-info"><span>🧪 Poção de Cura</span><small>Protege o streak por 1 erro</small></div>
+            <button>100 🪙</button>
         </div>
         <div class="store-item" onclick="buyStoreItem('buff_doubleXp')">
-            <div class="store-info"><span>ðŸ“œ Pergaminho de Dobro XP</span><small>XP x2 por um dia</small></div>
-            <button>50 ðŸª™</button>
+            <div class="store-info"><span>📜 Pergaminho de Dobro XP</span><small>XP x2 por um dia</small></div>
+            <button>50 🪙</button>
         </div>
         <div class="store-item" onclick="buyStoreItem('buff_shield')">
-            <div class="store-info"><span>ðŸ›¡ï¸ Carga de Escudo</span><small>Reforce sua defesa</small></div>
-            <button>150 ðŸª™</button>
+            <div class="store-info"><span>🛡️ Carga de Escudo</span><small>Reforce sua defesa</small></div>
+            <button>150 🪙</button>
         </div>
     `;
 }
 
 // ==========================================================================
-// SISTEMA DE REGRAS DO JOGO E GAMIFICAÃ‡ÃƒO
+// SISTEMA DE REGRAS DO JOGO E GAMIFICAÇÃO
 // ==========================================================================
 
 // Finaliza ou altera status de uma Quest (Suporta desmarcar / cancelar)
@@ -1783,11 +1432,11 @@ function toggleQuest(id) {
         return;
     }
 
-    // Procura nas Quests DiÃ¡rias
+    // Procura nas Quests Diárias
     let quest = gameState.quests.find(q => q.id === id);
     let isDaily = true;
 
-    // Se nÃ£o achar, procura nas Side Quests
+    // Se não achar, procura nas Side Quests
     if (!quest) {
         quest = gameState.sideQuests.find(q => q.id === id);
         isDaily = false;
@@ -1801,7 +1450,7 @@ function toggleQuest(id) {
         // CANCELAR / DESMARCAR QUEST
         quest.completed = false;
         if (quest.id === 'q-agua') {
-            quest.current = 0; // Reseta contador de Ã¡gua
+            quest.current = 0; // Reseta contador de água
         }
         deductRewards(quest.xp, quest.gold);
         
@@ -1825,27 +1474,27 @@ function toggleQuest(id) {
         addSkillXP(skillType);
 
         // Impact Quote - Primeira do Dia
-        const todayStr = localDateStr();
+        const todayStr = new Date().toDateString();
         const completedDailies = gameState.quests.filter(q => q.completed).length;
         if (completedDailies === 1 && gameState.lastQuoteDate !== todayStr + '_first') {
             setTimeout(showImpactQuote, 1500);
             gameState.lastQuoteDate = todayStr + '_first';
         }
 
-        // Perk: Foco Matinal â€” +5 XP na primeira quest concluÃ­da do dia
+        // Perk: Foco Matinal — +5 XP na primeira quest concluída do dia
         if (hasPerk('foco_matinal') && !gameState._firstQuestBonusGiven) {
             gameState.xp = (gameState.xp || 0) + 5;
             gameState._firstQuestBonusGiven = true;
         }
 
-        // Perk: Momentum â€” +1 XP por quest consecutiva (acumula atÃ© 5)
+        // Perk: Momentum — +1 XP por quest consecutiva (acumula até 5)
         if (hasPerk('momentum')) {
             gameState._momentumStack = Math.min((gameState._momentumStack || 0) + 1, 5);
             const momentumBonus = gameState._momentumStack;
             gameState.xp = (gameState.xp || 0) + momentumBonus;
         }
 
-        // ApÃ³s addSkillXP(skillType), antes de showQuestCleared(quest):
+        // Após addSkillXP(skillType), antes de showQuestCleared(quest):
         if (!isDaily && gameState.bossQuest?.id === 'd-to-c' && !gameState.bossQuest.completed) {
             gameState.bossQuest.sideQuestsCompleted = (gameState.bossQuest.sideQuestsCompleted || 0) + 1;
         }
@@ -1857,9 +1506,9 @@ function toggleQuest(id) {
         if (isDaily) {
             checkAllDailies();
         } else {
-            // Remove a side quest concluÃ­da apÃ³s um tempo para limpar a lista
+            // Remove a side quest concluída após um tempo para limpar a lista
             setTimeout(() => {
-                // Apenas remove se ela continuar marcada como concluÃ­da (nÃ£o foi desmarcada)
+                // Apenas remove se ela continuar marcada como concluída (não foi desmarcada)
                 const currentQuest = gameState.sideQuests.find(q => q.id === id);
                 if (currentQuest && currentQuest.completed) {
                     gameState.sideQuests = gameState.sideQuests.filter(q => q.id !== id);
@@ -1869,13 +1518,13 @@ function toggleQuest(id) {
             }, 2000);
         }
     }
-    saveDailyHistory();
+
     saveGameData();
     renderQuests();
     updateUI();
 }
 
-// Gerencia copos de Ã¡gua individualmente
+// Gerencia copos de água individualmente
 function adjustWater(id, operation) {
     const quest = gameState.quests.find(q => q.id === id);
     if (!quest) return;
@@ -1883,7 +1532,7 @@ function adjustWater(id, operation) {
     const skillType = quest.skill || 'physical';
 
     if (quest.completed && operation === 'minus') {
-        // Se jÃ¡ estava concluÃ­da e diminuiu a Ã¡gua, desmarca
+        // Se já estava concluída e diminuiu a água, desmarca
         quest.completed = false;
         quest.current = 7;
         deductRewards(quest.xp, quest.gold);
@@ -1902,7 +1551,7 @@ function adjustWater(id, operation) {
             quest.current--;
         }
     }
-    saveDailyHistory();
+
     saveGameData();
     renderQuests();
     updateUI();
@@ -1910,7 +1559,7 @@ function adjustWater(id, operation) {
 
 // Soma XP e Gold, gerencia Level Up
 function addRewards(xpGained, goldGained) {
-    // Aplica multiplicador de streak e bÃ´nus de sinergias
+    // Aplica multiplicador de streak e bônus de sinergias
     const multiplier = calcStreakMultiplier();
     const synergyXp   = getSynergyXpBonus();
     const synergyGold = getSynergyGoldBonus();
@@ -1922,46 +1571,46 @@ function addRewards(xpGained, goldGained) {
     gameState.xp += bonusXp;
     gameState.gold += bonusGold;
 
-    // LÃ³gica de Level Up
+    // Lógica de Level Up
     if (gameState.xp >= gameState.xpToNext) {
         gameState.level++;
         gameState.xp = gameState.xp - gameState.xpToNext;
         gameState.xpToNext = Math.round(gameState.xpToNext * 1.3); // Escalabilidade de XP
         
-        // Sincroniza hÃ¡bitos do novo nÃ­vel desbloqueado
+        // Sincroniza hábitos do novo nível desbloqueado
         syncQuestsByLevel();
         
         triggerLevelUpOverlay();
-        checkAndActivateBossQuest(); // verifica boss quest ao subir de nÃ­vel
+        checkAndActivateBossQuest(); // verifica boss quest ao subir de nível
     }
 
-    // Verifica conclusÃ£o de boss quest mesmo sem level up
+    // Verifica conclusão de boss quest mesmo sem level up
     checkAndActivateBossQuest();
 }
 
-// Sincroniza a lista de hÃ¡bitos ativos de acordo com o nÃ­vel do jogador (Skill Tree)
+// Sincroniza a lista de hábitos ativos de acordo com o nível do jogador (Skill Tree)
 function syncQuestsByLevel() {
     let level = gameState.level;
     
-    // Filtra todos os hÃ¡bitos desbloqueados atÃ© o nÃ­vel atual
+    // Filtra todos os hábitos desbloqueados até o nível atual
     let unlockedHabits = ALL_HABITS_DATABASE.filter(h => h.minLevel <= level);
     
     let updatedQuests = [];
     
     unlockedHabits.forEach(dbHabit => {
-        // Verifica se o usuÃ¡rio jÃ¡ tem essa quest na sua lista ativa de hoje
+        // Verifica se o usuário já tem essa quest na sua lista ativa de hoje
         let activeQuest = gameState.quests.find(q => q.id === dbHabit.id);
         if (activeQuest) {
-            // MantÃ©m a quest ativa (preserva o status "completada" e contagem de Ã¡gua)
+            // Mantém a quest ativa (preserva o status "completada" e contagem de água)
             updatedQuests.push(activeQuest);
         } else {
             // Adiciona a nova quest desbloqueada
             updatedQuests.push({ ...dbHabit });
             
-            // Notifica o usuÃ¡rio no chat via Iroh caso nÃ£o seja a primeira carga do app
+            // Notifica o usuário no chat via Iroh caso não seja a primeira carga do app
             if (gameState.messages.length > 0) {
                 setTimeout(() => {
-                    showSystemToast(`ðŸ”¥ *SISTEMA:* IncrÃ­vel, ${gameState.playerName || 'Guerreiro'}! Ao alcanÃ§ar o nÃ­vel *${level}*, vocÃª desbloqueou uma nova quest diÃ¡ria: *"${dbHabit.title}"*! Que ela fortaleÃ§a a sua rotina!`);
+                    showSystemToast(`🔥 *SISTEMA:* Incrível, ${gameState.playerName || 'Guerreiro'}! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
 
                 }, 1500);
             }
@@ -1984,7 +1633,7 @@ function deductRewards(xpLost, goldLost) {
     }
 }
 
-// Dispara Overlay de evoluÃ§Ã£o (estilo Arise)
+// Dispara Overlay de evolução (estilo Arise)
 function triggerLevelUpOverlay() {
     const oldRank = getRankForLevel(gameState.level - 1);
     const newRank = getRankForLevel(gameState.level);
@@ -2005,31 +1654,11 @@ function triggerLevelUpOverlay() {
 
     setTimeout(() => {
         const msg = rankChanged
-            ? `âš¡ LEVEL UP! NÃ­vel ${gameState.level} atingido! E mais: ${oldRank.rank} â†’ ${newRank.rank}! O Sistema reconhece sua evoluÃ§Ã£o!`
-            : `âš¡ LEVEL UP! NÃ­vel ${gameState.level}! O Sistema reconhece sua evoluÃ§Ã£o!`;
+            ? `⚡ LEVEL UP! Nível ${gameState.level} atingido! E mais: ${oldRank.rank} → ${newRank.rank}! O Sistema reconhece sua evolução!`
+            : `⚡ LEVEL UP! Nível ${gameState.level}! O Sistema reconhece sua evolução!`;
         showSystemToast(msg);
 
     }, 1200);
-}
-
-// â”€â”€ HISTÃ“RICO DE CONSISTÃŠNCIA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// Salva o status das tarefas de hoje no histÃ³rico anual (Heatmap)
-function saveDailyHistory() {
-    if (!gameState.history) gameState.history = {};
-    const total = gameState.quests.length;
-    const count = gameState.quests.filter(q => q.completed).length;
-    
-    let status = 'missed';
-    if (total > 0) {
-        const pct = count / total;
-        if (count === 0) status = 'missed';
-        else if (pct < 0.5) status = 'bad';
-        else if (pct < 1.0) status = 'good';
-        else status = 'perfect';
-    }
-
-    const dateStr = localDateStr();
-    gameState.history[dateStr] = { count, total, status };
 }
 
 function checkAllDailies() {
@@ -2038,12 +1667,12 @@ function checkAllDailies() {
         gameState.streak++;
         gameState.consecutiveMisses = 0; // zera contador de falhas ao completar o dia
 
-        // Perk: Mente de Diamante â€” +10 XP ao completar todas as dailies
+        // Perk: Mente de Diamante — +10 XP ao completar todas as dailies
         if (hasPerk('mente_diamante')) {
             gameState.xp = (gameState.xp || 0) + 10;
         }
 
-        // Perk: O Sistema â€” +1 Skill XP em uma skill aleatÃ³ria ao completar todas as dailies
+        // Perk: O Sistema — +1 Skill XP em uma skill aleatória ao completar todas as dailies
         if (hasPerk('o_sistema')) {
             const skillTypes = ['physical', 'mental', 'productivity', 'social', 'wisdom', 'routine'];
             const randomSkill = skillTypes[Math.floor(Math.random() * skillTypes.length)];
@@ -2052,11 +1681,11 @@ function checkAllDailies() {
             }
         }
 
-        // Reseta flags de perks diÃ¡rios
+        // Reseta flags de perks diários
         gameState._firstQuestBonusGiven = false;
         gameState._momentumStack = 0;
 
-        // Incrementa contador para escudo (a cada 7 dias = +1 escudo, mÃ¡x 3)
+        // Incrementa contador para escudo (a cada 7 dias = +1 escudo, máx 3)
         gameState.consecutiveStreak7Days = (gameState.consecutiveStreak7Days || 0) + 1;
         if (gameState.consecutiveStreak7Days >= 7) {
             gameState.consecutiveStreak7Days = 0;
@@ -2064,19 +1693,9 @@ function checkAllDailies() {
             if ((gameState.shields || 0) < maxShields) {
                 gameState.shields = (gameState.shields || 0) + 1;
                 setTimeout(() => {
-                    showSystemToast(`ðŸ›¡ï¸ *ESCUDO GERADO!* VocÃª manteve a consistÃªncia por 7 dias seguidos. Um escudo foi adicionado ao seu arsenal â€” ele protege sua sequÃªncia em um dia difÃ­cil. Escudos ativos: ${gameState.shields}/${maxShields}`, 'toast-alert');
+                    showSystemToast(`🛡️ *ESCUDO GERADO!* Você manteve a consistência por 7 dias seguidos. Um escudo foi adicionado ao seu arsenal — ele protege sua sequência em um dia difícil. Escudos ativos: ${gameState.shields}/${maxShields}`, 'toast-alert');
                 }, 2000);
             }
-        }
-
-        // Weekly Boss: dia perfeito bate no Boss ativo
-        if (gameState.weeklyBoss && !gameState.weeklyBoss.defeated && !gameState.weeklyBoss.penaltyApplied) {
-            hitWeeklyBoss();
-        }
-
-        // Weekly Boss: spawn quando consecutiveStreak7Days acabou de zerar (mÃºltiplo de 7 atingido)
-        if (gameState.consecutiveStreak7Days === 0 && gameState.streak > 0 && gameState.streak % 7 === 0) {
-            setTimeout(() => spawnWeeklyBoss(), 1500);
         }
 
         saveGameData();
@@ -2086,7 +1705,7 @@ function checkAllDailies() {
         if (!gameState.activeDungeon) spawnDungeon();
 
         setTimeout(() => {
-            const todayStr = localDateStr();
+            const todayStr = new Date().toDateString();
             if (gameState.lastQuoteDate !== todayStr + '_all') {
                 showImpactQuote();
                 gameState.lastQuoteDate = todayStr + '_all';
@@ -2095,16 +1714,16 @@ function checkAllDailies() {
     }
 }
 
-// â”€â”€ QUEST CLEARED Animation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── QUEST CLEARED Animation ──────────────────────────────────────────────────
 function showQuestCleared(quest) {
     const skillToAttr = {
-        mental: 'FORÃ‡A DE VONTADE â†‘', routine: 'FORÃ‡A DE VONTADE â†‘',
-        wisdom: 'INTELECTO â†‘', productivity: 'INTELECTO â†‘',
-        physical: 'SAÃšDE â†‘', social: 'SAÃšDE â†‘'
+        mental: 'FORÇA DE VONTADE ↑', routine: 'FORÇA DE VONTADE ↑',
+        wisdom: 'INTELECTO ↑', productivity: 'INTELECTO ↑',
+        physical: 'SAÚDE ↑', social: 'SAÚDE ↑'
     };
     const overlay = document.getElementById('quest-cleared-overlay');
-    document.getElementById('quest-cleared-rewards').innerText = `+${quest.xp} XP Â· +${quest.gold} OURO`;
-    document.getElementById('quest-cleared-attr').innerText = skillToAttr[quest.skill] || 'ATRIBUTO â†‘';
+    document.getElementById('quest-cleared-rewards').innerText = `+${quest.xp} XP · +${quest.gold} OURO`;
+    document.getElementById('quest-cleared-attr').innerText = skillToAttr[quest.skill] || 'ATRIBUTO ↑';
     overlay.classList.add('show');
     setTimeout(() => overlay.classList.remove('show'), 1800);
 }
@@ -2114,13 +1733,13 @@ function applyDailyPenalty() {
     gameState.consecutiveMisses = (gameState.consecutiveMisses || 0) + 1;
     const misses = gameState.consecutiveMisses;
 
-    // â”€â”€ Verifica escudo (sÃ³ absorve no 1Âº dia faltoso) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Verifica escudo (só absorve no 1º dia faltoso) ──────────────────────
     if (misses === 1 && (gameState.shields || 0) > 0) {
         gameState.shields--;
         gameState.consecutiveStreak7Days = 0;
 
         setTimeout(() => {
-            showSystemToast(`ðŸ›¡ï¸ *ESCUDO ATIVADO!* VocÃª falhou hoje, mas seu escudo absorveu a penalidade. Streak preservada em ${gameState.streak} dias. Escudos restantes: ${gameState.shields}/3. NÃ£o abuse dessa proteÃ§Ã£o.`);
+            showSystemToast(`🛡️ *ESCUDO ATIVADO!* Você falhou hoje, mas seu escudo absorveu a penalidade. Streak preservada em ${gameState.streak} dias. Escudos restantes: ${gameState.shields}/3. Não abuse dessa proteção.`);
 
         }, 500);
 
@@ -2129,7 +1748,7 @@ function applyDailyPenalty() {
         return;
     }
 
-    // â”€â”€ Determina nÃ­vel da penalidade â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Determina nível da penalidade ────────────────────────────────────────
     let xpPenaltyPct, streakReset, skillPenalty, debuffDurationMs, irohTone;
 
     if (misses >= 5) {
@@ -2159,19 +1778,19 @@ function applyDailyPenalty() {
         irohTone        = 'motivational';
     }
 
-    // â”€â”€ Aplica penalidade de XP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Aplica penalidade de XP ──────────────────────────────────────────────
     const penalty = Math.max(5, Math.round(gameState.xp * xpPenaltyPct));
     gameState.xp  = Math.max(0, gameState.xp - penalty);
 
-    // â”€â”€ Reseta streak se necessÃ¡rio â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Reseta streak se necessário ─────────────────────────────────────────
     if (streakReset) {
         gameState.streak = 0;
         gameState.consecutiveStreak7Days = 0;
     }
 
-    // â”€â”€ Aplica penalidade nas skills (âˆ’1 XP nas skills com falhas comuns) â”€â”€â”€
+    // ── Aplica penalidade nas skills (−1 XP nas skills com falhas comuns) ───
     if (skillPenalty && gameState.skills) {
-        // Penaliza skills ligadas a quests nÃ£o concluÃ­das
+        // Penaliza skills ligadas a quests não concluídas
         const failedSkills = new Set();
         (gameState.quests || []).forEach(q => {
             if (!q.completed && q.skill) failedSkills.add(q.skill);
@@ -2184,24 +1803,24 @@ function applyDailyPenalty() {
         });
     }
 
-    // â”€â”€ Debuff visual no player card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Debuff visual no player card ─────────────────────────────────────────
     const card = document.getElementById('player-card');
     if (card) {
         card.classList.add('debuffed');
         setTimeout(() => card.classList.remove('debuffed'), debuffDurationMs);
     }
 
-    // â”€â”€ Overlay de penalidade â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    document.getElementById('penalty-loss-text').innerText = `âˆ’${penalty} XP`;
+    // ── Overlay de penalidade ────────────────────────────────────────────────
+    document.getElementById('penalty-loss-text').innerText = `−${penalty} XP`;
     document.getElementById('penalty-overlay').style.display = 'flex';
 
-    // â”€â”€ Mensagem do Iroh por tom â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // ── Mensagem do Iroh por tom ─────────────────────────────────────────────
     setTimeout(() => {
         const irohMessages = {
-            motivational: `â˜€ï¸ *SISTEMA:* VocÃª falhou hoje, ${gameState.playerName || 'Guerreiro'}. Mas um tropeÃ§o nÃ£o define sua jornada. _"A jornada mais longa comeÃ§a com um Ãºnico passo â€” e vocÃª ainda pode dar o de amanhÃ£."_ Penalidade leve aplicada: âˆ’${penalty} XP. Levante-se.`,
-            firm: `âš ï¸ *SISTEMA:* Dois dias, ${gameState.playerName || 'Guerreiro'}. O Sistema registrou. Sua sequÃªncia foi zerada. _"O rio que para de correr logo apodrece."_ âˆ’${penalty} XP deduzidos. NÃ£o deixe virar hÃ¡bito.`,
-            angry: `â˜ ï¸ *SISTEMA:* TrÃªs dias consecutivos de falha. Penalidade severa aplicada. âˆ’${penalty} XP. Suas habilidades sofreram regressÃ£o. _"VocÃª conhece seu potencial e ainda assim escolheu a fraqueza."_ Corrija isso agora.`,
-            severe: `ðŸ’€ *SISTEMA â€” ALERTA CRÃTICO:* Cinco dias ou mais sem cumprir suas missÃµes. Penalidade mÃ¡xima: âˆ’${penalty} XP. Debuff de 48h ativo. RegressÃ£o de habilidades aplicada. _"Um guerreiro que abandona sua disciplina por dias nÃ£o Ã© mais um guerreiro â€” Ã© apenas alguÃ©m com o uniforme."_ Retorne. Agora.`
+            motivational: `☀️ *SISTEMA:* Você falhou hoje, ${gameState.playerName || 'Guerreiro'}. Mas um tropeço não define sua jornada. _"A jornada mais longa começa com um único passo — e você ainda pode dar o de amanhã."_ Penalidade leve aplicada: −${penalty} XP. Levante-se.`,
+            firm: `⚠️ *SISTEMA:* Dois dias, ${gameState.playerName || 'Guerreiro'}. O Sistema registrou. Sua sequência foi zerada. _"O rio que para de correr logo apodrece."_ −${penalty} XP deduzidos. Não deixe virar hábito.`,
+            angry: `☠️ *SISTEMA:* Três dias consecutivos de falha. Penalidade severa aplicada. −${penalty} XP. Suas habilidades sofreram regressão. _"Você conhece seu potencial e ainda assim escolheu a fraqueza."_ Corrija isso agora.`,
+            severe: `💀 *SISTEMA — ALERTA CRÍTICO:* Cinco dias ou mais sem cumprir suas missões. Penalidade máxima: −${penalty} XP. Debuff de 48h ativo. Regressão de habilidades aplicada. _"Um guerreiro que abandona sua disciplina por dias não é mais um guerreiro — é apenas alguém com o uniforme."_ Retorne. Agora.`
         };
         showSystemToast(irohMessages[irohTone]);
 
@@ -2212,7 +1831,7 @@ function applyDailyPenalty() {
 }
 
 // ==========================================================================
-// LOJA E TAVERNA (COMPRA DE BUFFS E COSMÃ‰TICOS)
+// LOJA E TAVERNA (COMPRA DE BUFFS E COSMÉTICOS)
 // ==========================================================================
 function buyStoreItem(itemId) {
     const prices = {
@@ -2228,7 +1847,7 @@ function buyStoreItem(itemId) {
     if (!cost) return;
 
     if ((gameState.gold || 0) < cost) {
-        showSystemToast(`âš ï¸ *OURO INSUFICIENTE.* O Sistema nÃ£o faz caridade. VocÃª precisa de ${cost} ðŸ’°.`);
+        showSystemToast(`⚠️ *OURO INSUFICIENTE.* O Sistema não faz caridade. Você precisa de ${cost} 💰.`);
         return;
     }
 
@@ -2238,54 +1857,56 @@ function buyStoreItem(itemId) {
         
         if (itemId === 'buff_autoHeal') {
             if (gameState.buffs.autoHeal) {
-                showSystemToast("âš ï¸ VocÃª jÃ¡ possui uma PoÃ§Ã£o de Cura ativa no inventÃ¡rio.");
+                showSystemToast("⚠️ Você já possui uma Poção de Cura ativa no inventário.");
                 return;
             }
             gameState.buffs.autoHeal = true;
-            showSystemToast("ðŸ§ª *POÃ‡ÃƒO COMPRADA!* Seu prÃ³ximo erro serÃ¡ perdoado. O Sistema protege os preparados.");
+            showSystemToast("🧪 *POÇÃO COMPRADA!* Seu próximo erro será perdoado. O Sistema protege os preparados.");
         } 
         else if (itemId === 'buff_doubleXp') {
             if (gameState.buffs.doubleXp) {
-                showSystemToast("âš ï¸ Seu Pergaminho jÃ¡ estÃ¡ ativo atÃ© meia-noite!");
+                showSystemToast("⚠️ Seu Pergaminho já está ativo até meia-noite!");
                 return;
             }
             gameState.buffs.doubleXp = true;
-            showSystemToast("ðŸ“œ *CONHECIMENTO ADQUIRIDO!* Todo XP ganho hoje serÃ¡ DOBRADO. VÃ¡ trabalhar.");
+            showSystemToast("📜 *CONHECIMENTO ADQUIRIDO!* Todo XP ganho hoje será DOBRADO. Vá trabalhar.");
         }
         else if (itemId === 'buff_shield') {
             gameState.shields = (gameState.shields || 0) + 1;
-            showSystemToast(`ðŸ›¡ï¸ *ESCUDO COMPRADO!* VocÃª adicionou 1 carga ao seu escudo principal. Total: ${gameState.shields}`);
+            showSystemToast(`🛡️ *ESCUDO COMPRADO!* Você adicionou 1 carga ao seu escudo principal. Total: ${gameState.shields}`);
         }
     } 
     else if (itemId.startsWith('title_') || itemId.startsWith('border_')) {
         if (!gameState.inventory) gameState.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" };
         
         const isTitle = itemId.startsWith('title_');
-        const typeStr = isTitle ? 'title' : 'border';
         const inventoryList = isTitle ? gameState.inventory.unlockedTitles : gameState.inventory.unlockedBorders;
-        const displayType = isTitle ? 'TÃ­tulo' : 'Borda';
+        const activeKey = isTitle ? 'activeTitle' : 'activeBorder';
+        const displayType = isTitle ? 'Título' : 'Borda';
 
         if (inventoryList.includes(itemId)) {
-            showSystemToast(`âœ¨ *${displayType} jÃ¡ adquirido!* Equipando...`);
-            equipItem(typeStr, itemId);
-            return; 
+            // Se já tem, apenas equipa
+            gameState.inventory[activeKey] = itemId;
+            showSystemToast(`✨ *${displayType} Equipado(a)!* Atualizado no seu perfil.`);
+            saveGameData();
+            updateUI(); // Vai atualizar a UI do header
+            return; // Retorna para não cobrar ouro de novo
         } else {
-            gameState.gold -= cost;
+            // Compra e equipa
             inventoryList.push(itemId);
-            showSystemToast(`ðŸ’Ž *${displayType} Desbloqueado(a) e Equipado(a)!*`);
-            equipItem(typeStr, itemId);
-            return;
+            gameState.inventory[activeKey] = itemId;
+            showSystemToast(`💎 *${displayType} Desbloqueado(a) e Equipado(a)!*`);
         }
     }
 
-    // Cobra o ouro (para buffs)
+    // Cobra o ouro
     gameState.gold -= cost;
     saveGameData();
     updateUI();
 }
 
 // ==========================================================================
-// SISTEMA DE NOTIFICAÃ‡Ã•ES (TOASTS) E IMPACT QUOTES
+// SISTEMA DE NOTIFICAÇÕES (TOASTS) E IMPACT QUOTES
 // ==========================================================================
 
 function showSystemToast(text, type = '') {
@@ -2317,7 +1938,7 @@ function showImpactQuote() {
     
     const randomQuote = IMPACT_QUOTES[Math.floor(Math.random() * IMPACT_QUOTES.length)];
     textEl.innerText = `"${randomQuote.text}"`;
-    authorEl.innerText = `â€” ${randomQuote.author}`;
+    authorEl.innerText = `— ${randomQuote.author}`;
     
     modal.style.display = 'flex';
 }
@@ -2335,24 +1956,12 @@ document.getElementById('close-quote-modal')?.addEventListener('click', () => {
 // PROCESSAMENTO DE EVENTOS E MODAIS
 // ==========================================================================
 function setupEventListeners() {
-    // Dungeon banner button
-    document.getElementById('dungeon-active-banner')?.addEventListener('click', (e) => {
-        if (e.target.classList.contains('dungeon-banner-btn') || e.target.dataset.dungeon) {
-            completeDungeon();
-        }
-    });
-
     // Quests
     document.getElementById('daily-quests-list').addEventListener('click', handleQuestAction);
     document.getElementById('side-quests-list').addEventListener('click', handleQuestAction);
 
+    // Taverna
     // Modais
-    const btnCloseBoss = document.getElementById('btn-close-boss-modal');
-    if (btnCloseBoss) {
-        btnCloseBoss.addEventListener('click', () => {
-            document.getElementById('weekly-boss-modal').style.display = 'none';
-        });
-    }
     const modalSq  = document.getElementById('modal-sidequest');
     const modalAv  = document.getElementById('modal-avatar-zoom');
 
@@ -2397,7 +2006,7 @@ function setupEventListeners() {
     document.getElementById('close-avatar-zoom').addEventListener('click', () => modalAv.style.display = 'none');
 }
 
-// Abre o modal de zoom do avatar com o tÃ­tulo correto e imagem ampliada
+// Abre o modal de zoom do avatar com o título correto e imagem ampliada
 function openAvatarZoom() {
     const modal = document.getElementById('modal-avatar-zoom');
     const imgLarge = document.getElementById('img-avatar-large');
@@ -2406,7 +2015,7 @@ function openAvatarZoom() {
     if (!modal || !imgLarge || !titleEl) return;
     
     let level = gameState.level;
-    let title = "Recruta - NÃ­vel " + level;
+    let title = "Recruta - Nível " + level;
     
     // Calcula rank e arquivo de imagem com base nos arquivos numerados
     const rank = getRankForLevel(level);
@@ -2416,13 +2025,13 @@ function openAvatarZoom() {
     let src = `avatars/${num}.rank-${rankKey}.png`;
     
     if (level >= 20) {
-        title = "Semideus do Foco - NÃ­vel " + level;
+        title = "Semideus do Foco - Nível " + level;
     } else if (level >= 15) {
-        title = "HerÃ³i LendÃ¡rio - NÃ­vel " + level;
+        title = "Herói Lendário - Nível " + level;
     } else if (level >= 10) {
-        title = "Guerreiro de Elite - NÃ­vel " + level;
+        title = "Guerreiro de Elite - Nível " + level;
     } else if (level >= 5) {
-        title = "Aventureiro - NÃ­vel " + level;
+        title = "Aventureiro - Nível " + level;
     }
     
     imgLarge.src = src;
@@ -2433,7 +2042,7 @@ function openAvatarZoom() {
 function handleQuestAction(e) {
     const target = e.target;
     
-    // Dungeon: clique no botÃ£o ou no card
+    // Dungeon: clique no botão ou no card
     if (target.classList.contains('dungeon-btn') || target.closest('.dungeon-card')) {
         const btn = target.classList.contains('dungeon-btn')
             ? target
@@ -2444,7 +2053,7 @@ function handleQuestAction(e) {
         }
     }
 
-    // Se for clique nos botÃµes de ajustar Ã¡gua
+    // Se for clique nos botões de ajustar água
     if (target.classList.contains('water-btn')) {
         const id = target.getAttribute('data-id');
         const operation = target.classList.contains('btn-plus') ? 'plus' : 'minus';
@@ -2452,7 +2061,7 @@ function handleQuestAction(e) {
         return;
     }
     
-    // Caso contrÃ¡rio, se clicou em qualquer lugar no card, completa a quest
+    // Caso contrário, se clicou em qualquer lugar no card, completa a quest
     const card = target.closest('.quest-card');
     if (card) {
         const btn = card.querySelector('.quest-complete-btn');
@@ -2464,16 +2073,15 @@ function handleQuestAction(e) {
 }
 
 // ==========================================================================
-// PERSISTÃŠNCIA DE DADOS (LOCALSTORAGE)
+// PERSISTÊNCIA DE DADOS (LOCALSTORAGE)
 // ==========================================================================
 function saveGameData() {
     checkAchievements();
     localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
-    if (typeof saveToCloud === 'function') saveToCloud();
 }
 
 function loadGameData() {
-    // FORÃ‡AR RESET ÃšNICO PEDIDO PELO USUÃRIO (NÃ­vel 1, 0 Gold, 0 Streak)
+    // FORÇAR RESET ÚNICO PEDIDO PELO USUÁRIO (Nível 1, 0 Gold, 0 Streak)
     if (localStorage.getItem('force_reset_v3') !== 'true') {
         localStorage.removeItem('lifeRPG_gameState_Mateus');
         localStorage.setItem('force_reset_v3', 'true');
@@ -2483,21 +2091,19 @@ function loadGameData() {
             xpToNext: 100,
             gold: 0,
             streak: 0,
-            history: {},
             shields: 0,
             consecutiveStreak7Days: 0,
             consecutiveMisses: 0,
             bossQuest: null,
             activeDungeon: null,
-            weeklyBoss: null,
-            lastCheckedDate: localDateStr(),
+            lastCheckedDate: new Date().toDateString(),
             unlockedAchievements: [],
             quests: [],
             sideQuests: [],
             rewards: [
-                { id: 'r-serie', title: 'Assistir 1 Hora de SÃ©rie', cost: 35, icon: 'ðŸ“º' },
-                { id: 'r-cheat', title: 'RefeiÃ§Ã£o Livre / Doce', cost: 80, icon: 'ðŸ”' },
-                { id: 'r-game',  title: 'Jogar Videogame por 1h',  cost: 45, icon: 'ðŸŽ®' }
+                { id: 'r-serie', title: 'Assistir 1 Hora de Série', cost: 35, icon: '📺' },
+                { id: 'r-cheat', title: 'Refeição Livre / Doce', cost: 80, icon: '🍔' },
+                { id: 'r-game',  title: 'Jogar Videogame por 1h',  cost: 45, icon: '🎮' }
             ],
             skills: {
                 physical:     { level: 1, xp: 0, xpToNext: 5 },
@@ -2514,7 +2120,7 @@ function loadGameData() {
             },
             history: {}, // Store daily logs { "2026-06-08": { status: "perfect", count: 3, total: 3, completedIds: [] } }
             buffs: { autoHeal: false, doubleXp: false, shieldDays: 0 },
-            inventory: { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null }
+            inventory: { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" }
         };
         saveGameData();
         window.location.reload();
@@ -2540,65 +2146,33 @@ function loadGameData() {
             parsed.history = {};
         }
 
-        // MOCK DATA (Gera 90 dias caso nÃ£o exista histÃ³rico e o level for > 1)
-        if (Object.keys(parsed.history).length === 0 && parsed.level > 1) {
-            const now = new Date();
-            const statuses = ['missed', 'bad', 'good', 'perfect', 'perfect', 'good'];
-            for (let i = 1; i <= 90; i++) {
-                const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-                let count = 0, total = 8;
-                if (randomStatus === 'perfect') count = 8;
-                else if (randomStatus === 'good') count = 5;
-                else if (randomStatus === 'bad') count = 2;
-                
-                parsed.history[localDateStr(d)] = { status: randomStatus, count: count, total: total };
-            }
-        }
-
         // Migration: Ensure buffs and inventory exist
         if (!parsed.buffs) {
             parsed.buffs = { autoHeal: false, doubleXp: false, shieldDays: 0 };
         }
         if (!parsed.inventory) {
-            parsed.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null };
-        } else {
-            if (!parsed.inventory.unlockedTitles) parsed.inventory.unlockedTitles = [];
-            if (!parsed.inventory.unlockedBorders) parsed.inventory.unlockedBorders = [];
-            
-            // Garantir que nulos sejam usados em vez de string vazia ou "default"
-            if (parsed.inventory.activeTitle === "" || parsed.inventory.activeTitle === "default") parsed.inventory.activeTitle = null;
-            if (parsed.inventory.activeBorder === "" || parsed.inventory.activeBorder === "default") parsed.inventory.activeBorder = null;
-
-            if (parsed.inventory.activeTitle && !parsed.inventory.unlockedTitles.includes(parsed.inventory.activeTitle)) {
-                parsed.inventory.unlockedTitles.push(parsed.inventory.activeTitle);
-            }
-            if (parsed.inventory.activeBorder && !parsed.inventory.unlockedBorders.includes(parsed.inventory.activeBorder)) {
-                parsed.inventory.unlockedBorders.push(parsed.inventory.activeBorder);
-            }
+            parsed.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" };
         }
 
-        // Verifica reset diÃ¡rio
-        const todayStr = localDateStr();
+        // Verifica reset diário
+        const todayStr = new Date().toDateString();
         if (parsed.lastCheckedDate && parsed.lastCheckedDate !== todayStr) {
             const completedCount = (parsed.quests || []).filter(q => q.completed).length;
             const totalCount = (parsed.quests || []).length;
             const allWereDone = completedCount >= totalCount && totalCount > 0;
             
-            // Grava o HistÃ³rico do dia anterior
-            let dailyStatus = 'missed';
+            // Grava o Histórico do dia anterior
+            let dailyStatus = 'skipped';
             if (totalCount > 0) {
-                const pct = completedCount / totalCount;
-                if (completedCount === 0) dailyStatus = 'missed';
-                else if (pct < 0.5) dailyStatus = 'bad';
-                else if (pct < 1.0) dailyStatus = 'good';
-                else dailyStatus = 'perfect';
+                if (completedCount === totalCount) dailyStatus = 'perfect';
+                else if (completedCount === 0) dailyStatus = 'failed';
+                else dailyStatus = 'partial';
             }
 
             // Identifica se era um dia ativo (para evitar punir dias de descanso)
             const oldDateObj = new Date(parsed.lastCheckedDate);
             const isRestDay = parsed.activeDays && !parsed.activeDays.includes(oldDateObj.getDay());
-            if (isRestDay && dailyStatus === 'missed') {
+            if (isRestDay && dailyStatus === 'failed') {
                 dailyStatus = 'skipped';
             }
 
@@ -2614,12 +2188,12 @@ function loadGameData() {
                 // Penalidade adiada para depois do DOM estar pronto
                 setTimeout(() => applyDailyPenalty(), 2000);
             }
-            // Reseta hÃ¡bitos diÃ¡rios para um novo dia
+            // Reseta hábitos diários para um novo dia
             parsed.quests.forEach(q => {
                 q.completed = false;
                 if (q.id === 'q-agua') q.current = 0;
             });
-            // Reseta flags de perks diÃ¡rios
+            // Reseta flags de perks diários
             parsed._firstQuestBonusGiven = false;
             parsed._momentumStack = 0;
             
@@ -2629,7 +2203,7 @@ function loadGameData() {
         }
 
         gameState = parsed;
-        initSkillsState(); // Garante inicializaÃ§Ã£o das skills caso seja um save antigo
+        initSkillsState(); // Garante inicialização das skills caso seja um save antigo
         
         // Inicializa campos novos caso seja um save antigo
         if (gameState.shields === undefined) gameState.shields = 0;
@@ -2637,7 +2211,6 @@ function loadGameData() {
         if (gameState.consecutiveMisses === undefined) gameState.consecutiveMisses = 0;
         if (gameState.bossQuest === undefined) gameState.bossQuest = null;
         if (gameState.activeDungeon === undefined) gameState.activeDungeon = null;
-        if (gameState.weeklyBoss === undefined) gameState.weeklyBoss = null;
         if (gameState.unlockedAchievements === undefined) gameState.unlockedAchievements = [];
         if (gameState._dungeonsCompleted === undefined) gameState._dungeonsCompleted = 0;
 
@@ -2645,24 +2218,23 @@ function loadGameData() {
             gameState.notificationTimes = { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };
         }
     } else {
-        gameState.lastCheckedDate = localDateStr();
+        gameState.lastCheckedDate = new Date().toDateString();
         gameState.notificationTimes = { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };
         initSkillsState();
     }
     
-    // Garante que a lista de hÃ¡bitos esteja sincronizada com o nÃ­vel atual na carga do app
+    // Garante que a lista de hábitos esteja sincronizada com o nível atual na carga do app
     syncQuestsByLevel();
 
-    // Dungeons e Boss: verifica expiraÃ§Ã£o e gera se nÃ£o houver ativa
+    // Dungeons: verifica expiração e gera se não houver ativa
     checkDungeonExpiry();
-    checkWeeklyBossExpiry();
     if (!gameState.activeDungeon && hasSkillLV3()) {
         setTimeout(() => spawnDungeon(), 3000);
     }
 }
 
 // ==========================================================================
-// CONFIGURAÃ‡Ã•ES & PWA MOBILE ENGINE
+// CONFIGURAÇÕES & PWA MOBILE ENGINE
 // ==========================================================================
 let serviceWorkerRegistration = null;
 let deferredPrompt = null;
@@ -2674,7 +2246,7 @@ function registerServiceWorker() {
                 serviceWorkerRegistration = reg;
                 console.log('[App] SW Registrado:', reg.scope);
                 
-                // Configura notificaÃ§Ãµes iniciais assim que o SW estiver pronto
+                // Configura notificações iniciais assim que o SW estiver pronto
                 navigator.serviceWorker.ready.then(() => {
                     updateSWNotifications();
                 });
@@ -2709,7 +2281,7 @@ function setupSettingsListeners() {
         });
     }
 
-    // Solicitar permissÃ£o de notificaÃ§Ã£o
+    // Solicitar permissão de notificação
     const btnRequestNotif = document.getElementById('btn-request-notif');
     if (btnRequestNotif) {
         btnRequestNotif.addEventListener('click', () => {
@@ -2722,7 +2294,7 @@ function setupSettingsListeners() {
         });
     }
 
-    // Salvar horÃ¡rios
+    // Salvar horários
     const btnSaveNotif = document.getElementById('btn-save-notif');
     if (btnSaveNotif) {
         btnSaveNotif.addEventListener('click', () => {
@@ -2737,7 +2309,7 @@ function setupSettingsListeners() {
             
             // UI feedback
             const originalText = btnSaveNotif.innerText;
-            btnSaveNotif.innerText = 'âœ“ SALVO';
+            btnSaveNotif.innerText = '✓ SALVO';
             btnSaveNotif.style.background = 'linear-gradient(90deg, var(--neon-green), #34d399)';
             setTimeout(() => {
                 btnSaveNotif.innerText = originalText;
@@ -2746,7 +2318,7 @@ function setupSettingsListeners() {
         });
     }
 
-    // Testar notificaÃ§Ã£o
+    // Testar notificação
     const btnTestNotif = document.getElementById('btn-test-notif');
     if (btnTestNotif) {
         btnTestNotif.addEventListener('click', () => {
@@ -2755,7 +2327,7 @@ function setupSettingsListeners() {
                     type: 'TEST_NOTIFICATION'
                 });
             } else {
-                alert('Service Worker nÃ£o estÃ¡ ativo ou nÃ£o foi registrado. Aguarde e tente novamente.');
+                alert('Service Worker não está ativo ou não foi registrado. Aguarde e tente novamente.');
             }
         });
     }
@@ -2764,22 +2336,13 @@ function setupSettingsListeners() {
     const btnExportSave = document.getElementById('btn-export-save');
     if (btnExportSave) {
         btnExportSave.addEventListener('click', () => {
-            try {
-                const payload = JSON.stringify(gameState, null, 2);
-                const blob = new Blob([payload], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                const ts = new Date().toISOString().slice(0,10);
-                a.href = url;
-                a.download = `thesystem-backup-${ts}.json`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                URL.revokeObjectURL(url);
-                setTimeout(() => showSystemToast('ðŸ’¾ *BACKUP EXPORTADO!* Seu arquivo de save foi baixado com sucesso. Guarde-o em local seguro â€” ele Ã© sua memÃ³ria.'), 300);
-            } catch(err) {
-                showSystemToast('âš ï¸ Erro ao exportar o save. Tente novamente.');
-            }
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "liferpg-backup.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
         });
     }
 
@@ -2794,37 +2357,38 @@ function setupSettingsListeners() {
             reader.onload = (event) => {
                 try {
                     const parsed = JSON.parse(event.target.result);
+                    // Validação simples do save
                     if (parsed.hasOwnProperty('level') && parsed.hasOwnProperty('xp') && parsed.hasOwnProperty('gold')) {
+                        // Salva e recarrega
                         localStorage.setItem('lifeRPG_gameState', JSON.stringify(parsed));
-                        // Toast antes do reload
-                        showSystemToast('ðŸ“¥ *SAVE IMPORTADO!* MemÃ³ria restaurada com sucesso. O Sistema estÃ¡ reiniciando...');
-                        setTimeout(() => window.location.reload(), 2000);
+                        alert('💾 Save importado com sucesso! Recarregando...');
+                        window.location.reload();
                     } else {
-                        showSystemToast('âš ï¸ *ARQUIVO INVÃLIDO.* O arquivo nÃ£o parece ser um backup vÃ¡lido do The System.');
+                        alert('Erro: Arquivo JSON não parece ser um backup válido do LifeRPG.');
                     }
                 } catch (err) {
-                    showSystemToast('âŒ *ERRO AO IMPORTAR.* Arquivo corrompido ou formato desconhecido.');
+                    alert('Erro ao processar o arquivo de save.');
                 }
             };
             reader.readAsText(file);
         });
     }
 
-    // Hard Reset (DestruiÃ§Ã£o do Sistema)
+    // Hard Reset (Destruição do Sistema)
     const btnHardReset = document.getElementById('btn-hard-reset');
     if (btnHardReset) {
         btnHardReset.addEventListener('click', () => {
-            const confirmed = confirm("ðŸ”¥ TEM CERTEZA QUE DESEJA APAGAR TODO O SEU PROGRESSO?\n\nEsta aÃ§Ã£o destruirÃ¡ seu histÃ³rico, atributos, missÃµes e inventÃ¡rio. VocÃª voltarÃ¡ ao nÃ­vel 1 e o Onboarding serÃ¡ reiniciado.\n\nESTA AÃ‡ÃƒO NÃƒO PODE SER DESFEITA.");
+            const confirmed = confirm("🔥 TEM CERTEZA QUE DESEJA APAGAR TODO O SEU PROGRESSO?\n\nEsta ação destruirá seu histórico, atributos, missões e inventário. Você voltará ao nível 1 e o Onboarding será reiniciado.\n\nESTA AÇÃO NÃO PODE SER DESFEITA.");
             if (confirmed) {
                 localStorage.removeItem('lifeRPG_gameState');
-                alert("O Sistema foi resetado. Reiniciando simulaÃ§Ã£o...");
+                alert("O Sistema foi resetado. Reiniciando simulação...");
                 window.location.reload();
             }
         });
     }
 }
 
-// Carrega as configuraÃ§Ãµes guardadas para a UI dos inputs
+// Carrega as configurações guardadas para a UI dos inputs
 function loadSettingsToUI() {
     const times = gameState.notificationTimes || { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };
     
@@ -2836,7 +2400,7 @@ function loadSettingsToUI() {
     document.getElementById('notif-evening-min').value = pad(times.eveningMin);
 }
 
-// Atualiza a badge visual de permissÃ£o
+// Atualiza a badge visual de permissão
 function updateNotificationPermissionUI() {
     const badge = document.getElementById('notif-permission-badge');
     const btnRequest = document.getElementById('btn-request-notif');
@@ -2844,7 +2408,7 @@ function updateNotificationPermissionUI() {
     if (!badge) return;
     
     if (!('Notification' in window)) {
-        badge.innerText = 'NÃƒO SUPORTADO';
+        badge.innerText = 'NÃO SUPORTADO';
         badge.className = 'badge-status-denied';
         if (btnRequest) btnRequest.style.display = 'none';
         return;
@@ -2860,7 +2424,7 @@ function updateNotificationPermissionUI() {
         badge.className = 'badge-status-denied';
         if (btnRequest) btnRequest.style.display = 'inline-block';
     } else {
-        badge.innerText = 'NÃƒO CONFIGURADO';
+        badge.innerText = 'NÃO CONFIGURADO';
         badge.className = 'badge-status-neutral';
         if (btnRequest) btnRequest.style.display = 'inline-block';
     }
@@ -2885,27 +2449,27 @@ function setupInstallPrompt() {
     const instructionsText = document.getElementById('install-banner-instructions');
     const btnFooterInstall = document.getElementById('btn-pwa-install-footer');
 
-    // Detecta se Ã© iOS
+    // Detecta se é iOS
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
     if (isStandalone) {
         console.log('[PWA] Rodando em standalone mode.');
-        // Esconde o botÃ£o de rodapÃ© e banner quando jÃ¡ instalado
+        // Esconde o botão de rodapé e banner quando já instalado
         if (btnFooterInstall) btnFooterInstall.style.display = 'none';
         const footerWrapper = document.querySelector('.pwa-install-mobile-footer');
         if (footerWrapper) footerWrapper.style.display = 'none';
-        return; // PWA jÃ¡ instalado e ativo
+        return; // PWA já instalado e ativo
     }
 
-    // === BotÃ£o de rodapÃ© â€” SEMPRE visÃ­vel (CSS jÃ¡ faz display:block) ===
+    // === Botão de rodapé — SEMPRE visível (CSS já faz display:block) ===
     if (btnFooterInstall) {
         btnFooterInstall.addEventListener('click', () => {
             if (isIOS) {
-                // iOS nÃ£o suporta prompt nativo â€” mostra instruÃ§Ãµes manuais
-                alert('Para instalar no iPhone/iPad:\n\n1. Toque no Ã­cone de "Compartilhar" (quadrado com seta â†‘ no Safari)\n2. Role a lista e toque em "Adicionar Ã  Tela de InÃ­cio"');
+                // iOS não suporta prompt nativo — mostra instruções manuais
+                alert('Para instalar no iPhone/iPad:\n\n1. Toque no ícone de "Compartilhar" (quadrado com seta ↑ no Safari)\n2. Role a lista e toque em "Adicionar à Tela de Início"');
             } else if (deferredPrompt) {
-                // Android/Desktop com prompt nativo disponÃ­vel
+                // Android/Desktop com prompt nativo disponível
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
@@ -2916,16 +2480,16 @@ function setupInstallPrompt() {
                     deferredPrompt = null;
                 });
             } else {
-                // Fallback: prompt nativo nÃ£o disponÃ­vel
-                alert('Para instalar o LifeRPG:\n\nâ€¢ No Chrome: Toque no menu (â‹®) â†’ "Instalar app" ou "Adicionar Ã  tela de inÃ­cio"\nâ€¢ No Safari: Toque em Compartilhar â†’ "Adicionar Ã  Tela de InÃ­cio"\nâ€¢ No Firefox: Toque no menu â†’ "Instalar"');
+                // Fallback: prompt nativo não disponível
+                alert('Para instalar o LifeRPG:\n\n• No Chrome: Toque no menu (⋮) → "Instalar app" ou "Adicionar à tela de início"\n• No Safari: Toque em Compartilhar → "Adicionar à Tela de Início"\n• No Firefox: Toque no menu → "Instalar"');
             }
         });
     }
 
-    // === Banner flutuante â€” lÃ³gica original ===
+    // === Banner flutuante — lógica original ===
     if (isIOS) {
         if (instructionsText && btnInstall) {
-            instructionsText.innerText = 'Para instalar no iOS: Toque em Compartilhar e depois "Adicionar Ã  Tela de InÃ­cio".';
+            instructionsText.innerText = 'Para instalar no iOS: Toque em Compartilhar e depois "Adicionar à Tela de Início".';
             btnInstall.style.display = 'none';
         }
         setTimeout(() => {
@@ -2934,7 +2498,7 @@ function setupInstallPrompt() {
             }
         }, 3000);
     } else {
-        // Android/Desktop â€” captura o prompt nativo
+        // Android/Desktop — captura o prompt nativo
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -2954,7 +2518,7 @@ function setupInstallPrompt() {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-                    console.log('[PWA] UsuÃ¡rio aceitou a instalaÃ§Ã£o.');
+                    console.log('[PWA] Usuário aceitou a instalação.');
                     if (btnFooterInstall) btnFooterInstall.style.display = 'none';
                     const footerWrapper = document.querySelector('.pwa-install-mobile-footer');
                     if (footerWrapper) footerWrapper.style.display = 'none';
@@ -2974,62 +2538,47 @@ function setupInstallPrompt() {
 }
 
 // ==========================================================================
-// ABA VISÃƒO GLOBAL E HEATMAP
+// ABA VISÃO GLOBAL E HEATMAP
 // ==========================================================================
 function renderGlobalDashboard() {
-    const tabGlobal = document.getElementById('tab-global');
-    if (!tabGlobal || !tabGlobal.classList.contains('active')) return;
-
     const history = gameState.history || {};
     const dates = Object.keys(history).sort((a,b) => new Date(a) - new Date(b));
     
-    // 1. Preencher Heatmap Anual (365 dias)
+    // 1. Preencher Heatmap (Mês Atual)
     const heatmapGrid = document.getElementById('heatmap-grid');
     if(heatmapGrid) heatmapGrid.innerHTML = '';
     
     const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
     
-    // Dia inicial (364 dias atrÃ¡s + hoje = 365)
-    const startDate = new Date(today);
-    startDate.setDate(today.getDate() - 364);
-    
-    // Padding para alinhar verticalmente (Semana comeÃ§a domingo = 0)
-    const startDayOfWeek = startDate.getDay();
-    for (let i = 0; i < startDayOfWeek; i++) {
+    // Calcula os "blocos" vazios antes do dia 1 (para o grid ficar bonitinho em semanas)
+    const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
+    for (let i = 0; i < firstDayOfWeek; i++) {
         const emptyBlock = document.createElement('div');
-        emptyBlock.className = 'hm-block hm-empty';
+        emptyBlock.style.visibility = 'hidden';
         if(heatmapGrid) heatmapGrid.appendChild(emptyBlock);
     }
 
-    for (let i = 0; i < 365; i++) {
-        const d = new Date(startDate);
-        d.setDate(startDate.getDate() + i);
-        
-        const dateStr = d.toDateString();
-        const log = history[dateStr];
-        
+    for (let i = 1; i <= daysInMonth; i++) {
         const block = document.createElement('div');
         block.className = 'hm-block';
+        
+        const dateStr = new Date(currentYear, currentMonth, i).toDateString();
+        const log = history[dateStr];
         
         if (log) {
             block.classList.add(`hm-${log.status}`);
             block.title = `${dateStr}: ${log.count}/${log.total} completos`;
-        } else {
-            block.title = `${dateStr}: Sem dados`;
+        } else if (i > now.getDate()) {
+            // Dias futuros
+            block.style.opacity = '0.3';
         }
         if(heatmapGrid) heatmapGrid.appendChild(block);
     }
 
-    // Rola para o final para mostrar "hoje"
-    if (heatmapGrid && heatmapGrid.parentElement) {
-        // setTimeout para garantir que a renderizaÃ§Ã£o no DOM rolou antes do scroll
-        setTimeout(() => {
-            heatmapGrid.parentElement.scrollLeft = heatmapGrid.parentElement.scrollWidth;
-        }, 10);
-    }
-
-    // 2. Preencher MÃ©tricas de Topo
+    // 2. Preencher Métricas de Topo
     let totalHabitsDone = 0;
     let totalMissed = 0;
     let perfectDays = 0;
@@ -3064,12 +2613,12 @@ function renderGlobalDashboard() {
     const rhythm = totalDaysLogged > 0 ? Math.round((perfectDays / totalDaysLogged) * 100) : 0;
     if(elRhythm) elRhythm.innerText = rhythm + '%';
 
-    // 3. GrÃ¡fico de Barras Mensais
+    // 3. Gráfico de Barras Mensais
     const barChart = document.getElementById('dash-bar-chart');
     if(barChart) {
         barChart.innerHTML = '';
         const monthsNames = ['J','F','M','A','M','J','J','A','S','O','N','D'];
-        const maxMonthly = Math.max(...monthlyData, 1); // Evita divisÃ£o por zero
+        const maxMonthly = Math.max(...monthlyData, 1); // Evita divisão por zero
 
         for (let i = 0; i < 12; i++) {
             const hPercent = (monthlyData[i] / maxMonthly) * 100;
@@ -3077,14 +2626,14 @@ function renderGlobalDashboard() {
             const col = document.createElement('div');
             col.className = 'dash-bar-col';
             col.innerHTML = `
-                <div class="dash-bar-fill" style="height: ${hPercent}%" title="${monthlyData[i]} hÃ¡bitos em ${monthsNames[i]}"></div>
+                <div class="dash-bar-fill" style="height: ${hPercent}%" title="${monthlyData[i]} hábitos em ${monthsNames[i]}"></div>
                 <div class="dash-bar-lbl">${monthsNames[i]}</div>
             `;
             barChart.appendChild(col);
         }
     }
 
-    // 4. Top HÃ¡bitos
+    // 4. Top Hábitos
     const topHabitsContainer = document.getElementById('dash-top-habits');
     if(topHabitsContainer) {
         topHabitsContainer.innerHTML = '';
@@ -3110,110 +2659,5 @@ function renderGlobalDashboard() {
                 topHabitsContainer.appendChild(row);
             });
         }
-    }
-}
-
-// ==========================================================================
-// CLOUD SAVE (FIREBASE)
-// ==========================================================================
-let db = null;
-let currentUser = null;
-
-function initFirebase() {
-    try {
-        if (typeof firebase === 'undefined') return;
-        db = firebase.firestore();
-        firebase.auth().onAuthStateChanged(async (user) => {
-            currentUser = user;
-            updateCloudUI(user);
-            if (user) {
-                await syncFromCloud();
-            }
-        });
-
-        // Listeners UI
-        const btnLogin = document.getElementById('btn-cloud-login');
-        const btnLogout = document.getElementById('btn-cloud-logout');
-        
-        if (btnLogin) {
-            btnLogin.addEventListener('click', async () => {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                try {
-                    await firebase.auth().signInWithPopup(provider);
-                } catch(e) {
-                    console.warn('[Cloud] Erro no login:', e);
-                    showSystemToast('? Erro ao conectar com Google.');
-                }
-            });
-        }
-        
-        if (btnLogout) {
-            btnLogout.addEventListener('click', async () => {
-                await firebase.auth().signOut();
-                currentUser = null;
-                showSystemToast('Sessão encerrada.');
-            });
-        }
-    } catch(e) {
-        console.warn('[Cloud] Firebase não disponível:', e);
-    }
-}
-
-async function saveToCloud() {
-    if (!db || !currentUser) return;
-    try {
-        const payload = { ...gameState, _savedAt: Date.now(), _version: 3 };
-        await db.collection('saves').doc(currentUser.uid).set(payload);
-    } catch(e) {
-        console.warn('[Cloud] Erro ao salvar:', e);
-    }
-}
-
-async function syncFromCloud() {
-    if (!db || !currentUser) return;
-    try {
-        const doc = await db.collection('saves').doc(currentUser.uid).get();
-        if (!doc.exists) {
-            // Primeiro login: sobe o save local
-            await saveToCloud();
-            showSystemToast('?? *SAVE ENVIADO PARA A NUVEM!* Sua conta foi criada.');
-            return;
-        }
-        const cloudState = doc.data();
-        const localLevel = gameState.level || 1;
-        const cloudLevel = cloudState.level || 1;
-        const localStreak = gameState.streak || 0;
-        const cloudStreak = cloudState.streak || 0;
-
-        const cloudWins = cloudLevel > localLevel || (cloudLevel === localLevel && cloudStreak > localStreak);
-
-        if (cloudWins) {
-            Object.assign(gameState, cloudState);
-            saveGameData(); 
-            updateUI();
-            showSystemToast('?? *SAVE SINCRONIZADO!* Progresso atualizado da nuvem.');
-        } else {
-            await saveToCloud();
-        }
-    } catch(e) {
-        console.warn('[Cloud] Erro ao sincronizar:', e);
-    }
-}
-
-function updateCloudUI(user) {
-    const el = document.getElementById('cloud-sync-status');
-    const btnLogin = document.getElementById('btn-cloud-login');
-    const btnLogout = document.getElementById('btn-cloud-logout');
-    if (!el) return;
-    
-    if (user) {
-        const name = user.displayName || (user.isAnonymous ? 'Anônimo' : user.email);
-        el.innerHTML = <span class="cloud-dot online"></span> ;
-        if (btnLogin) btnLogin.style.display = 'none';
-        if (btnLogout) btnLogout.style.display = 'inline-flex';
-    } else {
-        el.innerHTML = <span class="cloud-dot offline"></span> Não sincronizado;
-        if (btnLogin) btnLogin.style.display = 'inline-flex';
-        if (btnLogout) btnLogout.style.display = 'none';
     }
 }
