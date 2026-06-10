@@ -165,6 +165,10 @@
             
                 <!-- ABA: MISSÕES -->
                 <div id="tab-quests" class="tab-content active">
+                    <!-- Weekly Boss ativo -->
+                    <div id="weekly-boss-container" style="display:none; margin-bottom: 20px;"></div>
+                    <!-- Dungeon Ativa -->
+                    <div id="dungeon-active-banner" style="display:none; margin-bottom: 20px;"></div>
                     <div class="quest-section-header">
                         <h2>Missões Diárias</h2>
                         <span class="quest-count" id="lbl-daily-count">0/0</span>
@@ -458,6 +462,24 @@
                 <span class="close-modal-btn" id="close-settings-modal">&times;</span>
                 <h3>⚙️ CONFIGURAÇÕES</h3>
                 
+                <!-- Cloud Sync -->
+                <div class="settings-group">
+                    <div class="settings-group-title">☁️ SINCRONIZAÇÃO NA NUVEM</div>
+                    <div id="cloud-sync-status" class="cloud-status-row">
+                        <span class="cloud-dot offline"></span> Não sincronizado
+                    </div>
+                    <div class="backup-actions">
+                        <button id="btn-cloud-login" class="btn-submit btn-backup-action">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg>
+                            ENTRAR COM GOOGLE
+                        </button>
+                        <button id="btn-cloud-logout" class="btn-submit btn-secondary btn-backup-action" style="display:none">
+                            SAIR DA CONTA
+                        </button>
+                    </div>
+                    <p class="settings-group-desc">Salva automaticamente seu progresso na nuvem e sincroniza entre dispositivos.</p>
+                </div>
+
                 <!-- Notificações -->
                 <div class="settings-group">
                     <div class="settings-group-title">NOTIFICAÇÕES DIÁRIAS</div>
@@ -661,6 +683,13 @@
         </div>
     </div>
 
+    <!-- Firebase (Cloud Save) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <!-- Script Principal -->
     <script src="app.js"></script>
 
     <!-- Banner de Instalação PWA -->
@@ -676,6 +705,17 @@
         </div>
     </div>
     
+    <!-- Modal: Weekly Boss Chegou -->
+    <div id="weekly-boss-modal" class="modal" style="display:none;">
+        <div class="modal-box weekly-boss-modal-box">
+            <div class="boss-modal-icon">💀</div>
+            <h3 class="boss-modal-title">O SISTEMA INVOCOU UM CHEFE</h3>
+            <p class="boss-modal-desc">Sua consistência atraiu um inimigo digno. Você tem <strong>72 horas</strong> para completar 3 dias perfeitos e derrotá-lo.</p>
+            <p class="boss-modal-penalty">Falhar custará <strong>20% do seu Ouro</strong> e <strong>30 XP</strong>.</p>
+            <button class="btn-submit boss-modal-btn" id="btn-close-boss-modal">ACEITAR O DESAFIO</button>
+        </div>
+    </div>
+
     <!-- Nav Tabs -->
     <nav class="dashboard-tabs">
         <button class="tab-link active" data-tab="quests" id="tab-btn-quests">
