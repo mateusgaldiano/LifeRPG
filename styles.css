@@ -316,6 +316,44 @@ body::before {
 .gold-chip .resource-val { color: var(--neon-gold); text-shadow: 0 0 8px var(--glow-gold); }
 .streak-chip .resource-val { color: #ff773d; text-shadow: 0 0 8px rgba(255,119,61,0.3); }
 
+/* Streak Chip Tiers */
+.streak-chip.streak-tier-3 {
+    border-color: #cd7f32 !important; /* Bronze */
+    box-shadow: 0 0 10px rgba(205, 127, 50, 0.3);
+}
+.streak-chip.streak-tier-7 {
+    border-color: #c0c0c0 !important; /* Prata */
+    box-shadow: 0 0 12px rgba(192, 192, 192, 0.4);
+    animation: pulse-silver 2s infinite;
+}
+.streak-chip.streak-tier-14 {
+    border-color: #ffd700 !important; /* Ouro */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    animation: pulse-gold 2s infinite;
+}
+.streak-chip.streak-tier-30 {
+    border-color: var(--neon-cyan) !important; /* Lendário */
+    background: rgba(0, 242, 254, 0.1) !important;
+    box-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
+    animation: pulse-legendary 1.5s infinite;
+}
+
+@keyframes pulse-silver {
+    0% { box-shadow: 0 0 5px rgba(192, 192, 192, 0.2); }
+    50% { box-shadow: 0 0 15px rgba(192, 192, 192, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(192, 192, 192, 0.2); }
+}
+@keyframes pulse-gold {
+    0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+    100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.3); }
+}
+@keyframes pulse-legendary {
+    0% { box-shadow: 0 0 8px rgba(0, 242, 254, 0.4); transform: scale(1); }
+    50% { box-shadow: 0 0 25px rgba(0, 242, 254, 0.8); transform: scale(1.03); }
+    100% { box-shadow: 0 0 8px rgba(0, 242, 254, 0.4); transform: scale(1); }
+}
+
 /* â”€â”€ ATRIBUTOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .attributes-section { display: flex; flex-direction: column; gap: 12px; }
 
@@ -2055,3 +2093,13 @@ body::before {
   }
 
 }
+
+/* --- Feedback de Penalidade nos Atributos --- */
+.flash-red-penalty {
+    animation: flash-red 0.5s ease-in-out 3;
+}
+@keyframes flash-red {
+    0%, 100% { background-color: rgba(239, 68, 68, 0); }
+    50% { background-color: rgba(239, 68, 68, 0.4); }
+}
+

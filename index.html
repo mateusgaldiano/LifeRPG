@@ -220,6 +220,18 @@
                     <h2>VISÃO GLOBAL</h2>
                     <p style="color: var(--text-muted); font-size: 0.8rem;">O seu mapa tático da consistência.</p>
                 </div>
+
+                <!-- ESTADO VAZIO -->
+                <div id="global-empty-state" class="dashboard-card" style="display: none; padding: 40px 20px; text-align: center; margin-top: 20px;">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 15px;">📊</span>
+                    <h3 style="color: var(--neon-cyan); margin-bottom: 8px;">SEU MAPA TÁTICO ESTÁ SENDO GERADO</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; max-width: 320px; margin: 0 auto;">
+                        O painel de consistência anual e gráficos de desempenho precisam de dados históricos para renderizar.
+                        <br><br>
+                        <strong style="color: #fff;">💡 Complete as suas missões diárias hoje</strong> e amanhã esta tela revelará suas primeiras estatísticas e seu heatmap de hábitos!
+                    </p>
+                </div>
+
                 
                 <!-- HEATMAP ANUAL -->
                 <div class="dashboard-card" style="margin-bottom: 20px;">
@@ -658,6 +670,17 @@
                 <div class="quest-cleared-attr" id="quest-cleared-attr">FORÇA DE VONTADE ↑</div>
             </div>
         </div>
+
+        <!-- Overlay: CONQUISTA DESBLOQUEADA -->
+        <div id="achievement-unlocked-overlay" class="quest-cleared-overlay">
+            <div class="quest-cleared-content">
+                <div class="quest-cleared-check" style="color: var(--neon-gold); filter: drop-shadow(0 0 20px var(--neon-gold));">🏆</div>
+                <div class="quest-cleared-title" style="color: var(--neon-gold); text-shadow: 0 0 20px rgba(251,191,36,0.5);">CONQUISTA REVELADA!</div>
+                <div class="quest-cleared-rewards" id="achievement-unlocked-title" style="font-size: 16px; color: #fff; margin-bottom: 8px;">Conquista</div>
+                <div class="quest-cleared-attr" id="achievement-unlocked-rewards" style="color: var(--text-muted);">+100 Ouro</div>
+            </div>
+        </div>
+
 
         <!-- Overlay: PENALIDADE -->
         <div id="penalty-overlay" class="penalty-overlay">
