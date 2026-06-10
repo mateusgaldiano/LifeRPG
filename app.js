@@ -866,6 +866,95 @@ function initTabs() {
 }
 
 // ==========================================================================
+// SUB-ABAS DA TAVERNA E INVENTÁRIO
+// ==========================================================================
+window.switchTavernaTab = function(mode) {
+    const btnShop = document.getElementById('subtab-btn-shop');
+    const btnInventory = document.getElementById('subtab-btn-inventory');
+    const panelShop = document.getElementById('taverna-shop');
+    const panelInventory = document.getElementById('taverna-inventory');
+
+    if (!btnShop || !btnInventory) return;
+
+    if (mode === 'shop') {
+        btnShop.classList.add('active');
+        btnInventory.classList.remove('active');
+        panelShop.style.display = 'block';
+        panelInventory.style.display = 'none';
+    } else {
+        btnShop.classList.remove('active');
+        btnInventory.classList.add('active');
+        panelShop.style.display = 'none';
+        panelInventory.style.display = 'block';
+        renderInventory();
+    }
+};
+
+window.equipItem = function(type, itemId) {
+    if (type === 'title') {
+        gameState.inventory.activeTitle = itemId;
+    } else if (type === 'border') {
+        gameState.inventory.activeBorder = itemId;
+    }
+    
+    saveGameData();
+    renderInventory();
+    updateUI();
+};
+
+window.renderInventory = function() {
+    const grid = document.getElementById('inventory-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const inv = gameState.inventory || { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null };
+    
+    const catalog = {
+        'title_implacavel': { name: 'O Implacável', type: 'title', icon: '🏷️', color: 'var(--neon-purple)' },
+        'title_mestre': { name: 'Mestre do Tempo', type: 'title', icon: '⏳', color: 'var(--neon-gold)' },
+        'border_neonred': { name: 'Demônio Carmesim', type: 'border', icon: '🖼️', color: 'var(--neon-red)' }
+    };
+
+    const allUnlocked = [...inv.unlockedTitles, ...inv.unlockedBorders];
+    
+    if (allUnlocked.length === 0) {
+        grid.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%; padding: 20px;">Seu armazém está vazio. Compre itens no Mercado Clandestino.</p>';
+        return;
+    }
+
+    allUnlocked.forEach(itemId => {
+        const item = catalog[itemId];
+        if (!item) return;
+
+        const isEquipped = (item.type === 'title' && inv.activeTitle === itemId) || 
+                           (item.type === 'border' && inv.activeBorder === itemId);
+
+        const card = document.createElement('div');
+        card.className = 'reward-card';
+        card.style.border = isEquipped ? `1px solid ${item.color}` : '1px solid var(--border-glass)';
+        if (isEquipped) {
+            card.style.boxShadow = `0 0 10px ${item.color}`;
+        }
+
+        const btnLabel = isEquipped ? 'EQUIPADO' : 'EQUIPAR';
+        const btnStyle = isEquipped ? `background: ${item.color}; color: #fff;` : '';
+
+        card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h3 style="color: ${item.color};">${item.type === 'title' ? 'Título' : 'Borda'}: ${item.name}</h3>
+                </div>
+                <span style="font-size: 1.5rem;">${item.icon}</span>
+            </div>
+            <div class="reward-bottom" style="margin-top: 15px; justify-content: flex-end;">
+                <button class="btn-buy" style="${btnStyle}" onclick="equipItem('${item.type}', '${itemId}')">${btnLabel}</button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+};
+
+// ==========================================================================
 // ONBOARDING WIZARD
 // ==========================================================================
 function initOnboardingWizard() {
@@ -1090,11 +1179,14 @@ function updateUI() {
     }
 
     const avatarBorder = document.querySelector('.avatar-hex-border');
-    if (avatarBorder) {
+    const avatarWrapper = document.querySelector('.avatar-hex-wrapper');
+    if (avatarBorder && avatarWrapper) {
         if (gameState.inventory && gameState.inventory.activeBorder === 'border_neonred') {
             avatarBorder.classList.add('border-neonred');
+            avatarWrapper.classList.add('glow-neonred');
         } else {
             avatarBorder.classList.remove('border-neonred');
+            avatarWrapper.classList.remove('glow-neonred');
         }
     }
 
@@ -1927,26 +2019,24 @@ function buyStoreItem(itemId) {
         if (!gameState.inventory) gameState.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" };
         
         const isTitle = itemId.startsWith('title_');
+        const typeStr = isTitle ? 'title' : 'border';
         const inventoryList = isTitle ? gameState.inventory.unlockedTitles : gameState.inventory.unlockedBorders;
-        const activeKey = isTitle ? 'activeTitle' : 'activeBorder';
         const displayType = isTitle ? 'Título' : 'Borda';
 
         if (inventoryList.includes(itemId)) {
-            // Se já tem, apenas equipa
-            gameState.inventory[activeKey] = itemId;
-            showSystemToast(`✨ *${displayType} Equipado(a)!* Atualizado no seu perfil.`);
-            saveGameData();
-            updateUI(); // Vai atualizar a UI do header
-            return; // Retorna para não cobrar ouro de novo
+            showSystemToast(`✨ *${displayType} já adquirido!* Equipando...`);
+            equipItem(typeStr, itemId);
+            return; 
         } else {
-            // Compra e equipa
+            gameState.gold -= cost;
             inventoryList.push(itemId);
-            gameState.inventory[activeKey] = itemId;
             showSystemToast(`💎 *${displayType} Desbloqueado(a) e Equipado(a)!*`);
+            equipItem(typeStr, itemId);
+            return;
         }
     }
 
-    // Cobra o ouro
+    // Cobra o ouro (para buffs)
     gameState.gold -= cost;
     saveGameData();
     updateUI();
@@ -2168,7 +2258,7 @@ function loadGameData() {
             },
             history: {}, // Store daily logs { "2026-06-08": { status: "perfect", count: 3, total: 3, completedIds: [] } }
             buffs: { autoHeal: false, doubleXp: false, shieldDays: 0 },
-            inventory: { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" }
+            inventory: { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null }
         };
         saveGameData();
         window.location.reload();
@@ -2215,7 +2305,21 @@ function loadGameData() {
             parsed.buffs = { autoHeal: false, doubleXp: false, shieldDays: 0 };
         }
         if (!parsed.inventory) {
-            parsed.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" };
+            parsed.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null };
+        } else {
+            if (!parsed.inventory.unlockedTitles) parsed.inventory.unlockedTitles = [];
+            if (!parsed.inventory.unlockedBorders) parsed.inventory.unlockedBorders = [];
+            
+            // Garantir que nulos sejam usados em vez de string vazia ou "default"
+            if (parsed.inventory.activeTitle === "" || parsed.inventory.activeTitle === "default") parsed.inventory.activeTitle = null;
+            if (parsed.inventory.activeBorder === "" || parsed.inventory.activeBorder === "default") parsed.inventory.activeBorder = null;
+
+            if (parsed.inventory.activeTitle && !parsed.inventory.unlockedTitles.includes(parsed.inventory.activeTitle)) {
+                parsed.inventory.unlockedTitles.push(parsed.inventory.activeTitle);
+            }
+            if (parsed.inventory.activeBorder && !parsed.inventory.unlockedBorders.includes(parsed.inventory.activeBorder)) {
+                parsed.inventory.unlockedBorders.push(parsed.inventory.activeBorder);
+            }
         }
 
         // Verifica reset diário

@@ -262,106 +262,125 @@
                         </div>
                     </div>
 
-                    <!-- LOJA DO ALQUIMISTA -->
-                    <div class="quest-section-header" style="margin-top: 10px;">
-                        <h2>🧪 Loja do Alquimista (Buffs)</h2>
-                    </div>
-                    <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
-                        <!-- Poção de Cura -->
-                        <div class="reward-card" onclick="buyStoreItem('buff_autoHeal')">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div>
-                                    <h3>Poção de Auto-Cura</h3>
-                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Anula a penalidade caso você perca a ofensiva um dia.</p>
-                                </div>
-                                <span style="font-size: 1.5rem;">🧪</span>
-                            </div>
-                            <div class="reward-bottom">
-                                <span class="reward-cost">100 OURO</span>
-                                <button class="btn-buy">COMPRAR</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Pergaminho XP -->
-                        <div class="reward-card" onclick="buyStoreItem('buff_doubleXp')">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div>
-                                    <h3>Pergaminho de Sabedoria</h3>
-                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Ganha o dobro de XP em tudo até a meia-noite.</p>
-                                </div>
-                                <span style="font-size: 1.5rem;">📜</span>
-                            </div>
-                            <div class="reward-bottom">
-                                <span class="reward-cost">50 OURO</span>
-                                <button class="btn-buy">COMPRAR</button>
-                            </div>
-                        </div>
-
-                        <!-- Escudo -->
-                        <div class="reward-card" onclick="buyStoreItem('buff_shield')">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div>
-                                    <h3>Escudo de Ferro</h3>
-                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Garante 1 carga do escudo azul que protege atributos.</p>
-                                </div>
-                                <span style="font-size: 1.5rem;">🛡️</span>
-                            </div>
-                            <div class="reward-bottom">
-                                <span class="reward-cost">150 OURO</span>
-                                <button class="btn-buy">COMPRAR</button>
-                            </div>
-                        </div>
+                    <!-- SUB-ABAS TAVERNA -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button class="tab-link active" id="subtab-btn-shop" onclick="switchTavernaTab('shop')" style="flex: 1; justify-content: center;">LOJA</button>
+                        <button class="tab-link" id="subtab-btn-inventory" onclick="switchTavernaTab('inventory')" style="flex: 1; justify-content: center;">INVENTÁRIO</button>
                     </div>
 
-                    <!-- MERCADO CLANDESTINO -->
-                    <div class="quest-section-header">
-                        <h2>💎 Mercado Clandestino (Cosméticos)</h2>
-                    </div>
-                    <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
-                        
-                        <!-- Título 1 -->
-                        <div class="reward-card" onclick="buyStoreItem('title_implacavel')">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div>
-                                    <h3 style="color:var(--neon-purple);">Título: O Implacável</h3>
-                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Exiba este título lendário abaixo do seu nome.</p>
+                    <!-- MODO LOJA -->
+                    <div id="taverna-shop">
+                        <!-- LOJA DO ALQUIMISTA -->
+                        <div class="quest-section-header" style="margin-top: 10px;">
+                            <h2>🧪 Loja do Alquimista (Buffs)</h2>
+                        </div>
+                        <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                            <!-- Poção de Cura -->
+                            <div class="reward-card" onclick="buyStoreItem('buff_autoHeal')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h3>Poção de Auto-Cura</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Anula a penalidade caso você perca a ofensiva um dia.</p>
+                                    </div>
+                                    <span style="font-size: 1.5rem;">🧪</span>
                                 </div>
-                                <span style="font-size: 1.5rem;">🏷️</span>
+                                <div class="reward-bottom">
+                                    <span class="reward-cost">100 OURO</span>
+                                    <button class="btn-buy">COMPRAR</button>
+                                </div>
                             </div>
-                            <div class="reward-bottom">
-                                <span class="reward-cost">300 OURO</span>
-                                <button class="btn-buy">COMPRAR</button>
+                            
+                            <!-- Pergaminho XP -->
+                            <div class="reward-card" onclick="buyStoreItem('buff_doubleXp')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h3>Pergaminho de Sabedoria</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Ganha o dobro de XP em tudo até a meia-noite.</p>
+                                    </div>
+                                    <span style="font-size: 1.5rem;">📜</span>
+                                </div>
+                                <div class="reward-bottom">
+                                    <span class="reward-cost">50 OURO</span>
+                                    <button class="btn-buy">COMPRAR</button>
+                                </div>
+                            </div>
+
+                            <!-- Escudo -->
+                            <div class="reward-card" onclick="buyStoreItem('buff_shield')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h3>Escudo de Ferro</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Garante 1 carga do escudo azul que protege atributos.</p>
+                                    </div>
+                                    <span style="font-size: 1.5rem;">🛡️</span>
+                                </div>
+                                <div class="reward-bottom">
+                                    <span class="reward-cost">150 OURO</span>
+                                    <button class="btn-buy">COMPRAR</button>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Título 2 -->
-                        <div class="reward-card" onclick="buyStoreItem('title_mestre')">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div>
-                                    <h3 style="color:var(--neon-gold);">Título: Mestre do Tempo</h3>
-                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Um título digno de quem domina a própria rotina.</p>
+                        <!-- MERCADO CLANDESTINO -->
+                        <div class="quest-section-header">
+                            <h2>💎 Mercado Clandestino (Cosméticos)</h2>
+                        </div>
+                        <div class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                            
+                            <!-- Título 1 -->
+                            <div class="reward-card" onclick="buyStoreItem('title_implacavel')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h3 style="color:var(--neon-purple);">Título: O Implacável</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Exiba este título lendário abaixo do seu nome.</p>
+                                    </div>
+                                    <span style="font-size: 1.5rem;">🏷️</span>
                                 </div>
-                                <span style="font-size: 1.5rem;">⏳</span>
+                                <div class="reward-bottom">
+                                    <span class="reward-cost">300 OURO</span>
+                                    <button class="btn-buy">COMPRAR</button>
+                                </div>
                             </div>
-                            <div class="reward-bottom">
-                                <span class="reward-cost">300 OURO</span>
-                                <button class="btn-buy">COMPRAR</button>
+
+                            <!-- Título 2 -->
+                            <div class="reward-card" onclick="buyStoreItem('title_mestre')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h3 style="color:var(--neon-gold);">Título: Mestre do Tempo</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Um título digno de quem domina a própria rotina.</p>
+                                    </div>
+                                    <span style="font-size: 1.5rem;">⏳</span>
+                                </div>
+                                <div class="reward-bottom">
+                                    <span class="reward-cost">300 OURO</span>
+                                    <button class="btn-buy">COMPRAR</button>
+                                </div>
+                            </div>
+
+                            <!-- Borda Neon -->
+                            <div class="reward-card" onclick="buyStoreItem('border_neonred')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                    <div>
+                                        <h3 style="color:var(--neon-red);">Borda: Demônio Carmesim</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Moldura vermelha brilhante para o seu avatar.</p>
+                                    </div>
+                                    <span style="font-size: 1.5rem;">🖼️</span>
+                                </div>
+                                <div class="reward-bottom">
+                                    <span class="reward-cost">500 OURO</span>
+                                    <button class="btn-buy">COMPRAR</button>
+                                </div>
                             </div>
                         </div>
+                    </div> <!-- fim taverna-shop -->
 
-                        <!-- Borda Neon -->
-                        <div class="reward-card" onclick="buyStoreItem('border_neonred')">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                                <div>
-                                    <h3 style="color:var(--neon-red);">Borda: Demônio Carmesim</h3>
-                                    <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Moldura vermelha brilhante para o seu avatar.</p>
-                                </div>
-                                <span style="font-size: 1.5rem;">🖼️</span>
-                            </div>
-                            <div class="reward-bottom">
-                                <span class="reward-cost">500 OURO</span>
-                                <button class="btn-buy">COMPRAR</button>
-                            </div>
+                    <!-- MODO INVENTÁRIO -->
+                    <div id="taverna-inventory" style="display: none;">
+                        <div class="quest-section-header">
+                            <h2>🎒 Cosméticos Desbloqueados</h2>
+                        </div>
+                        <div id="inventory-grid" class="rewards-grid" style="margin-top: 10px; margin-bottom: 30px;">
+                            <!-- Injetado via JS -->
                         </div>
                     </div>
                 </section>
