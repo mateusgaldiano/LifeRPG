@@ -1,64 +1,53 @@
-# Pendências — LifeRPG OS v2.0
+# Backlog de Pendências — LifeRPG OS v2.5 ⚔️
 
-Esta lista consolida as pendências e bugs mapeados para desenvolvimento no LifeRPG OS v2.0.
-
----
-
-## PENDÊNCIAS — LifeRPG OS v2.0
-
-### 🔴 CRÍTICO (bugs ativos)
-
-**1. Header fixo no mobile**
-`.brand-header` nunca ficou fixo de forma confiável porque `position: sticky` depende de uma cadeia de `overflow` nos ancestrais que quebra toda vez que outro elemento é modificado. Solução definitiva: trocar para `position: fixed` com `padding-top` compensatório no `#sidebar-panel`.
-
-**2. Sinergia "Vontade de Ferro" com ícone corrompido**
-`icon: '=%'` na primeira entrada de `SYNERGY_DEFS` — emoji quebrou durante alguma edição. Corrigir para `icon: '⚡'` ou similar.
+Esta lista consolida o status atualizado de todas as pendências, bugs e melhorias planejadas para o LifeRPG OS.
 
 ---
 
-### 🟠 FEATURES ESPECIFICADAS MAS NÃO IMPLEMENTADAS
+## 📋 Tabela de Pendências Abertas
 
-**3. Biblioteca de Hábitos no modal Nova Quest**
-Foi totalmente especificada (30 hábitos curados, abas CRIAR/BIBLIOTECA, busca, filtros por skill, mini-modal de confirmação) mas nunca foi para o código. O `HABIT_LIBRARY` não existe no `app.js` atual.
-
-**4. Loja de Skins na Taverna**
-Código parcial existe (`buySkin`, `unlockedSkins`, 3 avatares gerados por IA salvos em `/avatars`), mas a UI da Taverna não exibe nenhuma seção de skins. O jogador não tem como comprar ou equipar os avatares premium.
-
----
-
-### 🟡 MELHORIAS DE ENGAJAMENTO
-
-**5. Streak multiplier imperceptível**
-Fórmula atual: `1 + streak * 0.005`. Com 7 dias o bônus é 3,5% — invisível e não motivador. Trocar por escada visível com badge animado no chip de streak:
-- 3 dias = +10% XP
-- 7 dias = +20% XP + Gold bônus
-- 14 dias = +35% XP
-- 30 dias = +50% XP + título especial
-
-**6. Achievements sem feedback visual**
-`ACHIEVEMENTS_DEFS` e `checkAchievements` existem, mas o desbloqueio não tem overlay/toast comemorativo. O jogador conquista coisas sem saber. Criar um mini overlay "CONQUISTA DESBLOQUEADA" com ícone e título, igual ao Quest Cleared, que aparece no momento do unlock.
-
-**7. Loop de retenção D1→D2 vazio**
-Após o onboarding e a "Primeira Missão", o sistema some. Não há segundo toque do Sistema reconhecendo que o usuário voltou no dia seguinte, nem mensagem de acompanhamento. Implementar: ao abrir o app no segundo dia com pelo menos 1 missão concluída no dia anterior, exibir um toast especial de boas-vindas com reconhecimento do progresso de ontem.
-
-**8. Penalidade sem feedback de atributo**
-A penalidade desconta XP mas não mostra qual skill foi afetada. Se o usuário não treinou, o Físico deveria piscar `-1` no radar. Conectar a causa à consequência torna a mecânica educativa em vez de só punitiva.
-
-**9. Visão Global — estado vazio sem contexto**
-Com histórico vazio (usuário novo), todas as métricas mostram zero sem explicação. Adicionar estado vazio desenhado: texto motivacional + instrução ("Complete missões para ver seu histórico aqui") que some automaticamente após o primeiro dia com dados.
-
-**10. Sem onboarding para features desbloqueadas**
-Quando o usuário chega no Nível 5 e a Taverna fica disponível, não há explicação. Quando o Boss Quest aparece, o toast some in 3s. Implementar um sistema de "primeira vez": um pequeno modal explicativo que aparece uma única vez quando uma feature importante é desbloqueada pela primeira vez (`localStorage` flag por feature).
+| Feature / Item | Severidade | Esforço | Cluster / Área | Status |
+| :--- | :---: | :---: | :---: | :---: |
+| **Criar Projeto Firebase e Adicionar Chaves** | 🔴 Crítico | Pequeno (Ação Usuário) | Infraestrutura / Cloud | Depende do Usuário |
+| **Push Notifications Reais (OS/Web Push)** | 🟡 Médio | Médio / Alto | PWA / Local | Aberto |
+| **Ranking Global entre Amigos** | 🟡 Médio | Alto | Social / Multiplayer | Bloqueado por Cloud DB |
+| **Duelos PvP Assíncronos** | 🟢 Baixo | Alto | Social / Multiplayer | Bloqueado por Cloud DB |
 
 ---
 
-### 🔵 FEATURES NOVAS (backlog)
+## ✅ Histórico de Itens Resolvidos
 
-**11. Chat com IA real (Claude)**
-O chat do Iroh foi removido. Reintroduzir como assistente com IA real: um `fetch` para a API do Claude com system prompt que conhece o `gameState` do jogador (nível, streak, missões do dia, skills). O mentor responde com personalidade, contextualizado com o progresso real do usuário.
+### Correções de Bugs & Ajustes
+- [x] **Bug: Dungeon ativa + "NENHUMA MISSÃO ATIVA"** — Corrigida a renderização do contêiner para considerar se a dungeon ativa está incompleta.
+- [x] **Títulos do Avatar Zoom desalinhados com Ranks** — Alinhamento dinâmico baseado na função `getRankForLevel()` e dicionário `titleMap`.
+- [x] **Perks e Sinergias sem separação visual** — Inclusão de cabeçalhos e bordas neon separadoras nos contêineres de HUD.
+- [x] **Sinergia Vontade de Ferro** — Emoji quebrado corrigido de `=%` para `⚡`.
 
-**12. Missões de Elite por skill**
-Quando uma skill atinge LV3+, uma side quest exclusiva aparece automaticamente associada àquele atributo com XP/Gold maior e um badge especial. Cria um incentivo direto para especializar skills.
+### PWA & UX (Mobile)
+- [x] **Header fixo no mobile** — Corrigido com `position: fixed` e body scroll.
+- [x] **Streak overflow no HUD mobile** — Compactação de elementos e `white-space: nowrap`.
+- [x] **Auditoria Visual de Viewport** — Ajustes finos de margins, canvas e layouts mobile de 375px a 430px.
 
-**13. Sistema de "primeira vez" por feature**
-Ver item 10 — mas expandido para todas as features principais: primeira Boss Quest, primeiro Weekly Boss, primeira Dungeon, primeira conquista. Cada uma com um mini modal de contexto na primeira aparição.
+### Mecânicas de Jogo (GDD)
+- [x] **Curva de XP de Skill** — Nova fórmula progressiva e ganho escalonado.
+- [x] **Títulos de Rank dinâmicos** — Nome de rank e títulos (Monge-Atleta, Aprendiz Desperto, etc.).
+- [x] **Sinergias de Atributos** — Willpower, Intellect, Health com buffs reais.
+- [x] **Rank Perks** — Foco Matinal, Mente de Diamante, Momentum, O Sistema, Lenda Imortal.
+- [x] **Boss Quests de Rank Up** — Bloqueio de rank e progressos em side quests especiais.
+- [x] **Dungeons (Missões de Elite)** — Trigger automático ao nível 3 de skill, prazos e recompensas em dobro.
+- [x] **Penalidade com Profundidade** — Missão de Resgate de 4h, escalonamento e debuffs.
+
+### Engajamento & Feedback Visual
+- [x] **Relatório Semanal de Performance** — Exibição do modal de resumo semanal de XP, progresso e taxa de conclusão às segundas-feiras.
+- [x] **Multiplicadores & Tiers de Streak** — Escalabilidade de bônus (+10% a +50% XP/Gold) e chips primitivos convertidos em chips pulsantes (bronze, prata, ouro, neon-ciano).
+- [x] **Overlay Comemorativo de Conquistas** — Feedback visual ao vivo no momento de desbloquear troféus.
+- [x] **Aba de Troféus (Troféus/Glyphs)** — Correção completa de caracteres UTF-8 corrompidos e adição de ícone `🔒` de cadeado para itens bloqueados.
+- [x] **Loop de Retenção D1 ➔ D2** — Boas-vindas personalizadas ao retornar no segundo dia com progresso prévio.
+- [x] **Feedback Visual de Penalidade** — Atributos piscam em vermelho translúcido ao sofrer regressão.
+- [x] **Empty State na Visão Global** — Dashboard amigável e motivador para novos usuários.
+- [x] **Onboarding de Features Desbloqueadas** — Modais explicativos automáticos ao liberar Taverna (Nível 5) e Dungeons (Nível 10).
+
+### Novas Features & IA
+- [x] **Biblioteca de Hábitos** — Alinhamento de 30 hábitos prontos com abas Criação/Biblioteca, filtros de skill, busca ao vivo e modal de confirmação.
+- [x] **Chat com Mentor IA (Claude)** — Chat interativo com o Tio Iroh (Avatar) alimentado pelo estado real do jogador no RPG, API Key e CORS Proxy customizável.
+- [x] **Loja de Skins e Equipamentos na Taverna** — Skins premium (Mestre das Sombras, Monarca da Névoa, Imperador Arise) adicionadas à loja da Taverna e equipáveis pelo painel de Zoom.
