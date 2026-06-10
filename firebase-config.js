@@ -14,4 +14,5 @@ const firebaseConfig = {
     appId: "COLE_SEU_APP_ID"
 };
 
-firebase.initializeApp(firebaseConfig);
+// Descomente a linha abaixo quando colocar as chaves reais
+// firebase.initializeApp(firebaseConfig);

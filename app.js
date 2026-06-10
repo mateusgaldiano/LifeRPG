@@ -2,24 +2,24 @@
    LIFERPG - CORE GAME LOGIC & COMPANION SYSTEM (2026)
    ========================================================================== */
 
-// Banco de dados mestre de hábitos por nível do LifeRPG
+// Banco de dados mestre de hÃƒÆ’Ã‚Â¡bitos por nÃƒÆ’Ã‚Â­vel do LifeRPG
 const ALL_HABITS_DATABASE = [
-    // Bracket 1 (Nível 1 ao 4)
-    { id: 'q-acordar', title: 'Acordar Cedo', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' },
-    { id: 'q-malhar', title: 'Treinar de Força / Corrida', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' },
-    { id: 'q-ler', title: 'Leitura (Mínimo 15min)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' },
-    { id: 'q-meditar', title: 'Meditar (10 min)', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' },
-    { id: 'q-agua', title: 'Beber Água (8 copos)', type: 'daily', icon: '💧', completed: false, xp: 20, gold: 10, target: 8, current: 0, minLevel: 1, skill: 'physical' },
-    { id: 'q-familia', title: 'Mandar mensagem/ligar para Família', type: 'daily', icon: '❤️', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' },
+    // Bracket 1 (NÃƒÆ’Ã‚Â­vel 1 ao 4)
+    { id: 'q-acordar', title: 'Acordar Cedo', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â‚¬Â¦', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' },
+    { id: 'q-malhar', title: 'Treinar de ForÃƒÆ’Ã‚Â§a / Corrida', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â¹ÃƒÂ¯Ã‚Â¸Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€žÂ¢Ã¢â‚¬Å¡ÃƒÂ¯Ã‚Â¸Ã‚Â', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' },
+    { id: 'q-ler', title: 'Leitura (MÃƒÆ’Ã‚Â­nimo 15min)', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â¡', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' },
+    { id: 'q-meditar', title: 'Meditar (10 min)', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã‚Â§Ã‹Å“', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' },
+    { id: 'q-agua', title: 'Beber ÃƒÆ’Ã‚Âgua (8 copos)', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â§', completed: false, xp: 20, gold: 10, target: 8, current: 0, minLevel: 1, skill: 'physical' },
+    { id: 'q-familia', title: 'Mandar mensagem/ligar para FamÃƒÆ’Ã‚Â­lia', type: 'daily', icon: 'ÃƒÂ¢Ã‚ÂÃ‚Â¤ÃƒÂ¯Ã‚Â¸Ã‚Â', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' },
     
-    // Bracket 2 (Nível 5 ao 9)
-    { id: 'q-deepwork', title: 'Deep Work: 30min no projeto pessoal', type: 'daily', icon: '💻', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'productivity' },
-    { id: 'q-estudo', title: 'Estudo: 30min na área profissional', type: 'daily', icon: '🧠', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'wisdom' },
-    { id: 'q-checkin', title: 'Check-in Emocional no Diário', type: 'daily', icon: '📝', completed: false, xp: 15, gold: 8, minLevel: 5, skill: 'mental' },
+    // Bracket 2 (NÃƒÆ’Ã‚Â­vel 5 ao 9)
+    { id: 'q-deepwork', title: 'Deep Work: 30min no projeto pessoal', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â»', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'productivity' },
+    { id: 'q-estudo', title: 'Estudo: 30min na ÃƒÆ’Ã‚Â¡rea profissional', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Â ', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'wisdom' },
+    { id: 'q-checkin', title: 'Check-in Emocional no DiÃƒÆ’Ã‚Â¡rio', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â', completed: false, xp: 15, gold: 8, minLevel: 5, skill: 'mental' },
     
-    // Bracket 3 (Nível 10+)
-    { id: 'q-estoico', title: 'Estoicismo: 10min de leitura filosófica', type: 'daily', icon: '🏛️', completed: false, xp: 20, gold: 10, minLevel: 10, skill: 'mental' },
-    { id: 'q-producao', title: 'Produção: Criar 1 conteúdo autoral', type: 'daily', icon: '✍️', completed: false, xp: 25, gold: 12, minLevel: 10, skill: 'productivity' }
+    // Bracket 3 (NÃƒÆ’Ã‚Â­vel 10+)
+    { id: 'q-estoico', title: 'Estoicismo: 10min de leitura filosÃƒÆ’Ã‚Â³fica', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬ÂºÃƒÂ¯Ã‚Â¸Ã‚Â', completed: false, xp: 20, gold: 10, minLevel: 10, skill: 'mental' },
+    { id: 'q-producao', title: 'ProduÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o: Criar 1 conteÃƒÆ’Ã‚Âºdo autoral', type: 'daily', icon: 'ÃƒÂ¢Ã…â€œÃ‚ÂÃƒÂ¯Ã‚Â¸Ã‚Â', completed: false, xp: 25, gold: 12, minLevel: 10, skill: 'productivity' }
 ];
 
 // Estado Global do Jogo
@@ -29,19 +29,21 @@ let gameState = {
     xpToNext: 100,
     gold: 0,
     streak: 0,
+    history: {},
     shields: 0,              // escudos ativos (0-3)
-    consecutiveStreak7Days: 0, // dias acumulados rumo ao próximo escudo
-    consecutiveMisses: 0,       // contador de dias não concluídos
+    consecutiveStreak7Days: 0, // dias acumulados rumo ao prÃƒÆ’Ã‚Â³ximo escudo
+    consecutiveMisses: 0,       // contador de dias nÃƒÆ’Ã‚Â£o concluÃƒÆ’Ã‚Â­dos
     bossQuest: null,            // boss quest ativa { id, completed, progress }
     activeDungeon: null,    // dungeon ativa com prazo de 48h
-    lastCheckedDate: null,      // controle diário
-    unlockedAchievements: [],   // troféus desbloqueados
-    quests: [], // Populado dinamicamente com base no nível
+    weeklyBoss: null,       // { spawnedAt, expiresAt, hp, defeated, penaltyApplied }
+    lastCheckedDate: null,      // controle diÃƒÆ’Ã‚Â¡rio
+    unlockedAchievements: [],   // trofÃƒÆ’Ã‚Â©us desbloqueados
+    quests: [], // Populado dinamicamente com base no nÃƒÆ’Ã‚Â­vel
     sideQuests: [],
     rewards: [
-        { id: 'r-serie', title: 'Assistir 1 Hora de Série', cost: 35, icon: '📺' },
-        { id: 'r-cheat', title: 'Refeição Livre / Doce', cost: 80, icon: '🍔' },
-        { id: 'r-game', title: 'Jogar Videogame por 1h', cost: 45, icon: '🎮' }
+        { id: 'r-serie', title: 'Assistir 1 Hora de SÃƒÆ’Ã‚Â©rie', cost: 35, icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Âº' },
+        { id: 'r-cheat', title: 'RefeiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o Livre / Doce', cost: 80, icon: 'ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â' },
+        { id: 'r-game', title: 'Jogar Videogame por 1h', cost: 45, icon: 'ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â®' }
     ],
     skills: {
         physical: { level: 1, xp: 0, xpToNext: 5 },
@@ -51,7 +53,11 @@ let gameState = {
         wisdom: { level: 1, xp: 0, xpToNext: 5 },
         routine: { level: 1, xp: 0, xpToNext: 5 }
     },
-    messages: []
+    messages: [],
+    history: {},
+    buffs: { autoHeal: false, doubleXp: false, shieldDays: 0 },
+    inventory: { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null },
+    notificationTimes: { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 }
 };
 
 // Banco de Frases de Impacto
@@ -70,7 +76,7 @@ const IMPACT_QUOTES = [
     { author: "Eminem", text: "You only get one shot, do not miss your chance to blow." },
     { author: "Cristiano Ronaldo", text: "Talent without working hard is nothing." },
     { author: "Harvey Specter", text: "I don't have dreams, I have goals." },
-    { author: "Clóvis de Barros", text: "A vida é uma só, você vai vivê-la como um espectador ou como protagonista?" },
+    { author: "ClÃƒÆ’Ã‚Â³vis de Barros", text: "A vida ÃƒÆ’Ã‚Â© uma sÃƒÆ’Ã‚Â³, vocÃƒÆ’Ã‚Âª vai vivÃƒÆ’Ã‚Âª-la como um espectador ou como protagonista?" },
     { author: "Tony Robbins", text: "If you do what you've always done, you'll get what you've always gotten." },
     { author: "Michael Jordan", text: "I can accept failure, everyone fails at something. But I can't accept not trying." },
     { author: "Gandalf", text: "All we have to decide is what to do with the time that is given us." },
@@ -84,7 +90,7 @@ const IMPACT_QUOTES = [
     { author: "Yoda", text: "Do or do not. There is no try." }
 ];
 
-// ── Sistema de RANK (Solo Leveling) ─────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Sistema de RANK (Solo Leveling) ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 const RANK_THRESHOLDS = [
     { min: 30, rank: 'RANK S', css: 'rank-s' },
     { min: 20, rank: 'RANK A', css: 'rank-a' },
@@ -94,12 +100,12 @@ const RANK_THRESHOLDS = [
     { min: 1,  rank: 'RANK E', css: 'rank-e' }
 ];
 
-// ── Boss Quests por Rank Up ──────────────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Boss Quests por Rank Up ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 const BOSS_QUESTS = {
     'e-to-d': {
         id: 'e-to-d',
         title: 'Despertar do Guerreiro',
-        description: 'Complete todas as suas missões diárias por 3 dias seguidos.',
+        description: 'Complete todas as suas missÃƒÆ’Ã‚Âµes diÃƒÆ’Ã‚Â¡rias por 3 dias seguidos.',
         rankFrom: 'RANK E', rankTo: 'RANK D',
         xpReward: 150, goldReward: 50,
         check: () => (gameState.streak || 0) >= 3,
@@ -108,7 +114,7 @@ const BOSS_QUESTS = {
     'd-to-c': {
         id: 'd-to-c',
         title: 'Batismo do Foco',
-        description: 'Complete 5 side quests (missões avulsas).',
+        description: 'Complete 5 side quests (missÃƒÆ’Ã‚Âµes avulsas).',
         rankFrom: 'RANK D', rankTo: 'RANK C',
         xpReward: 250, goldReward: 80,
         check: () => (gameState.bossQuest?.sideQuestsCompleted || 0) >= 5,
@@ -116,8 +122,8 @@ const BOSS_QUESTS = {
     },
     'c-to-b': {
         id: 'c-to-b',
-        title: 'Ascensão do Atributo',
-        description: 'Eleve pelo menos 4 das suas 6 skills para o Nível 3.',
+        title: 'AscensÃƒÆ’Ã‚Â£o do Atributo',
+        description: 'Eleve pelo menos 4 das suas 6 skills para o NÃƒÆ’Ã‚Â­vel 3.',
         rankFrom: 'RANK C', rankTo: 'RANK B',
         xpReward: 400, goldReward: 120,
         check: () => {
@@ -133,8 +139,8 @@ const BOSS_QUESTS = {
     },
     'b-to-a': {
         id: 'b-to-a',
-        title: 'Vigília do Estoico',
-        description: 'Mantenha uma sequência de 14 dias consecutivos.',
+        title: 'VigÃƒÆ’Ã‚Â­lia do Estoico',
+        description: 'Mantenha uma sequÃƒÆ’Ã‚Âªncia de 14 dias consecutivos.',
         rankFrom: 'RANK B', rankTo: 'RANK A',
         xpReward: 600, goldReward: 180,
         check: () => (gameState.streak || 0) >= 14,
@@ -143,7 +149,7 @@ const BOSS_QUESTS = {
     'a-to-s': {
         id: 'a-to-s',
         title: 'O Sistema Completo',
-        description: 'Eleve TODAS as 6 skills para o Nível 5 simultaneamente.',
+        description: 'Eleve TODAS as 6 skills para o NÃƒÆ’Ã‚Â­vel 5 simultaneamente.',
         rankFrom: 'RANK A', rankTo: 'RANK S',
         xpReward: 1000, goldReward: 300,
         check: () => {
@@ -158,20 +164,20 @@ const BOSS_QUESTS = {
     }
 };
 
-// ── Banco de Dungeons ─────────────────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Banco de Dungeons ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 const DUNGEON_POOL = [
-    { title: 'Treino Solitário',   skill: 'physical',     xp: 80,  gold: 40 },
-    { title: 'Hora do Silêncio',   skill: 'mental',       xp: 75,  gold: 35 },
+    { title: 'Treino SolitÃƒÆ’Ã‚Â¡rio',   skill: 'physical',     xp: 80,  gold: 40 },
+    { title: 'Hora do SilÃƒÆ’Ã‚Âªncio',   skill: 'mental',       xp: 75,  gold: 35 },
     { title: 'Projeto Expresso',   skill: 'productivity', xp: 90,  gold: 45 },
-    { title: 'Conexão Rara',       skill: 'social',       xp: 70,  gold: 35 },
+    { title: 'ConexÃƒÆ’Ã‚Â£o Rara',       skill: 'social',       xp: 70,  gold: 35 },
     { title: 'Leitura Profunda',   skill: 'wisdom',       xp: 80,  gold: 40 },
     { title: 'Ritual Perfeito',    skill: 'routine',      xp: 75,  gold: 38 },
-    { title: 'Corrida do Dragão',  skill: 'physical',     xp: 100, gold: 50 },
-    { title: 'Meditação Extrema',  skill: 'mental',       xp: 95,  gold: 48 },
+    { title: 'Corrida do DragÃƒÆ’Ã‚Â£o',  skill: 'physical',     xp: 100, gold: 50 },
+    { title: 'MeditaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o Extrema',  skill: 'mental',       xp: 95,  gold: 48 },
     { title: 'Sprint de Foco',     skill: 'productivity', xp: 110, gold: 55 },
-    { title: 'Aliança Inesperada', skill: 'social',       xp: 85,  gold: 42 },
+    { title: 'AlianÃƒÆ’Ã‚Â§a Inesperada', skill: 'social',       xp: 85,  gold: 42 },
     { title: 'Tomo Proibido',      skill: 'wisdom',       xp: 95,  gold: 48 },
-    { title: 'Sequência Sagrada',  skill: 'routine',      xp: 90,  gold: 45 },
+    { title: 'SequÃƒÆ’Ã‚Âªncia Sagrada',  skill: 'routine',      xp: 90,  gold: 45 },
 ];
 
 const DUNGEON_DURATION_MS = 48 * 60 * 60 * 1000; // 48 horas em ms
@@ -182,7 +188,7 @@ function hasSkillLV3() {
     return Object.values(skills).some(s => s.level >= 3);
 }
 
-// Gera uma nova dungeon aleatória
+// Gera uma nova dungeon aleatÃƒÆ’Ã‚Â³ria
 function spawnDungeon() {
     if (!hasSkillLV3()) return;
     if (gameState.activeDungeon && !gameState.activeDungeon.completed) return;
@@ -199,12 +205,12 @@ function spawnDungeon() {
     };
     saveGameData();
     setTimeout(() => {
-        showSystemToast(`⚔️ *DUNGEON DISPONÍVEL!* Uma missão especial surgiu: *"${pick.title}"*\n\nRecompensa: +${pick.xp} XP · +${pick.gold} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
+        showSystemToast(`ÃƒÂ¢Ã…Â¡Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¸Ã‚Â *DUNGEON DISPONÃƒÆ’Ã‚ÂVEL!* Uma missÃƒÆ’Ã‚Â£o especial surgiu: *"${pick.title}"*\n\nRecompensa: +${pick.xp} XP Ãƒâ€šÃ‚Â· +${pick.gold} ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â°\nÃƒÂ¢Ã‚ÂÃ‚Â³ Prazo: 48 horas. Conclua antes que expire.`);
 
     }, 1000);
 }
 
-// Verifica e aplica expiração da dungeon ativa
+// Verifica e aplica expiraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o da dungeon ativa
 function checkDungeonExpiry() {
     const d = gameState.activeDungeon;
     if (!d || d.completed) return;
@@ -214,7 +220,7 @@ function checkDungeonExpiry() {
         gameState.xp = Math.max(0, (gameState.xp || 0) - 5);
         saveGameData();
         setTimeout(() => {
-            showSystemToast(`💀 *DUNGEON EXPIRADA.* A missão *"${title}"* foi abandonada. O Sistema cobrou o preço: −5 XP.`);
+            showSystemToast(`ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã¢â€šÂ¬ *DUNGEON EXPIRADA.* A missÃƒÆ’Ã‚Â£o *"${title}"* foi abandonada. O Sistema cobrou o preÃƒÆ’Ã‚Â§o: ÃƒÂ¢Ã‹â€ Ã¢â‚¬â„¢5 XP.`);
 
         }, 500);
     }
@@ -248,16 +254,117 @@ function completeDungeon() {
     checkAndActivateBossQuest();
     saveGameData();
     updateUI();
+}
+
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Weekly Boss ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+const WEEKLY_BOSS_DURATION_MS = 72 * 60 * 60 * 1000; // 72h
+
+function spawnWeeklyBoss() {
+    if (gameState.weeklyBoss && !gameState.weeklyBoss.defeated && Date.now() < gameState.weeklyBoss.expiresAt) return;
+
+    gameState.weeklyBoss = {
+        spawnedAt: Date.now(),
+        expiresAt: Date.now() + WEEKLY_BOSS_DURATION_MS,
+        hp: 3,
+        defeated: false,
+        penaltyApplied: false
+    };
+    saveGameData();
+    showWeeklyBossModal();
+}
+
+function checkWeeklyBossExpiry() {
+    const wb = gameState.weeklyBoss;
+    if (!wb || wb.defeated || wb.penaltyApplied) return;
+    if (Date.now() >= wb.expiresAt) {
+        wb.penaltyApplied = true;
+        const goldLost = Math.floor((gameState.gold || 0) * 0.20);
+        gameState.gold = Math.max(0, (gameState.gold || 0) - goldLost);
+        gameState.xp   = Math.max(0, (gameState.xp   || 0) - 30);
+        saveGameData();
+        updateUI();
+        setTimeout(() => {
+            receiveMessage(`ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã¢â€šÂ¬ *O CHEFE DA SEMANA NÃƒÆ’Ã†â€™O FOI DERROTADO.*\n\nO Sistema cobrou o preÃƒÆ’Ã‚Â§o da sua fraqueza: -${goldLost} Ouro e -30 XP foram consumidos. Que isso sirva de liÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o.`);
+            showChatBadge();
+        }, 600);
+    }
+}
+
+function hitWeeklyBoss() {
+    const wb = gameState.weeklyBoss;
+    if (!wb || wb.defeated || wb.penaltyApplied || Date.now() >= wb.expiresAt) return;
+
+    wb.hp = Math.max(0, wb.hp - 1);
+
+    if (wb.hp <= 0) {
+        wb.defeated = true;
+        gameState.xp   = (gameState.xp   || 0) + 150;
+        gameState.gold = (gameState.gold || 0) + 80;
+        saveGameData();
+        updateUI();
+        renderWeeklyBoss();
+        setTimeout(() => {
+            receiveMessage(`ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â  *CHEFE SEMANAL DERROTADO!*\n\nVocÃƒÆ’Ã‚Âª enfrentou o Sistema e venceu. Recompensa: +150 XP e +80 Ouro. O streak continua protegido.`);
+            showChatBadge();
+        }, 800);
+    } else {
+        saveGameData();
+        renderWeeklyBoss();
+    }
+}
+
+function showWeeklyBossModal() {
+    const modal = document.getElementById('weekly-boss-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function renderWeeklyBoss() {
+    const container = document.getElementById('weekly-boss-container');
+    if (!container) return;
+
+    const wb = gameState.weeklyBoss;
+
+    if (!wb || wb.defeated || wb.penaltyApplied || Date.now() >= wb.expiresAt) {
+        container.style.display = 'none';
+        return;
+    }
+
+    const remMs  = Math.max(0, wb.expiresAt - Date.now());
+    const remH   = Math.floor(remMs / 3600000);
+    const remMin = Math.floor((remMs % 3600000) / 60000);
+    const hpPct  = (wb.hp / 3) * 100;
+    const urgent = remMs < 12 * 3600000;
+
+    container.style.display = 'block';
+    container.innerHTML = `
+        <div class="weekly-boss-card${urgent ? ' boss-urgent' : ''}">
+            <div class="boss-header">
+                <span class="boss-icon">ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã¢â€šÂ¬</span>
+                <div class="boss-title-wrap">
+                    <span class="boss-title">CHEFE DA SEMANA</span>
+                    <span class="boss-timer${urgent ? ' boss-timer-urgent' : ''}">ÃƒÂ¢Ã‚ÂÃ‚Â³ ${remH}h ${remMin}min restantes</span>
+                </div>
+                <span class="boss-badge">BOSS</span>
+            </div>
+            <div class="boss-desc">Derrote completando 3 dias perfeitos (100% das dailies)</div>
+            <div class="boss-hp-bar-track">
+                <div class="boss-hp-bar-fill" style="width: ${hpPct}%"></div>
+            </div>
+            <div class="boss-hp-label">${wb.hp}/3 HP restantes</div>
+            <div class="boss-rewards-preview">Recompensa: +150 XP Ãƒâ€šÃ‚Â· +80 ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â° Ãƒâ€šÃ‚Â· Streak protegido</div>
+        </div>
+    `;
+}
 
     setTimeout(() => {
-        showSystemToast(`🏆 *DUNGEON CONCLUÍDA!* Você completou *"${d.title}"*!\n\n+${xpGain} XP · +${goldGain} 💰 concedidos. Iroh está orgulhoso.`);
+        showSystemToast(`ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â  *DUNGEON CONCLUÃƒÆ’Ã‚ÂDA!* VocÃƒÆ’Ã‚Âª completou *"${d.title}"*!\n\n+${xpGain} XP Ãƒâ€šÃ‚Â· +${goldGain} ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â° concedidos. Iroh estÃƒÆ’Ã‚Â¡ orgulhoso.`);
 
     }, 800);
 
     renderQuests();
 }
 
-// Mapeia nível mínimo do rank atual → boss quest a ser ativada
+// Mapeia nÃƒÆ’Ã‚Â­vel mÃƒÆ’Ã‚Â­nimo do rank atual ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ boss quest a ser ativada
 const BOSS_QUEST_BY_LEVEL = {
     5:  'e-to-d',
     10: 'd-to-c',
@@ -277,7 +384,7 @@ function getRankForLevel(level) {
 function checkAndActivateBossQuest() {
     const level = gameState.level;
 
-    // Verifica se o nível atual tem uma boss quest associada
+    // Verifica se o nÃƒÆ’Ã‚Â­vel atual tem uma boss quest associada
     const bossId = BOSS_QUEST_BY_LEVEL[level];
     if (bossId && (!gameState.bossQuest || gameState.bossQuest.id !== bossId)) {
         // Ativa a nova Boss Quest
@@ -288,12 +395,12 @@ function checkAndActivateBossQuest() {
         };
         const bq = BOSS_QUESTS[bossId];
         setTimeout(() => {
-            showSystemToast(`⚔️ *BOSS QUEST DESBLOQUEADA!*\n\n*${bq.title}*\n_${bq.description}_\n\nRecompensa: +${bq.xpReward} XP · +${bq.goldReward} 💰\n\nProgresso atual: ${bq.progress()}`);
+            showSystemToast(`ÃƒÂ¢Ã…Â¡Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¸Ã‚Â *BOSS QUEST DESBLOQUEADA!*\n\n*${bq.title}*\n_${bq.description}_\n\nRecompensa: +${bq.xpReward} XP Ãƒâ€šÃ‚Â· +${bq.goldReward} ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â°\n\nProgresso atual: ${bq.progress()}`);
 
         }, 2000);
     }
 
-    // Verifica se a boss quest ativa foi concluída
+    // Verifica se a boss quest ativa foi concluÃƒÆ’Ã‚Â­da
     if (gameState.bossQuest && !gameState.bossQuest.completed) {
         const bq = BOSS_QUESTS[gameState.bossQuest.id];
         if (bq && bq.check()) {
@@ -301,7 +408,7 @@ function checkAndActivateBossQuest() {
             gameState.xp += bq.xpReward;
             gameState.gold += bq.goldReward;
             setTimeout(() => {
-                showSystemToast(`🏆 *BOSS QUEST CONCLUÍDA!*\n\n*${bq.title}* foi completada!\n\n_"${getBossVictoryQuote(bq.id)}"_\n\n+${bq.xpReward} XP · +${bq.goldReward} 💰 concedidos. ${bq.rankFrom} → ${bq.rankTo} desbloqueado por mérito!`);
+                showSystemToast(`ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â  *BOSS QUEST CONCLUÃƒÆ’Ã‚ÂDA!*\n\n*${bq.title}* foi completada!\n\n_"${getBossVictoryQuote(bq.id)}"_\n\n+${bq.xpReward} XP Ãƒâ€šÃ‚Â· +${bq.goldReward} ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â° concedidos. ${bq.rankFrom} ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ ${bq.rankTo} desbloqueado por mÃƒÆ’Ã‚Â©rito!`);
 
             }, 1500);
             saveGameData();
@@ -310,19 +417,19 @@ function checkAndActivateBossQuest() {
     }
 }
 
-// Bordão do Iroh ao concluir cada Boss Quest
+// BordÃƒÆ’Ã‚Â£o do Iroh ao concluir cada Boss Quest
 function getBossVictoryQuote(bossId) {
     const quotes = {
-        'e-to-d': 'Três dias. Simples assim. E você provou que tem o que é preciso para continuar.',
-        'd-to-c': 'Missões extras revelam o caráter. Você foi além do mínimo — isso é tudo.',
-        'c-to-b': 'Quatro atributos forjados. Não é sorte. É consistência transformada em força.',
-        'b-to-a': 'Catorze dias sem parar. Isso não é disciplina — isso é identidade.',
-        'a-to-s': 'O Sistema Encarnado. Você não segue mais o método — você virou o método.'
+        'e-to-d': 'TrÃƒÆ’Ã‚Âªs dias. Simples assim. E vocÃƒÆ’Ã‚Âª provou que tem o que ÃƒÆ’Ã‚Â© preciso para continuar.',
+        'd-to-c': 'MissÃƒÆ’Ã‚Âµes extras revelam o carÃƒÆ’Ã‚Â¡ter. VocÃƒÆ’Ã‚Âª foi alÃƒÆ’Ã‚Â©m do mÃƒÆ’Ã‚Â­nimo ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â isso ÃƒÆ’Ã‚Â© tudo.',
+        'c-to-b': 'Quatro atributos forjados. NÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© sorte. ÃƒÆ’Ã¢â‚¬Â° consistÃƒÆ’Ã‚Âªncia transformada em forÃƒÆ’Ã‚Â§a.',
+        'b-to-a': 'Catorze dias sem parar. Isso nÃƒÆ’Ã‚Â£o ÃƒÆ’Ã‚Â© disciplina ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â isso ÃƒÆ’Ã‚Â© identidade.',
+        'a-to-s': 'O Sistema Encarnado. VocÃƒÆ’Ã‚Âª nÃƒÆ’Ã‚Â£o segue mais o mÃƒÆ’Ã‚Â©todo ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â vocÃƒÆ’Ã‚Âª virou o mÃƒÆ’Ã‚Â©todo.'
     };
-    return quotes[bossId] || 'A vitória pertence a quem persiste.';
+    return quotes[bossId] || 'A vitÃƒÆ’Ã‚Â³ria pertence a quem persiste.';
 }
 
-// ── Mapeamento 6 Skills → 3 Atributos Arise ─────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Mapeamento 6 Skills ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ 3 Atributos Arise ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 function computeAttributes() {
     const s = gameState.skills || {};
     const get = (k) => s[k] ? (s[k].level - 1) + (s[k].xp / (s[k].xpToNext || 5)) : 0;
@@ -354,7 +461,7 @@ function computePlayerTitle(attrs) {
 
     if (isW && isI && isH) return "Desperto";
     if (isW && isH) return "Monge-Atleta";
-    if (isI && isH) return "Sábio Guerreiro";
+    if (isI && isH) return "SÃƒÆ’Ã‚Â¡bio Guerreiro";
     if (isW && isI) return "Mestre da Mente";
 
     if (isH) return "Guerreiro";
@@ -364,12 +471,12 @@ function computePlayerTitle(attrs) {
     return "Desperto";
 }
 
-// ── Definições de Sinergias de Atributos ──────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ DefiniÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes de Sinergias de Atributos ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 const SYNERGY_DEFS = [
     {
         id: 'willpower_iron',
         name: 'Vontade de Ferro',
-        icon: '🔥',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥',
         description: '+10% XP em todas as quests',
         check: (attrs) => attrs.willpower.level >= 3,
         bonusXpPct: 0.10,
@@ -379,7 +486,7 @@ const SYNERGY_DEFS = [
     {
         id: 'sharp_mind',
         name: 'Mente Afiada',
-        icon: '🧠',
+        icon: 'ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Â ',
         description: '+1 Skill XP em cada quest',
         check: (attrs) => attrs.intellect.level >= 3,
         bonusXpPct: 0,
@@ -389,7 +496,7 @@ const SYNERGY_DEFS = [
     {
         id: 'body_mind',
         name: 'Corpo e Mente',
-        icon: '⚖️',
+        icon: 'ÃƒÂ¢Ã…Â¡Ã¢â‚¬â€œÃƒÂ¯Ã‚Â¸Ã‚Â',
         description: '+5% Ouro em todas as quests',
         check: (attrs) => attrs.willpower.level >= 3 && attrs.health.level >= 3,
         bonusXpPct: 0,
@@ -399,7 +506,7 @@ const SYNERGY_DEFS = [
     {
         id: 'the_system',
         name: 'O Sistema',
-        icon: '⚡',
+        icon: 'ÃƒÂ¢Ã…Â¡Ã‚Â¡',
         description: '+15% XP, +1 Skill XP, +5% Ouro',
         check: (attrs) => attrs.willpower.level >= 3 && attrs.intellect.level >= 3 && attrs.health.level >= 3,
         bonusXpPct: 0.15,
@@ -409,8 +516,8 @@ const SYNERGY_DEFS = [
     {
         id: 'immortal_legend',
         name: 'Lenda Imortal',
-        icon: '👑',
-        description: '+25% XP + Escudo bônus a cada 7-streak',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ¢â‚¬Ëœ',
+        description: '+25% XP + Escudo bÃƒÆ’Ã‚Â´nus a cada 7-streak',
         check: (attrs) => attrs.willpower.level >= 5 && attrs.intellect.level >= 5 && attrs.health.level >= 5,
         bonusXpPct: 0.25,
         bonusSkillXp: 0,
@@ -425,95 +532,136 @@ function computeSynergies() {
     return SYNERGY_DEFS.filter(s => s.check(attrs));
 }
 
-// Calcula o bônus total de XP de sinergias (somativo, ex: 0.10 + 0.15 = 0.25)
+// Calcula o bÃƒÆ’Ã‚Â´nus total de XP de sinergias (somativo, ex: 0.10 + 0.15 = 0.25)
 function getSynergyXpBonus() {
     return computeSynergies().reduce((sum, s) => sum + (s.bonusXpPct || 0), 0);
 }
 
-// Calcula o bônus total de Skill XP de sinergias
+// Calcula o bÃƒÆ’Ã‚Â´nus total de Skill XP de sinergias
 function getSynergySkillXpBonus() {
     return computeSynergies().reduce((sum, s) => sum + (s.bonusSkillXp || 0), 0);
 }
 
-// Calcula o bônus total de Ouro de sinergias
+// Calcula o bÃƒÆ’Ã‚Â´nus total de Ouro de sinergias
 function getSynergyGoldBonus() {
     return computeSynergies().reduce((sum, s) => sum + (s.bonusGoldPct || 0), 0);
 }
 
-// Verifica se a sinergia "Lenda Imortal" está ativa (escudo bônus no 7-streak)
+// Verifica se a sinergia "Lenda Imortal" estÃƒÆ’Ã‚Â¡ ativa (escudo bÃƒÆ’Ã‚Â´nus no 7-streak)
 function hasSynergyShieldBonus() {
     return computeSynergies().some(s => s.shieldBonus);
 }
 
-// ── Conquistas (Achievements) ─────────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Conquistas (Achievements) ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 const ACHIEVEMENTS_DEFS = [
+    // CONSISTÃƒÆ’Ã…Â NCIA
     {
-        id: 'first_quest',
-        title: 'O Início da Jornada',
-        desc: 'Conclua sua primeira Missão',
-        icon: '⚔️',
-        rewardGold: 10,
-        check: (gs) => gs.quests.some(q => q.completed) || (gs.sideQuests && gs.sideQuests.some(q => q.completed))
+        id: 'first_quest', category: 'consistÃƒÆ’Ã‚Âªncia',
+        title: 'O InÃƒÆ’Ã‚Â­cio da Jornada', desc: 'Conclua sua primeira MissÃƒÆ’Ã‚Â£o',
+        icon: 'ÃƒÂ¢Ã…Â¡Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¸Ã‚Â', rewardGold: 10, rarity: 'comum',
+        check: (gs) => gs.quests.some(q => q.completed) || (gs.sideQuests && gs.sideQuests.some(q => q.completed)),
+        progress: (gs) => ({ cur: Math.min(gs.quests.filter(q => q.completed).length + (gs.sideQuests || []).filter(q => q.completed).length, 1), max: 1 })
     },
     {
-        id: 'streak_7',
-        title: 'Sangue Frio',
-        desc: 'Atinja um Streak de 7 dias',
-        icon: '🔥',
-        rewardGold: 25,
-        check: (gs) => gs.streak >= 7
+        id: 'streak_3', category: 'consistÃƒÆ’Ã‚Âªncia',
+        title: 'Primeiros Passos', desc: 'Atinja um Streak de 3 dias',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥', rewardGold: 15, rarity: 'comum',
+        check: (gs) => gs.streak >= 3,
+        progress: (gs) => ({ cur: Math.min(gs.streak || 0, 3), max: 3 })
     },
     {
-        id: 'streak_30',
-        title: 'Disciplina de Ferro',
-        desc: 'Atinja um Streak de 30 dias',
-        icon: '🛡️',
-        rewardGold: 100,
-        check: (gs) => gs.streak >= 30
+        id: 'streak_7', category: 'consistÃƒÆ’Ã‚Âªncia',
+        title: 'Sangue Frio', desc: 'Atinja um Streak de 7 dias',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥', rewardGold: 25, rarity: 'incomum',
+        check: (gs) => gs.streak >= 7,
+        progress: (gs) => ({ cur: Math.min(gs.streak || 0, 7), max: 7 })
     },
     {
-        id: 'rank_d',
-        title: 'O Despertar',
-        desc: 'Chegue ao Rank D (Nível 5)',
-        icon: '🌅',
-        rewardGold: 30,
-        check: (gs) => gs.level >= 5
+        id: 'streak_30', category: 'consistÃƒÆ’Ã‚Âªncia',
+        title: 'Disciplina de Ferro', desc: 'Atinja um Streak de 30 dias',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ‚Â¡ÃƒÂ¯Ã‚Â¸Ã‚Â', rewardGold: 100, rarity: 'raro',
+        check: (gs) => gs.streak >= 30,
+        progress: (gs) => ({ cur: Math.min(gs.streak || 0, 30), max: 30 })
     },
     {
-        id: 'rank_s',
-        title: 'Caçador de Rank',
-        desc: 'Chegue ao Rank S (Nível 30)',
-        icon: '👑',
-        rewardGold: 500,
-        check: (gs) => gs.level >= 30
+        id: 'streak_100', category: 'consistÃƒÆ’Ã‚Âªncia',
+        title: 'A Lenda NÃƒÆ’Ã‚Â£o Para', desc: 'Atinja um Streak de 100 dias',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ¢â‚¬Ëœ', rewardGold: 400, rarity: 'lendÃƒÆ’Ã‚Â¡rio',
+        check: (gs) => gs.streak >= 100,
+        progress: (gs) => ({ cur: Math.min(gs.streak || 0, 100), max: 100 })
+    },
+    // RANK
+    {
+        id: 'rank_d', category: 'rank',
+        title: 'O Despertar', desc: 'Chegue ao Rank D (NÃƒÆ’Ã‚Â­vel 5)',
+        icon: 'ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â‚¬Â¦', rewardGold: 30, rarity: 'incomum',
+        check: (gs) => gs.level >= 5,
+        progress: (gs) => ({ cur: Math.min(gs.level || 1, 5), max: 5 })
     },
     {
-        id: 'skill_5',
-        title: 'Especialista',
-        desc: 'Alcance o Nível 5 em qualquer Skill',
-        icon: '⭐',
-        rewardGold: 50,
-        check: (gs) => Object.values(gs.skills || {}).some(s => s.level >= 5)
+        id: 'rank_c', category: 'rank',
+        title: 'AscensÃƒÆ’Ã‚Â£o', desc: 'Chegue ao Rank C (NÃƒÆ’Ã‚Â­vel 10)',
+        icon: 'ÃƒÂ°Ã…Â¸Ã…â€™Ã…Â¸', rewardGold: 80, rarity: 'raro',
+        check: (gs) => gs.level >= 10,
+        progress: (gs) => ({ cur: Math.min(gs.level || 1, 10), max: 10 })
     },
     {
-        id: 'all_skills_3',
-        title: 'Mestre do Sistema',
-        desc: 'Alcance o Nível 3 em TODAS as Skills',
-        icon: '💠',
-        rewardGold: 150,
+        id: 'rank_s', category: 'rank',
+        title: 'CaÃƒÆ’Ã‚Â§ador de Rank', desc: 'Chegue ao Rank S (NÃƒÆ’Ã‚Â­vel 30)',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ¢â‚¬Ëœ', rewardGold: 500, rarity: 'lendÃƒÆ’Ã‚Â¡rio',
+        check: (gs) => gs.level >= 30,
+        progress: (gs) => ({ cur: Math.min(gs.level || 1, 30), max: 30 })
+    },
+    // HABILIDADES
+    {
+        id: 'skill_3', category: 'habilidades',
+        title: 'Especialista Iniciante', desc: 'Alcance o NÃƒÆ’Ã‚Â­vel 3 em qualquer Skill',
+        icon: 'ÃƒÂ¢Ã‚Â­Ã‚Â', rewardGold: 20, rarity: 'comum',
+        check: (gs) => Object.values(gs.skills || {}).some(s => s.level >= 3),
+        progress: (gs) => ({ cur: Math.min(Math.max(...Object.values(gs.skills || {1:1}).map(s => s.level || 1)), 3), max: 3 })
+    },
+    {
+        id: 'skill_5', category: 'habilidades',
+        title: 'Especialista', desc: 'Alcance o NÃƒÆ’Ã‚Â­vel 5 em qualquer Skill',
+        icon: 'ÃƒÂ¢Ã‚Â­Ã‚Â', rewardGold: 50, rarity: 'raro',
+        check: (gs) => Object.values(gs.skills || {}).some(s => s.level >= 5),
+        progress: (gs) => ({ cur: Math.min(Math.max(...Object.values(gs.skills || {1:1}).map(s => s.level || 1)), 5), max: 5 })
+    },
+    {
+        id: 'all_skills_3', category: 'habilidades',
+        title: 'Mestre do Sistema', desc: 'Alcance o NÃƒÆ’Ã‚Â­vel 3 em TODAS as Skills',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â ', rewardGold: 150, rarity: 'lendÃƒÆ’Ã‚Â¡rio',
         check: (gs) => {
             const reqs = ['physical', 'mental', 'productivity', 'social', 'wisdom', 'routine'];
             return reqs.every(k => gs.skills && gs.skills[k] && gs.skills[k].level >= 3);
+        },
+        progress: (gs) => {
+            const reqs = ['physical', 'mental', 'productivity', 'social', 'wisdom', 'routine'];
+            return { cur: reqs.filter(k => gs.skills && gs.skills[k] && gs.skills[k].level >= 3).length, max: 6 };
         }
     },
+    // MASMORRAS
     {
-        id: 'dungeon_5',
-        title: 'Caçador de Dungeons',
-        desc: 'Complete 5 Dungeons',
-        icon: '💀',
-        rewardGold: 80,
-        check: (gs) => (gs._dungeonsCompleted || 0) >= 5
-    }
+        id: 'dungeon_1', category: 'masmorras',
+        title: 'Primeiro Sangue', desc: 'Complete 1 Dungeon',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã¢â€šÂ¬', rewardGold: 20, rarity: 'comum',
+        check: (gs) => (gs._dungeonsCompleted || 0) >= 1,
+        progress: (gs) => ({ cur: Math.min(gs._dungeonsCompleted || 0, 1), max: 1 })
+    },
+    {
+        id: 'dungeon_5', category: 'masmorras',
+        title: 'CaÃƒÆ’Ã‚Â§ador de Dungeons', desc: 'Complete 5 Dungeons',
+        icon: 'ÃƒÂ¢Ã…Â¡Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¸Ã‚Â', rewardGold: 80, rarity: 'raro',
+        check: (gs) => (gs._dungeonsCompleted || 0) >= 5,
+        progress: (gs) => ({ cur: Math.min(gs._dungeonsCompleted || 0, 5), max: 5 })
+    },
+    {
+        id: 'boss_defeated', category: 'masmorras',
+        title: 'Mata-Boss', desc: 'Derrote 1 Chefe Semanal',
+        icon: 'ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â ', rewardGold: 100, rarity: 'raro',
+        check: (gs) => gs.weeklyBoss && gs.weeklyBoss.defeated,
+        progress: (gs) => ({ cur: gs.weeklyBoss?.defeated ? 1 : 0, max: 1 })
+    },
 ];
 
 function checkAchievements() {
@@ -527,7 +675,7 @@ function checkAchievements() {
                 gameState.gold = (gameState.gold || 0) + ach.rewardGold;
                 newlyUnlocked = true;
                 setTimeout(() => {
-                    showSystemToast(`🏆 *CONQUISTA DESBLOQUEADA!* Você obteve o troféu *"${ach.title}"*. Recompensa: +${ach.rewardGold} 💰.`);
+                    showSystemToast(`ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â  *CONQUISTA DESBLOQUEADA!* VocÃƒÆ’Ã‚Âª obteve o trofÃƒÆ’Ã‚Â©u *"${ach.title}"*. Recompensa: +${ach.rewardGold} ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â°.`);
 
                 }, 1500);
             }
@@ -536,7 +684,7 @@ function checkAchievements() {
 
     if (newlyUnlocked) {
         renderAchievements();
-        // saveGameData já é chamado em todos os pontos que alteram estado.
+        // saveGameData jÃƒÆ’Ã‚Â¡ ÃƒÆ’Ã‚Â© chamado em todos os pontos que alteram estado.
     }
 }
 
@@ -545,91 +693,142 @@ function renderAchievements() {
     if (!container) return;
 
     const unlockedIds = gameState.unlockedAchievements || [];
+    const totalUnlocked = unlockedIds.length;
+    const totalAchs = ACHIEVEMENTS_DEFS.length;
 
-    container.innerHTML = ACHIEVEMENTS_DEFS.map(ach => {
-        const isUnlocked = unlockedIds.includes(ach.id);
-        const lockClass = isUnlocked ? 'unlocked' : '';
-        return `
-            <div class="achievement-card ${lockClass}">
-                <div class="ach-icon">${isUnlocked ? ach.icon : '🔒'}</div>
+    // Agrupa por categoria
+    const categories = {
+        'consistÃƒÆ’Ã‚Âªncia': { label: 'CONSISTÃƒÆ’Ã…Â NCIA', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥' },
+        'rank':         { label: 'RANK & NÃƒÆ’Ã‚ÂVEL', icon: 'ÃƒÂ°Ã…Â¸Ã…â€™Ã…Â¸' },
+        'habilidades':  { label: 'HABILIDADES', icon: 'ÃƒÂ¢Ã‚Â­Ã‚Â' },
+        'masmorras':    { label: 'MASMORRAS & BOSS', icon: 'ÃƒÂ¢Ã…Â¡Ã¢â‚¬ÂÃƒÂ¯Ã‚Â¸Ã‚Â' }
+    };
+
+    const rarityColors = {
+        'comum':     { bg: 'rgba(120,120,140,0.1)', border: 'rgba(120,120,140,0.3)', label: 'rgba(170,170,190,0.7)' },
+        'incomum':   { bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.35)',  label: 'rgba(34,197,94,0.8)' },
+        'raro':      { bg: 'rgba(99,102,241,0.1)',  border: 'rgba(99,102,241,0.4)',  label: 'rgba(129,140,248,0.9)' },
+        'lendÃƒÆ’Ã‚Â¡rio':  { bg: 'rgba(251,191,36,0.1)',  border: 'rgba(251,191,36,0.5)',  label: 'rgba(251,191,36,1)' }
+    };
+
+    let html = `
+        <div class="ach-summary-bar">
+            <span class="ach-summary-count">${totalUnlocked}<span class="ach-summary-total">/${totalAchs}</span></span>
+            <span class="ach-summary-label">CONQUISTAS DESBLOQUEADAS</span>
+            <div class="ach-summary-track"><div class="ach-summary-fill" style="width:${(totalUnlocked/totalAchs*100).toFixed(0)}%"></div></div>
+        </div>
+    `;
+
+    Object.entries(categories).forEach(([catKey, catInfo]) => {
+        const catAchs = ACHIEVEMENTS_DEFS.filter(a => a.category === catKey);
+        const catUnlocked = catAchs.filter(a => unlockedIds.includes(a.id)).length;
+
+        html += `<div class="ach-category">
+            <div class="ach-category-header">
+                <span class="ach-category-icon">${catInfo.icon}</span>
+                <span class="ach-category-label">${catInfo.label}</span>
+                <span class="ach-category-count">${catUnlocked}/${catAchs.length}</span>
+            </div>
+            <div class="ach-cards-row">`;
+
+        catAchs.forEach(ach => {
+            const isUnlocked = unlockedIds.includes(ach.id);
+            const prog = ach.progress ? ach.progress(gameState) : null;
+            const progPct = prog ? Math.min(100, Math.round((prog.cur / prog.max) * 100)) : 0;
+            const rc = rarityColors[ach.rarity] || rarityColors['comum'];
+
+            html += `
+            <div class="achievement-card ${isUnlocked ? 'unlocked' : ''}" style="
+                ${isUnlocked ? `background:${rc.bg}; border-color:${rc.border};` : ''}
+            ">
+                <div class="ach-icon">${isUnlocked ? ach.icon : 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ¢â‚¬â„¢'}</div>
                 <div class="ach-title">${ach.title}</div>
                 <div class="ach-desc">${ach.desc}</div>
-                ${isUnlocked ? '<div class="ach-date">Desbloqueado</div>' : ''}
-            </div>
-        `;
-    }).join('');
+                ${isUnlocked
+                    ? `<div class="ach-rarity-badge" style="color:${rc.label}; border-color:${rc.border}">${ach.rarity.toUpperCase()}</div>
+                       <div class="ach-reward">+${ach.rewardGold} ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â°</div>`
+                    : prog ? `<div class="ach-prog-track"><div class="ach-prog-fill" style="width:${progPct}%"></div></div>
+                              <div class="ach-prog-label">${prog.cur}/${prog.max}</div>` : ''
+                }
+            </div>`;
+        });
+
+        html += `</div></div>`;
+    });
+
+    container.innerHTML = html;
 }
 
-// ── Rank Perks ─────────────────────────────────────────────────────────────
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Rank Perks ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
 const RANK_PERKS = {
     'd': {
         id: 'foco_matinal',
         name: 'Foco Matinal',
-        icon: '🌅',
-        description: '+5 XP bônus na primeira quest do dia',
+        icon: 'ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â‚¬Â¦',
+        description: '+5 XP bÃƒÆ’Ã‚Â´nus na primeira quest do dia',
         rank: 'RANK D'
     },
     'c': {
         id: 'mente_diamante',
         name: 'Mente de Diamante',
-        icon: '💎',
-        description: '+10 XP bônus ao completar todas as dailies',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã…Â½',
+        description: '+10 XP bÃƒÆ’Ã‚Â´nus ao completar todas as dailies',
         rank: 'RANK C'
     },
     'b': {
         id: 'momentum',
         name: 'Momentum',
-        icon: '⚡',
-        description: '+1 XP por quest consecutiva (acumula até 5)',
+        icon: 'ÃƒÂ¢Ã…Â¡Ã‚Â¡',
+        description: '+1 XP por quest consecutiva (acumula atÃƒÆ’Ã‚Â© 5)',
         rank: 'RANK B'
     },
     'a': {
         id: 'o_sistema',
         name: 'O Sistema',
-        icon: '🔄',
-        description: '1 skill XP de bônus ao completar todas as dailies',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ¢â‚¬Å¾',
+        description: '1 skill XP de bÃƒÆ’Ã‚Â´nus ao completar todas as dailies',
         rank: 'RANK A'
     },
     's': {
         id: 'lenda_imortal',
         name: 'Lenda Imortal',
-        icon: '👑',
+        icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ËœÃ¢â‚¬Ëœ',
         description: '+25% XP em todas as recompensas',
         rank: 'RANK S'
     }
 };
 
-// Retorna os perks ativos com base no rank atual (todos os ranks atingidos até o atual)
+// Retorna os perks ativos com base no rank atual (todos os ranks atingidos atÃƒÆ’Ã‚Â© o atual)
 function getActivePerks() {
     const rankKey = getRankForLevel(gameState.level).css.replace('rank-', ''); // 'e','d','c','b','a','s'
     const rankOrder = ['e', 'd', 'c', 'b', 'a', 's'];
     const currentIndex = rankOrder.indexOf(rankKey);
-    // Inclui todos os perks dos ranks atingidos (exceto 'e' que não tem perk)
+    // Inclui todos os perks dos ranks atingidos (exceto 'e' que nÃƒÆ’Ã‚Â£o tem perk)
     return rankOrder
         .slice(0, currentIndex + 1)
         .filter(r => RANK_PERKS[r])
         .map(r => RANK_PERKS[r]);
 }
 
-// Verifica se um perk específico está ativo
+// Verifica se um perk especÃƒÆ’Ã‚Â­fico estÃƒÆ’Ã‚Â¡ ativo
 function hasPerk(perkId) {
     return getActivePerks().some(p => p.id === perkId);
 }
 
-// Bônus de XP do perk Lenda Imortal
+// BÃƒÆ’Ã‚Â´nus de XP do perk Lenda Imortal
 function getPerkXpBonus() {
     return hasPerk('lenda_imortal') ? 0.25 : 0;
 }
 
 // ==========================================================================
-// RADAR CHART — declarada no topo para garantir escopo global total
+// RADAR CHART ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â declarada no topo para garantir escopo global total
 // ==========================================================================
 function drawRadarChart() {
     try {
         const canvas = document.getElementById('skills-radar-chart');
-        if (!canvas) { console.error('[Radar] canvas não encontrado!'); return; }
+        if (!canvas) { console.error('[Radar] canvas nÃƒÆ’Ã‚Â£o encontrado!'); return; }
 
-        // Força display:block via JS (algo sobrescrevia para 'inline')
+        // ForÃƒÆ’Ã‚Â§a display:block via JS (algo sobrescrevia para 'inline')
         canvas.width  = 260;
         canvas.height = 260;
         canvas.style.display = 'block';
@@ -646,8 +845,8 @@ function drawRadarChart() {
 
         const skillTypes  = ['physical','mental','productivity','social','wisdom','routine'];
         const skillLabels = {
-            physical:'FÍSICO', mental:'MENTAL', productivity:'FOCO',
-            social:'CONEXÃO', wisdom:'SABEDORIA', routine:'ROTINA'
+            physical:'FÃƒÆ’Ã‚ÂSICO', mental:'MENTAL', productivity:'FOCO',
+            social:'CONEXÃƒÆ’Ã†â€™O', wisdom:'SABEDORIA', routine:'ROTINA'
         };
         const N = skillTypes.length;
 
@@ -657,13 +856,13 @@ function drawRadarChart() {
                 || { level: 1, xp: 0, xpToNext: 5 };
             const val  = (skill.level - 1) + (skill.xp / (skill.xpToNext || 5));
             const frac = Math.min(val / 5, 1.0);
-            // Raio mínimo de 4px apenas para manter o marcador visível no vértice
-            // Escala real começa do zero
+            // Raio mÃƒÆ’Ã‚Â­nimo de 4px apenas para manter o marcador visÃƒÆ’Ã‚Â­vel no vÃƒÆ’Ã‚Â©rtice
+            // Escala real comeÃƒÆ’Ã‚Â§a do zero
             const minR = 4;
             return { r: minR + (frac * (maxR - minR)), skill };
         };
 
-        // 1. Grades concêntricas
+        // 1. Grades concÃƒÆ’Ã‚Âªntricas
         for (let g = 1; g <= 5; g++) {
             const r = (g / 5) * maxR;
             ctx.beginPath();
@@ -690,7 +889,7 @@ function drawRadarChart() {
             ctx.stroke();
         }
 
-        // 3. Polígono preenchido com gradiente
+        // 3. PolÃƒÆ’Ã‚Â­gono preenchido com gradiente
         ctx.beginPath();
         for (let i = 0; i < N; i++) {
             const { r } = getR(skillTypes[i]);
@@ -707,7 +906,7 @@ function drawRadarChart() {
         ctx.fillStyle = grad;
         ctx.fill();
 
-        // Contorno usa a cor da skill de maior nível
+        // Contorno usa a cor da skill de maior nÃƒÆ’Ã‚Â­vel
         const maxSkillLevel = Math.max(...skillTypes.map(t =>
             (gameState.skills && gameState.skills[t]) ? gameState.skills[t].level : 1
         ));
@@ -715,7 +914,7 @@ function drawRadarChart() {
         ctx.lineWidth   = 2;
         ctx.stroke();
 
-        // 4. Marcadores nos vértices (polígono evolutivo)
+        // 4. Marcadores nos vÃƒÆ’Ã‚Â©rtices (polÃƒÆ’Ã‚Â­gono evolutivo)
         for (let i = 0; i < N; i++) {
             const { r, skill } = getR(skillTypes[i]);
             const a = (i * 2 * Math.PI / N) - Math.PI / 2;
@@ -725,7 +924,7 @@ function drawRadarChart() {
             drawVertexMarker(ctx, vx, vy, skill.level, color);
         }
 
-        // 5. Rótulos (nome + nível)
+        // 5. RÃƒÆ’Ã‚Â³tulos (nome + nÃƒÆ’Ã‚Â­vel)
         for (let i = 0; i < N; i++) {
             const { skill } = getR(skillTypes[i]);
             const a    = (i * 2 * Math.PI / N) - Math.PI / 2;
@@ -751,17 +950,17 @@ function drawRadarChart() {
         console.error('[Radar] Erro ao desenhar:', err);
     }
 }
-// Expõe no window para garantir acesso global em qualquer contexto
+// ExpÃƒÆ’Ã‚Âµe no window para garantir acesso global em qualquer contexto
 window.drawRadarChart = drawRadarChart;
 
-// Retorna a cor da ponta do hexágono baseada no nível da skill
+// Retorna a cor da ponta do hexÃƒÆ’Ã‚Â¡gono baseada no nÃƒÆ’Ã‚Â­vel da skill
 function getSkillColor(level) {
     if (level >= 5) return '#fbbf24'; // Dourado
     if (level >= 3) return '#C0C0C0'; // Prata
-    return '#00f0ff';                 // Ciano (padrão)
+    return '#00f0ff';                 // Ciano (padrÃƒÆ’Ã‚Â£o)
 }
 
-// Desenha o marcador no vértice do hexágono — polígono com N lados = nível da skill
+// Desenha o marcador no vÃƒÆ’Ã‚Â©rtice do hexÃƒÆ’Ã‚Â¡gono ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â polÃƒÆ’Ã‚Â­gono com N lados = nÃƒÆ’Ã‚Â­vel da skill
 function drawVertexMarker(ctx, x, y, level, color) {
     ctx.beginPath();
     ctx.fillStyle = color;
@@ -769,23 +968,23 @@ function drawVertexMarker(ctx, x, y, level, color) {
     ctx.lineWidth = 1.5;
 
     if (level <= 1) {
-        // LV1: círculo vazio (apenas contorno)
+        // LV1: cÃƒÆ’Ã‚Â­rculo vazio (apenas contorno)
         ctx.arc(x, y, 4, 0, 2 * Math.PI);
         ctx.stroke();
         return;
     }
 
     if (level === 2) {
-        // LV2: círculo preenchido
+        // LV2: cÃƒÆ’Ã‚Â­rculo preenchido
         ctx.arc(x, y, 4, 0, 2 * Math.PI);
         ctx.fill();
         return;
     }
 
-    // LV3+: polígono com N = level lados
-    const sides = level; // LV3 = triângulo, LV4 = quadrado, LV5 = pentágono...
+    // LV3+: polÃƒÆ’Ã‚Â­gono com N = level lados
+    const sides = level; // LV3 = triÃƒÆ’Ã‚Â¢ngulo, LV4 = quadrado, LV5 = pentÃƒÆ’Ã‚Â¡gono...
     const radius = 5;
-    const startAngle = -Math.PI / 2; // Começa do topo
+    const startAngle = -Math.PI / 2; // ComeÃƒÆ’Ã‚Â§a do topo
 
     ctx.beginPath();
     for (let s = 0; s < sides; s++) {
@@ -799,10 +998,11 @@ function drawVertexMarker(ctx, x, y, level, color) {
 }
 
 // ==========================================================================
-// INICIALIZAÇÃO DO APLICATIVO
+// INICIALIZAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O DO APLICATIVO
 // ==========================================================================
 document.addEventListener('DOMContentLoaded', () => {
     loadGameData();
+    if (typeof initFirebase === 'function') initFirebase();
     initTabs();
     renderQuests();
     renderRewards();
@@ -810,29 +1010,29 @@ document.addEventListener('DOMContentLoaded', () => {
     updateUI();
     setupEventListeners();
     
-    // Inicializa motor PWA e Configurações
+    // Inicializa motor PWA e ConfiguraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes
     registerServiceWorker();
     setupSettingsListeners();
     setupInstallPrompt();
 
-    // Garante o primeiro draw do radar chart após DOM+fontes carregarem
+    // Garante o primeiro draw do radar chart apÃƒÆ’Ã‚Â³s DOM+fontes carregarem
     setTimeout(() => { drawRadarChart(); }, 150);
 
     // Mensagem de boas-vindas na primeira vez
     if (gameState.messages.length === 0 && gameState.playerName) {
         setTimeout(() => {
-            showSystemToast(`Bem-vindo ao LifeRPG, ${gameState.playerName}. O Sistema está ativo. Complete suas missões.`);
+            showSystemToast(`Bem-vindo ao LifeRPG, ${gameState.playerName}. O Sistema estÃƒÆ’Ã‚Â¡ ativo. Complete suas missÃƒÆ’Ã‚Âµes.`);
         }, 1000);
     }
     
-    // Inicia o Wizard se o usuário não tem nome definido
+    // Inicia o Wizard se o usuÃƒÆ’Ã‚Â¡rio nÃƒÆ’Ã‚Â£o tem nome definido
     if (!gameState.playerName) {
         initOnboardingWizard();
     }
 });
 
 // ==========================================================================
-// SELEÇÃO E GERENCIAMENTO DE ABAS
+// SELEÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O E GERENCIAMENTO DE ABAS
 // ==========================================================================
 function initTabs() {
     const navButtons = document.querySelectorAll('.tab-link');
@@ -846,15 +1046,142 @@ function initTabs() {
             tabContents.forEach(t => t.classList.remove('active'));
 
             btn.classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.add('active');
+            const targetTab = document.getElementById(`tab-${tabName}`);
+            targetTab.classList.add('active');
 
-            // Se for a aba Global, renderiza os gráficos e o heatmap
+            // Se for a aba Global, renderiza os grÃƒÆ’Ã‚Â¡ficos e o heatmap
             if (tabName === 'global') {
                 renderGlobalDashboard();
+            }
+
+            // No Mobile, rola a tela atÃƒÆ’Ã‚Â© o conteÃƒÆ’Ã‚Âºdo da aba, respeitando o header fixo
+            if (window.innerWidth <= 1023) {
+                const appContainer = document.getElementById('app-container');
+                const offset = targetTab.getBoundingClientRect().top + appContainer.scrollTop - appContainer.getBoundingClientRect().top - 130;
+                appContainer.scrollTo({ top: offset, behavior: 'smooth' });
             }
         });
     });
 }
+
+// ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Tab Gating: Unlock tabs progressively by level ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
+// NÃƒÆ’Ã‚Â­vel 1-2: SÃƒÆ’Ã‚Â³ MissÃƒÆ’Ã‚Âµes visÃƒÆ’Ã‚Â­vel
+// NÃƒÆ’Ã‚Â­vel 3+:  VisÃƒÆ’Ã‚Â£o Global desbloqueada
+// NÃƒÆ’Ã‚Â­vel 5+:  Taverna desbloqueada
+// NÃƒÆ’Ã‚Â­vel 7+:  TrofÃƒÆ’Ã‚Â©us desbloqueados
+function updateTabVisibility() {
+    const level = gameState.level || 1;
+
+    const tabGlobal = document.getElementById('tab-btn-global');
+    const tabRewards = document.getElementById('tab-btn-rewards');
+    const tabAch = document.getElementById('tab-btn-achievements');
+
+    const setTabState = (btn, unlocked, unlockLevel) => {
+        if (!btn) return;
+        if (unlocked) {
+            btn.disabled = false;
+            btn.classList.remove('tab-locked');
+            btn.removeAttribute('title');
+        } else {
+            btn.disabled = true;
+            btn.classList.add('tab-locked');
+            btn.setAttribute('title', `Desbloqueado no NÃƒÆ’Ã‚Â­vel ${unlockLevel}`);
+        }
+    };
+
+    setTabState(tabGlobal,  level >= 3,  3);
+    setTabState(tabRewards, level >= 5,  5);
+    setTabState(tabAch,     level >= 7,  7);
+}
+
+// ==========================================================================
+// SUB-ABAS DA TAVERNA E INVENTÃƒÆ’Ã‚ÂRIO
+// ==========================================================================
+window.switchTavernaTab = function(mode) {
+    const btnShop = document.getElementById('subtab-btn-shop');
+    const btnInventory = document.getElementById('subtab-btn-inventory');
+    const panelShop = document.getElementById('taverna-shop');
+    const panelInventory = document.getElementById('taverna-inventory');
+
+    if (!btnShop || !btnInventory) return;
+
+    if (mode === 'shop') {
+        btnShop.classList.add('active');
+        btnInventory.classList.remove('active');
+        panelShop.style.display = 'block';
+        panelInventory.style.display = 'none';
+    } else {
+        btnShop.classList.remove('active');
+        btnInventory.classList.add('active');
+        panelShop.style.display = 'none';
+        panelInventory.style.display = 'block';
+        renderInventory();
+    }
+};
+
+window.equipItem = function(type, itemId) {
+    if (type === 'title') {
+        gameState.inventory.activeTitle = itemId;
+    } else if (type === 'border') {
+        gameState.inventory.activeBorder = itemId;
+    }
+    
+    saveGameData();
+    renderInventory();
+    updateUI();
+};
+
+window.renderInventory = function() {
+    const grid = document.getElementById('inventory-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    const inv = gameState.inventory || { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null };
+    
+    const catalog = {
+        'title_implacavel': { name: 'O ImplacÃƒÆ’Ã‚Â¡vel', type: 'title', icon: 'ÃƒÂ°Ã…Â¸Ã‚ÂÃ‚Â·ÃƒÂ¯Ã‚Â¸Ã‚Â', color: 'var(--neon-purple)' },
+        'title_mestre': { name: 'Mestre do Tempo', type: 'title', icon: 'ÃƒÂ¢Ã‚ÂÃ‚Â³', color: 'var(--neon-gold)' },
+        'border_neonred': { name: 'DemÃƒÆ’Ã‚Â´nio Carmesim', type: 'border', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â€œÃ‚Â¼ÃƒÂ¯Ã‚Â¸Ã‚Â', color: 'var(--neon-red)' }
+    };
+
+    const allUnlocked = [...inv.unlockedTitles, ...inv.unlockedBorders];
+    
+    if (allUnlocked.length === 0) {
+        grid.innerHTML = '<p style="color: var(--text-muted); text-align: center; width: 100%; padding: 20px;">Seu armazÃƒÆ’Ã‚Â©m estÃƒÆ’Ã‚Â¡ vazio. Compre itens no Mercado Clandestino.</p>';
+        return;
+    }
+
+    allUnlocked.forEach(itemId => {
+        const item = catalog[itemId];
+        if (!item) return;
+
+        const isEquipped = (item.type === 'title' && inv.activeTitle === itemId) || 
+                           (item.type === 'border' && inv.activeBorder === itemId);
+
+        const card = document.createElement('div');
+        card.className = 'reward-card';
+        card.style.border = isEquipped ? `1px solid ${item.color}` : '1px solid var(--border-glass)';
+        if (isEquipped) {
+            card.style.boxShadow = `0 0 10px ${item.color}`;
+        }
+
+        const btnLabel = isEquipped ? 'EQUIPADO' : 'EQUIPAR';
+        const btnStyle = isEquipped ? `background: ${item.color}; color: #fff;` : '';
+
+        card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <h3 style="color: ${item.color};">${item.type === 'title' ? 'TÃƒÆ’Ã‚Â­tulo' : 'Borda'}: ${item.name}</h3>
+                </div>
+                <span style="font-size: 1.5rem;">${item.icon}</span>
+            </div>
+            <div class="reward-bottom" style="margin-top: 15px; justify-content: flex-end;">
+                <button class="btn-buy" style="${btnStyle}" onclick="equipItem('${item.type}', '${itemId}')">${btnLabel}</button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+};
 
 // ==========================================================================
 // ONBOARDING WIZARD
@@ -881,7 +1208,7 @@ function initOnboardingWizard() {
         }
     });
 
-    // Passo 2: Arquétipo
+    // Passo 2: ArquÃƒÆ’Ã‚Â©tipo
     const btnNext2 = document.getElementById('btn-wizard-next-2');
     const archCards = document.querySelectorAll('.archetype-card');
     const otherInputContainer = document.getElementById('wizard-other-container');
@@ -934,7 +1261,7 @@ function initOnboardingWizard() {
         document.getElementById('wizard-step-3').style.display = 'block';
     });
 
-    // Passo 3: Comprometimento e Finalização
+    // Passo 3: Comprometimento e FinalizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     const btnFinish = document.getElementById('btn-wizard-finish');
     const hourCards = document.querySelectorAll('.hour-card');
     let selectedHours = null;
@@ -957,7 +1284,7 @@ function initOnboardingWizard() {
             const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
             gameState.activeDays = selectedDays.length > 0 ? selectedDays : [0,1,2,3,4,5,6]; // Fallback
             
-            // Adapta o deck de missões com base no arquétipo e no tempo
+            // Adapta o deck de missÃƒÆ’Ã‚Âµes com base no arquÃƒÆ’Ã‚Â©tipo e no tempo
             applyArchetypeDeck(selectedArch, gameState.dailyCommitmentMins);
             
             wizardModal.style.display = 'none';
@@ -965,7 +1292,7 @@ function initOnboardingWizard() {
             updateUI();
             
             setTimeout(() => {
-                showSystemToast(`Despertar concluído, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
+                showSystemToast(`Despertar concluÃƒÆ’Ã‚Â­do, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
             }, 1000);
         }
     });
@@ -978,67 +1305,67 @@ function setupHookStep(archetype) {
 
     if (archetype === 'corpo') {
         lblArch.innerText = 'Alta Performance & Corpo';
-        lblHabit.innerText = 'Beber 1 copo de água ao acordar';
-        icon.innerText = '💧';
+        lblHabit.innerText = 'Beber 1 copo de ÃƒÆ’Ã‚Â¡gua ao acordar';
+        icon.innerText = 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â§';
     } else if (archetype === 'foco') {
         lblArch.innerText = 'Foco & Produtividade';
         lblHabit.innerText = '15 minutos de leitura (sem celular)';
-        icon.innerText = '📚';
+        icon.innerText = 'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â¡';
     } else if (archetype === 'zen') {
-        lblArch.innerText = 'Zen & Saúde Mental';
+        lblArch.innerText = 'Zen & SaÃƒÆ’Ã‚Âºde Mental';
         lblHabit.innerText = 'Meditar por 3 minutos';
-        icon.innerText = '🧘';
+        icon.innerText = 'ÃƒÂ°Ã…Â¸Ã‚Â§Ã‹Å“';
     } else if (archetype === 'rotina') {
         lblArch.innerText = 'Estilo de Vida & Rotina';
         lblHabit.innerText = 'Arrumar a cama ao levantar';
-        icon.innerText = '🌅';
+        icon.innerText = 'ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â‚¬Â¦';
     }
 }
 
 function applyArchetypeDeck(archetype, minutes) {
     let deck = [];
     
-    // 1. O Micro-hábito base (sempre garantido pelo Hook)
+    // 1. O Micro-hÃƒÆ’Ã‚Â¡bito base (sempre garantido pelo Hook)
     if (archetype === 'corpo') {
-        deck.push({ id: 'q-agua', title: 'Beber 1 copo de água ao acordar', type: 'daily', icon: '💧', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'physical' });
+        deck.push({ id: 'q-agua', title: 'Beber 1 copo de ÃƒÆ’Ã‚Â¡gua ao acordar', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â§', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'physical' });
     } else if (archetype === 'foco') {
-        deck.push({ id: 'q-ler', title: '15 minutos de leitura (sem celular)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' });
+        deck.push({ id: 'q-ler', title: '15 minutos de leitura (sem celular)', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã…Â¡', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' });
     } else if (archetype === 'zen') {
-        deck.push({ id: 'q-meditar', title: 'Meditar por 3 minutos', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' });
+        deck.push({ id: 'q-meditar', title: 'Meditar por 3 minutos', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã‚Â§Ã‹Å“', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' });
     } else if (archetype === 'rotina') {
-        deck.push({ id: 'q-cama', title: 'Arrumar a cama ao levantar', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
+        deck.push({ id: 'q-cama', title: 'Arrumar a cama ao levantar', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â‚¬Â¦', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
     } else {
-        deck.push({ id: 'q-foco', title: 'Dar o primeiro passo no meu objetivo', type: 'daily', icon: '🎯', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'productivity' });
+        deck.push({ id: 'q-foco', title: 'Dar o primeiro passo no meu objetivo', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â¯', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'productivity' });
     }
 
-    // 2. Escalonando a quantidade de hábitos pelo Tempo (minutos)
+    // 2. Escalonando a quantidade de hÃƒÆ’Ã‚Â¡bitos pelo Tempo (minutos)
     if (minutes >= 30) {
-        // Adiciona mais um hábito rápido
-        deck.push({ id: 'q-acordar', title: 'Acordar Cedo (Horário Fixo)', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
-        if (archetype !== 'corpo') deck.push({ id: 'q-agua2', title: 'Beber Água (8 copos)', type: 'daily', icon: '💧', completed: false, xp: 15, gold: 8, target: 8, current: 0, minLevel: 1, skill: 'physical' });
+        // Adiciona mais um hÃƒÆ’Ã‚Â¡bito rÃƒÆ’Ã‚Â¡pido
+        deck.push({ id: 'q-acordar', title: 'Acordar Cedo (HorÃƒÆ’Ã‚Â¡rio Fixo)', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã…â€™Ã¢â‚¬Â¦', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
+        if (archetype !== 'corpo') deck.push({ id: 'q-agua2', title: 'Beber ÃƒÆ’Ã‚Âgua (8 copos)', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â§', completed: false, xp: 15, gold: 8, target: 8, current: 0, minLevel: 1, skill: 'physical' });
     }
 
     if (minutes >= 60) {
-        // Adiciona hábitos de esforço médio/alto (1 hora permite treino ou estudos intensos)
+        // Adiciona hÃƒÆ’Ã‚Â¡bitos de esforÃƒÆ’Ã‚Â§o mÃƒÆ’Ã‚Â©dio/alto (1 hora permite treino ou estudos intensos)
         if (archetype === 'corpo' || archetype === 'zen') {
-            deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida (45min)', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
+            deck.push({ id: 'q-malhar', title: 'Treinar de ForÃƒÆ’Ã‚Â§a / Corrida (45min)', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â¹ÃƒÂ¯Ã‚Â¸Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€žÂ¢Ã¢â‚¬Å¡ÃƒÂ¯Ã‚Â¸Ã‚Â', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
         } else {
-            deck.push({ id: 'q-estudo', title: 'Deep Work / Foco ininterrupto (1h)', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
+            deck.push({ id: 'q-estudo', title: 'Deep Work / Foco ininterrupto (1h)', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â»', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
         }
     }
 
     if (minutes >= 120) {
-        // Hardcore: Um mix completo (Físico + Mental + Sabedoria + Social)
-        deck.push({ id: 'q-detox', title: '1h sem celular antes de dormir', type: 'daily', icon: '📵', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'mental' });
+        // Hardcore: Um mix completo (FÃƒÆ’Ã‚Â­sico + Mental + Sabedoria + Social)
+        deck.push({ id: 'q-detox', title: '1h sem celular antes de dormir', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Âµ', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'mental' });
         
-        // Se já não tiver Treino, adiciona Treino. Se já não tiver Deep Work, adiciona Deep Work.
+        // Se jÃƒÆ’Ã‚Â¡ nÃƒÆ’Ã‚Â£o tiver Treino, adiciona Treino. Se jÃƒÆ’Ã‚Â¡ nÃƒÆ’Ã‚Â£o tiver Deep Work, adiciona Deep Work.
         const hasTreino = deck.some(q => q.id === 'q-malhar');
         const hasEstudo = deck.some(q => q.id === 'q-estudo');
         
-        if (!hasTreino) deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
-        if (!hasEstudo) deck.push({ id: 'q-estudo', title: 'Deep Work / Estudos', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
+        if (!hasTreino) deck.push({ id: 'q-malhar', title: 'Treinar de ForÃƒÆ’Ã‚Â§a / Corrida', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â¹ÃƒÂ¯Ã‚Â¸Ã‚ÂÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂÃƒÂ¢Ã¢â€žÂ¢Ã¢â‚¬Å¡ÃƒÂ¯Ã‚Â¸Ã‚Â', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
+        if (!hasEstudo) deck.push({ id: 'q-estudo', title: 'Deep Work / Estudos', type: 'daily', icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â»', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
         
-        deck.push({ id: 'q-social', title: 'Conectar com Família/Amigo (Sem tela)', type: 'daily', icon: '❤️', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' });
+        deck.push({ id: 'q-social', title: 'Conectar com FamÃƒÆ’Ã‚Â­lia/Amigo (Sem tela)', type: 'daily', icon: 'ÃƒÂ¢Ã‚ÂÃ‚Â¤ÃƒÂ¯Ã‚Â¸Ã‚Â', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' });
     }
     
     // Substitui o banco ativo e re-renderiza
@@ -1051,7 +1378,7 @@ function applyArchetypeDeck(archetype, minutes) {
 // RENDERIZADORES DE INTERFACE (UI)
 // ==========================================================================
 
-// Atualiza informações gerais do Personagem
+// Atualiza informaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes gerais do Personagem
 function updateUI() {
     document.getElementById('lbl-level').innerText = gameState.level;
     document.getElementById('lbl-gold').innerText = gameState.gold;
@@ -1063,9 +1390,9 @@ function updateUI() {
         rankBadge.className = 'rank-badge ' + rankInfo.css;
     }
 
-    // COSMÉTICOS (Títulos e Bordas)
+    // COSMÃƒÆ’Ã¢â‚¬Â°TICOS (TÃƒÆ’Ã‚Â­tulos e Bordas)
     const titleLabels = {
-        'title_implacavel': 'O Implacável',
+        'title_implacavel': 'O ImplacÃƒÆ’Ã‚Â¡vel',
         'title_mestre': 'Mestre do Tempo'
     };
     const playerTitle = document.getElementById('lbl-player-title');
@@ -1081,11 +1408,14 @@ function updateUI() {
     }
 
     const avatarBorder = document.querySelector('.avatar-hex-border');
-    if (avatarBorder) {
+    const avatarWrapper = document.querySelector('.avatar-hex-wrapper');
+    if (avatarBorder && avatarWrapper) {
         if (gameState.inventory && gameState.inventory.activeBorder === 'border_neonred') {
             avatarBorder.classList.add('border-neonred');
+            avatarWrapper.classList.add('glow-neonred');
         } else {
             avatarBorder.classList.remove('border-neonred');
+            avatarWrapper.classList.remove('glow-neonred');
         }
     }
 
@@ -1093,10 +1423,10 @@ function updateUI() {
     const streakEl = document.getElementById('lbl-streak');
     if (streakEl) {
         const mult = calcStreakMultiplier();
-        const multStr = mult > 1 ? ` · x${mult.toFixed(2)}` : '';
+        const multStr = mult > 1 ? ` Ãƒâ€šÃ‚Â· x${mult.toFixed(2)}` : '';
         const shields = gameState.shields || 0;
         const shieldStr = shields > 0
-            ? '  ' + '🛡️'.repeat(shields) + '░'.repeat(3 - shields)
+            ? '  ' + 'ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ‚Â¡ÃƒÂ¯Ã‚Â¸Ã‚Â'.repeat(shields) + 'ÃƒÂ¢Ã¢â‚¬â€œÃ¢â‚¬Ëœ'.repeat(3 - shields)
             : '';
         streakEl.innerText = `${gameState.streak}${multStr}${shieldStr}`;
     }
@@ -1107,7 +1437,7 @@ function updateUI() {
     const xpPercent = Math.min((gameState.xp / gameState.xpToNext) * 100, 100);
     document.getElementById('xp-bar-inner').style.width = `${xpPercent}%`;
 
-    // Progresso diário
+    // Progresso diÃƒÆ’Ã‚Â¡rio
     const totalDailies = gameState.quests.length;
     const completedDailies = gameState.quests.filter(q => q.completed).length;
     document.getElementById('lbl-daily-progress').innerText = `${completedDailies}/${totalDailies}`;
@@ -1116,7 +1446,7 @@ function updateUI() {
 
     // 3 Barras de atributos (Willpower / Intellect / Health)
     const attrs = computeAttributes();
-    const minPct = 0; // Preenchimento diretamente proporcional ao nível/progresso
+    const minPct = 0; // Preenchimento diretamente proporcional ao nÃƒÆ’Ã‚Â­vel/progresso
     ['willpower', 'intellect', 'health'].forEach(key => {
         const lvlEl  = document.getElementById(`attr-lvl-${key}`);
         const fillEl = document.getElementById(`attr-fill-${key}`);
@@ -1124,7 +1454,7 @@ function updateUI() {
         if (fillEl) fillEl.style.width = `${minPct + (attrs[key].pct * (100 - minPct))}%`;
     });
 
-    // Player Title Dinâmico
+    // Player Title DinÃƒÆ’Ã‚Â¢mico
     const titleLabel = document.getElementById('lbl-player-title');
     if (titleLabel) {
         titleLabel.innerText = computePlayerTitle(attrs);
@@ -1134,16 +1464,18 @@ function updateUI() {
     updateAvatarImage();
     renderSkills();
 
-    // ── Sinergias ativas ────────────────────────────────────────────────────
+    // ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ Sinergias ativas ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬ÂÃ¢â€šÂ¬
     renderSynergies();
     renderRankPerks();
+    renderWeeklyBoss();
     renderAchievements();
+    updateTabVisibility();
 }
 
 // Renderiza badges de sinergias ativas abaixo das barras de atributo
 function renderSynergies() {
     const container = document.getElementById('synergies-container');
-    if (!container) return; // Elemento ainda não existe no HTML — seguro ignorar
+    if (!container) return; // Elemento ainda nÃƒÆ’Ã‚Â£o existe no HTML ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â seguro ignorar
 
     const active = computeSynergies();
     if (active.length === 0) {
@@ -1153,7 +1485,7 @@ function renderSynergies() {
     }
 
     container.style.display = 'flex';
-    container.innerHTML = '<div style="width:100%; font-size:9px; color:var(--neon-cyan); font-family:var(--font-hud); letter-spacing:1px; margin-bottom:2px;">SINERGIAS ATIVAS</div>' + active.map(s => `
+    container.innerHTML = '<div style="width:100%; font-size:10px; color:#fbbf24; font-family:var(--font-hud); letter-spacing:2px; margin-bottom:4px; border-bottom: 1px solid rgba(251,191,36,0.3); padding-bottom: 2px;">âš¡ SINERGIAS ATIVAS</div>' + active.map(s => `
         <div class="synergy-badge" title="${s.description}">
             <span class="synergy-icon">${s.icon}</span>
             <span class="synergy-name">${s.name}</span>
@@ -1174,7 +1506,7 @@ function renderRankPerks() {
     }
 
     container.style.display = 'flex';
-    container.innerHTML = '<div style="width:100%; font-size:9px; color:var(--neon-gold); font-family:var(--font-hud); letter-spacing:1px; margin-bottom:2px; margin-top:4px;">RANK PERKS</div>' + active.map(p => `
+    container.innerHTML = '<div style="width:100%; font-size:10px; color:#00f0ff; font-family:var(--font-hud); letter-spacing:2px; margin-bottom:4px; margin-top:8px; border-bottom: 1px solid rgba(0,240,255,0.3); padding-bottom: 2px;">â­ RANK PERKS</div>' + active.map(p => `
         <div class="perk-badge" title="${p.description}">
             <span class="perk-icon">${p.icon}</span>
             <span class="perk-name">${p.name}</span>
@@ -1182,12 +1514,11 @@ function renderRankPerks() {
     `).join('');
 }
 
-// Atualiza a imagem do avatar de acordo com o nível atual
 function updateAvatarImage() {
     const avatarEl = document.getElementById('char-avatar-img');
     if (!avatarEl) return;
     
-    // Usa os nomes de rank combinados com prefixo numérico (1.rank-e.png, 2.rank-d.png, ...)
+    // Usa os nomes de rank combinados com prefixo numÃ©rico (1.rank-e.png, 2.rank-d.png, ...)
     const rank = getRankForLevel(gameState.level);
     const rankKey = rank.css.replace('rank-', ''); // 'e', 'd', 'c', etc.
     const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
@@ -1197,16 +1528,16 @@ function updateAvatarImage() {
     avatarEl.onerror = () => { avatarEl.src = 'avatars/1.rank-e.png'; }; // fallback
 }
 
-// Renderiza a árvore de atributos (Hexagonal Radar Chart) dinamicamente
+// Renderiza a Ã¡rvore de atributos (Hexagonal Radar Chart) dinamicamente
 function renderSkills() {
-    // Inicializa se não existir no save
+    // Inicializa se nÃ£o existir no save
     initSkillsState();
     
-    // Desenha o gráfico Radar Hexagonal no Canvas
+    // Desenha o grÃ¡fico Radar Hexagonal no Canvas
     drawRadarChart();
 }
 
-// Inicializa a árvore de skills caso não esteja presente no estado (retrocompatibilidade robusta)
+// Inicializa a Ã¡rvore de skills caso nÃ£o esteja presente no estado (retrocompatibilidade robusta)
 function initSkillsState() {
     if (!gameState.skills) {
         gameState.skills = {};
@@ -1216,18 +1547,18 @@ function initSkillsState() {
         if (!gameState.skills[type]) {
             gameState.skills[type] = { level: 1, xp: 0, xpToNext: 5 };
         } else {
-            // Recalcula xpToNext com a nova fórmula (migra saves antigos automaticamente)
+            // Recalcula xpToNext com a nova fÃ³rmula (migra saves antigos automaticamente)
             gameState.skills[type].xpToNext = calcSkillXpToNext(gameState.skills[type].level);
         }
     });
 }
 
-// Fórmula de XP necessário para subir de nível de skill (curva x1.4)
+// FÃ³rmula de XP necessÃ¡rio para subir de nÃ­vel de skill (curva x1.4)
 function calcSkillXpToNext(level) {
     return Math.max(5, Math.round(5 * Math.pow(1.4, level - 1)));
 }
 
-// XP ganho por conclusão de quest escala com o level geral do personagem
+// XP ganho por conclusÃ£o de quest escala com o level geral do personagem
 function calcSkillXpGain() {
     const lvl = gameState.level;
     if (lvl >= 30) return 4;
@@ -1258,21 +1589,21 @@ function addSkillXP(skillType) {
         skillObj.xpToNext = calcSkillXpToNext(skillObj.level);
         
         const skillNamesPT = {
-            physical: 'Físico 🏋️‍♂️',
-            mental: 'Mental 🧘',
-            productivity: 'Foco 💻',
-            social: 'Conexão ❤️',
-            wisdom: 'Sabedoria 📚',
-            routine: 'Rotina 🌅'
+            physical: 'FÃ­sico ðŸ‹ï¸â€â™‚ï¸',
+            mental: 'Mental ðŸ§˜',
+            productivity: 'Foco ðŸ’»',
+            social: 'ConexÃ£o â¤ï¸',
+            wisdom: 'Sabedoria ðŸ“š',
+            routine: 'Rotina ðŸŒ…'
         };
         
         setTimeout(() => {
-            showSystemToast(`⭐ *ATRIBUTO UP!* ${gameState.playerName || 'Guerreiro'}, seu treino diário elevou o seu nível de *${skillNamesPT[skillType]}* para o *Nível ${skillObj.level}*! A consistência lapida a mente e o corpo. Muito bem!`);
+            showSystemToast(`â­ *ATRIBUTO UP!* ${gameState.playerName || 'Guerreiro'}, seu treino diÃ¡rio elevou o seu nÃ­vel de *${skillNamesPT[skillType]}* para o *NÃ­vel ${skillObj.level}*! A consistÃªncia lapida a mente e o corpo. Muito bem!`);
 
         }, 1200);
     }
     
-    checkAndActivateBossQuest(); // ← NOVO: verifica conclusão de boss quest ao evoluir skill
+    checkAndActivateBossQuest(); // â† NOVO: verifica conclusÃ£o de boss quest ao evoluir skill
     saveGameData();
 }
 
@@ -1295,14 +1626,32 @@ function deductSkillXP(skillType) {
     saveGameData();
 }
 
-// Renderiza a lista de Quests (Arise style)
 function renderQuests() {
     const dailyContainer = document.getElementById('daily-quests-list');
     const sideContainer  = document.getElementById('side-quests-list');
     dailyContainer.innerHTML = '';
     sideContainer.innerHTML  = '';
 
-    // ── Dungeon ativa ────────────────────────────────────────────────────
+    // Renderiza Masmorras (se houver ativa)
+    const dungeonBanner = document.getElementById('dungeon-active-banner');
+    if (gameState.activeDungeon && dungeonBanner) {
+        dungeonBanner.style.display = 'block';
+        dungeonBanner.innerHTML = `
+            <div class="dungeon-card" style="background: linear-gradient(135deg, rgba(147,51,234,0.1) 0%, rgba(147,51,234,0.3) 100%); border: 1px solid var(--neon-purple); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 10px; color: var(--neon-purple); font-family: var(--font-hud); letter-spacing: 1px;">MASMORRA ATIVA</div>
+                        <div style="font-size: 16px; font-weight: bold; margin-top: 5px; color: white;">${gameState.activeDungeon.title}</div>
+                    </div>
+                    <button class="dungeon-banner-btn" style="background: rgba(147,51,234,0.2); border: 1px solid var(--neon-purple); color: var(--neon-purple); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-family: var(--font-hud); letter-spacing: 1px;" data-dungeon="true">ATACAR BOSS</button>
+                </div>
+            </div>
+        `;
+    } else if (dungeonBanner) {
+        dungeonBanner.style.display = 'none';
+    }
+
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Dungeon ativa Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     checkDungeonExpiry();
     const _d = gameState.activeDungeon;
     if (_d && !_d.completed) {
@@ -1318,24 +1667,24 @@ function renderQuests() {
         _dc.setAttribute('data-skill', _d.skill);
         _dc.innerHTML = `
             <div class="quest-details">
-                <div class="quest-icon">⚔️</div>
+                <div class="quest-icon">Ã¢Å¡â€Ã¯Â¸Â</div>
                 <div class="quest-title-wrap">
                     <span class="quest-title">${_d.title}</span>
                     <div class="quest-payouts">
                         <span class="diff-badge dungeon-badge">DUNGEON</span>
                         <span class="payout-xp">+${_d.xp} XP</span>
-                        <span class="payout-gold">+${_d.gold} 💰</span>
+                        <span class="payout-gold">+${_d.gold} Ã°Å¸â€™Â°</span>
                     </div>
-                    <div class="dungeon-timer${_urgent ? ' dungeon-timer-urgent' : ''}">⏳ ${_timeLabel}</div>
+                    <div class="dungeon-timer${_urgent ? ' dungeon-timer-urgent' : ''}">Ã¢ÂÂ³ ${_timeLabel}</div>
                 </div>
             </div>
-            <button class="quest-complete-btn dungeon-btn" data-dungeon="true">✓</button>
+            <button class="quest-complete-btn dungeon-btn" data-dungeon="true">Ã¢Å“â€œ</button>
         `;
         sideContainer.appendChild(_dc);
     }
-    // ── fim dungeon ──────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ fim dungeon Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 
-    // ── Daily Quests ──────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Daily Quests Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     gameState.quests.forEach(quest => {
         const card = document.createElement('div');
         card.className = `quest-card ${quest.completed ? 'completed' : ''}`;
@@ -1347,7 +1696,7 @@ function renderQuests() {
         let extraHTML = '';
         if (quest.id === 'q-agua') {
             extraHTML = `<div class="water-adjust-row">
-                <button class="water-btn btn-minus" data-id="${quest.id}">−</button>
+                <button class="water-btn btn-minus" data-id="${quest.id}">Ã¢Ë†â€™</button>
                 <span class="water-val">${quest.current || 0}/8 copos</span>
                 <button class="water-btn btn-plus" data-id="${quest.id}">+</button>
             </div>`;
@@ -1361,20 +1710,20 @@ function renderQuests() {
                     <div class="quest-payouts">
                         <span class="diff-badge">${diffLabel}</span>
                         <span class="payout-xp">+${quest.xp} XP</span>
-                        <span class="payout-gold">+${quest.gold} 🪙</span>
+                        <span class="payout-gold">+${quest.gold} Ã°Å¸Âªâ„¢</span>
                     </div>
                     ${extraHTML}
                 </div>
             </div>
-            <button class="quest-complete-btn" data-id="${quest.id}">✓</button>
+            <button class="quest-complete-btn" data-id="${quest.id}">Ã¢Å“â€œ</button>
         `;
         dailyContainer.appendChild(card);
     });
 
-    // ── Side Quests ───────────────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Side Quests Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     const activeDungeon = gameState.activeDungeon;
     if (gameState.sideQuests.length === 0 && !(activeDungeon && !activeDungeon.completed)) {
-        sideContainer.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:24px;font-family:var(--font-hud);letter-spacing:1px">NENHUMA MISSÃO ATIVA</div>`;
+        sideContainer.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.2);font-size:12px;padding:24px;font-family:var(--font-hud);letter-spacing:1px">NENHUMA MISSÃƒÆ’O ATIVA</div>`;
     } else {
         gameState.sideQuests.forEach(quest => {
             const card = document.createElement('div');
@@ -1383,17 +1732,17 @@ function renderQuests() {
             const diffLabel = quest.difficulty === 'hard' ? 'RANK C' : quest.difficulty === 'medium' ? 'RANK D' : 'RANK E';
             card.innerHTML = `
                 <div class="quest-details">
-                    <div class="quest-icon">⚔️</div>
+                    <div class="quest-icon">Ã¢Å¡â€Ã¯Â¸Â</div>
                     <div class="quest-title-wrap">
                         <span class="quest-title">${quest.title}</span>
                         <div class="quest-payouts">
                             <span class="diff-badge">${diffLabel}</span>
                             <span class="payout-xp">+${quest.xp} XP</span>
-                            <span class="payout-gold">+${quest.gold} 🪙</span>
+                            <span class="payout-gold">+${quest.gold} Ã°Å¸Âªâ„¢</span>
                         </div>
                     </div>
                 </div>
-                <button class="quest-complete-btn" data-id="${quest.id}">✓</button>
+                <button class="quest-complete-btn" data-id="${quest.id}">Ã¢Å“â€œ</button>
             `;
             sideContainer.appendChild(card);
         });
@@ -1406,22 +1755,22 @@ function renderRewards() {
     if (!rewardsContainer) return;
     rewardsContainer.innerHTML = `
         <div class="store-item" onclick="buyStoreItem('buff_autoHeal')">
-            <div class="store-info"><span>🧪 Poção de Cura</span><small>Protege o streak por 1 erro</small></div>
-            <button>100 🪙</button>
+            <div class="store-info"><span>Ã°Å¸Â§Âª PoÃƒÂ§ÃƒÂ£o de Cura</span><small>Protege o streak por 1 erro</small></div>
+            <button>100 Ã°Å¸Âªâ„¢</button>
         </div>
         <div class="store-item" onclick="buyStoreItem('buff_doubleXp')">
-            <div class="store-info"><span>📜 Pergaminho de Dobro XP</span><small>XP x2 por um dia</small></div>
-            <button>50 🪙</button>
+            <div class="store-info"><span>Ã°Å¸â€œÅ“ Pergaminho de Dobro XP</span><small>XP x2 por um dia</small></div>
+            <button>50 Ã°Å¸Âªâ„¢</button>
         </div>
         <div class="store-item" onclick="buyStoreItem('buff_shield')">
-            <div class="store-info"><span>🛡️ Carga de Escudo</span><small>Reforce sua defesa</small></div>
-            <button>150 🪙</button>
+            <div class="store-info"><span>Ã°Å¸â€ºÂ¡Ã¯Â¸Â Carga de Escudo</span><small>Reforce sua defesa</small></div>
+            <button>150 Ã°Å¸Âªâ„¢</button>
         </div>
     `;
 }
 
 // ==========================================================================
-// SISTEMA DE REGRAS DO JOGO E GAMIFICAÇÃO
+// SISTEMA DE REGRAS DO JOGO E GAMIFICAÃƒâ€¡ÃƒÆ’O
 // ==========================================================================
 
 // Finaliza ou altera status de uma Quest (Suporta desmarcar / cancelar)
@@ -1432,11 +1781,11 @@ function toggleQuest(id) {
         return;
     }
 
-    // Procura nas Quests Diárias
+    // Procura nas Quests DiÃƒÂ¡rias
     let quest = gameState.quests.find(q => q.id === id);
     let isDaily = true;
 
-    // Se não achar, procura nas Side Quests
+    // Se nÃƒÂ£o achar, procura nas Side Quests
     if (!quest) {
         quest = gameState.sideQuests.find(q => q.id === id);
         isDaily = false;
@@ -1450,7 +1799,7 @@ function toggleQuest(id) {
         // CANCELAR / DESMARCAR QUEST
         quest.completed = false;
         if (quest.id === 'q-agua') {
-            quest.current = 0; // Reseta contador de água
+            quest.current = 0; // Reseta contador de ÃƒÂ¡gua
         }
         deductRewards(quest.xp, quest.gold);
         
@@ -1481,20 +1830,20 @@ function toggleQuest(id) {
             gameState.lastQuoteDate = todayStr + '_first';
         }
 
-        // Perk: Foco Matinal — +5 XP na primeira quest concluída do dia
+        // Perk: Foco Matinal Ã¢â‚¬â€ +5 XP na primeira quest concluÃƒÂ­da do dia
         if (hasPerk('foco_matinal') && !gameState._firstQuestBonusGiven) {
             gameState.xp = (gameState.xp || 0) + 5;
             gameState._firstQuestBonusGiven = true;
         }
 
-        // Perk: Momentum — +1 XP por quest consecutiva (acumula até 5)
+        // Perk: Momentum Ã¢â‚¬â€ +1 XP por quest consecutiva (acumula atÃƒÂ© 5)
         if (hasPerk('momentum')) {
             gameState._momentumStack = Math.min((gameState._momentumStack || 0) + 1, 5);
             const momentumBonus = gameState._momentumStack;
             gameState.xp = (gameState.xp || 0) + momentumBonus;
         }
 
-        // Após addSkillXP(skillType), antes de showQuestCleared(quest):
+        // ApÃƒÂ³s addSkillXP(skillType), antes de showQuestCleared(quest):
         if (!isDaily && gameState.bossQuest?.id === 'd-to-c' && !gameState.bossQuest.completed) {
             gameState.bossQuest.sideQuestsCompleted = (gameState.bossQuest.sideQuestsCompleted || 0) + 1;
         }
@@ -1506,9 +1855,9 @@ function toggleQuest(id) {
         if (isDaily) {
             checkAllDailies();
         } else {
-            // Remove a side quest concluída após um tempo para limpar a lista
+            // Remove a side quest concluÃƒÂ­da apÃƒÂ³s um tempo para limpar a lista
             setTimeout(() => {
-                // Apenas remove se ela continuar marcada como concluída (não foi desmarcada)
+                // Apenas remove se ela continuar marcada como concluÃƒÂ­da (nÃƒÂ£o foi desmarcada)
                 const currentQuest = gameState.sideQuests.find(q => q.id === id);
                 if (currentQuest && currentQuest.completed) {
                     gameState.sideQuests = gameState.sideQuests.filter(q => q.id !== id);
@@ -1524,7 +1873,7 @@ function toggleQuest(id) {
     updateUI();
 }
 
-// Gerencia copos de água individualmente
+// Gerencia copos de ÃƒÂ¡gua individualmente
 function adjustWater(id, operation) {
     const quest = gameState.quests.find(q => q.id === id);
     if (!quest) return;
@@ -1532,7 +1881,7 @@ function adjustWater(id, operation) {
     const skillType = quest.skill || 'physical';
 
     if (quest.completed && operation === 'minus') {
-        // Se já estava concluída e diminuiu a água, desmarca
+        // Se jÃƒÂ¡ estava concluÃƒÂ­da e diminuiu a ÃƒÂ¡gua, desmarca
         quest.completed = false;
         quest.current = 7;
         deductRewards(quest.xp, quest.gold);
@@ -1559,7 +1908,7 @@ function adjustWater(id, operation) {
 
 // Soma XP e Gold, gerencia Level Up
 function addRewards(xpGained, goldGained) {
-    // Aplica multiplicador de streak e bônus de sinergias
+    // Aplica multiplicador de streak e bÃƒÂ´nus de sinergias
     const multiplier = calcStreakMultiplier();
     const synergyXp   = getSynergyXpBonus();
     const synergyGold = getSynergyGoldBonus();
@@ -1571,46 +1920,46 @@ function addRewards(xpGained, goldGained) {
     gameState.xp += bonusXp;
     gameState.gold += bonusGold;
 
-    // Lógica de Level Up
+    // LÃƒÂ³gica de Level Up
     if (gameState.xp >= gameState.xpToNext) {
         gameState.level++;
         gameState.xp = gameState.xp - gameState.xpToNext;
         gameState.xpToNext = Math.round(gameState.xpToNext * 1.3); // Escalabilidade de XP
         
-        // Sincroniza hábitos do novo nível desbloqueado
+        // Sincroniza hÃƒÂ¡bitos do novo nÃƒÂ­vel desbloqueado
         syncQuestsByLevel();
         
         triggerLevelUpOverlay();
-        checkAndActivateBossQuest(); // verifica boss quest ao subir de nível
+        checkAndActivateBossQuest(); // verifica boss quest ao subir de nÃƒÂ­vel
     }
 
-    // Verifica conclusão de boss quest mesmo sem level up
+    // Verifica conclusÃƒÂ£o de boss quest mesmo sem level up
     checkAndActivateBossQuest();
 }
 
-// Sincroniza a lista de hábitos ativos de acordo com o nível do jogador (Skill Tree)
+// Sincroniza a lista de hÃƒÂ¡bitos ativos de acordo com o nÃƒÂ­vel do jogador (Skill Tree)
 function syncQuestsByLevel() {
     let level = gameState.level;
     
-    // Filtra todos os hábitos desbloqueados até o nível atual
+    // Filtra todos os hÃƒÂ¡bitos desbloqueados atÃƒÂ© o nÃƒÂ­vel atual
     let unlockedHabits = ALL_HABITS_DATABASE.filter(h => h.minLevel <= level);
     
     let updatedQuests = [];
     
     unlockedHabits.forEach(dbHabit => {
-        // Verifica se o usuário já tem essa quest na sua lista ativa de hoje
+        // Verifica se o usuÃƒÂ¡rio jÃƒÂ¡ tem essa quest na sua lista ativa de hoje
         let activeQuest = gameState.quests.find(q => q.id === dbHabit.id);
         if (activeQuest) {
-            // Mantém a quest ativa (preserva o status "completada" e contagem de água)
+            // MantÃƒÂ©m a quest ativa (preserva o status "completada" e contagem de ÃƒÂ¡gua)
             updatedQuests.push(activeQuest);
         } else {
             // Adiciona a nova quest desbloqueada
             updatedQuests.push({ ...dbHabit });
             
-            // Notifica o usuário no chat via Iroh caso não seja a primeira carga do app
+            // Notifica o usuÃƒÂ¡rio no chat via Iroh caso nÃƒÂ£o seja a primeira carga do app
             if (gameState.messages.length > 0) {
                 setTimeout(() => {
-                    showSystemToast(`🔥 *SISTEMA:* Incrível, ${gameState.playerName || 'Guerreiro'}! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
+                    showSystemToast(`Ã°Å¸â€Â¥ *SISTEMA:* IncrÃƒÂ­vel, ${gameState.playerName || 'Guerreiro'}! Ao alcanÃƒÂ§ar o nÃƒÂ­vel *${level}*, vocÃƒÂª desbloqueou uma nova quest diÃƒÂ¡ria: *"${dbHabit.title}"*! Que ela fortaleÃƒÂ§a a sua rotina!`);
 
                 }, 1500);
             }
@@ -1633,7 +1982,7 @@ function deductRewards(xpLost, goldLost) {
     }
 }
 
-// Dispara Overlay de evolução (estilo Arise)
+// Dispara Overlay de evoluÃƒÂ§ÃƒÂ£o (estilo Arise)
 function triggerLevelUpOverlay() {
     const oldRank = getRankForLevel(gameState.level - 1);
     const newRank = getRankForLevel(gameState.level);
@@ -1654,8 +2003,8 @@ function triggerLevelUpOverlay() {
 
     setTimeout(() => {
         const msg = rankChanged
-            ? `⚡ LEVEL UP! Nível ${gameState.level} atingido! E mais: ${oldRank.rank} → ${newRank.rank}! O Sistema reconhece sua evolução!`
-            : `⚡ LEVEL UP! Nível ${gameState.level}! O Sistema reconhece sua evolução!`;
+            ? `Ã¢Å¡Â¡ LEVEL UP! NÃƒÂ­vel ${gameState.level} atingido! E mais: ${oldRank.rank} Ã¢â€ â€™ ${newRank.rank}! O Sistema reconhece sua evoluÃƒÂ§ÃƒÂ£o!`
+            : `Ã¢Å¡Â¡ LEVEL UP! NÃƒÂ­vel ${gameState.level}! O Sistema reconhece sua evoluÃƒÂ§ÃƒÂ£o!`;
         showSystemToast(msg);
 
     }, 1200);
@@ -1667,12 +2016,12 @@ function checkAllDailies() {
         gameState.streak++;
         gameState.consecutiveMisses = 0; // zera contador de falhas ao completar o dia
 
-        // Perk: Mente de Diamante — +10 XP ao completar todas as dailies
+        // Perk: Mente de Diamante Ã¢â‚¬â€ +10 XP ao completar todas as dailies
         if (hasPerk('mente_diamante')) {
             gameState.xp = (gameState.xp || 0) + 10;
         }
 
-        // Perk: O Sistema — +1 Skill XP em uma skill aleatória ao completar todas as dailies
+        // Perk: O Sistema Ã¢â‚¬â€ +1 Skill XP em uma skill aleatÃƒÂ³ria ao completar todas as dailies
         if (hasPerk('o_sistema')) {
             const skillTypes = ['physical', 'mental', 'productivity', 'social', 'wisdom', 'routine'];
             const randomSkill = skillTypes[Math.floor(Math.random() * skillTypes.length)];
@@ -1681,11 +2030,11 @@ function checkAllDailies() {
             }
         }
 
-        // Reseta flags de perks diários
+        // Reseta flags de perks diÃƒÂ¡rios
         gameState._firstQuestBonusGiven = false;
         gameState._momentumStack = 0;
 
-        // Incrementa contador para escudo (a cada 7 dias = +1 escudo, máx 3)
+        // Incrementa contador para escudo (a cada 7 dias = +1 escudo, mÃƒÂ¡x 3)
         gameState.consecutiveStreak7Days = (gameState.consecutiveStreak7Days || 0) + 1;
         if (gameState.consecutiveStreak7Days >= 7) {
             gameState.consecutiveStreak7Days = 0;
@@ -1693,7 +2042,7 @@ function checkAllDailies() {
             if ((gameState.shields || 0) < maxShields) {
                 gameState.shields = (gameState.shields || 0) + 1;
                 setTimeout(() => {
-                    showSystemToast(`🛡️ *ESCUDO GERADO!* Você manteve a consistência por 7 dias seguidos. Um escudo foi adicionado ao seu arsenal — ele protege sua sequência em um dia difícil. Escudos ativos: ${gameState.shields}/${maxShields}`, 'toast-alert');
+                    showSystemToast(`Ã°Å¸â€ºÂ¡Ã¯Â¸Â *ESCUDO GERADO!* VocÃƒÂª manteve a consistÃƒÂªncia por 7 dias seguidos. Um escudo foi adicionado ao seu arsenal Ã¢â‚¬â€ ele protege sua sequÃƒÂªncia em um dia difÃƒÂ­cil. Escudos ativos: ${gameState.shields}/${maxShields}`, 'toast-alert');
                 }, 2000);
             }
         }
@@ -1714,16 +2063,16 @@ function checkAllDailies() {
     }
 }
 
-// ── QUEST CLEARED Animation ──────────────────────────────────────────────────
+// Ã¢â€â‚¬Ã¢â€â‚¬ QUEST CLEARED Animation Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
 function showQuestCleared(quest) {
     const skillToAttr = {
-        mental: 'FORÇA DE VONTADE ↑', routine: 'FORÇA DE VONTADE ↑',
-        wisdom: 'INTELECTO ↑', productivity: 'INTELECTO ↑',
-        physical: 'SAÚDE ↑', social: 'SAÚDE ↑'
+        mental: 'FORÃƒâ€¡A DE VONTADE Ã¢â€ â€˜', routine: 'FORÃƒâ€¡A DE VONTADE Ã¢â€ â€˜',
+        wisdom: 'INTELECTO Ã¢â€ â€˜', productivity: 'INTELECTO Ã¢â€ â€˜',
+        physical: 'SAÃƒÅ¡DE Ã¢â€ â€˜', social: 'SAÃƒÅ¡DE Ã¢â€ â€˜'
     };
     const overlay = document.getElementById('quest-cleared-overlay');
-    document.getElementById('quest-cleared-rewards').innerText = `+${quest.xp} XP · +${quest.gold} OURO`;
-    document.getElementById('quest-cleared-attr').innerText = skillToAttr[quest.skill] || 'ATRIBUTO ↑';
+    document.getElementById('quest-cleared-rewards').innerText = `+${quest.xp} XP Ã‚Â· +${quest.gold} OURO`;
+    document.getElementById('quest-cleared-attr').innerText = skillToAttr[quest.skill] || 'ATRIBUTO Ã¢â€ â€˜';
     overlay.classList.add('show');
     setTimeout(() => overlay.classList.remove('show'), 1800);
 }
@@ -1733,13 +2082,13 @@ function applyDailyPenalty() {
     gameState.consecutiveMisses = (gameState.consecutiveMisses || 0) + 1;
     const misses = gameState.consecutiveMisses;
 
-    // ── Verifica escudo (só absorve no 1º dia faltoso) ──────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Verifica escudo (sÃƒÂ³ absorve no 1Ã‚Âº dia faltoso) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     if (misses === 1 && (gameState.shields || 0) > 0) {
         gameState.shields--;
         gameState.consecutiveStreak7Days = 0;
 
         setTimeout(() => {
-            showSystemToast(`🛡️ *ESCUDO ATIVADO!* Você falhou hoje, mas seu escudo absorveu a penalidade. Streak preservada em ${gameState.streak} dias. Escudos restantes: ${gameState.shields}/3. Não abuse dessa proteção.`);
+            showSystemToast(`Ã°Å¸â€ºÂ¡Ã¯Â¸Â *ESCUDO ATIVADO!* VocÃƒÂª falhou hoje, mas seu escudo absorveu a penalidade. Streak preservada em ${gameState.streak} dias. Escudos restantes: ${gameState.shields}/3. NÃƒÂ£o abuse dessa proteÃƒÂ§ÃƒÂ£o.`);
 
         }, 500);
 
@@ -1748,7 +2097,7 @@ function applyDailyPenalty() {
         return;
     }
 
-    // ── Determina nível da penalidade ────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Determina nÃƒÂ­vel da penalidade Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     let xpPenaltyPct, streakReset, skillPenalty, debuffDurationMs, irohTone;
 
     if (misses >= 5) {
@@ -1778,19 +2127,19 @@ function applyDailyPenalty() {
         irohTone        = 'motivational';
     }
 
-    // ── Aplica penalidade de XP ──────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Aplica penalidade de XP Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     const penalty = Math.max(5, Math.round(gameState.xp * xpPenaltyPct));
     gameState.xp  = Math.max(0, gameState.xp - penalty);
 
-    // ── Reseta streak se necessário ─────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Reseta streak se necessÃƒÂ¡rio Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     if (streakReset) {
         gameState.streak = 0;
         gameState.consecutiveStreak7Days = 0;
     }
 
-    // ── Aplica penalidade nas skills (−1 XP nas skills com falhas comuns) ───
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Aplica penalidade nas skills (Ã¢Ë†â€™1 XP nas skills com falhas comuns) Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     if (skillPenalty && gameState.skills) {
-        // Penaliza skills ligadas a quests não concluídas
+        // Penaliza skills ligadas a quests nÃƒÂ£o concluÃƒÂ­das
         const failedSkills = new Set();
         (gameState.quests || []).forEach(q => {
             if (!q.completed && q.skill) failedSkills.add(q.skill);
@@ -1803,24 +2152,24 @@ function applyDailyPenalty() {
         });
     }
 
-    // ── Debuff visual no player card ─────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Debuff visual no player card Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     const card = document.getElementById('player-card');
     if (card) {
         card.classList.add('debuffed');
         setTimeout(() => card.classList.remove('debuffed'), debuffDurationMs);
     }
 
-    // ── Overlay de penalidade ────────────────────────────────────────────────
-    document.getElementById('penalty-loss-text').innerText = `−${penalty} XP`;
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Overlay de penalidade Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
+    document.getElementById('penalty-loss-text').innerText = `Ã¢Ë†â€™${penalty} XP`;
     document.getElementById('penalty-overlay').style.display = 'flex';
 
-    // ── Mensagem do Iroh por tom ─────────────────────────────────────────────
+    // Ã¢â€â‚¬Ã¢â€â‚¬ Mensagem do Iroh por tom Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬
     setTimeout(() => {
         const irohMessages = {
-            motivational: `☀️ *SISTEMA:* Você falhou hoje, ${gameState.playerName || 'Guerreiro'}. Mas um tropeço não define sua jornada. _"A jornada mais longa começa com um único passo — e você ainda pode dar o de amanhã."_ Penalidade leve aplicada: −${penalty} XP. Levante-se.`,
-            firm: `⚠️ *SISTEMA:* Dois dias, ${gameState.playerName || 'Guerreiro'}. O Sistema registrou. Sua sequência foi zerada. _"O rio que para de correr logo apodrece."_ −${penalty} XP deduzidos. Não deixe virar hábito.`,
-            angry: `☠️ *SISTEMA:* Três dias consecutivos de falha. Penalidade severa aplicada. −${penalty} XP. Suas habilidades sofreram regressão. _"Você conhece seu potencial e ainda assim escolheu a fraqueza."_ Corrija isso agora.`,
-            severe: `💀 *SISTEMA — ALERTA CRÍTICO:* Cinco dias ou mais sem cumprir suas missões. Penalidade máxima: −${penalty} XP. Debuff de 48h ativo. Regressão de habilidades aplicada. _"Um guerreiro que abandona sua disciplina por dias não é mais um guerreiro — é apenas alguém com o uniforme."_ Retorne. Agora.`
+            motivational: `Ã¢Ëœâ‚¬Ã¯Â¸Â *SISTEMA:* VocÃƒÂª falhou hoje, ${gameState.playerName || 'Guerreiro'}. Mas um tropeÃƒÂ§o nÃƒÂ£o define sua jornada. _"A jornada mais longa comeÃƒÂ§a com um ÃƒÂºnico passo Ã¢â‚¬â€ e vocÃƒÂª ainda pode dar o de amanhÃƒÂ£."_ Penalidade leve aplicada: Ã¢Ë†â€™${penalty} XP. Levante-se.`,
+            firm: `Ã¢Å¡Â Ã¯Â¸Â *SISTEMA:* Dois dias, ${gameState.playerName || 'Guerreiro'}. O Sistema registrou. Sua sequÃƒÂªncia foi zerada. _"O rio que para de correr logo apodrece."_ Ã¢Ë†â€™${penalty} XP deduzidos. NÃƒÂ£o deixe virar hÃƒÂ¡bito.`,
+            angry: `Ã¢ËœÂ Ã¯Â¸Â *SISTEMA:* TrÃƒÂªs dias consecutivos de falha. Penalidade severa aplicada. Ã¢Ë†â€™${penalty} XP. Suas habilidades sofreram regressÃƒÂ£o. _"VocÃƒÂª conhece seu potencial e ainda assim escolheu a fraqueza."_ Corrija isso agora.`,
+            severe: `Ã°Å¸â€™â‚¬ *SISTEMA Ã¢â‚¬â€ ALERTA CRÃƒÂTICO:* Cinco dias ou mais sem cumprir suas missÃƒÂµes. Penalidade mÃƒÂ¡xima: Ã¢Ë†â€™${penalty} XP. Debuff de 48h ativo. RegressÃƒÂ£o de habilidades aplicada. _"Um guerreiro que abandona sua disciplina por dias nÃƒÂ£o ÃƒÂ© mais um guerreiro Ã¢â‚¬â€ ÃƒÂ© apenas alguÃƒÂ©m com o uniforme."_ Retorne. Agora.`
         };
         showSystemToast(irohMessages[irohTone]);
 
@@ -1831,7 +2180,7 @@ function applyDailyPenalty() {
 }
 
 // ==========================================================================
-// LOJA E TAVERNA (COMPRA DE BUFFS E COSMÉTICOS)
+// LOJA E TAVERNA (COMPRA DE BUFFS E COSMÃƒâ€°TICOS)
 // ==========================================================================
 function buyStoreItem(itemId) {
     const prices = {
@@ -1847,7 +2196,7 @@ function buyStoreItem(itemId) {
     if (!cost) return;
 
     if ((gameState.gold || 0) < cost) {
-        showSystemToast(`⚠️ *OURO INSUFICIENTE.* O Sistema não faz caridade. Você precisa de ${cost} 💰.`);
+        showSystemToast(`Ã¢Å¡Â Ã¯Â¸Â *OURO INSUFICIENTE.* O Sistema nÃƒÂ£o faz caridade. VocÃƒÂª precisa de ${cost} Ã°Å¸â€™Â°.`);
         return;
     }
 
@@ -1857,23 +2206,23 @@ function buyStoreItem(itemId) {
         
         if (itemId === 'buff_autoHeal') {
             if (gameState.buffs.autoHeal) {
-                showSystemToast("⚠️ Você já possui uma Poção de Cura ativa no inventário.");
+                showSystemToast("Ã¢Å¡Â Ã¯Â¸Â VocÃƒÂª jÃƒÂ¡ possui uma PoÃƒÂ§ÃƒÂ£o de Cura ativa no inventÃƒÂ¡rio.");
                 return;
             }
             gameState.buffs.autoHeal = true;
-            showSystemToast("🧪 *POÇÃO COMPRADA!* Seu próximo erro será perdoado. O Sistema protege os preparados.");
+            showSystemToast("Ã°Å¸Â§Âª *POÃƒâ€¡ÃƒÆ’O COMPRADA!* Seu prÃƒÂ³ximo erro serÃƒÂ¡ perdoado. O Sistema protege os preparados.");
         } 
         else if (itemId === 'buff_doubleXp') {
             if (gameState.buffs.doubleXp) {
-                showSystemToast("⚠️ Seu Pergaminho já está ativo até meia-noite!");
+                showSystemToast("Ã¢Å¡Â Ã¯Â¸Â Seu Pergaminho jÃƒÂ¡ estÃƒÂ¡ ativo atÃƒÂ© meia-noite!");
                 return;
             }
             gameState.buffs.doubleXp = true;
-            showSystemToast("📜 *CONHECIMENTO ADQUIRIDO!* Todo XP ganho hoje será DOBRADO. Vá trabalhar.");
+            showSystemToast("Ã°Å¸â€œÅ“ *CONHECIMENTO ADQUIRIDO!* Todo XP ganho hoje serÃƒÂ¡ DOBRADO. VÃƒÂ¡ trabalhar.");
         }
         else if (itemId === 'buff_shield') {
             gameState.shields = (gameState.shields || 0) + 1;
-            showSystemToast(`🛡️ *ESCUDO COMPRADO!* Você adicionou 1 carga ao seu escudo principal. Total: ${gameState.shields}`);
+            showSystemToast(`Ã°Å¸â€ºÂ¡Ã¯Â¸Â *ESCUDO COMPRADO!* VocÃƒÂª adicionou 1 carga ao seu escudo principal. Total: ${gameState.shields}`);
         }
     } 
     else if (itemId.startsWith('title_') || itemId.startsWith('border_')) {
@@ -1882,20 +2231,20 @@ function buyStoreItem(itemId) {
         const isTitle = itemId.startsWith('title_');
         const inventoryList = isTitle ? gameState.inventory.unlockedTitles : gameState.inventory.unlockedBorders;
         const activeKey = isTitle ? 'activeTitle' : 'activeBorder';
-        const displayType = isTitle ? 'Título' : 'Borda';
+        const displayType = isTitle ? 'TÃƒÂ­tulo' : 'Borda';
 
         if (inventoryList.includes(itemId)) {
-            // Se já tem, apenas equipa
+            // Se jÃƒÂ¡ tem, apenas equipa
             gameState.inventory[activeKey] = itemId;
-            showSystemToast(`✨ *${displayType} Equipado(a)!* Atualizado no seu perfil.`);
+            showSystemToast(`Ã¢Å“Â¨ *${displayType} Equipado(a)!* Atualizado no seu perfil.`);
             saveGameData();
             updateUI(); // Vai atualizar a UI do header
-            return; // Retorna para não cobrar ouro de novo
+            return; // Retorna para nÃƒÂ£o cobrar ouro de novo
         } else {
             // Compra e equipa
             inventoryList.push(itemId);
             gameState.inventory[activeKey] = itemId;
-            showSystemToast(`💎 *${displayType} Desbloqueado(a) e Equipado(a)!*`);
+            showSystemToast(`Ã°Å¸â€™Å½ *${displayType} Desbloqueado(a) e Equipado(a)!*`);
         }
     }
 
@@ -1906,7 +2255,7 @@ function buyStoreItem(itemId) {
 }
 
 // ==========================================================================
-// SISTEMA DE NOTIFICAÇÕES (TOASTS) E IMPACT QUOTES
+// SISTEMA DE NOTIFICAÃƒâ€¡Ãƒâ€¢ES (TOASTS) E IMPACT QUOTES
 // ==========================================================================
 
 function showSystemToast(text, type = '') {
@@ -1938,7 +2287,7 @@ function showImpactQuote() {
     
     const randomQuote = IMPACT_QUOTES[Math.floor(Math.random() * IMPACT_QUOTES.length)];
     textEl.innerText = `"${randomQuote.text}"`;
-    authorEl.innerText = `— ${randomQuote.author}`;
+    authorEl.innerText = `Ã¢â‚¬â€ ${randomQuote.author}`;
     
     modal.style.display = 'flex';
 }
@@ -2006,7 +2355,7 @@ function setupEventListeners() {
     document.getElementById('close-avatar-zoom').addEventListener('click', () => modalAv.style.display = 'none');
 }
 
-// Abre o modal de zoom do avatar com o título correto e imagem ampliada
+// Abre o modal de zoom do avatar com o tÃƒÂ­tulo correto e imagem ampliada
 function openAvatarZoom() {
     const modal = document.getElementById('modal-avatar-zoom');
     const imgLarge = document.getElementById('img-avatar-large');
@@ -2015,7 +2364,7 @@ function openAvatarZoom() {
     if (!modal || !imgLarge || !titleEl) return;
     
     let level = gameState.level;
-    let title = "Recruta - Nível " + level;
+    let title = "Recruta - NÃ­vel " + level;
     
     // Calcula rank e arquivo de imagem com base nos arquivos numerados
     const rank = getRankForLevel(level);
@@ -2024,25 +2373,18 @@ function openAvatarZoom() {
     const num = prefixMap[rankKey] || '1';
     let src = `avatars/${num}.rank-${rankKey}.png`;
     
-    if (level >= 20) {
-        title = "Semideus do Foco - Nível " + level;
-    } else if (level >= 15) {
-        title = "Herói Lendário - Nível " + level;
-    } else if (level >= 10) {
-        title = "Guerreiro de Elite - Nível " + level;
-    } else if (level >= 5) {
-        title = "Aventureiro - Nível " + level;
-    }
+    const titleMap = { e: 'Recruta', d: 'Aventureiro', c: 'CaÃ§ador', b: 'Elite', a: 'HerÃ³i LendÃ¡rio', s: 'O Sistema' };
+    let titleName = titleMap[rankKey] || 'Recruta';
+    title = `${titleName} - NÃ­vel ${level}`;
     
     imgLarge.src = src;
     titleEl.innerText = title;
     modal.style.display = 'flex';
 }
-
 function handleQuestAction(e) {
     const target = e.target;
     
-    // Dungeon: clique no botão ou no card
+    // Dungeon: clique no botÃƒÆ’Ã‚Â£o ou no card
     if (target.classList.contains('dungeon-btn') || target.closest('.dungeon-card')) {
         const btn = target.classList.contains('dungeon-btn')
             ? target
@@ -2053,7 +2395,7 @@ function handleQuestAction(e) {
         }
     }
 
-    // Se for clique nos botões de ajustar água
+    // Se for clique nos botÃƒÆ’Ã‚Âµes de ajustar ÃƒÆ’Ã‚Â¡gua
     if (target.classList.contains('water-btn')) {
         const id = target.getAttribute('data-id');
         const operation = target.classList.contains('btn-plus') ? 'plus' : 'minus';
@@ -2061,7 +2403,7 @@ function handleQuestAction(e) {
         return;
     }
     
-    // Caso contrário, se clicou em qualquer lugar no card, completa a quest
+    // Caso contrÃƒÆ’Ã‚Â¡rio, se clicou em qualquer lugar no card, completa a quest
     const card = target.closest('.quest-card');
     if (card) {
         const btn = card.querySelector('.quest-complete-btn');
@@ -2073,15 +2415,16 @@ function handleQuestAction(e) {
 }
 
 // ==========================================================================
-// PERSISTÊNCIA DE DADOS (LOCALSTORAGE)
+// PERSISTÃƒÆ’Ã…Â NCIA DE DADOS (LOCALSTORAGE)
 // ==========================================================================
 function saveGameData() {
     checkAchievements();
     localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+    if (typeof saveToCloud === 'function') saveToCloud();
 }
 
 function loadGameData() {
-    // FORÇAR RESET ÚNICO PEDIDO PELO USUÁRIO (Nível 1, 0 Gold, 0 Streak)
+    // FORÃƒÆ’Ã¢â‚¬Â¡AR RESET ÃƒÆ’Ã…Â¡NICO PEDIDO PELO USUÃƒÆ’Ã‚ÂRIO (NÃƒÆ’Ã‚Â­vel 1, 0 Gold, 0 Streak)
     if (localStorage.getItem('force_reset_v3') !== 'true') {
         localStorage.removeItem('lifeRPG_gameState_Mateus');
         localStorage.setItem('force_reset_v3', 'true');
@@ -2091,19 +2434,21 @@ function loadGameData() {
             xpToNext: 100,
             gold: 0,
             streak: 0,
+            history: {},
             shields: 0,
             consecutiveStreak7Days: 0,
             consecutiveMisses: 0,
             bossQuest: null,
             activeDungeon: null,
-            lastCheckedDate: new Date().toDateString(),
+            weeklyBoss: null,
+            lastCheckedDate: localDateStr(),
             unlockedAchievements: [],
             quests: [],
             sideQuests: [],
             rewards: [
-                { id: 'r-serie', title: 'Assistir 1 Hora de Série', cost: 35, icon: '📺' },
-                { id: 'r-cheat', title: 'Refeição Livre / Doce', cost: 80, icon: '🍔' },
-                { id: 'r-game',  title: 'Jogar Videogame por 1h',  cost: 45, icon: '🎮' }
+                { id: 'r-serie', title: 'Assistir 1 Hora de SÃƒÆ’Ã‚Â©rie', cost: 35, icon: 'ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Âº' },
+                { id: 'r-cheat', title: 'RefeiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o Livre / Doce', cost: 80, icon: 'ÃƒÂ°Ã…Â¸Ã‚ÂÃ¢â‚¬Â' },
+                { id: 'r-game',  title: 'Jogar Videogame por 1h',  cost: 45, icon: 'ÃƒÂ°Ã…Â¸Ã…Â½Ã‚Â®' }
             ],
             skills: {
                 physical:     { level: 1, xp: 0, xpToNext: 5 },
@@ -2120,7 +2465,7 @@ function loadGameData() {
             },
             history: {}, // Store daily logs { "2026-06-08": { status: "perfect", count: 3, total: 3, completedIds: [] } }
             buffs: { autoHeal: false, doubleXp: false, shieldDays: 0 },
-            inventory: { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" }
+            inventory: { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null }
         };
         saveGameData();
         window.location.reload();
@@ -2146,33 +2491,65 @@ function loadGameData() {
             parsed.history = {};
         }
 
+        // MOCK DATA (Gera 90 dias caso nÃƒÆ’Ã‚Â£o exista histÃƒÆ’Ã‚Â³rico e o level for > 1)
+        if (Object.keys(parsed.history).length === 0 && parsed.level > 1) {
+            const now = new Date();
+            const statuses = ['missed', 'bad', 'good', 'perfect', 'perfect', 'good'];
+            for (let i = 1; i <= 90; i++) {
+                const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                let count = 0, total = 8;
+                if (randomStatus === 'perfect') count = 8;
+                else if (randomStatus === 'good') count = 5;
+                else if (randomStatus === 'bad') count = 2;
+                
+                parsed.history[localDateStr(d)] = { status: randomStatus, count: count, total: total };
+            }
+        }
+
         // Migration: Ensure buffs and inventory exist
         if (!parsed.buffs) {
             parsed.buffs = { autoHeal: false, doubleXp: false, shieldDays: 0 };
         }
         if (!parsed.inventory) {
-            parsed.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: "", activeBorder: "default" };
+            parsed.inventory = { unlockedTitles: [], unlockedBorders: [], activeTitle: null, activeBorder: null };
+        } else {
+            if (!parsed.inventory.unlockedTitles) parsed.inventory.unlockedTitles = [];
+            if (!parsed.inventory.unlockedBorders) parsed.inventory.unlockedBorders = [];
+            
+            // Garantir que nulos sejam usados em vez de string vazia ou "default"
+            if (parsed.inventory.activeTitle === "" || parsed.inventory.activeTitle === "default") parsed.inventory.activeTitle = null;
+            if (parsed.inventory.activeBorder === "" || parsed.inventory.activeBorder === "default") parsed.inventory.activeBorder = null;
+
+            if (parsed.inventory.activeTitle && !parsed.inventory.unlockedTitles.includes(parsed.inventory.activeTitle)) {
+                parsed.inventory.unlockedTitles.push(parsed.inventory.activeTitle);
+            }
+            if (parsed.inventory.activeBorder && !parsed.inventory.unlockedBorders.includes(parsed.inventory.activeBorder)) {
+                parsed.inventory.unlockedBorders.push(parsed.inventory.activeBorder);
+            }
         }
 
-        // Verifica reset diário
-        const todayStr = new Date().toDateString();
+        // Verifica reset diÃƒÆ’Ã‚Â¡rio
+        const todayStr = localDateStr();
         if (parsed.lastCheckedDate && parsed.lastCheckedDate !== todayStr) {
             const completedCount = (parsed.quests || []).filter(q => q.completed).length;
             const totalCount = (parsed.quests || []).length;
             const allWereDone = completedCount >= totalCount && totalCount > 0;
             
-            // Grava o Histórico do dia anterior
-            let dailyStatus = 'skipped';
+            // Grava o HistÃƒÆ’Ã‚Â³rico do dia anterior
+            let dailyStatus = 'missed';
             if (totalCount > 0) {
-                if (completedCount === totalCount) dailyStatus = 'perfect';
-                else if (completedCount === 0) dailyStatus = 'failed';
-                else dailyStatus = 'partial';
+                const pct = completedCount / totalCount;
+                if (completedCount === 0) dailyStatus = 'missed';
+                else if (pct < 0.5) dailyStatus = 'bad';
+                else if (pct < 1.0) dailyStatus = 'good';
+                else dailyStatus = 'perfect';
             }
 
             // Identifica se era um dia ativo (para evitar punir dias de descanso)
             const oldDateObj = new Date(parsed.lastCheckedDate);
             const isRestDay = parsed.activeDays && !parsed.activeDays.includes(oldDateObj.getDay());
-            if (isRestDay && dailyStatus === 'failed') {
+            if (isRestDay && dailyStatus === 'missed') {
                 dailyStatus = 'skipped';
             }
 
@@ -2188,12 +2565,12 @@ function loadGameData() {
                 // Penalidade adiada para depois do DOM estar pronto
                 setTimeout(() => applyDailyPenalty(), 2000);
             }
-            // Reseta hábitos diários para um novo dia
+            // Reseta hÃƒÆ’Ã‚Â¡bitos diÃƒÆ’Ã‚Â¡rios para um novo dia
             parsed.quests.forEach(q => {
                 q.completed = false;
                 if (q.id === 'q-agua') q.current = 0;
             });
-            // Reseta flags de perks diários
+            // Reseta flags de perks diÃƒÆ’Ã‚Â¡rios
             parsed._firstQuestBonusGiven = false;
             parsed._momentumStack = 0;
             
@@ -2203,7 +2580,7 @@ function loadGameData() {
         }
 
         gameState = parsed;
-        initSkillsState(); // Garante inicialização das skills caso seja um save antigo
+        initSkillsState(); // Garante inicializaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o das skills caso seja um save antigo
         
         // Inicializa campos novos caso seja um save antigo
         if (gameState.shields === undefined) gameState.shields = 0;
@@ -2211,6 +2588,7 @@ function loadGameData() {
         if (gameState.consecutiveMisses === undefined) gameState.consecutiveMisses = 0;
         if (gameState.bossQuest === undefined) gameState.bossQuest = null;
         if (gameState.activeDungeon === undefined) gameState.activeDungeon = null;
+        if (gameState.weeklyBoss === undefined) gameState.weeklyBoss = null;
         if (gameState.unlockedAchievements === undefined) gameState.unlockedAchievements = [];
         if (gameState._dungeonsCompleted === undefined) gameState._dungeonsCompleted = 0;
 
@@ -2218,23 +2596,24 @@ function loadGameData() {
             gameState.notificationTimes = { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };
         }
     } else {
-        gameState.lastCheckedDate = new Date().toDateString();
+        gameState.lastCheckedDate = localDateStr();
         gameState.notificationTimes = { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };
         initSkillsState();
     }
     
-    // Garante que a lista de hábitos esteja sincronizada com o nível atual na carga do app
+    // Garante que a lista de hÃƒÆ’Ã‚Â¡bitos esteja sincronizada com o nÃƒÆ’Ã‚Â­vel atual na carga do app
     syncQuestsByLevel();
 
-    // Dungeons: verifica expiração e gera se não houver ativa
+    // Dungeons e Boss: verifica expiraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o e gera se nÃƒÆ’Ã‚Â£o houver ativa
     checkDungeonExpiry();
+    checkWeeklyBossExpiry();
     if (!gameState.activeDungeon && hasSkillLV3()) {
         setTimeout(() => spawnDungeon(), 3000);
     }
 }
 
 // ==========================================================================
-// CONFIGURAÇÕES & PWA MOBILE ENGINE
+// CONFIGURAÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã¢â‚¬Â¢ES & PWA MOBILE ENGINE
 // ==========================================================================
 let serviceWorkerRegistration = null;
 let deferredPrompt = null;
@@ -2246,7 +2625,7 @@ function registerServiceWorker() {
                 serviceWorkerRegistration = reg;
                 console.log('[App] SW Registrado:', reg.scope);
                 
-                // Configura notificações iniciais assim que o SW estiver pronto
+                // Configura notificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes iniciais assim que o SW estiver pronto
                 navigator.serviceWorker.ready.then(() => {
                     updateSWNotifications();
                 });
@@ -2281,7 +2660,7 @@ function setupSettingsListeners() {
         });
     }
 
-    // Solicitar permissão de notificação
+    // Solicitar permissÃƒÆ’Ã‚Â£o de notificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     const btnRequestNotif = document.getElementById('btn-request-notif');
     if (btnRequestNotif) {
         btnRequestNotif.addEventListener('click', () => {
@@ -2294,7 +2673,7 @@ function setupSettingsListeners() {
         });
     }
 
-    // Salvar horários
+    // Salvar horÃƒÆ’Ã‚Â¡rios
     const btnSaveNotif = document.getElementById('btn-save-notif');
     if (btnSaveNotif) {
         btnSaveNotif.addEventListener('click', () => {
@@ -2309,7 +2688,7 @@ function setupSettingsListeners() {
             
             // UI feedback
             const originalText = btnSaveNotif.innerText;
-            btnSaveNotif.innerText = '✓ SALVO';
+            btnSaveNotif.innerText = 'ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“ SALVO';
             btnSaveNotif.style.background = 'linear-gradient(90deg, var(--neon-green), #34d399)';
             setTimeout(() => {
                 btnSaveNotif.innerText = originalText;
@@ -2318,7 +2697,7 @@ function setupSettingsListeners() {
         });
     }
 
-    // Testar notificação
+    // Testar notificaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o
     const btnTestNotif = document.getElementById('btn-test-notif');
     if (btnTestNotif) {
         btnTestNotif.addEventListener('click', () => {
@@ -2327,7 +2706,7 @@ function setupSettingsListeners() {
                     type: 'TEST_NOTIFICATION'
                 });
             } else {
-                alert('Service Worker não está ativo ou não foi registrado. Aguarde e tente novamente.');
+                alert('Service Worker nÃƒÆ’Ã‚Â£o estÃƒÆ’Ã‚Â¡ ativo ou nÃƒÆ’Ã‚Â£o foi registrado. Aguarde e tente novamente.');
             }
         });
     }
@@ -2336,13 +2715,22 @@ function setupSettingsListeners() {
     const btnExportSave = document.getElementById('btn-export-save');
     if (btnExportSave) {
         btnExportSave.addEventListener('click', () => {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(gameState, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "liferpg-backup.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+            try {
+                const payload = JSON.stringify(gameState, null, 2);
+                const blob = new Blob([payload], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                const ts = new Date().toISOString().slice(0,10);
+                a.href = url;
+                a.download = `thesystem-backup-${ts}.json`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(url);
+                setTimeout(() => showSystemToast('ÃƒÂ°Ã…Â¸Ã¢â‚¬â„¢Ã‚Â¾ *BACKUP EXPORTADO!* Seu arquivo de save foi baixado com sucesso. Guarde-o em local seguro ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â ele ÃƒÆ’Ã‚Â© sua memÃƒÆ’Ã‚Â³ria.'), 300);
+            } catch(err) {
+                showSystemToast('ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â Erro ao exportar o save. Tente novamente.');
+            }
         });
     }
 
@@ -2357,38 +2745,37 @@ function setupSettingsListeners() {
             reader.onload = (event) => {
                 try {
                     const parsed = JSON.parse(event.target.result);
-                    // Validação simples do save
                     if (parsed.hasOwnProperty('level') && parsed.hasOwnProperty('xp') && parsed.hasOwnProperty('gold')) {
-                        // Salva e recarrega
                         localStorage.setItem('lifeRPG_gameState', JSON.stringify(parsed));
-                        alert('💾 Save importado com sucesso! Recarregando...');
-                        window.location.reload();
+                        // Toast antes do reload
+                        showSystemToast('ÃƒÂ°Ã…Â¸Ã¢â‚¬Å“Ã‚Â¥ *SAVE IMPORTADO!* MemÃƒÆ’Ã‚Â³ria restaurada com sucesso. O Sistema estÃƒÆ’Ã‚Â¡ reiniciando...');
+                        setTimeout(() => window.location.reload(), 2000);
                     } else {
-                        alert('Erro: Arquivo JSON não parece ser um backup válido do LifeRPG.');
+                        showSystemToast('ÃƒÂ¢Ã…Â¡Ã‚Â ÃƒÂ¯Ã‚Â¸Ã‚Â *ARQUIVO INVÃƒÆ’Ã‚ÂLIDO.* O arquivo nÃƒÆ’Ã‚Â£o parece ser um backup vÃƒÆ’Ã‚Â¡lido do The System.');
                     }
                 } catch (err) {
-                    alert('Erro ao processar o arquivo de save.');
+                    showSystemToast('ÃƒÂ¢Ã‚ÂÃ…â€™ *ERRO AO IMPORTAR.* Arquivo corrompido ou formato desconhecido.');
                 }
             };
             reader.readAsText(file);
         });
     }
 
-    // Hard Reset (Destruição do Sistema)
+    // Hard Reset (DestruiÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o do Sistema)
     const btnHardReset = document.getElementById('btn-hard-reset');
     if (btnHardReset) {
         btnHardReset.addEventListener('click', () => {
-            const confirmed = confirm("🔥 TEM CERTEZA QUE DESEJA APAGAR TODO O SEU PROGRESSO?\n\nEsta ação destruirá seu histórico, atributos, missões e inventário. Você voltará ao nível 1 e o Onboarding será reiniciado.\n\nESTA AÇÃO NÃO PODE SER DESFEITA.");
+            const confirmed = confirm("ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂÃ‚Â¥ TEM CERTEZA QUE DESEJA APAGAR TODO O SEU PROGRESSO?\n\nEsta aÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o destruirÃƒÆ’Ã‚Â¡ seu histÃƒÆ’Ã‚Â³rico, atributos, missÃƒÆ’Ã‚Âµes e inventÃƒÆ’Ã‚Â¡rio. VocÃƒÆ’Ã‚Âª voltarÃƒÆ’Ã‚Â¡ ao nÃƒÆ’Ã‚Â­vel 1 e o Onboarding serÃƒÆ’Ã‚Â¡ reiniciado.\n\nESTA AÃƒÆ’Ã¢â‚¬Â¡ÃƒÆ’Ã†â€™O NÃƒÆ’Ã†â€™O PODE SER DESFEITA.");
             if (confirmed) {
                 localStorage.removeItem('lifeRPG_gameState');
-                alert("O Sistema foi resetado. Reiniciando simulação...");
+                alert("O Sistema foi resetado. Reiniciando simulaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o...");
                 window.location.reload();
             }
         });
     }
 }
 
-// Carrega as configurações guardadas para a UI dos inputs
+// Carrega as configuraÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes guardadas para a UI dos inputs
 function loadSettingsToUI() {
     const times = gameState.notificationTimes || { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };
     
@@ -2400,7 +2787,7 @@ function loadSettingsToUI() {
     document.getElementById('notif-evening-min').value = pad(times.eveningMin);
 }
 
-// Atualiza a badge visual de permissão
+// Atualiza a badge visual de permissÃƒÆ’Ã‚Â£o
 function updateNotificationPermissionUI() {
     const badge = document.getElementById('notif-permission-badge');
     const btnRequest = document.getElementById('btn-request-notif');
@@ -2408,7 +2795,7 @@ function updateNotificationPermissionUI() {
     if (!badge) return;
     
     if (!('Notification' in window)) {
-        badge.innerText = 'NÃO SUPORTADO';
+        badge.innerText = 'NÃƒÆ’Ã†â€™O SUPORTADO';
         badge.className = 'badge-status-denied';
         if (btnRequest) btnRequest.style.display = 'none';
         return;
@@ -2424,7 +2811,7 @@ function updateNotificationPermissionUI() {
         badge.className = 'badge-status-denied';
         if (btnRequest) btnRequest.style.display = 'inline-block';
     } else {
-        badge.innerText = 'NÃO CONFIGURADO';
+        badge.innerText = 'NÃƒÆ’Ã†â€™O CONFIGURADO';
         badge.className = 'badge-status-neutral';
         if (btnRequest) btnRequest.style.display = 'inline-block';
     }
@@ -2449,27 +2836,27 @@ function setupInstallPrompt() {
     const instructionsText = document.getElementById('install-banner-instructions');
     const btnFooterInstall = document.getElementById('btn-pwa-install-footer');
 
-    // Detecta se é iOS
+    // Detecta se ÃƒÆ’Ã‚Â© iOS
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
     if (isStandalone) {
         console.log('[PWA] Rodando em standalone mode.');
-        // Esconde o botão de rodapé e banner quando já instalado
+        // Esconde o botÃƒÆ’Ã‚Â£o de rodapÃƒÆ’Ã‚Â© e banner quando jÃƒÆ’Ã‚Â¡ instalado
         if (btnFooterInstall) btnFooterInstall.style.display = 'none';
         const footerWrapper = document.querySelector('.pwa-install-mobile-footer');
         if (footerWrapper) footerWrapper.style.display = 'none';
-        return; // PWA já instalado e ativo
+        return; // PWA jÃƒÆ’Ã‚Â¡ instalado e ativo
     }
 
-    // === Botão de rodapé — SEMPRE visível (CSS já faz display:block) ===
+    // === BotÃƒÆ’Ã‚Â£o de rodapÃƒÆ’Ã‚Â© ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â SEMPRE visÃƒÆ’Ã‚Â­vel (CSS jÃƒÆ’Ã‚Â¡ faz display:block) ===
     if (btnFooterInstall) {
         btnFooterInstall.addEventListener('click', () => {
             if (isIOS) {
-                // iOS não suporta prompt nativo — mostra instruções manuais
-                alert('Para instalar no iPhone/iPad:\n\n1. Toque no ícone de "Compartilhar" (quadrado com seta ↑ no Safari)\n2. Role a lista e toque em "Adicionar à Tela de Início"');
+                // iOS nÃƒÆ’Ã‚Â£o suporta prompt nativo ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â mostra instruÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Âµes manuais
+                alert('Para instalar no iPhone/iPad:\n\n1. Toque no ÃƒÆ’Ã‚Â­cone de "Compartilhar" (quadrado com seta ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬Ëœ no Safari)\n2. Role a lista e toque em "Adicionar ÃƒÆ’Ã‚Â  Tela de InÃƒÆ’Ã‚Â­cio"');
             } else if (deferredPrompt) {
-                // Android/Desktop com prompt nativo disponível
+                // Android/Desktop com prompt nativo disponÃƒÆ’Ã‚Â­vel
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
@@ -2480,16 +2867,16 @@ function setupInstallPrompt() {
                     deferredPrompt = null;
                 });
             } else {
-                // Fallback: prompt nativo não disponível
-                alert('Para instalar o LifeRPG:\n\n• No Chrome: Toque no menu (⋮) → "Instalar app" ou "Adicionar à tela de início"\n• No Safari: Toque em Compartilhar → "Adicionar à Tela de Início"\n• No Firefox: Toque no menu → "Instalar"');
+                // Fallback: prompt nativo nÃƒÆ’Ã‚Â£o disponÃƒÆ’Ã‚Â­vel
+                alert('Para instalar o LifeRPG:\n\nÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ No Chrome: Toque no menu (ÃƒÂ¢Ã¢â‚¬Â¹Ã‚Â®) ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ "Instalar app" ou "Adicionar ÃƒÆ’Ã‚Â  tela de inÃƒÆ’Ã‚Â­cio"\nÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ No Safari: Toque em Compartilhar ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ "Adicionar ÃƒÆ’Ã‚Â  Tela de InÃƒÆ’Ã‚Â­cio"\nÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¢ No Firefox: Toque no menu ÃƒÂ¢Ã¢â‚¬Â Ã¢â‚¬â„¢ "Instalar"');
             }
         });
     }
 
-    // === Banner flutuante — lógica original ===
+    // === Banner flutuante ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â lÃƒÆ’Ã‚Â³gica original ===
     if (isIOS) {
         if (instructionsText && btnInstall) {
-            instructionsText.innerText = 'Para instalar no iOS: Toque em Compartilhar e depois "Adicionar à Tela de Início".';
+            instructionsText.innerText = 'Para instalar no iOS: Toque em Compartilhar e depois "Adicionar ÃƒÆ’Ã‚Â  Tela de InÃƒÆ’Ã‚Â­cio".';
             btnInstall.style.display = 'none';
         }
         setTimeout(() => {
@@ -2498,7 +2885,7 @@ function setupInstallPrompt() {
             }
         }, 3000);
     } else {
-        // Android/Desktop — captura o prompt nativo
+        // Android/Desktop ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Â captura o prompt nativo
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -2518,7 +2905,7 @@ function setupInstallPrompt() {
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-                    console.log('[PWA] Usuário aceitou a instalação.');
+                    console.log('[PWA] UsuÃƒÆ’Ã‚Â¡rio aceitou a instalaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o.');
                     if (btnFooterInstall) btnFooterInstall.style.display = 'none';
                     const footerWrapper = document.querySelector('.pwa-install-mobile-footer');
                     if (footerWrapper) footerWrapper.style.display = 'none';
@@ -2538,47 +2925,62 @@ function setupInstallPrompt() {
 }
 
 // ==========================================================================
-// ABA VISÃO GLOBAL E HEATMAP
+// ABA VISÃƒÆ’Ã†â€™O GLOBAL E HEATMAP
 // ==========================================================================
 function renderGlobalDashboard() {
+    const tabGlobal = document.getElementById('tab-global');
+    if (!tabGlobal || !tabGlobal.classList.contains('active')) return;
+
     const history = gameState.history || {};
     const dates = Object.keys(history).sort((a,b) => new Date(a) - new Date(b));
     
-    // 1. Preencher Heatmap (Mês Atual)
+    // 1. Preencher Heatmap Anual (365 dias)
     const heatmapGrid = document.getElementById('heatmap-grid');
     if(heatmapGrid) heatmapGrid.innerHTML = '';
     
     const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
-    // Calcula os "blocos" vazios antes do dia 1 (para o grid ficar bonitinho em semanas)
-    const firstDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
-    for (let i = 0; i < firstDayOfWeek; i++) {
+    // Dia inicial (364 dias atrÃƒÆ’Ã‚Â¡s + hoje = 365)
+    const startDate = new Date(today);
+    startDate.setDate(today.getDate() - 364);
+    
+    // Padding para alinhar verticalmente (Semana comeÃƒÆ’Ã‚Â§a domingo = 0)
+    const startDayOfWeek = startDate.getDay();
+    for (let i = 0; i < startDayOfWeek; i++) {
         const emptyBlock = document.createElement('div');
-        emptyBlock.style.visibility = 'hidden';
+        emptyBlock.className = 'hm-block hm-empty';
         if(heatmapGrid) heatmapGrid.appendChild(emptyBlock);
     }
 
-    for (let i = 1; i <= daysInMonth; i++) {
+    for (let i = 0; i < 365; i++) {
+        const d = new Date(startDate);
+        d.setDate(startDate.getDate() + i);
+        
+        const dateStr = d.toDateString();
+        const log = history[dateStr];
+        
         const block = document.createElement('div');
         block.className = 'hm-block';
-        
-        const dateStr = new Date(currentYear, currentMonth, i).toDateString();
-        const log = history[dateStr];
         
         if (log) {
             block.classList.add(`hm-${log.status}`);
             block.title = `${dateStr}: ${log.count}/${log.total} completos`;
-        } else if (i > now.getDate()) {
-            // Dias futuros
-            block.style.opacity = '0.3';
+        } else {
+            block.title = `${dateStr}: Sem dados`;
         }
         if(heatmapGrid) heatmapGrid.appendChild(block);
     }
 
-    // 2. Preencher Métricas de Topo
+    // Rola para o final para mostrar "hoje"
+    if (heatmapGrid && heatmapGrid.parentElement) {
+        // setTimeout para garantir que a renderizaÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â£o no DOM rolou antes do scroll
+        setTimeout(() => {
+            heatmapGrid.parentElement.scrollLeft = heatmapGrid.parentElement.scrollWidth;
+        }, 10);
+    }
+
+    // 2. Preencher MÃƒÆ’Ã‚Â©tricas de Topo
     let totalHabitsDone = 0;
     let totalMissed = 0;
     let perfectDays = 0;
@@ -2613,12 +3015,12 @@ function renderGlobalDashboard() {
     const rhythm = totalDaysLogged > 0 ? Math.round((perfectDays / totalDaysLogged) * 100) : 0;
     if(elRhythm) elRhythm.innerText = rhythm + '%';
 
-    // 3. Gráfico de Barras Mensais
+    // 3. GrÃƒÆ’Ã‚Â¡fico de Barras Mensais
     const barChart = document.getElementById('dash-bar-chart');
     if(barChart) {
         barChart.innerHTML = '';
         const monthsNames = ['J','F','M','A','M','J','J','A','S','O','N','D'];
-        const maxMonthly = Math.max(...monthlyData, 1); // Evita divisão por zero
+        const maxMonthly = Math.max(...monthlyData, 1); // Evita divisÃƒÆ’Ã‚Â£o por zero
 
         for (let i = 0; i < 12; i++) {
             const hPercent = (monthlyData[i] / maxMonthly) * 100;
@@ -2626,14 +3028,14 @@ function renderGlobalDashboard() {
             const col = document.createElement('div');
             col.className = 'dash-bar-col';
             col.innerHTML = `
-                <div class="dash-bar-fill" style="height: ${hPercent}%" title="${monthlyData[i]} hábitos em ${monthsNames[i]}"></div>
+                <div class="dash-bar-fill" style="height: ${hPercent}%" title="${monthlyData[i]} hÃƒÆ’Ã‚Â¡bitos em ${monthsNames[i]}"></div>
                 <div class="dash-bar-lbl">${monthsNames[i]}</div>
             `;
             barChart.appendChild(col);
         }
     }
 
-    // 4. Top Hábitos
+    // 4. Top HÃƒÆ’Ã‚Â¡bitos
     const topHabitsContainer = document.getElementById('dash-top-habits');
     if(topHabitsContainer) {
         topHabitsContainer.innerHTML = '';
@@ -2659,5 +3061,110 @@ function renderGlobalDashboard() {
                 topHabitsContainer.appendChild(row);
             });
         }
+    }
+}
+
+// ==========================================================================
+// CLOUD SAVE (FIREBASE)
+// ==========================================================================
+let db = null;
+let currentUser = null;
+
+function initFirebase() {
+    try {
+        if (typeof firebase === 'undefined') return;
+        db = firebase.firestore();
+        firebase.auth().onAuthStateChanged(async (user) => {
+            currentUser = user;
+            updateCloudUI(user);
+            if (user) {
+                await syncFromCloud();
+            }
+        });
+
+        // Listeners UI
+        const btnLogin = document.getElementById('btn-cloud-login');
+        const btnLogout = document.getElementById('btn-cloud-logout');
+        
+        if (btnLogin) {
+            btnLogin.addEventListener('click', async () => {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                try {
+                    await firebase.auth().signInWithPopup(provider);
+                } catch(e) {
+                    console.warn('[Cloud] Erro no login:', e);
+                    showSystemToast('⚠️ Erro ao conectar com Google.');
+                }
+            });
+        }
+        
+        if (btnLogout) {
+            btnLogout.addEventListener('click', async () => {
+                await firebase.auth().signOut();
+                currentUser = null;
+                showSystemToast('Sessão encerrada.');
+            });
+        }
+    } catch(e) {
+        console.warn('[Cloud] Firebase não disponível:', e);
+    }
+}
+
+async function saveToCloud() {
+    if (!db || !currentUser) return;
+    try {
+        const payload = { ...gameState, _savedAt: Date.now(), _version: 3 };
+        await db.collection('saves').doc(currentUser.uid).set(payload);
+    } catch(e) {
+        console.warn('[Cloud] Erro ao salvar:', e);
+    }
+}
+
+async function syncFromCloud() {
+    if (!db || !currentUser) return;
+    try {
+        const doc = await db.collection('saves').doc(currentUser.uid).get();
+        if (!doc.exists) {
+            // Primeiro login: sobe o save local
+            await saveToCloud();
+            showSystemToast('☁️ *SAVE ENVIADO PARA A NUVEM!* Sua conta foi criada.');
+            return;
+        }
+        const cloudState = doc.data();
+        const localLevel = gameState.level || 1;
+        const cloudLevel = cloudState.level || 1;
+        const localStreak = gameState.streak || 0;
+        const cloudStreak = cloudState.streak || 0;
+
+        const cloudWins = cloudLevel > localLevel || (cloudLevel === localLevel && cloudStreak > localStreak);
+
+        if (cloudWins) {
+            Object.assign(gameState, cloudState);
+            saveGameData(); 
+            updateUI();
+            showSystemToast('☁️ *SAVE SINCRONIZADO!* Progresso atualizado da nuvem.');
+        } else {
+            await saveToCloud();
+        }
+    } catch(e) {
+        console.warn('[Cloud] Erro ao sincronizar:', e);
+    }
+}
+
+function updateCloudUI(user) {
+    const el = document.getElementById('cloud-sync-status');
+    const btnLogin = document.getElementById('btn-cloud-login');
+    const btnLogout = document.getElementById('btn-cloud-logout');
+    if (!el) return;
+    
+    if (user) {
+        const name = user.displayName || (user.isAnonymous ? 'AnÃƒÂ´nimo' : user.email);
+        el.innerHTML = <span class="cloud-dot online"></span> ;
+        if (btnLogin) btnLogin.style.display = 'none';
+        if (btnLogout) btnLogout.style.display = 'inline-flex';
+    } else {
+        el.innerHTML = <span class="cloud-dot offline"></span> NÃƒÂ£o sincronizado;
+        if (btnLogin) btnLogin.style.display = 'inline-flex';
+        if (btnLogout) btnLogout.style.display = 'none';
     }
 }
