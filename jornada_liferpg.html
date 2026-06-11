@@ -539,9 +539,114 @@
             </div>
 
             <div class="glass-card">
-                <h2 class="card-title">💡 A Ponte de Google Drive</h2>
-                <p class="card-desc">Para unificar esses dois cérebros artificiais de forma paralela na sua máquina, a pasta local do projeto foi espelhada em tempo real com o **Google Drive** (controlado pelas pastas invisíveis `.tmp.drivedownload` e `.tmp.driveupload` do diretório).</p>
-                <p style="font-size:0.95rem; color:var(--text-secondary);">Isso permitiu que a lógica exportada do Claude em outro terminal fosse descarregada instantaneamente para o seu diretório de rascunhos, onde o Antigravity de forma autônoma lia, saneava codificações quebras e implementava no código-fonte em tempo real.</p>
+                <h2 class="card-title">💡 A Ponte do Google Drive: Programando em Qualquer Lugar</h2>
+                <p class="card-desc">O Antigravity (Gemini) atuando localmente no PC possui a superpotência de alterar e criar arquivos de código diretamente. O Claude, pelo chat do navegador ou desktop, consegue ler perfeitamente esses arquivos copiados. Mas e se você quisesse programar na rua, longe do computador?</p>
+                <p style="font-size:0.95rem; color:var(--text-secondary); margin-bottom: 12px;">No celular, não existe aplicativo do Antigravity para rodar comandos locais, e o aplicativo do Claude Mobile também não possui qualquer acesso às pastas do seu PC. Para resolver essa limitação de mobilidade, criamos uma solução inteligente usando a computação em nuvem:</p>
+                <p style="font-size:0.95rem; color:var(--text-secondary); margin-bottom: 12px;"><strong>A pasta do seu PC local foi vinculada automaticamente ao seu Google Drive</strong> (Backup & Sincronização automática do próprio Drive, gerida nos bastidores com os rastros <code>.tmp.drivedownload</code> e <code>.tmp.driveupload</code>). Com isso, quando você estava fora de casa, bastava abrir o arquivo de código no celular pelo Google Drive para obter o código mais atualizado do app.</p>
+                <p style="font-size:0.95rem; color:var(--text-secondary); margin-bottom: 12px;">Você podia ler e editar o documento de onde quer que estivesse, colar o trecho atualizado no Claude Mobile, pedir ajustes no ônibus ou na rua, e salvar as alterações na nuvem. Ao chegar em casa e abrir o computador, a pasta já estava perfeitamente sincronizada com a version mais recente dos seus rascunhos, pronta para o Antigravity prosseguir com a codificação local e deploys automatizados no Git. A nuvem virou a ponte perfeita de portabilidade e sincronia!</p>
+            </div>
+
+            <div class="glass-card">
+                <h2 class="card-title">📋 Do Backlog V3 à Versão Estável V4</h2>
+                <p class="card-desc">Abrimos o backup histórico da versão 3 do projeto (<code>v3_funcional.zip</code>) e resgatamos a lista de pendências originais de UX, mecânicas de jogo e infraestrutura para confrontar com o que de fato concluímos e refinamos na versão 4:</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pendência Original (V3)</th>
+                                <th>Categoria</th>
+                                <th>Status na V4</th>
+                                <th>Resultado Prático / Resolução</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Header fixo no mobile</strong></td>
+                                <td>Layout / CSS</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Corrigido com <code>position: fixed</code> e compensação de padding no topo para evitar que o topo sumisse ao rolar.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Biblioteca de Hábitos no modal</strong></td>
+                                <td>Feature / UX</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Totalmente implementada com 30 hábitos curados e filtros. Agora configurada como a aba inicial por padrão no modal de Nova Quest!</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Loja de Skins na Taverna</strong></td>
+                                <td>Feature / Ouro</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Implementada loja de skins compráveis com Ouro, incluindo renderização dinâmica dos avatares premium desenhados por IA.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ajuste nos Títulos de Avatar/Rank</strong></td>
+                                <td>UX / Balanceamento</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Alinhado o mapeamento de títulos (Recruta, Aventureiro, Herói Lendário, etc.) usando a lógica <code>getRankForLevel()</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dungeon ativa + fallback "Nenhuma Quest"</strong></td>
+                                <td>Interface / Bug</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Removido conflito de rendering. Se houver uma masmorra ativa, o aviso de "Nenhuma Quest" é suprimido.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sinergia "Vontade de Ferro" corrompida</strong></td>
+                                <td>Mecânica / Bug</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Corrigido ícone e codificação corrompida que travava a leitura no boot inicial.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Perks e Sinergias sem distinção</strong></td>
+                                <td>UX / Interface</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Adicionado labels separadores e badges de cor diferenciada no HUD para melhor leitura de benefícios de nível alto.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Relatório Semanal de Progresso</strong></td>
+                                <td>Engajamento</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Implementado dashboard de histórico semanal com taxa de conclusão e evolução de atributos.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Feedback visual em penalidades</strong></td>
+                                <td>Engajamento</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Conectado efeito punitivo: os atributos regredidos piscam em vermelho no Radar Chart.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Loop D1-D2 & Onboardings explicativos</strong></td>
+                                <td>Retenção / UX</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Adicionado toast de acolhimento de segundo dia e popups de primeira vez para dungeons e lojas desbloqueadas.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Configuração do Firebase / Cloud Save</strong></td>
+                                <td>Infra / Backend</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Estrutura Firebase Firestore e Authentication integrada no código, pendente apenas chaves do usuário.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sala de Troféus / Achievements</strong></td>
+                                <td>UX / Colecionáveis</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Criada sala com 14 conquistas em 4 níveis de raridade e barra global de progresso com toasts de desbloqueio.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Duelos PvP e Rankings de Amigos</strong></td>
+                                <td>Social</td>
+                                <td><span class="badge badge-medium">Integrado</span></td>
+                                <td>Lógica e botões prontos na UI móvel, aguardando ativação final de banco de dados por parte do usuário.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Fuso Horário Adaptativo</strong></td>
+                                <td>Backend / Bug</td>
+                                <td><span class="badge badge-done">Concluído</span></td>
+                                <td>Uso de <code>localDateStr()</code> em substituição a métodos nativos vulneráveis a viagens de fuso do jogador.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -673,6 +778,48 @@
                                 <td><span class="badge badge-medium">Médio</span></td>
                                 <td>IA / Chamada API</td>
                                 <td>Requisições diretas de chat eram barradas pelas políticas do navegador. Criado campos seguros para o usuário definir chave de API e Proxy URL customizada nas Configurações.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Botões Paravam de Funcionar</strong></td>
+                                <td><span class="badge badge-medium">Médio</span></td>
+                                <td><span class="badge badge-low">Pequeno</span></td>
+                                <td>Interface / DOM</td>
+                                <td>Regressões recorrentes onde botões de check de quests, exclusão e abas funcionavam na primeira carga, mas paravam de responder após certas atualizações. Causa: a re-renderização limpava elementos usando <code>innerHTML</code>, destruindo os event listeners. Resolvido com delegação de eventos dinâmica no container pai ou reinicializando os listeners em cada render.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Cabeçalho/Rodapé Solto (iOS Safari)</strong></td>
+                                <td><span class="badge badge-medium">Médio</span></td>
+                                <td><span class="badge badge-medium">Médio</span></td>
+                                <td>Layout / CSS</td>
+                                <td>No iOS, o cabeçalho e o rodapé cobriam inputs ou sumiam devido às barras dinâmicas do navegador Safari. Resolvido ajustando a altura da viewport usando a unidade flexível <code>100dvh</code> (dynamic viewport height) no CSS, garantindo que cabeçalhos e rodapés fiquem fixados sem cobrir os dados.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Falha no Reset do App</strong></td>
+                                <td><span class="badge badge-critical">Crítico</span></td>
+                                <td><span class="badge badge-low">Pequeno</span></td>
+                                <td>LocalStorage / Boot</td>
+                                <td>O botão de reset total travava o app ou mantinha resquícios no <code>localStorage</code>, gerando erros de carregamento na reinicialização. Solucionado limpando explicitamente todos os dados com <code>localStorage.clear()</code>, inicializando imediatamente o estado template vazio padrão no cache e recarregando a página de forma limpa.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Botões que Sumiam com a Tela (White Screen)</strong></td>
+                                <td><span class="badge badge-critical">Crítico</span></td>
+                                <td><span class="badge badge-medium">Médio</span></td>
+                                <td>JS Execution</td>
+                                <td>Ao tentar excluir uma quest ou abrir modais com dados nulos, estourava um erro <code>Cannot read properties of null</code> que quebrava o loop do JavaScript, fazendo a tela inteira sumir. Resolvido com programação defensiva (blocos <code>try/catch</code> e validações preliminares <code>if (!data) return;</code>) para evitar falhas catastróficas.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Atividades Sumindo Sozinhas</strong></td>
+                                <td><span class="badge badge-critical">Crítico</span></td>
+                                <td><span class="badge badge-medium">Médio</span></td>
+                                <td>Filtros / Datas</td>
+                                <td>Atividades ativas desapareciam da lista sem intervenção. O erro era o uso de data local com formatos estáticos, que causava perda de sincronia após a meia-noite em fusos não-UTC. O filtro de renderização interpretava a data como concluída/expirada. Resolvido padronizando datas com o fuso do navegador usando a string formatada <code>localDateStr()</code>.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Atividades Duplicadas (Clones)</strong></td>
+                                <td><span class="badge badge-medium">Médio</span></td>
+                                <td><span class="badge badge-low">Pequeno</span></td>
+                                <td>Mecânica / CRUD</td>
+                                <td>Duplo clique rápido no botão de salvar adicionava a mesma quest duas vezes no array com IDs idênticos, quebrando os cálculos de XP. Resolvido com desabilitação temporária do botão após o primeiro clique (debouncing) e geração robusta de UUIDs únicos para cada quest.</td>
                             </tr>
                         </tbody>
                     </table>
