@@ -1126,7 +1126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSettingsListeners();
     setupInstallPrompt();
     setupHabitLibraryAndTabs();
-    initChatListeners();
+    // initChatListeners();
 
     // Garante o primeiro draw do radar chart após DOM+fontes carregarem
     setTimeout(() => { drawRadarChart(); }, 150);
@@ -1188,9 +1188,11 @@ function initTabs() {
             if (tabName === 'global') {
                 renderGlobalDashboard();
             }
+            /*
             if (tabName === 'chat') {
                 renderChat();
             }
+            */
 
             // No Mobile, rola a tela até o conteúdo da aba, respeitando o header fixo
             if (window.innerWidth <= 1023) {
@@ -4123,7 +4125,7 @@ function renderHabitLibrary(filter = 'all', search = '') {
     });
 }
 
-// Lógica de Chat com IA Real (Claude)
+/* Lógica de Chat com IA Real (Claude) desabilitada temporariamente
 function initChatListeners() {
     const chatInput = document.getElementById('chat-input');
     const sendBtn = document.getElementById('chat-send-btn');
@@ -4285,3 +4287,4 @@ Lembre-se de comentar sobre o progresso real do jogador se for relevante (ex: se
         saveGameData();
     });
 }
+*/
