@@ -176,6 +176,12 @@
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-4 4 1-5-4-3 5-.5L12 6l2 4.5 5 .5-4 3 1 5z"/><path d="M5 21l3-3"/><path d="M19 21l-3-3"/></svg>
                     TROFÉUS
                 </button>
+                <!-- MENTOR TAB — desabilitado temporariamente
+                <button class="tab-link" data-tab="chat" id="tab-btn-chat">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    MENTOR
+                </button>
+                -->
             </nav>
 
 
@@ -193,7 +199,6 @@
                             <h2>Missões Diárias</h2>
                             <p style="color: var(--text-muted); font-size: 0.7rem; margin-top: 2px;">Hábitos gerados pelo seu nível para manter sua rotina diária.</p>
                         </div>
-                        <span class="quest-count" id="lbl-daily-count" title="Missões concluídas hoje / Total de missões">0/0</span>
                     </div>
                     <div class="quest-list" id="daily-quests-list">
                         <!-- Quests renderizadas via JS -->
@@ -204,7 +209,6 @@
                             <h2>Side Quests</h2>
                             <p style="color: var(--text-muted); font-size: 0.7rem; margin-top: 2px;">Objetivos secundários criados por você para acelerar sua evolução.</p>
                         </div>
-                        <span class="quest-count" id="lbl-side-count">0</span>
                     </div>
                     <div class="quest-list" id="side-quests-list">
                         <!-- Side Quests renderizadas via JS -->
@@ -220,6 +224,18 @@
                     <h2>VISÃO GLOBAL</h2>
                     <p style="color: var(--text-muted); font-size: 0.8rem;">O seu mapa tático da consistência.</p>
                 </div>
+
+                <!-- ESTADO VAZIO -->
+                <div id="global-empty-state" class="dashboard-card" style="display: none; padding: 40px 20px; text-align: center; margin-top: 20px;">
+                    <span style="font-size: 3rem; display: block; margin-bottom: 15px;">📊</span>
+                    <h3 style="color: var(--neon-cyan); margin-bottom: 8px;">SEU MAPA TÁTICO ESTÁ SENDO GERADO</h3>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; max-width: 320px; margin: 0 auto;">
+                        O painel de consistência anual e gráficos de desempenho precisam de dados históricos para renderizar.
+                        <br><br>
+                        <strong style="color: #fff;">💡 Complete as suas missões diárias hoje</strong> e amanhã esta tela revelará suas primeiras estatísticas e seu heatmap de hábitos!
+                    </p>
+                </div>
+
                 
                 <!-- HEATMAP ANUAL -->
                 <div class="dashboard-card" style="margin-bottom: 20px;">
@@ -481,6 +497,28 @@
                     </div>
                 </section>
 
+                <!-- ABA: CHAT COM MENTOR IROH -->
+                <section id="tab-chat" class="tab-content" style="padding:0; height:calc(100vh - 190px); display:none; flex-direction:column;">
+                    <div class="chat-container" style="display:flex; flex-direction:column; height:100%; border:1px solid var(--border-glass); border-radius:var(--radius-lg); background:rgba(13,15,22,0.6); overflow:hidden;">
+                        <div class="chat-header" style="display:flex; align-items:center; gap:14px; padding:18px 28px; border-bottom:1px solid var(--border-glass); background:rgba(8,9,13,0.3);">
+                            <div class="chat-mentor-avatar" style="width:40px; height:40px; background:linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); border-radius:10px; display:flex; justify-content:center; align-items:center; font-family:var(--font-hud); font-size:16px; font-weight:900; color:#000; box-shadow:0 0 15px var(--glow-blue);">🍵</div>
+                            <div class="chat-mentor-info">
+                               <h3 style="font-family:var(--font-hud); font-size:13px; color:#fff; letter-spacing:1px; margin:0;">Tio Iroh</h3>
+                               <span class="chat-status-label" style="font-family:var(--font-hud); font-size:8px; color:var(--neon-green); letter-spacing:1px;">ONLINE</span>
+                            </div>
+                        </div>
+                        <div class="chat-messages-scroll" id="chat-messages-container" style="flex:1; overflow-y:auto; padding:24px 28px; display:flex; flex-direction:column; gap:14px;">
+                            <!-- Mensagens geradas via JS -->
+                        </div>
+                        <div class="chat-input-wrapper" style="padding:14px 28px; border-top:1px solid var(--border-glass); display:flex; gap:10px; align-items:center; background:rgba(8,9,13,0.5);">
+                            <input type="text" id="chat-input" placeholder="Converse com seu mentor sobre sua jornada..." maxlength="300" style="flex:1; background:var(--bg-input); border:1px solid var(--border-glass); color:#fff; padding:11px 18px; border-radius:30px; font-size:13px; font-family:var(--font-body); outline:none; transition:border-color 0.2s;">
+                            <button id="chat-send-btn" class="btn-send" style="width:40px; height:40px; background:var(--neon-blue); color:#000; border:none; border-radius:50%; font-size:16px; font-weight:900; cursor:pointer; display:flex; justify-content:center; align-items:center; box-shadow:0 0 12px var(--glow-blue); transition:all 0.2s;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
             </div>
         </div>
 
@@ -488,38 +526,88 @@
 
         <!-- Modal: Nova Side Quest -->
         <div id="modal-sidequest" class="modal">
-            <div class="modal-box">
+            <div class="modal-box modal-box-large">
                 <span class="close-modal-btn" id="close-sq-modal">&times;</span>
-                <h3>⚔️ NOVA QUEST</h3>
-                <form id="form-sidequest">
-                    <div class="form-field">
-                        <label for="sq-title">NOME DA MISSÃO</label>
-                        <input type="text" id="sq-title" placeholder="Ex: Organizar documentação" required>
+                <h3 style="margin-bottom: 15px;">⚔️ NOVA QUEST</h3>
+                
+                <!-- Abas da Quest Modal -->
+                <div class="modal-tabs" style="display:flex; border-bottom:1px solid var(--border-glass); margin-bottom:16px; gap:10px;">
+                    <button type="button" class="modal-tab-btn active" id="modal-tab-library">BIBLIOTECA DE HÁBITOS</button>
+                    <button type="button" class="modal-tab-btn" id="modal-tab-create">CRIAR PERSONALIZADA</button>
+                </div>
+                
+                <!-- Conteúdo Aba: Biblioteca de Hábitos -->
+                <div id="modal-panel-library" class="modal-panel active" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+                    <div class="library-search-row">
+                        <input type="text" id="library-search" placeholder="Buscar hábito na biblioteca..." style="width:100%; background:var(--bg-input); border:1px solid var(--border-glass); color:#fff; padding:10px 16px; border-radius:var(--radius-md); font-size:13px; outline:none;">
                     </div>
-                    <div class="form-field">
-                        <label for="sq-icon">ÍCONE / EMOJI</label>
-                        <select id="sq-icon">
-                            <option value="⚔️">⚔️ Combate / Geral</option>
-                            <option value="💻">💻 Programação / Trabalho</option>
-                            <option value="📚">📚 Estudo / Leitura</option>
-                            <option value="🏋️‍♂️">🏋️‍♂️ Treino / Saúde</option>
-                            <option value="🎯">🎯 Objetivo / Foco</option>
-                            <option value="💧">💧 Hidratação / Rotina</option>
-                            <option value="🧘">🧘 Meditação / Descanso</option>
-                            <option value="💰">💰 Finanças</option>
-                            <option value="🧹">🧹 Limpeza / Organização</option>
-                        </select>
+                    <div class="library-filters" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px;">
+                        <button type="button" class="filter-btn active" data-filter="all">TODAS</button>
+                        <button type="button" class="filter-btn" data-filter="physical">FÍSICO</button>
+                        <button type="button" class="filter-btn" data-filter="mental">MENTAL</button>
+                        <button type="button" class="filter-btn" data-filter="productivity">FOCO</button>
+                        <button type="button" class="filter-btn" data-filter="wisdom">SABER</button>
+                        <button type="button" class="filter-btn" data-filter="routine">ROTINA</button>
+                        <button type="button" class="filter-btn" data-filter="social">SOCIAL</button>
                     </div>
-                    <div class="form-field">
-                        <label for="sq-difficulty">DIFICULDADE</label>
-                        <select id="sq-difficulty">
-                            <option value="easy">Rank E — Fácil (+10 XP / +5 Ouro)</option>
-                            <option value="medium" selected>Rank D — Médio (+25 XP / +15 Ouro)</option>
-                            <option value="hard">Rank C — Difícil (+50 XP / +30 Ouro)</option>
-                        </select>
+                    <div class="library-list" id="library-habits-list" style="max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; width:100%;">
+                        <!-- Lista gerada via JS -->
                     </div>
-                    <button type="submit" class="btn-submit">LANÇAR QUEST</button>
-                </form>
+                </div>
+
+                <!-- Conteúdo Aba: Criar Personalizada -->
+                <div id="modal-panel-create" class="modal-panel" style="display:none; flex-direction:column; gap:12px; width:100%;">
+                    <form id="form-sidequest" style="display:flex; flex-direction:column; gap:12px; width:100%;">
+                        <div class="form-field">
+                            <label for="sq-title">NOME DA MISSÃO</label>
+                            <input type="text" id="sq-title" placeholder="Ex: Organizar documentação" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="sq-icon">ÍCONE / EMOJI</label>
+                            <select id="sq-icon">
+                                <option value="⚔️">⚔️ Combate / Geral</option>
+                                <option value="💻">💻 Programação / Trabalho</option>
+                                <option value="📚">📚 Estudo / Leitura</option>
+                                <option value="🏋️‍♂️">🏋️‍♂️ Treino / Saúde</option>
+                                <option value="🎯">🎯 Objetivo / Foco</option>
+                                <option value="💧">💧 Hidratação / Rotina</option>
+                                <option value="🧘">🧘 Meditação / Descanso</option>
+                                <option value="💰">💰 Finanças</option>
+                                <option value="🧹">🧹 Limpeza / Organização</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label for="sq-difficulty">DIFICULDADE</label>
+                            <select id="sq-difficulty">
+                                <option value="easy">Rank E — Fácil (+10 XP / +5 Ouro)</option>
+                                <option value="medium" selected>Rank D — Médio (+25 XP / +15 Ouro)</option>
+                                <option value="hard">Rank C — Difícil (+50 XP / +30 Ouro)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-submit" style="margin-top:10px; width:100%;">LANÇAR QUEST</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal: Confirmação de Hábito da Biblioteca -->
+        <div id="modal-confirm-habit" class="modal" style="z-index: 2100;">
+            <div class="modal-box modal-box-mini" style="max-width:320px; text-align:center; padding:24px;">
+                <span class="close-modal-btn" id="close-confirm-modal">&times;</span>
+                <h4 id="confirm-habit-title" style="font-family:var(--font-hud); color:#fff; font-size:15px; margin-bottom:8px; margin-top:10px;">Adicionar Hábito?</h4>
+                <p id="confirm-habit-desc" style="font-size:12px; color:var(--text-muted); margin-bottom:20px; line-height:1.4;"></p>
+                <div style="display:flex; gap:10px; margin-top:8px; width:100%;">
+                    <button type="button" id="btn-habit-confirm-daily" class="btn-submit" style="flex:1;">
+                        📅 MISSÃO DIÁRIA
+                    </button>
+                    <button type="button" id="btn-habit-confirm-side" class="btn-submit" 
+                            style="flex:1; background:linear-gradient(90deg,var(--neon-purple),#a78bfa); box-shadow:0 0 20px var(--glow-purple);">
+                        ⚡ SIDE QUEST
+                    </button>
+                </div>
+                <p style="font-size:10px; color:rgba(255,255,255,0.3); text-align:center; margin-top:8px; font-family:var(--font-hud); letter-spacing:0.5px;">
+                    DIÁRIA = repete todo dia · SIDE QUEST = missão pontual
+                </p>
             </div>
         </div>
 
@@ -623,6 +711,23 @@
                     </div>
                 </div>
 
+                <!-- Mentor IA Config -->
+                <div class="settings-group">
+                    <div class="settings-group-title">🍵 MENTE DO MENTOR (IA CLAUDE)</div>
+                    <p class="settings-group-desc">Insira suas configurações da API do Claude para conversar com o Tio Iroh no chat do Mentor.</p>
+                    <div class="form-field" style="margin-bottom:12px;">
+                        <label for="settings-claude-key" style="display:block; font-size:10px; font-family:var(--font-hud); color:var(--text-muted); margin-bottom:6px;">API KEY DO CLAUDE (ANTHROPIC)</label>
+                        <input type="password" id="settings-claude-key" placeholder="sk-ant-..." style="width:100%; background:var(--bg-input); border:1px solid var(--border-glass); color:#fff; padding:10px 16px; border-radius:var(--radius-md); font-size:13px; outline:none;">
+                    </div>
+                    <div class="form-field" style="margin-bottom:14px;">
+                        <label for="settings-claude-url" style="display:block; font-size:10px; font-family:var(--font-hud); color:var(--text-muted); margin-bottom:6px;">CORS PROXY / GATEWAY URL (OPCIONAL)</label>
+                        <input type="text" id="settings-claude-url" placeholder="https://api.anthropic.com/v1/messages" style="width:100%; background:var(--bg-input); border:1px solid var(--border-glass); color:#fff; padding:10px 16px; border-radius:var(--radius-md); font-size:13px; outline:none;">
+                    </div>
+                    <div class="settings-actions-row">
+                        <button id="btn-save-claude" class="btn-submit" style="width:100%;">SALVAR CONFIGURAÇÕES DO MENTOR</button>
+                    </div>
+                </div>
+
                 <!-- Hard Reset -->
                 <div class="settings-group" style="margin-top: 30px; border-top: 1px solid var(--border-glass); padding-top: 20px;">
                     <div class="settings-group-title" style="color: var(--neon-red);">🔥 DESTRUIÇÃO DO SISTEMA (RESET GERAL)</div>
@@ -658,6 +763,17 @@
                 <div class="quest-cleared-attr" id="quest-cleared-attr">FORÇA DE VONTADE ↑</div>
             </div>
         </div>
+
+        <!-- Overlay: CONQUISTA DESBLOQUEADA -->
+        <div id="achievement-unlocked-overlay" class="quest-cleared-overlay">
+            <div class="quest-cleared-content">
+                <div class="quest-cleared-check" style="color: var(--neon-gold); filter: drop-shadow(0 0 20px var(--neon-gold));">🏆</div>
+                <div class="quest-cleared-title" style="color: var(--neon-gold); text-shadow: 0 0 20px rgba(251,191,36,0.5);">CONQUISTA REVELADA!</div>
+                <div class="quest-cleared-rewards" id="achievement-unlocked-title" style="font-size: 16px; color: #fff; margin-bottom: 8px;">Conquista</div>
+                <div class="quest-cleared-attr" id="achievement-unlocked-rewards" style="color: var(--text-muted);">+100 Ouro</div>
+            </div>
+        </div>
+
 
         <!-- Overlay: PENALIDADE -->
         <div id="penalty-overlay" class="penalty-overlay">
