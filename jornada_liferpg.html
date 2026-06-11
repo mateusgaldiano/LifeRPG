@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A história dos bastidores e processo interativo de desenvolvimento do LifeRPG OS.">
+    <meta name="description" content="A história dos bastidores e aprendizados do desenvolvimento interativo do LifeRPG OS.">
     <title>Bastidores do LifeRPG OS — The System</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,14 +62,12 @@
             min-height: 100vh;
         }
 
-        /* Container Principal */
         .container {
             max-width: 1100px;
             margin: 0 auto;
             padding: 40px 20px 80px 20px;
         }
 
-        /* Cabeçalho */
         header {
             text-align: center;
             margin-bottom: 50px;
@@ -114,7 +112,6 @@
             font-weight: 300;
         }
 
-        /* Navegação Interativa (Menu de Abas) */
         nav.nav-tabs {
             display: flex;
             background: var(--bg-panel);
@@ -163,7 +160,6 @@
             box-shadow: 0 0 20px var(--glow-blue);
         }
 
-        /* Seções de Conteúdo */
         .tab-content {
             display: none;
             animation: fadeIn 0.4s ease-out forwards;
@@ -178,7 +174,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Cards e Layouts */
         .glass-card {
             background: var(--bg-panel);
             border: 1px solid var(--border-glass);
@@ -236,38 +231,14 @@
             margin-bottom: 20px;
         }
 
-        /* Listas e Destaques */
-        ul.custom-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        ul.custom-list li {
-            position: relative;
-            padding-left: 24px;
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-        }
-
-        ul.custom-list li::before {
-            content: '⚡';
-            position: absolute;
-            left: 0;
-            top: 2px;
-            color: var(--neon-blue);
-            font-size: 0.9rem;
-        }
-
-        /* Tabelas */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
             border-radius: var(--radius-md);
             border: 1px solid var(--border-glass);
             background: rgba(0, 0, 0, 0.2);
-            margin-top: 15px;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         table {
@@ -293,6 +264,7 @@
             padding: 14px 18px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             color: var(--text-secondary);
+            vertical-align: top;
         }
 
         tr:last-child td {
@@ -304,17 +276,18 @@
             color: #fff;
         }
 
-        /* Badges */
         .badge {
             display: inline-block;
             font-family: var(--font-title);
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 700;
             padding: 3px 8px;
             border-radius: 4px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border: 1px solid transparent;
+            text-align: center;
+            white-space: nowrap;
         }
 
         .badge-critical {
@@ -345,7 +318,6 @@
             text-shadow: 0 0 10px var(--glow-blue);
         }
 
-        /* Código Diffs */
         .code-wrap {
             margin-top: 15px;
             border-radius: var(--radius-sm);
@@ -389,7 +361,6 @@
             border-left: 2px solid var(--neon-green);
         }
 
-        /* Área de Testes Interativa (Audit Simulator) */
         .simulator-box {
             background: rgba(0, 0, 0, 0.3);
             border: 1px dashed rgba(0, 242, 254, 0.3);
@@ -451,7 +422,6 @@
             text-align: left;
         }
 
-        /* Accordion */
         .accordion-header {
             background: rgba(255,255,255,0.02);
             border: 1px solid var(--border-glass);
@@ -480,7 +450,6 @@
             background: rgba(0,0,0,0.1);
         }
 
-        /* Métricas cards */
         .metric-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -556,16 +525,16 @@
 
             <div class="metric-grid">
                 <div class="metric-card">
-                    <div class="metric-val" id="metric-hours">~20h</div>
-                    <div class="metric-lbl">Desenvolvimento</div>
+                    <div class="metric-val">30h</div>
+                    <div class="metric-lbl">Desenvolvimento Ativo</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-val" id="metric-lines">4.200+</div>
+                    <div class="metric-val">4.200+</div>
                     <div class="metric-lbl">Linhas de Código</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-val" id="metric-commits">24</div>
-                    <div class="metric-lbl">Commits de Release</div>
+                    <div class="metric-val">42</div>
+                    <div class="metric-lbl">Releases Publicadas</div>
                 </div>
             </div>
 
@@ -580,10 +549,64 @@
         <div id="tab-personas" class="tab-content">
             <div class="glass-card">
                 <h2 class="card-title">🎭 Metodologia de Personas Técnicas</h2>
-                <p class="card-desc">A cada milestone ou release da versão, em vez de continuarmos programando indefinidamente, parávamos e invocávamos auditorias. Pedíamos que as IAs incorporassem especialistas do mundo real. Veja a simulação interativa abaixo:</p>
+                <p class="card-desc">A cada milestone do aplicativo, em vez de continuarmos programando indefinidamente, solicitávamos auditorias. As IAs assumiam "personas" do mundo real e geravam relatórios e tabelas estéticas com propostas de melhoria de acordo com suas especialidades.</p>
                 
+                <h3 style="color:#fff; margin-top:20px; font-family:var(--font-title); font-size:1.1rem;">📋 Relatório Consolidado de Melhorias por Persona</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Persona</th>
+                                <th>Melhoria Proposta (O que citou)</th>
+                                <th>Solução Implementada (Como resolvemos)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>🕹️ Game Designer (GDD)</strong></td>
+                                <td>
+                                    1. A escala de XP de Skill era estática e desmotivadora.<br>
+                                    2. O streak de dias seguidos dava apenas 3.5% de bônus, sendo imperceptível.<br>
+                                    3. Falta de feedback real na aplicação de penalidades.
+                                </td>
+                                <td>
+                                    1. Criada curva de XP de skill dinâmica e progressiva.<br>
+                                    2. Implementados 4 Tiers de Streak (Bronze, Prata, Ouro e Ciano) com bônus de +10% a +50% XP/Gold.<br>
+                                    3. Skills vinculadas a falhas piscam em vermelho no HUD ao sofrer decréscimo.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>📱 Mobile UI Reviewer</strong></td>
+                                <td>
+                                    1. Canvas do Radar Chart cortava nas laterais de smartphones menores.<br>
+                                    2. Botões de ação com alvos de toque (touch targets) muito pequenos (abaixo de 40px).<br>
+                                    3. Inputs de chat causavam zoom óptico automático indesejado no Safari (iOS).
+                                </td>
+                                <td>
+                                    1. Redimensionado o Canvas do Radar Chart para 260px com espaçamentos adaptados.<br>
+                                    2. Redimensionado botões de check de quests e ícones para 44px (diretiva WCAG).<br>
+                                    3. Fixado fontes de inputs do modal e chat para 16px no CSS, impedindo zoom do iOS.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>☁️ Arquiteto Cloud & Infra</strong></td>
+                                <td>
+                                    1. Backup e redefinição local feitos com caixas de alerta feias do sistema (`alert()`).<br>
+                                    2. Cálculo de fuso horário vulnerável a viagens de usuários (troca de horas).<br>
+                                    3. Ausência de save persistente multi-dispositivo.
+                                </td>
+                                <td>
+                                    1. Implementado export nativo em JSON (Blob) e toasts personalizados do sistema.<br>
+                                    2. Substituído métodos de data pela função customizada `localDateStr()`.<br>
+                                    3. Criado esqueleto e conexões com Firebase Firestore/Auth prontas em `firebase-config.js`.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
                 <div class="simulator-box">
-                    <label for="persona-select" style="font-size:0.8rem; font-family:var(--font-title); color:var(--neon-blue); letter-spacing:1px; display:block; margin-bottom:8px;">SELECIONE UMA PERSONA TÉCNICA</label>
+                    <label for="persona-select" style="font-size:0.8rem; font-family:var(--font-title); color:var(--neon-blue); letter-spacing:1px; display:block; margin-bottom:8px;">SELECIONE UMA PERSONA TÉCNICA E SIMULE A CHAMADA NO CHAT</label>
                     <select id="persona-select" class="select-field">
                         <option value="gdd">🕹️ Game Designer (Auditoria de RPG & Mecânicas)</option>
                         <option value="ui">📱 Mobile UI Reviewer (Acessibilidade & Mobile First)</option>
@@ -601,11 +624,64 @@
         <!-- ABA 3: MURAL DE BUGS -->
         <div id="tab-mural" class="tab-content">
             <div class="glass-card">
-                <h2 class="card-title">🚨 O Mural de Combate a Bugs</h2>
-                <p class="card-desc">Durante a fusão de scripts de mais de 4.000 linhas, encaramos problemas graves de encoding e escopo de código. Clique nas seções abaixo para ver a autópsia dos erros e como os solucionamos:</p>
+                <h2 class="card-title">🚨 O Registro Geral de Bugs e Incidentes</h2>
+                <p class="card-desc">Durante o intercâmbio de código e deploys rápidos, enfrentamos e mitigamos diversos bugs. Veja o consolidado dos incidentes de desenvolvimento:</p>
                 
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Incidente / Bug</th>
+                                <th>Severidade</th>
+                                <th>Esforço</th>
+                                <th>Cluster / Área</th>
+                                <th>Causa Raiz & Solução Aplicada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Emoji/Unicode Corrompido</strong></td>
+                                <td><span class="badge badge-critical">Crítico</span></td>
+                                <td><span class="badge badge-low">Pequeno</span></td>
+                                <td>Encoding / Git</td>
+                                <td>Transferência de arquivos fonte corrompeu bytes UTF-8 de emojis (como `🛏️` e `⚡`). Solucionado com script local `fix_encoding.js` e sanitizador automático nos métodos de load do LocalStorage.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Chave Ausente em switchTavernaTab</strong></td>
+                                <td><span class="badge badge-critical">Crítico</span></td>
+                                <td><span class="badge badge-low">Pequeno</span></td>
+                                <td>Sintaxe JS</td>
+                                <td>Durante merge da aba de skins, a IA apagou a chave `}` do bloco `else`. Travava o parse do arquivo todo (tela branca). Resolvido via terminal do Antigravity usando analisador de sintaxe (`node -c`).</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Dungeon ativa + Nenhuma Missão</strong></td>
+                                <td><span class="badge badge-critical">Crítico</span></td>
+                                <td><span class="badge badge-low">Pequeno</span></td>
+                                <td>Interface / UX</td>
+                                <td>O fallback de "NENHUMA MISSÃO ATIVA" aparecia mesmo se houvesse uma Dungeon roxo-neon em andamento. Corrigido adicionando verificação lógica no condicional do renderer.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Header Mobile Desalinhado</strong></td>
+                                <td><span class="badge badge-medium">Médio</span></td>
+                                <td><span class="badge badge-low">Pequeno</span></td>
+                                <td>Layout CSS</td>
+                                <td>O cabeçalho `.brand-header` com `sticky` sumia em determinadas rolagens do mobile. Alterado para `position: fixed` no CSS com body scroll e compensação de padding.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bloqueio de CORS na API Claude</strong></td>
+                                <td><span class="badge badge-medium">Médio</span></td>
+                                <td><span class="badge badge-medium">Médio</span></td>
+                                <td>IA / Chamada API</td>
+                                <td>Requisições diretas de chat eram barradas pelas políticas do navegador. Criado campos seguros para o usuário definir chave de API e Proxy URL customizada nas Configurações.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="card-desc" style="margin-top: 30px;">Abaixo, detalhamos a autópsia técnica de dois bugs que serviram como grandes lições:</p>
+
                 <div class="accordion-header" onclick="toggleAccordion('acc-encoding')">
-                    <span>👾 Erro A: A Guerra das Codificações (Encoding UTF-8 vs ANSI)</span>
+                    <span>👾 Autópsia A: A Guerra das Codificações (Encoding UTF-8 vs ANSI)</span>
                     <span id="indicator-acc-encoding">▼</span>
                 </div>
                 <div class="accordion-content" id="acc-encoding">
@@ -624,7 +700,7 @@ function cleanObjectEncoding(obj) {
                 </div>
 
                 <div class="accordion-header" style="margin-top:10px;" onclick="toggleAccordion('acc-syntax')">
-                    <span>🔑 Erro B: O Caso da Chave Desaparecida (Syntax Errors)</span>
+                    <span>🔑 Autópsia B: O Caso da Chave Desaparecida (Syntax Errors)</span>
                     <span id="indicator-acc-syntax">▼</span>
                 </div>
                 <div class="accordion-content" id="acc-syntax">
@@ -638,54 +714,47 @@ SyntaxError: Unexpected end of input
 # Feito a correção da chave de fechamento ausente no switchTavernaTab!</code></pre>
                     </div>
                 </div>
-
-                <div class="accordion-header" style="margin-top:10px;" onclick="toggleAccordion('acc-cors')">
-                    <span>🌐 Erro C: O Bloqueio de CORS na Chamada da API</span>
-                    <span id="indicator-acc-cors">▼</span>
-                </div>
-                <div class="accordion-content" id="acc-cors">
-                    <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px;"><strong>Sintoma:</strong> O navegador rejeitava as requisições diretas de chat da aba Mentor para o servidor da Anthropic devido a políticas de segurança CORS.</p>
-                    <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px;"><strong>Solução:</strong> Criamos uma arquitetura onde o usuário pode customizar uma <strong>Proxy URL</strong> própria nas configurações que contorna o cabeçalho de CORS nativamente, permitindo rodar IA direto de páginas estáticas hospedadas (GitHub Pages).</p>
-                </div>
             </div>
         </div>
 
         <!-- ABA 4: GIT & DEPLOY -->
         <div id="tab-git" class="tab-content">
             <div class="glass-card">
-                <h2 class="card-title">🐙 Domínio do Git e GitHub Pages</h2>
-                <p class="card-desc">Todo o projeto foi estruturado utilizando boas práticas de desenvolvimento ágil e DevOps, com deploy contínuo integrado:</p>
+                <h2 class="card-title">🐙 A Evolução do Workflow: Do Upload Manual ao Git Automatizado</h2>
                 
-                <div class="grid-2">
-                    <div>
-                        <h3 style="color:var(--neon-blue); margin-bottom:10px;">📂 Deploy em Dois Estágios</h3>
-                        <p style="font-size:0.9rem; color:var(--text-secondary);">
-                            O código foi separado em dois remotes do GitHub no mesmo repositório físico local. As correções eram testadas e validadas ao vivo no celular abrindo a URL temporária do **GitHub Pages** de testes. Só quando aprovadas pelas personas de IA, eram mescladas e commitadas para o link oficial de produção.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 style="color:var(--neon-green); margin-bottom:10px;">⚡ Antigravity como Executor Git</h3>
-                        <p style="font-size:0.9rem; color:var(--text-secondary);">
-                            Em vez do usuário precisar digitar dezenas de comandos no prompt de comando, ele instruía o Antigravity de forma declarativa (ex: <i>"Copie os arquivos do dev para a main e faça o commit da v4"</i>). Eu processava e realizava os comandos Git diretamente nas pastas corretas.
-                        </p>
-                    </div>
+                <p class="card-desc">No início do desenvolvimento, o workflow apresentava bastante atrito humano. O Antigravity realizava as edições e exibia instruções textuais pedindo para que <strong>você realizasse manualmente o upload dos arquivos</strong> para o GitHub no seu computador.</p>
+                
+                <div class="simulator-box" style="border-color:var(--neon-gold); background:rgba(251,191,36,0.03); margin-bottom:25px;">
+                    <h3 style="color:var(--neon-gold); font-family:var(--font-title); font-size:1rem; margin-bottom:8px;">💡 O Aprendizado de Capacidade do Terminal</h3>
+                    <p style="font-size:0.9rem; color:var(--text-secondary);">
+                        Em uma das interações, você percebeu em meus logs de sistema que havia uma ferramenta de terminal chamada **`run_command`** e sinalizações de erro do tipo "git fail" quando o git local não encontrava os remotes no início da sincronização.
+                    </p>
+                    <p style="font-size:0.9rem; color:var(--text-secondary); margin-top:10px;">
+                        Curioso, você me perguntou no chat quais eram as minhas capacidades reais em rodar comandos na sua máquina. Ao explicar que eu podia executar comandos PowerShell diretamente sob a sua aprovação, você pediu: <strong>"A partir de agora, integre tudo de forma automática. Faça os commits e pushes você mesmo."</strong>
+                    </p>
                 </div>
 
-                <div class="code-wrap" style="margin-top:25px;">
-                    <div class="code-header"><span>Pipeline de Deploy no terminal local</span><span>Git Bash</span></div>
-                    <pre><code># Fluxo executado pelo Antigravity localmente para publicar a v4
-$ git checkout main
-$ git checkout dev -- app.js index.html styles.css sw.js
-$ git commit -m "v4 - layout mobile fixo, biblioteca de hábitos, achievements"
-$ git push origin main:main
-# Deploy concluído na produção oficial do GitHub Pages!</code></pre>
+                <p class="card-desc">Este momento transformou nosso workflow. Nós aprendemos juntos a usar as capacidades do Git diretamente integradas na IA:</p>
+                
+                <ul class="custom-list" style="margin-bottom:25px;">
+                    <li><strong>Commits estruturados:</strong> O Antigravity passou a fazer o stage (`git add .`) e commitar com mensagens de padrão semântico detalhando as melhorias aplicadas.</li>
+                    <li><strong>Gerenciamento de Remotes:</strong> Criamos o branch `dev` enviando deploys rápidos para o remote `dev-origin` (GitHub Pages de testes), e controlamos o branch `main` com remessa direta para o `origin` (deploy de produção).</li>
+                    <li><strong>Velocidade de Entrega:</strong> Em vez de gastar minutos arrastando arquivos para o GitHub, os pushes de testes passaram a ser concluídos em menos de 10 segundos, direto do chat da IA para a web!</li>
+                </ul>
+
+                <div class="code-wrap">
+                    <div class="code-header"><span>Pipeline de Deploy automatizado pela IA</span><span>Git PowerShell</span></div>
+                    <pre><code># Fluxo executado autonomamente pelo Antigravity local a seu pedido
+$ git add app.js index.html styles.css
+$ git commit -m "feat: select habit type (daily/side) and add remove button to quest cards"
+$ git push dev-origin dev:main
+# Pushed to dev remote - Deploy ativo e testável no Pages em 5s!</code></pre>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Sistema de Troca de Abas
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -694,7 +763,6 @@ $ git push origin main:main
             document.getElementById(`tab-${tabId}`).classList.add('active');
         }
 
-        // Sistema Accordion do Mural de Bugs
         function toggleAccordion(accId) {
             const content = document.getElementById(accId);
             const indicator = document.getElementById(`indicator-${accId}`);
@@ -708,7 +776,6 @@ $ git push origin main:main
             }
         }
 
-        // Simulador Interativo de Personas e Backlogs
         function runAudit() {
             const persona = document.getElementById('persona-select').value;
             const consoleBox = document.getElementById('console-output');
