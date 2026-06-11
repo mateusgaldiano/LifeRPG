@@ -1224,6 +1224,7 @@ window.switchTavernaTab = function(mode) {
         panelShop.style.display = 'none';
         panelInventory.style.display = 'block';
         renderInventory();
+    }
 };
 
 window.confirmRemoveQuest = function(id, title) {
