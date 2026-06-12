@@ -1,0 +1,31 @@
+# Pendências Restantes — LifeRPG OS
+
+Estas são as únicas pendências que ainda não foram concluídas no projeto.
+
+---
+
+## 🔴 CRÍTICO
+1. Criar Projeto Firebase e Adicionar Chaves (Ação do Usuário)
+   - O código-fonte de sincronização em nuvem e offline fallback já está pronto.
+   - Requer que o usuário crie um projeto no Firebase Console, habilite Firestore e Auth, e adicione as credenciais em 'firebase-config.js'.
+
+---
+
+## 🟡 MÉDIO
+2. Push Notifications Reais (OS/Web Push)
+   - Envio de notificações de lembrete com o PWA fechado.
+   - Requer Service Worker + Web Push API (Firebase Cloud Messaging ou servidor próprio para chaves VAPID).
+
+3. Ranking Global entre Amigos
+   - Aba de Leaderboard/Guilda com pontuação de amigos (XP/Level semanal ou total).
+   - Bloqueado por: Cloud Save (Firebase Firestore).
+
+---
+
+## 🟢 BAIXO
+4. Duelos PvP Assíncronos
+   - Sistema de desafios/apostas de ouro para streaks de 7 dias perfeitos com amigos.
+   - Bloqueado por: Cloud Save.
+
+5. Auditoria Visual ao Vivo
+   - Testar e validar visualmente espaçamentos, animações e contraste WCAG diretamente em celulares físicos com viewports de 375px a 430px.

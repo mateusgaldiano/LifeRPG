@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Preview interativo e comparativo dos temas do LifeRPG OS: Papiro Completo vs Cores Quentes.">
+    <title>LifeRPG — Preview de Temas</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-page: #080400;
+            --text-page-title: #c8a96e;
+            --text-page-subtitle: #8b6a3e;
+            
+            /* Cores Comuns aos Temas */
+            --theme-bg: #0f0a04;
+            --theme-card: #160e04;
+            --theme-border: rgba(92, 61, 30, 0.4);
+            --theme-primary: #c8a96e;   /* Âmbar/Papiro */
+            --theme-secondary: #8b6a3e; /* Ouro Envelhecido */
+            --theme-green: #4a7c59;     /* Concluído */
+            --theme-red: #8b321e;       /* Remover */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: #f5f0eb;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(200, 169, 110, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(139, 106, 62, 0.03) 0px, transparent 50%);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--text-page-title);
+            text-shadow: 0 0 15px rgba(200, 169, 110, 0.3);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-size: 1rem;
+            color: var(--text-page-subtitle);
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .actions-bar {
+            margin-bottom: 30px;
+        }
+
+        .btn-reset {
+            background: rgba(200, 169, 110, 0.08);
+            border: 1px solid rgba(200, 169, 110, 0.3);
+            color: var(--text-page-title);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset:hover {
+            background: var(--text-page-title);
+            color: #000;
+            box-shadow: 0 0 15px rgba(200, 169, 110, 0.4);
+            transform: translateY(-1px);
+        }
+
+        /* Container Comparativo */
+        .comparison-container {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .mockup-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--text-page-title);
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        /* Mockup de Celular */
+        .phone-mockup {
+            width: 300px;
+            height: 580px;
+            background: #000;
+            border-radius: 36px;
+            padding: 10px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 0 4px rgba(92, 61, 30, 0.15);
+            position: relative;
+            border: 4px solid #1c150c;
+        }
+
+        /* Tela do Smartphone */
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background-color: var(--theme-bg);
+            border-radius: 26px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Detalhe da Câmera / Notch */
+        .phone-notch {
+            position: absolute;
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 18px;
+            background: #000;
+            border-radius: 10px;
+            z-index: 100;
+        }
+
+        /* HEADER DO APP */
+        .app-header {
+            padding: 24px 14px 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--theme-border);
+            position: relative;
+            z-index: 10;
+        }
+
+        .app-brand {
+            font-size: 0.75rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: var(--theme-primary);
+        }
+
+        .settings-btn {
+            font-size: 0.9rem;
+            color: var(--theme-secondary);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .settings-btn:hover {
+            transform: rotate(30deg);
+        }
+
+        /* PLAYER CARD */
+        .player-card {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--theme-border);
+            background: rgba(22, 14, 4, 0.3);
+        }
+
+        .player-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .player-name {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--theme-primary);
+            letter-spacing: 1px;
+        }
+
+        .player-rank {
+            font-size: 0.65rem;
+            color: var(--theme-secondary);
+            border: 1px solid var(--theme-border);
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .player-level {
+            font-size: 0.65rem;
+            color: var(--theme-secondary);
+        }
+
+        /* Barra de XP */
+        .xp-bar-container {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            border: 1px solid rgba(92, 61, 30, 0.2);
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            background: var(--theme-primary);
+            width: 35%;
+            transition: width 0.4s ease;
+        }
+
+        /* Chips do HUD */
+        .hud-chips {
+            display: flex;
+            gap: 8px;
+        }
+
+        .hud-chip {
+            flex: 1;
+            padding: 4px 6px;
+            background: rgba(22, 14, 4, 0.7);
+            border: 1px solid var(--theme-border);
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.65rem;
+        }
+
+        .hud-chip-lbl {
+            color: var(--theme-secondary);
+        }
+
+        .hud-chip-val {
+            color: var(--theme-primary);
+            font-weight: 700;
+        }
+
+        /* CONTEÚDO PRINCIPAL - QUESTS */
+        .quest-area {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .quest-area::-webkit-scrollbar {
+            display: none;
+        }
+
+        .quest-area-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--theme-secondary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Card de Quest */
+        .quest-card {
+            background-color: var(--theme-card);
+            border: 1px solid var(--theme-border);
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .quest-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            border: 1px solid var(--theme-border);
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--theme-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quest-btn-del:hover {
+            background: var(--theme-red);
+            border-color: var(--theme-red);
+            color: #fff;
+        }
+
+        .quest-btn-check:hover {
+            background: var(--theme-green);
+            border-color: var(--theme-green);
+            color: #fff;
+        }
+
+        .quest-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .quest-title {
+            font-size: 0.72rem;
+            color: #f5f0eb;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .quest-subtitle {
+            font-size: 0.6rem;
+            color: var(--theme-secondary);
+        }
+
+        /* Quest Concluída */
+        .quest-card.completed {
+            opacity: 0.45;
+        }
+
+        .quest-card.completed .quest-title {
+            text-decoration: line-through;
+            color: var(--theme-secondary);
+        }
+
+        .quest-card.completed .quest-btn-check {
+            background: var(--theme-green);
+            border-color: var(--theme-green);
+            color: #fff;
+        }
+
+        /* Exclusão temporária animada */
+        .quest-card.deleted {
+            opacity: 0;
+            transform: scale(0.9) translateY(-10px);
+            pointer-events: none;
+        }
+
+        /* NAVEGAÇÃO INFERIOR */
+        .app-nav {
+            border-top: 1px solid var(--theme-border);
+            padding: 8px 6px;
+            display: flex;
+            justify-content: space-around;
+            background: rgba(15, 10, 4, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 0.55rem;
+            color: var(--theme-secondary);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: color 0.2s;
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            color: var(--theme-primary);
+        }
+
+        .nav-icon {
+            font-size: 0.85rem;
+        }
+
+        /* =========================================
+           ESTILOS ESPECÍFICOS DO MOCKUP 1: PAPIRO
+           ========================================= */
+        #mockup-papiro .phone-screen {
+            border: 2px solid #5c3d1e;
+        }
+        
+        #mockup-papiro .app-brand,
+        #mockup-papiro .player-name,
+        #mockup-papiro .quest-area-title,
+        #mockup-papiro .quest-title {
+            font-family: Georgia, serif;
+        }
+
+        #mockup-papiro .player-rank,
+        #mockup-papiro .player-level,
+        #mockup-papiro .hud-chip,
+        #mockup-papiro .quest-subtitle,
+        #mockup-papiro .nav-item {
+            font-family: monospace;
+        }
+
+        #mockup-papiro .quest-card {
+            border: 2px solid #5c3d1e;
+            border-radius: 0; /* Textura quadrada envelhecida */
+        }
+        
+        #mockup-papiro .xp-bar-container {
+            border: 1px solid #5c3d1e;
+            border-radius: 0;
+        }
+
+        #mockup-papiro .hud-chip {
+            border: 1px solid #5c3d1e;
+            border-radius: 0;
+        }
+
+        #mockup-papiro .quest-btn {
+            border: 1px solid #5c3d1e;
+            border-radius: 0;
+        }
+
+        /* =========================================
+           ESTILOS ESPECÍFICOS DO MOCKUP 2: QUENTES
+           ========================================= */
+        #mockup-quentes .app-brand,
+        #mockup-quentes .player-name,
+        #mockup-quentes .quest-area-title,
+        #mockup-quentes .quest-title {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        #mockup-quentes .player-rank,
+        #mockup-quentes .player-level,
+        #mockup-quentes .hud-chip,
+        #mockup-quentes .quest-subtitle,
+        #mockup-quentes .nav-item {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        #mockup-quentes .phone-screen {
+            box-shadow: inset 0 0 20px rgba(200, 169, 110, 0.08);
+        }
+
+        #mockup-quentes .quest-card {
+            box-shadow: 0 0 12px rgba(200, 169, 110, 0.1);
+        }
+
+        #mockup-quentes .quest-card:hover {
+            box-shadow: 0 0 15px rgba(200, 169, 110, 0.2);
+            border-color: var(--theme-primary);
+        }
+
+        #mockup-quentes .xp-bar-fill {
+            box-shadow: 0 0 8px rgba(200, 169, 110, 0.5);
+        }
+
+        #mockup-quentes .hud-chip {
+            box-shadow: 0 0 8px rgba(200, 169, 110, 0.05);
+        }
+
+        #mockup-quentes .quest-btn-check:hover {
+            box-shadow: 0 0 10px rgba(74, 124, 89, 0.4);
+        }
+
+        #mockup-quentes .quest-btn-del:hover {
+            box-shadow: 0 0 10px rgba(139, 50, 30, 0.4);
+        }
+
+        /* Toast explicativo de interação */
+        .interaction-hint {
+            margin-top: 25px;
+            font-size: 0.8rem;
+            color: var(--text-page-subtitle);
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.5;
+            background: rgba(22, 14, 4, 0.3);
+            border: 1px dashed rgba(200, 169, 110, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>LifeRPG — Preview de Temas</h1>
+        <p>Estudo de caso visual: Tema Papiro Completo vs Cores Quentes</p>
+    </header>
+
+    <div class="actions-bar">
+        <button class="btn-reset" onclick="resetMockups()">RESETAR SIMULADORES</button>
+    </div>
+
+    <main class="comparison-container">
+        
+        <!-- MOCKUP 1: PAPIRO COMPLETO -->
+        <div class="mockup-wrapper">
+            <div class="phone-mockup" id="mockup-papiro">
+                <div class="phone-notch"></div>
+                <div class="phone-screen">
+                    
+                    <!-- Header -->
+                    <div class="app-header">
+                        <div class="app-brand">⚡ THE SYSTEM</div>
+                        <div class="settings-btn" title="Configurações">⚙️</div>
+                    </div>
+
+                    <!-- Player Card -->
+                    <div class="player-card">
+                        <div class="player-info-row">
+                            <span class="player-name">MATEUS</span>
+                            <span class="player-rank">RANK E</span>
+                        </div>
+                        <div class="player-info-row" style="margin-bottom: 8px;">
+                            <span class="player-level">Nível <span class="lvl-val">3</span></span>
+                            <span class="player-level" style="color: var(--theme-secondary);">35% XP</span>
+                        </div>
+                        <div class="xp-bar-container">
+                            <div class="xp-bar-fill"></div>
+                        </div>
+                        <div class="hud-chips">
+                            <div class="hud-chip">
+                                <span class="hud-chip-lbl">Ouro</span>
+                                <span class="hud-chip-val gold-val">108</span>
+                            </div>
+                            <div class="hud-chip">
+                                <span class="hud-chip-lbl">Streak</span>
+                                <span class="hud-chip-val streak-val">2 · x1.10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quests -->
+                    <div class="quest-area">
+                        <div class="quest-area-title">Missões Diárias</div>
+                        
+                        <!-- Quest 1 -->
+                        <div class="quest-card completed" id="p-quest-1">
+                            <div class="quest-btn quest-btn-del" onclick="deleteQuest('p-quest-1')">✕</div>
+                            <div class="quest-content">
+                                <span class="quest-title">🛏️ Arrumar a cama</span>
+                                <span class="quest-subtitle">Rotina · +10 XP</span>
+                            </div>
+                            <div class="quest-btn quest-btn-check" onclick="toggleQuest('p-quest-1', 10)">✓</div>
+                        </div>
+
+                        <!-- Quest 2 -->
+                        <div class="quest-card" id="p-quest-2">
+                            <div class="quest-btn quest-btn-del" onclick="deleteQuest('p-quest-2')">✕</div>
+                            <div class="quest-content">
+                                <span class="quest-title">🧘 Meditar por 3 minutos</span>
+                                <span class="quest-subtitle">Mente · +15 XP</span>
+                            </div>
+                            <div class="quest-btn quest-btn-check" onclick="toggleQuest('p-quest-2', 15)">✓</div>
+                        </div>
+
+                        <!-- Quest 3 -->
+                        <div class="quest-card" id="p-quest-3">
+                            <div class="quest-btn quest-btn-del" onclick="deleteQuest('p-quest-3')">✕</div>
+                            <div class="quest-content">
+                                <span class="quest-title">💧 Beber Água (8 copos)</span>
+                                <span class="quest-subtitle">Saúde · <span class="water-count">0/8</span> copos</span>
+                            </div>
+                            <div class="quest-btn quest-btn-check" onclick="drinkWater('p-quest-3', 20)">✓</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Navigation Inferior -->
+                    <div class="app-nav">
+                        <div class="nav-item active">
+                            <span class="nav-icon">⚔️</span>
+                            <span>MISSÕES</span>
+                        </div>
+                        <div class="nav-item">
+                            <span class="nav-icon">📊</span>
+                            <span>VISÃO G.</span>
+                        </div>
+                        <div class="nav-item">
+                            <span class="nav-icon">🍺</span>
+                            <span>TAVERNA</span>
+                        </div>
+                        <div class="nav-item">
+                            <span class="nav-icon">🏆</span>
+                            <span>TROFÉUS</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="theme-title">Papiro Completo</div>
+        </div>
+
+        <!-- MOCKUP 2: CORES QUENTES -->
+        <div class="mockup-wrapper">
+            <div class="phone-mockup" id="mockup-quentes">
+                <div class="phone-notch"></div>
+                <div class="phone-screen">
+                    
+                    <!-- Header -->
+                    <div class="app-header">
+                        <div class="app-brand">⚡ THE SYSTEM</div>
+                        <div class="settings-btn" title="Configurações">⚙️</div>
+                    </div>
+
+                    <!-- Player Card -->
+                    <div class="player-card">
+                        <div class="player-info-row">
+                            <span class="player-name">MATEUS</span>
+                            <span class="player-rank">RANK E</span>
+                        </div>
+                        <div class="player-info-row" style="margin-bottom: 8px;">
+                            <span class="player-level">Nível <span class="lvl-val">3</span></span>
+                            <span class="player-level" style="color: var(--theme-secondary);">35% XP</span>
+                        </div>
+                        <div class="xp-bar-container">
+                            <div class="xp-bar-fill"></div>
+                        </div>
+                        <div class="hud-chips">
+                            <div class="hud-chip">
+                                <span class="hud-chip-lbl">Ouro</span>
+                                <span class="hud-chip-val gold-val">108</span>
+                            </div>
+                            <div class="hud-chip">
+                                <span class="hud-chip-lbl">Streak</span>
+                                <span class="hud-chip-val streak-val">2 · x1.10</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quests -->
+                    <div class="quest-area">
+                        <div class="quest-area-title">Missões Diárias</div>
+                        
+                        <!-- Quest 1 -->
+                        <div class="quest-card completed" id="q-quest-1">
+                            <div class="quest-btn quest-btn-del" onclick="deleteQuest('q-quest-1')">✕</div>
+                            <div class="quest-content">
+                                <span class="quest-title">🛏️ Arrumar a cama</span>
+                                <span class="quest-subtitle">Rotina · +10 XP</span>
+                            </div>
+                            <div class="quest-btn quest-btn-check" onclick="toggleQuest('q-quest-1', 10)">✓</div>
+                        </div>
+
+                        <!-- Quest 2 -->
+                        <div class="quest-card" id="q-quest-2">
+                            <div class="quest-btn quest-btn-del" onclick="deleteQuest('q-quest-2')">✕</div>
+                            <div class="quest-content">
+                                <span class="quest-title">🧘 Meditar por 3 minutos</span>
+                                <span class="quest-subtitle">Mente · +15 XP</span>
+                            </div>
+                            <div class="quest-btn quest-btn-check" onclick="toggleQuest('q-quest-2', 15)">✓</div>
+                        </div>
+
+                        <!-- Quest 3 -->
+                        <div class="quest-card" id="q-quest-3">
+                            <div class="quest-btn quest-btn-del" onclick="deleteQuest('q-quest-3')">✕</div>
+                            <div class="quest-content">
+                                <span class="quest-title">💧 Beber Água (8 copos)</span>
+                                <span class="quest-subtitle">Saúde · <span class="water-count">0/8</span> copos</span>
+                            </div>
+                            <div class="quest-btn quest-btn-check" onclick="drinkWater('q-quest-3', 20)">✓</div>
+                        </div>
+
+                    </div>
+
+                    <!-- Navigation Inferior -->
+                    <div class="app-nav">
+                        <div class="nav-item active">
+                            <span class="nav-icon">⚔️</span>
+                            <span>MISSÕES</span>
+                        </div>
+                        <div class="nav-item">
+                            <span class="nav-icon">📊</span>
+                            <span>VISÃO G.</span>
+                        </div>
+                        <div class="nav-item">
+                            <span class="nav-icon">🍺</span>
+                            <span>TAVERNA</span>
+                        </div>
+                        <div class="nav-item">
+                            <span class="nav-icon">🏆</span>
+                            <span>TROFÉUS</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="theme-title">Cores Quentes</div>
+        </div>
+
+    </main>
+
+    <div class="interaction-hint">
+        💡 <strong>Dica Interativa:</strong> Clique nos botões <strong>✓</strong> para concluir missões, 
+        no <strong>✕</strong> para removê-las (exclusão com animação) ou beba copos de água na quest de hidratação. 
+        Os simuladores de XP, Ouro e Nível vão atualizar em tempo real dentro do respectivo mockup de forma independente!
+    </div>
+
+    <script>
+        // Objetos para rastrear o estado simulado de cada mockup de celular de forma isolada
+        const state = {
+            papiro: {
+                level: 3,
+                xp: 35,
+                gold: 108,
+                streak: 2,
+                water: 0
+            },
+            quentes: {
+                level: 3,
+                xp: 35,
+                gold: 108,
+                streak: 2,
+                water: 0
+            }
+        };
+
+        // Função para atualizar visualmente o HUD do mockup
+        function updateHUD(mockupType) {
+            const container = mockupType === 'papiro' ? document.getElementById('mockup-papiro') : document.getElementById('mockup-quentes');
+            const data = state[mockupType];
+            
+            container.querySelector('.lvl-val').innerText = data.level;
+            container.querySelector('.xp-bar-fill').style.width = data.xp + '%';
+            container.querySelector('.gold-val').innerText = data.gold;
+            container.querySelector('.streak-val').innerText = `${data.streak} · x${(1 + data.streak * 0.05).toFixed(2)}`;
+            container.querySelector('.player-level:last-child').innerText = `${data.xp}% XP`;
+        }
+
+        // Adiciona XP e Ouro ao completar uma quest
+        function rewardPlayer(mockupType, xpGain) {
+            const data = state[mockupType];
+            data.xp += xpGain;
+            data.gold += Math.floor(xpGain * 0.8);
+            
+            // Lógica de Subida de Nível simulada
+            if (data.xp >= 100) {
+                data.xp -= 100;
+                data.level += 1;
+                data.streak += 1;
+            }
+            updateHUD(mockupType);
+        }
+
+        // Clique no check ✓
+        function toggleQuest(cardId, xpGain) {
+            const card = document.getElementById(cardId);
+            const isCompleted = card.classList.contains('completed');
+            const mockupType = cardId.startsWith('p-') ? 'papiro' : 'quentes';
+
+            if (!isCompleted) {
+                card.classList.add('completed');
+                rewardPlayer(mockupType, xpGain);
+            } else {
+                card.classList.remove('completed');
+                // Desfaz ganho parcial
+                const data = state[mockupType];
+                data.xp = Math.max(0, data.xp - xpGain);
+                data.gold = Math.max(0, data.gold - Math.floor(xpGain * 0.8));
+                updateHUD(mockupType);
+            }
+        }
+
+        // Clique no ✕ para deletar quest com animação
+        function deleteQuest(cardId) {
+            const card = document.getElementById(cardId);
+            card.classList.add('deleted');
+            
+            // Retorna a quest após 5 segundos para que o usuário possa interagir novamente
+            setTimeout(() => {
+                card.classList.remove('deleted');
+            }, 5000);
+        }
+
+        // Incrementador específico para Beber Água
+        function drinkWater(cardId, xpGain) {
+            const card = document.getElementById(cardId);
+            const mockupType = cardId.startsWith('p-') ? 'papiro' : 'quentes';
+            const data = state[mockupType];
+
+            if (card.classList.contains('completed')) {
+                // Se já estiver completada, reseta para 0
+                data.water = 0;
+                card.classList.remove('completed');
+                card.querySelector('.water-count').innerText = "0/8";
+                return;
+            }
+
+            data.water += 1;
+            card.querySelector('.water-count').innerText = `${data.water}/8`;
+
+            if (data.water >= 8) {
+                card.classList.add('completed');
+                rewardPlayer(mockupType, xpGain);
+            } else {
+                // Ganha um pouquinho de ouro por copo d'água
+                data.gold += 1;
+                updateHUD(mockupType);
+            }
+        }
+
+        // Restaurar estado inicial de todos os elementos
+        function resetMockups() {
+            // Reseta dados internos
+            state.papiro = { level: 3, xp: 35, gold: 108, streak: 2, water: 0 };
+            state.quentes = { level: 3, xp: 35, gold: 108, streak: 2, water: 0 };
+
+            // Atualiza HUDs
+            updateHUD('papiro');
+            updateHUD('quentes');
+
+            // Reseta classes e textos de quests
+            const cards = document.querySelectorAll('.quest-card');
+            cards.forEach(card => {
+                card.classList.remove('deleted');
+                if (card.id.endsWith('quest-1')) {
+                    card.classList.add('completed');
+                } else {
+                    card.classList.remove('completed');
+                }
+            });
+
+            const waterLabels = document.querySelectorAll('.water-count');
+            waterLabels.forEach(lbl => lbl.innerText = "0/8");
+        }
+    </script>
+</body>
+</html>
