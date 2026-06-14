@@ -57,8 +57,12 @@ window._currentUserDbId = null; // id (uuid) da linha em 'users', preenchido apÃ
 // AUTH â€” login/logout com Google
 // --------------------------------------------------------------------------
 window.loginWithGoogle = async function() {
+  const redirectUrl = window.location.origin + window.location.pathname;
   const { error } = await supabaseClient.auth.signInWithOAuth({
     provider: 'google',
+    options: {
+      redirectTo: redirectUrl
+    }
   });
   if (error) console.error('[Supabase Auth]', error.message);
 };
