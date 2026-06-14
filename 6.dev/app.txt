@@ -3088,8 +3088,6 @@ function setupSettingsListeners() {
     const modalSettings = document.getElementById('modal-settings');
     const btnOpenSettings = document.getElementById('btn-open-settings');
     const btnCloseSettings = document.getElementById('close-settings-modal');
-    const btnCloseSettingsBottom = document.getElementById('btn-close-settings-bottom');
-
     if (btnOpenSettings && modalSettings && btnCloseSettings) {
         btnOpenSettings.addEventListener('click', () => {
             loadSettingsToUI();
@@ -3100,12 +3098,6 @@ function setupSettingsListeners() {
         btnCloseSettings.addEventListener('click', () => {
             modalSettings.style.display = 'none';
         });
-
-        if (btnCloseSettingsBottom) {
-            btnCloseSettingsBottom.addEventListener('click', () => {
-                modalSettings.style.display = 'none';
-            });
-        }
 
         // Supabase Sync Buttons
         const btnLogin = document.getElementById('btn-cloud-login');
