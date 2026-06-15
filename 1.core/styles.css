@@ -2883,3 +2883,308 @@ body::before {
     }
 }
 
+/* ══════════════════════════════════════════════════════════════════════════
+   RECURSOS SOCIAIS: SUB-ABAS, AMIGOS E MODAL DE PERFIL
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Sub-abas da Área Social */
+.social-sub-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 4px;
+    background: rgba(20, 24, 33, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+}
+
+.sub-tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    font-family: var(--font-hud);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.sub-tab-btn:hover {
+    color: var(--text-light);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.sub-tab-btn.active {
+    color: var(--text-light);
+    background: rgba(0, 242, 254, 0.15);
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+    border: 1px solid rgba(0, 242, 254, 0.3);
+}
+
+.badge-pending {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: #fff;
+    background: var(--neon-red);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+/* Grid de Amigos */
+.community-grid-friends {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.friends-search-row {
+    display: flex;
+    gap: 8px;
+    padding: 14px 20px;
+}
+
+.friends-search-row input {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-family: var(--font-body);
+}
+
+.friends-search-row input:focus {
+    border-color: var(--neon-cyan);
+    outline: none;
+}
+
+.friends-list-v {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.friends-empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    padding: 30px 20px;
+    line-height: 1.6;
+}
+
+/* Modal de Perfil */
+.modal-box-profile {
+    max-width: 440px !important;
+    border: 1px solid rgba(0, 242, 254, 0.3) !important;
+    box-shadow: 0 0 40px rgba(0, 242, 254, 0.15) !important;
+}
+
+.profile-card-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-avatar-container {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    border: 2px solid var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    overflow: hidden;
+    background: #08090d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.profile-name-title {
+    font-size: 1.25rem;
+    color: var(--text-light);
+    letter-spacing: 1px;
+}
+
+.profile-badge-title {
+    display: inline-block;
+    font-family: var(--font-hud);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--neon-gold);
+    border: 1px solid rgba(254, 215, 170, 0.3);
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+    background: rgba(254, 215, 170, 0.05);
+}
+
+/* Grid de Stats do Perfil */
+.profile-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.profile-stat-item {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-size: 1.15rem;
+    font-weight: bold;
+    color: var(--text-light);
+    font-family: var(--font-mono);
+    margin-top: 2px;
+}
+
+/* Skills/Atributos e Atividades */
+.profile-skills-box, .profile-activities-box {
+    margin-top: 20px;
+}
+
+.skills-box-title {
+    font-family: var(--font-hud);
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: var(--neon-cyan);
+    margin-bottom: 10px;
+}
+
+.profile-skills-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+}
+
+.profile-activities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+}
+
+.profile-activities-placeholder {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: 20px 0;
+    line-height: 1.5;
+}
+
+/* Skill row */
+.profile-skill-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 0.75rem;
+}
+
+.profile-skill-name {
+    color: var(--text-primary);
+    width: 80px;
+    text-transform: uppercase;
+}
+
+.profile-skill-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.profile-skill-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    width: 0%;
+}
+
+.profile-skill-level {
+    font-family: var(--font-mono);
+    color: var(--text-light);
+    width: 40px;
+    text-align: right;
+}
+
+/* Quest item em modo leitura */
+.profile-quest-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.03);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+}
+
+.profile-quest-title-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-quest-emoji {
+    font-size: 1.1rem;
+}
+
+.profile-quest-title {
+    font-size: 0.8rem;
+    color: var(--text-primary);
+}
+
+.profile-quest-meta {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+

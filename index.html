@@ -187,8 +187,8 @@
                     VISÃO GERAL
                 </button>
                 <button class="tab-link" data-tab="community" id="tab-btn-community">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    CHAT
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    CLÃ
                 </button>
             </nav>
 
@@ -319,42 +319,101 @@
             <!-- ABA COMUNIDADE (CHAT GLOBAL & ONLINE) -->
             <div id="tab-community" class="tab-content">
                 <div class="section-title">
-                    <h2>CENTRAL DA COMUNIDADE</h2>
-                    <p style="color: var(--text-muted); font-size: 0.8rem;">Conecte-se com outros Despertos no chat global em tempo real.</p>
+                    <h2>CONEXÃO SOCIAL & CLÃ</h2>
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">Conecte-se com a comunidade, gerencie amigos e crie estratégias.</p>
                 </div>
-                
-                <div class="community-grid">
-                    <!-- Chat Area -->
-                    <div class="community-card chat-area">
-                        <div class="chat-header">
-                            <div class="chat-title-row">
-                                <span class="pulse-dot online"></span>
-                                <span class="font-hud chat-title">CHAT_GLOBAL</span>
+
+                <!-- Sub-abas da área social -->
+                <div class="social-sub-tabs">
+                    <button class="sub-tab-btn active" data-subtab="chat">CHAT GLOBAL</button>
+                    <button class="sub-tab-btn" data-subtab="friends">AMIGOS <span id="pending-requests-badge" class="badge-pending" style="display:none;">0</span></button>
+                    <button class="sub-tab-btn" data-subtab="clan-details">CLÃ</button>
+                </div>
+
+                <!-- SUB-ABA 1: CHAT GLOBAL -->
+                <div id="subtab-chat" class="sub-tab-content active">
+                    <div class="community-grid">
+                        <!-- Chat Area -->
+                        <div class="community-card chat-area">
+                            <div class="chat-header">
+                                <div class="chat-title-row">
+                                    <span class="pulse-dot online"></span>
+                                    <span class="font-hud chat-title">CHAT_GLOBAL</span>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-messages-container" id="chat-messages-list">
+                                <div class="chat-empty-state">Carregando histórico do chat...</div>
+                            </div>
+                            
+                            <div class="chat-input-row">
+                                <input type="text" id="chat-message-input" placeholder="Faça login com o Google para conversar e ver quem está online" maxlength="250" disabled>
+                                <button id="btn-send-message" class="btn-send-msg" disabled>
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                                </button>
                             </div>
                         </div>
                         
-                        <div class="chat-messages-container" id="chat-messages-list">
-                            <div class="chat-empty-state">Carregando histórico do chat...</div>
-                        </div>
-                        
-                        <div class="chat-input-row">
-                            <input type="text" id="chat-message-input" placeholder="Faça login com o Google para conversar e ver quem está online" maxlength="250" disabled>
-                            <button id="btn-send-message" class="btn-send-msg" disabled>
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Online Users List -->
-                    <div class="community-card online-sidebar">
-                        <div class="online-header">
-                            <span class="font-hud online-title">JOGADORES ONLINE (<span id="online-users-count">0</span>)</span>
-                        </div>
-                        <div class="online-users-list" id="online-users-list">
-                            <!-- Lista de usuários online via Presence -->
+                        <!-- Online Users List -->
+                        <div class="community-card online-sidebar">
+                            <div class="online-header">
+                                <span class="font-hud online-title">JOGADORES ONLINE (<span id="online-users-count">0</span>)</span>
+                            </div>
+                            <div class="online-users-list" id="online-users-list">
+                                <!-- Lista de usuários online via Presence -->
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- SUB-ABA 2: AMIGOS -->
+                <div id="subtab-friends" class="sub-tab-content" style="display:none;">
+                    <div class="community-grid-friends">
+                        <!-- Buscador de Amigos -->
+                        <div class="community-card friends-card-search">
+                            <div class="online-header">
+                                <span class="font-hud online-title">ADICIONAR AMIGO POR NOME</span>
+                            </div>
+                            <div class="friends-search-row">
+                                <input type="text" id="input-friend-search" placeholder="Digite o username exato do jogador..." maxlength="30">
+                                <button id="btn-friend-search" class="btn-send-msg" style="padding: 10px 16px;">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                </button>
+                            </div>
+                            <div id="friend-search-results" style="display:none;"></div>
+                        </div>
+
+                        <!-- Solicitações de Amizade -->
+                        <div class="community-card friends-card-pending" id="card-pending-requests" style="display:none;">
+                            <div class="online-header">
+                                <span class="font-hud online-title" style="color: var(--neon-gold);">SOLICITAÇÕES DE AMIZADE</span>
+                            </div>
+                            <div id="pending-requests-list" class="friends-list-v">
+                                <!-- JS renders list -->
+                            </div>
+                        </div>
+
+                        <!-- Lista de Amigos -->
+                        <div class="community-card friends-card-list">
+                            <div class="online-header">
+                                <span class="font-hud online-title">SEUS AMIGOS</span>
+                            </div>
+                            <div id="friends-list-container" class="friends-list-v">
+                                <div class="friends-empty-state">Nenhum amigo adicionado ainda. Adicione jogadores pelo chat ou buscando o nome!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-ABA 3: CLÃ -->
+                <div id="subtab-clan-details" class="sub-tab-content" style="display:none;">
+                    <div class="community-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:300px; gap:16px; text-align:center; padding:40px 24px;">
+                        <div style="font-size:3rem; filter:grayscale(0.3);">⚔️</div>
+                        <div style="font-family:var(--font-hud); font-size:11px; letter-spacing:3px; color:#ef4444; font-weight:700; text-shadow:0 0 12px rgba(239,68,68,0.5);">EM DESENVOLVIMENTO</div>
+                        <p style="color:var(--text-muted); font-size:0.8rem; font-family:var(--font-body); max-width:260px; line-height:1.6;">O módulo de Clãs está sendo forjado pelo Sistema.<br>Prepare-se para criar alianças e realizar missões em grupo.</p>
+                    </div>
+                </div>
+
             </div>
 
             <!-- ABA TAVERNA -->
@@ -759,6 +818,63 @@
                     <button id="btn-hard-reset" class="btn-submit btn-danger btn-reset-compact" title="Apaga todo o progresso. Esta ação não pode ser desfeita.">☠️ APAGAR TUDO</button>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- Overlay: PERFIL DO JOGADOR -->
+        <div id="modal-player-profile" class="modal">
+            <div class="modal-box modal-box-profile">
+                <span class="close-modal-btn" id="close-profile-modal">&times;</span>
+                
+                <div class="profile-card-header">
+                    <div class="profile-avatar-container">
+                        <img id="profile-avatar" src="2.assets/avatars/1.rank-e.png" alt="Avatar">
+                    </div>
+                    <div class="profile-meta-info">
+                        <div id="profile-username" class="font-hud profile-name-title">Jogador</div>
+                        <div id="profile-title" class="profile-badge-title">Título</div>
+                        <div id="profile-level-rank" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Nível 1 | RANK E</div>
+                    </div>
+                </div>
+
+                <!-- Estatísticas de Jogo -->
+                <div class="profile-stats-grid">
+                    <div class="profile-stat-item">
+                        <span class="stat-label">🔥 Streak</span>
+                        <span id="profile-stat-streak" class="stat-value">0</span>
+                    </div>
+                    <div class="profile-stat-item">
+                        <span class="stat-label">💰 Ouro</span>
+                        <span id="profile-stat-gold" class="stat-value">0</span>
+                    </div>
+                    <div class="profile-stat-item" style="grid-column: span 2;">
+                        <span class="stat-label">📈 XP Acumulado</span>
+                        <span id="profile-stat-xp" class="stat-value">0</span>
+                    </div>
+                </div>
+
+                <!-- Atributos / Skills -->
+                <div class="profile-skills-box">
+                    <div class="skills-box-title">ATRIBUTOS</div>
+                    <div id="profile-skills-list" class="profile-skills-list">
+                        <!-- JS renders bars -->
+                    </div>
+                </div>
+
+                <!-- Atividades Recorrentes do Amigo -->
+                <div class="profile-activities-box">
+                    <div class="skills-box-title">HÁBITOS & DIÁRIOS ATIVOS</div>
+                    <div id="profile-activities-list" class="profile-activities-list">
+                        <!-- JS renders quests list -->
+                        <div class="profile-activities-placeholder">Adicione este jogador para ver suas atividades.</div>
+                    </div>
+                </div>
+
+                <!-- Botão de Ação do Perfil (Amizade) -->
+                <div class="profile-action-container" style="margin-top: 20px;">
+                    <button id="btn-profile-friend-action" class="btn-submit" style="width: 100%;">ADICIONAR AMIGO</button>
+                    <button id="btn-profile-friend-decline" class="btn-submit btn-secondary" style="width: 100%; display: none; margin-top: 8px;">RECUSAR SOLICITAÇÃO</button>
+                </div>
             </div>
         </div>
 

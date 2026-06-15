@@ -1217,6 +1217,11 @@ function initTabs() {
             }
         });
     });
+
+    // Inicializar sub-abas sociais e listeners de perfil/amigos
+    if (typeof initSocialSubTabs === 'function') initSocialSubTabs();
+    if (typeof initFriendsSearchListeners === 'function') initFriendsSearchListeners();
+    if (typeof setupPlayerProfileListeners === 'function') setupPlayerProfileListeners();
 }
 
 
@@ -4383,6 +4388,12 @@ function appendMessageUI(msg) {
     const usernameSpan = document.createElement('span');
     usernameSpan.className = 'chat-msg-username';
     usernameSpan.textContent = msg.username;
+    usernameSpan.style.cursor = 'pointer';
+    usernameSpan.addEventListener('click', () => {
+        if (msg.user_id) {
+            openPlayerProfile(msg.user_id);
+        }
+    });
 
     const levelSpan = document.createElement('span');
     levelSpan.className = 'chat-msg-level';
@@ -4536,6 +4547,12 @@ window.updateOnlinePlayersUI = function() {
     uniquePlayers.forEach(player => {
         const itemDiv = document.createElement('div');
         itemDiv.className = 'online-user-item';
+        itemDiv.style.cursor = 'pointer';
+        itemDiv.addEventListener('click', () => {
+            if (player.user_id) {
+                openPlayerProfile(player.user_id);
+            }
+        });
 
         const statusDot = document.createElement('span');
         statusDot.className = 'online-user-status';
@@ -4571,3 +4588,791 @@ window.updateOnlinePlayersUI = function() {
         listEl.appendChild(itemDiv);
     });
 };
+
+// ==========================================================================
+// RECURSOS SOCIAIS: SUB-ABAS, BUSCA DE AMIGOS E PERFIS DE JOGADORES
+// ==========================================================================
+
+// Alternância de Sub-abas da Área Social (Chat, Amigos, Clã)
+function initSocialSubTabs() {
+    const subTabButtons = document.querySelectorAll('.sub-tab-btn[data-subtab]');
+    const subTabContents = document.querySelectorAll('.sub-tab-content');
+    
+    subTabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const subtabName = btn.getAttribute('data-subtab');
+            
+            subTabButtons.forEach(b => b.classList.remove('active'));
+            subTabContents.forEach(c => {
+                c.classList.remove('active');
+                c.style.display = 'none';
+            });
+            
+            btn.classList.add('active');
+            const targetContent = document.getElementById(`subtab-${subtabName}`);
+            if (targetContent) {
+                targetContent.classList.add('active');
+                targetContent.style.display = '';
+            }
+            
+            if (subtabName === 'friends') {
+                loadFriendsList();
+            }
+        });
+    });
+}
+
+// Retorna o endereço correto do avatar baseado na Skin ativa e Rank
+function getPlayerAvatarSrc(activeSkin, rank) {
+    const rankKey = (rank || 'E').toLowerCase();
+    if (activeSkin && activeSkin !== 'default') {
+        return `2.assets/avatars/${activeSkin}.png`;
+    } else {
+        const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
+        const num = prefixMap[rankKey] || '1';
+        return `2.assets/avatars/${num}.rank-${rankKey}.png`;
+    }
+}
+
+// Inicializar ouvintes do buscador de amigos
+function initFriendsSearchListeners() {
+    const btnSearch = document.getElementById('btn-friend-search');
+    const inputSearch = document.getElementById('input-friend-search');
+    if (btnSearch && inputSearch) {
+        btnSearch.addEventListener('click', () => {
+            handleFriendSearch();
+        });
+        inputSearch.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleFriendSearch();
+            }
+        });
+    }
+}
+
+// Pesquisa jogador pelo nome exato no Supabase
+async function handleFriendSearch() {
+    const input = document.getElementById('input-friend-search');
+    const resultsDiv = document.getElementById('friend-search-results');
+    if (!input || !resultsDiv) return;
+
+    const query = input.value.trim();
+    if (!query) return;
+
+    if (!window._currentUserDbId) {
+        showSystemToast('⚠️ Faça login para buscar jogadores.');
+        return;
+    }
+
+    resultsDiv.innerHTML = '<div class="friends-empty-state">Buscando jogador...</div>';
+    resultsDiv.style.display = 'block';
+
+    const { data: users, error } = await supabaseClient
+        .from('users')
+        .select('id, username, level, rank, active_skin')
+        .eq('username', query);
+
+    if (error) {
+        console.error('Erro na busca de amigo:', error.message);
+        resultsDiv.innerHTML = '<div class="friends-empty-state" style="color: var(--neon-red);">⚠️ Erro ao buscar jogador.</div>';
+        return;
+    }
+
+    if (users.length === 0) {
+        resultsDiv.innerHTML = '<div class="friends-empty-state">Jogador não encontrado. Verifique se digitou o nome exato.</div>';
+        return;
+    }
+
+    const foundUser = users[0];
+    resultsDiv.innerHTML = '';
+
+    if (foundUser.id === window._currentUserDbId) {
+        resultsDiv.innerHTML = '<div class="friends-empty-state">Você encontrou a si mesmo! 🌌</div>';
+        return;
+    }
+
+    // Criar item do buscador
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'online-user-item';
+    itemDiv.style.cursor = 'pointer';
+    itemDiv.style.margin = '10px 20px';
+    itemDiv.style.border = '1px solid rgba(255, 255, 255, 0.05)';
+    itemDiv.style.borderRadius = 'var(--radius-md)';
+    itemDiv.style.background = 'rgba(255, 255, 255, 0.01)';
+    itemDiv.style.padding = '12px 16px';
+
+    itemDiv.addEventListener('click', () => {
+        openPlayerProfile(foundUser.id);
+        resultsDiv.style.display = 'none';
+        input.value = '';
+    });
+
+    const avatar = document.createElement('img');
+    avatar.src = getPlayerAvatarSrc(foundUser.active_skin, foundUser.rank);
+    avatar.style.width = '36px';
+    avatar.style.height = '36px';
+    avatar.style.borderRadius = '50%';
+    avatar.style.border = '1px solid var(--neon-cyan)';
+    
+    const info = document.createElement('div');
+    info.className = 'online-user-info';
+    info.style.marginLeft = '12px';
+
+    const top = document.createElement('div');
+    top.className = 'online-user-top';
+
+    const name = document.createElement('span');
+    name.className = 'online-user-name';
+    name.textContent = foundUser.username;
+
+    const rank = document.createElement('span');
+    const rLetter = foundUser.rank ? foundUser.rank.toLowerCase() : 'e';
+    rank.className = `rank-badge rank-${rLetter} online-user-rank`;
+    rank.textContent = `RANK ${foundUser.rank || 'E'}`;
+
+    const lvl = document.createElement('div');
+    lvl.className = 'online-user-level';
+    lvl.textContent = `Nível ${foundUser.level || 1}`;
+
+    top.appendChild(name);
+    top.appendChild(rank);
+    info.appendChild(top);
+    info.appendChild(lvl);
+    itemDiv.appendChild(avatar);
+    itemDiv.appendChild(info);
+    
+    resultsDiv.appendChild(itemDiv);
+}
+
+// Carrega amigos e solicitações de amizade do Supabase
+async function loadFriendsList() {
+    const friendsContainer = document.getElementById('friends-list-container');
+    const pendingContainer = document.getElementById('pending-requests-list');
+    const pendingCard = document.getElementById('card-pending-requests');
+    const tabBadge = document.getElementById('pending-requests-badge');
+
+    if (!friendsContainer || !pendingContainer || !pendingCard) return;
+
+    if (!window._currentUserDbId) {
+        friendsContainer.innerHTML = '<div class="friends-empty-state">Faça login com o Google para ver sua lista de amigos.</div>';
+        pendingContainer.innerHTML = '';
+        pendingCard.style.display = 'none';
+        if (tabBadge) tabBadge.style.display = 'none';
+        return;
+    }
+
+    // 1. Buscar todas as relações da tabela friendships onde eu esteja envolvido
+    const { data: friendships, error } = await supabaseClient
+        .from('friendships')
+        .select('*')
+        .or(`requester_id.eq.${window._currentUserDbId},target_id.eq.${window._currentUserDbId}`);
+
+    if (error) {
+        console.error('Erro ao buscar amizades:', error.message);
+        friendsContainer.innerHTML = '<div class="friends-empty-state" style="color: var(--neon-red);">⚠️ Erro ao carregar amigos.</div>';
+        return;
+    }
+
+    friendsContainer.innerHTML = '';
+    pendingContainer.innerHTML = '';
+
+    const pendingRequests = [];
+    const activeFriendsIds = [];
+    const friendshipMap = new Map(); // mapear userId -> friendship object
+
+    friendships.forEach(f => {
+        if (f.status === 'pending') {
+            if (f.target_id === window._currentUserDbId) {
+                // Solicitação recebida pendente
+                pendingRequests.push(f);
+            }
+        } else if (f.status === 'accepted') {
+            const friendId = f.requester_id === window._currentUserDbId ? f.target_id : f.requester_id;
+            activeFriendsIds.push(friendId);
+            friendshipMap.set(friendId, f);
+        }
+    });
+
+    // Atualizar badge de solicitações recebidas
+    if (tabBadge) {
+        if (pendingRequests.length > 0) {
+            tabBadge.textContent = pendingRequests.length;
+            tabBadge.style.display = 'inline-flex';
+        } else {
+            tabBadge.style.display = 'none';
+        }
+    }
+
+    // 2. Renderizar solicitações pendentes recebidas
+    if (pendingRequests.length > 0) {
+        pendingCard.style.display = 'block';
+        
+        // Buscar detalhes dos usuários solicitantes
+        const requesterIds = pendingRequests.map(r => r.requester_id);
+        const { data: requesters, error: reqError } = await supabaseClient
+            .from('users')
+            .select('id, username, level, rank, active_skin')
+            .in('id', requesterIds);
+
+        if (!reqError && requesters) {
+            requesters.forEach(user => {
+                const relation = pendingRequests.find(r => r.requester_id === user.id);
+                if (!relation) return;
+
+                const row = document.createElement('div');
+                row.className = 'online-user-item';
+                row.style.background = 'rgba(251, 191, 36, 0.02)';
+                row.style.border = '1px solid rgba(251, 191, 36, 0.1)';
+                row.style.borderRadius = 'var(--radius-md)';
+                row.style.padding = '10px 14px';
+                row.style.marginBottom = '8px';
+
+                row.addEventListener('click', () => {
+                    openPlayerProfile(user.id);
+                });
+
+                const avatar = document.createElement('img');
+                avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank);
+                avatar.style.width = '36px';
+                avatar.style.height = '36px';
+                avatar.style.borderRadius = '50%';
+                avatar.style.cursor = 'pointer';
+                
+                const info = document.createElement('div');
+                info.className = 'online-user-info';
+                info.style.marginLeft = '12px';
+                info.style.flex = '1';
+                info.style.cursor = 'pointer';
+
+                const top = document.createElement('div');
+                top.className = 'online-user-top';
+                const name = document.createElement('span');
+                name.className = 'online-user-name';
+                name.textContent = user.username;
+                top.appendChild(name);
+                
+                const lvl = document.createElement('div');
+                lvl.className = 'online-user-level';
+                lvl.textContent = `Lvl ${user.level || 1}`;
+                info.appendChild(top);
+                info.appendChild(lvl);
+
+                const actions = document.createElement('div');
+                actions.style.display = 'flex';
+                actions.style.gap = '8px';
+
+                const btnAccept = document.createElement('button');
+                btnAccept.className = 'btn-toggle-pill active';
+                btnAccept.style.background = 'rgba(16, 185, 129, 0.2)';
+                btnAccept.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+                btnAccept.style.color = '#10b981';
+                btnAccept.textContent = 'Aceitar';
+                btnAccept.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    btnAccept.disabled = true;
+                    const { error } = await supabaseClient
+                        .from('friendships')
+                        .update({ status: 'accepted' })
+                        .eq('id', relation.id);
+                    if (!error) {
+                        showSystemToast('🤝 Amizade aceita!');
+                        loadFriendsList();
+                    } else {
+                        showSystemToast('⚠️ Erro ao aceitar.');
+                        btnAccept.disabled = false;
+                    }
+                });
+
+                const btnDecline = document.createElement('button');
+                btnDecline.className = 'btn-toggle-pill';
+                btnDecline.style.background = 'rgba(239, 68, 68, 0.1)';
+                btnDecline.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                btnDecline.style.color = 'var(--text-muted)';
+                btnDecline.textContent = 'Recusar';
+                btnDecline.addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    btnDecline.disabled = true;
+                    const { error } = await supabaseClient
+                        .from('friendships')
+                        .delete()
+                        .eq('id', relation.id);
+                    if (!error) {
+                        showSystemToast('Solicitação recusada.');
+                        loadFriendsList();
+                    } else {
+                        showSystemToast('⚠️ Erro ao recusar.');
+                        btnDecline.disabled = false;
+                    }
+                });
+
+                actions.appendChild(btnAccept);
+                actions.appendChild(btnDecline);
+                row.appendChild(avatar);
+                row.appendChild(info);
+                row.appendChild(actions);
+
+                pendingContainer.appendChild(row);
+            });
+        }
+    } else {
+        pendingCard.style.display = 'none';
+    }
+
+    // 3. Renderizar Amigos Aceitos
+    if (activeFriendsIds.length > 0) {
+        const { data: friends, error: friendsError } = await supabaseClient
+            .from('users')
+            .select('id, username, level, rank, active_skin')
+            .in('id', activeFriendsIds);
+
+        if (friendsError) {
+            console.error('Erro ao carregar detalhes dos amigos:', friendsError.message);
+            friendsContainer.innerHTML = '<div class="friends-empty-state" style="color: var(--neon-red);">⚠️ Erro ao carregar detalhes dos amigos.</div>';
+            return;
+        }
+
+        if (friends && friends.length > 0) {
+            // Ordenar por status online e depois por nome
+            const onlinePresenceState = window.onlineUsersState || {};
+            const onlineUserIds = new Set(
+                Object.values(onlinePresenceState)
+                    .flat()
+                    .map(p => p.user_id)
+            );
+
+            friends.sort((a, b) => {
+                const aOnline = onlineUserIds.has(a.id);
+                const bOnline = onlineUserIds.has(b.id);
+                if (aOnline && !bOnline) return -1;
+                if (!aOnline && bOnline) return 1;
+                return a.username.localeCompare(b.username);
+            });
+
+            friends.forEach(user => {
+                const isOnline = onlineUserIds.has(user.id);
+
+                const row = document.createElement('div');
+                row.className = 'online-user-item';
+                row.style.cursor = 'pointer';
+                row.style.padding = '10px 14px';
+                row.style.border = '1px solid var(--border-color)';
+                row.style.borderRadius = 'var(--radius-md)';
+                row.style.marginBottom = '8px';
+                row.style.background = isOnline ? 'rgba(0, 242, 254, 0.01)' : 'rgba(0, 0, 0, 0.1)';
+
+                row.addEventListener('click', () => {
+                    openPlayerProfile(user.id);
+                });
+
+                const statusDot = document.createElement('span');
+                statusDot.className = `online-user-status${isOnline ? '' : ' offline'}`;
+                statusDot.style.background = isOnline ? 'var(--neon-cyan)' : '#4b5563';
+                statusDot.style.boxShadow = isOnline ? '0 0 8px var(--neon-cyan)' : 'none';
+
+                const avatar = document.createElement('img');
+                avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank);
+                avatar.style.width = '36px';
+                avatar.style.height = '36px';
+                avatar.style.borderRadius = '50%';
+                avatar.style.marginLeft = '8px';
+
+                const info = document.createElement('div');
+                info.className = 'online-user-info';
+                info.style.marginLeft = '12px';
+                info.style.flex = '1';
+
+                const top = document.createElement('div');
+                top.className = 'online-user-top';
+                const name = document.createElement('span');
+                name.className = 'online-user-name';
+                name.textContent = user.username;
+                top.appendChild(name);
+                
+                const lvl = document.createElement('div');
+                lvl.className = 'online-user-level';
+                lvl.textContent = `Nível ${user.level || 1} | RANK ${(user.rank || 'E').toUpperCase()}`;
+                info.appendChild(top);
+                info.appendChild(lvl);
+
+                const statusText = document.createElement('span');
+                statusText.style.fontSize = '9px';
+                statusText.style.color = isOnline ? 'var(--neon-cyan)' : 'var(--text-muted)';
+                statusText.style.fontFamily = 'var(--font-hud)';
+                statusText.style.fontWeight = 'bold';
+                statusText.textContent = isOnline ? 'ONLINE' : 'OFFLINE';
+
+                row.appendChild(statusDot);
+                row.appendChild(avatar);
+                row.appendChild(info);
+                row.appendChild(statusText);
+
+                friendsContainer.appendChild(row);
+            });
+        } else {
+            friendsContainer.innerHTML = '<div class="friends-empty-state">Nenhum amigo ativo. Que tal adicionar alguns no Chat Global?</div>';
+        }
+    } else {
+        friendsContainer.innerHTML = '<div class="friends-empty-state">Nenhum amigo ativo. Que tal adicionar alguns no Chat Global?</div>';
+    }
+}
+
+// Abre o perfil do jogador e carrega as estatísticas, atributos e atividades recorrentes
+async function openPlayerProfile(userId) {
+    const modal = document.getElementById('modal-player-profile');
+    if (!modal) return;
+
+    // Elementos da UI
+    const avatarImg = document.getElementById('profile-avatar');
+    const nameEl = document.getElementById('profile-username');
+    const titleEl = document.getElementById('profile-title');
+    const lvlRankEl = document.getElementById('profile-level-rank');
+    const streakEl = document.getElementById('profile-stat-streak');
+    const goldEl = document.getElementById('profile-stat-gold');
+    const xpEl = document.getElementById('profile-stat-xp');
+    const skillsList = document.getElementById('profile-skills-list');
+    const activitiesList = document.getElementById('profile-activities-list');
+    const actionBtn = document.getElementById('btn-profile-friend-action');
+    const declineBtn = document.getElementById('btn-profile-friend-decline');
+
+    if (!nameEl || !actionBtn || !declineBtn) return;
+
+    // Estado de Carregamento Inicial
+    nameEl.textContent = 'Carregando...';
+    if (lvlRankEl) lvlRankEl.textContent = '';
+    if (streakEl) streakEl.textContent = '—';
+    if (goldEl) goldEl.textContent = '—';
+    if (xpEl) xpEl.textContent = '—';
+    if (skillsList) skillsList.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.75rem;">Carregando atributos...</div>';
+    if (activitiesList) activitiesList.innerHTML = '<div class="profile-activities-placeholder">Carregando atividades...</div>';
+    actionBtn.style.display = 'none';
+    declineBtn.style.display = 'none';
+
+    modal.style.display = 'block';
+
+    // 1. Carregar perfil do banco
+    const { data: user, error } = await supabaseClient
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+    if (error || !user) {
+        console.error('Erro ao carregar perfil:', error?.message);
+        nameEl.textContent = 'Erro';
+        if (skillsList) skillsList.innerHTML = '<div style="text-align:center; color:var(--neon-red); font-size:0.75rem;">Erro ao carregar perfil.</div>';
+        return;
+    }
+
+    // Preencher dados básicos
+    nameEl.textContent = user.username;
+    avatarImg.src = getPlayerAvatarSrc(user.active_skin, user.rank);
+    
+    if (user.active_title) {
+        titleEl.textContent = user.active_title;
+        titleEl.style.display = 'inline-block';
+    } else {
+        const defaultTitles = { e: 'Recruta', d: 'Aventureiro', c: 'Caçador', b: 'Elite', a: 'Herói Lendário', s: 'O Sistema' };
+        const rKey = (user.rank || 'E').toLowerCase();
+        titleEl.textContent = defaultTitles[rKey] || 'Recruta';
+        titleEl.style.display = 'inline-block';
+    }
+
+    lvlRankEl.textContent = `Nível ${user.level || 1} | RANK ${(user.rank || 'E').toUpperCase()}`;
+    streakEl.textContent = user.streak || 0;
+    goldEl.textContent = user.gold || 0;
+    xpEl.textContent = user.xp || 0;
+
+    // Renderizar Atributos/Skills
+    if (skillsList) {
+        skillsList.innerHTML = '';
+        const skillNamesMap = {
+            physical: 'Força 💪',
+            routine:  'Rotina 🛏️',
+            mental:   'Mente 🧠',
+            wisdom:   'Sabedoria 📚',
+            focus:    'Foco 🎯',
+            social:   'Social 🤝'
+        };
+        const skillColorsMap = {
+            physical: '#ef4444',
+            routine:  '#3b82f6',
+            mental:   '#a855f7',
+            wisdom:   '#eab308',
+            focus:    '#06b6d4',
+            social:   '#10b981'
+        };
+
+        const userSkills = user.skills || {};
+        Object.entries(skillNamesMap).forEach(([key, label]) => {
+            const val = userSkills[key] || 0;
+            const lvl = Math.floor(val / 100) + 1;
+            const percent = val % 100;
+
+            const row = document.createElement('div');
+            row.className = 'profile-skill-row';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'profile-skill-name';
+            nameSpan.textContent = label;
+
+            const barWrap = document.createElement('div');
+            barWrap.className = 'profile-skill-bar-wrap';
+
+            const barFill = document.createElement('div');
+            barFill.className = 'profile-skill-bar-fill';
+            barFill.style.width = `${percent}%`;
+            barFill.style.backgroundColor = skillColorsMap[key] || 'var(--neon-cyan)';
+            barFill.style.boxShadow = `0 0 8px ${skillColorsMap[key] || 'var(--neon-cyan)'}`;
+
+            const lvlSpan = document.createElement('span');
+            lvlSpan.className = 'profile-skill-level';
+            lvlSpan.textContent = `Lvl ${lvl}`;
+
+            barWrap.appendChild(barFill);
+            row.appendChild(nameSpan);
+            row.appendChild(barWrap);
+            row.appendChild(lvlSpan);
+
+            skillsList.appendChild(row);
+        });
+    }
+
+    // 2. Checar status da amizade com o usuário atual
+    let relationship = null;
+    let isSelf = userId === window._currentUserDbId;
+
+    if (window._currentUserDbId && !isSelf) {
+        const { data: rel, error: relError } = await supabaseClient
+            .from('friendships')
+            .select('*')
+            .or(`and(requester_id.eq.${window._currentUserDbId},target_id.eq.${userId}),and(requester_id.eq.${userId},target_id.eq.${window._currentUserDbId})`)
+            .maybeSingle();
+        
+        if (!relError) {
+            relationship = rel;
+        }
+    }
+
+    // 3. Atualizar botões de amizade baseado no status
+    actionBtn.style.display = 'block';
+    actionBtn.disabled = false;
+    actionBtn.style.background = '';
+    actionBtn.style.border = '';
+    actionBtn.style.color = '';
+
+    // Remover antigos event listeners clonando os botões
+    const newActionBtn = actionBtn.cloneNode(true);
+    actionBtn.replaceWith(newActionBtn);
+    const newDeclineBtn = declineBtn.cloneNode(true);
+    declineBtn.replaceWith(newDeclineBtn);
+
+    if (isSelf) {
+        newActionBtn.style.display = 'none';
+        newDeclineBtn.style.display = 'none';
+        
+        // Se for você mesmo, pode ver suas próprias atividades!
+        await loadProfileActivities(window._currentUserDbId, activitiesList, true);
+    } else if (!window._currentUserDbId) {
+        newActionBtn.style.display = 'block';
+        newActionBtn.textContent = 'FAÇA LOGIN PARA ADICIONAR';
+        newActionBtn.disabled = true;
+        activitiesList.innerHTML = '<div class="profile-activities-placeholder">Faça login para adicionar este amigo e ver suas atividades.</div>';
+    } else if (!relationship) {
+        // Sem relação ainda
+        newActionBtn.style.display = 'block';
+        newActionBtn.textContent = 'ADICIONAR AMIGO';
+        newActionBtn.addEventListener('click', async () => {
+            newActionBtn.disabled = true;
+            newActionBtn.textContent = 'Enviando...';
+            const { error: insertError } = await supabaseClient
+                .from('friendships')
+                .insert({
+                    requester_id: window._currentUserDbId,
+                    target_id: userId,
+                    status: 'pending'
+                });
+            if (!insertError) {
+                showSystemToast('✉️ Solicitação enviada!');
+                openPlayerProfile(userId); // Recarregar perfil
+                if (typeof loadFriendsList === 'function') loadFriendsList();
+            } else {
+                showSystemToast('⚠️ Erro ao enviar solicitação.');
+                newActionBtn.disabled = false;
+                newActionBtn.textContent = 'ADICIONAR AMIGO';
+            }
+        });
+        activitiesList.innerHTML = '<div class="profile-activities-placeholder">Adicione este jogador como amigo para ver suas atividades recorrentes.</div>';
+    } else if (relationship.status === 'pending') {
+        if (relationship.requester_id === window._currentUserDbId) {
+            // Eu enviei o convite
+            newActionBtn.style.display = 'block';
+            newActionBtn.textContent = 'SOLICITAÇÃO PENDENTE';
+            newActionBtn.disabled = true;
+            newActionBtn.style.background = 'rgba(255,255,255,0.05)';
+            newActionBtn.style.border = '1px solid rgba(255,255,255,0.1)';
+            newActionBtn.style.color = 'var(--text-muted)';
+            activitiesList.innerHTML = '<div class="profile-activities-placeholder">Aguardando este jogador aceitar seu convite de amizade.</div>';
+        } else {
+            // Eu recebi o convite
+            newActionBtn.style.display = 'block';
+            newActionBtn.textContent = 'ACEITAR SOLICITAÇÃO';
+            newActionBtn.style.background = 'rgba(16, 185, 129, 0.2)';
+            newActionBtn.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+            newActionBtn.style.color = '#10b981';
+
+            newActionBtn.addEventListener('click', async () => {
+                newActionBtn.disabled = true;
+                const { error: updateError } = await supabaseClient
+                    .from('friendships')
+                    .update({ status: 'accepted' })
+                    .eq('id', relationship.id);
+                if (!updateError) {
+                    showSystemToast('🤝 Amizade iniciada!');
+                    openPlayerProfile(userId); // Recarregar
+                    if (typeof loadFriendsList === 'function') loadFriendsList();
+                } else {
+                    showSystemToast('⚠️ Erro ao aceitar.');
+                    newActionBtn.disabled = false;
+                }
+            });
+
+            newDeclineBtn.style.display = 'block';
+            newDeclineBtn.textContent = 'RECUSAR SOLICITAÇÃO';
+            newDeclineBtn.addEventListener('click', async () => {
+                newDeclineBtn.disabled = true;
+                const { error: deleteError } = await supabaseClient
+                    .from('friendships')
+                    .delete()
+                    .eq('id', relationship.id);
+                if (!deleteError) {
+                    showSystemToast('Solicitação recusada.');
+                    modal.style.display = 'none'; // Fecha o modal
+                    if (typeof loadFriendsList === 'function') loadFriendsList();
+                } else {
+                    showSystemToast('⚠️ Erro ao recusar.');
+                    newDeclineBtn.disabled = false;
+                }
+            });
+
+            activitiesList.innerHTML = '<div class="profile-activities-placeholder">Aceite a solicitação de amizade para ver as atividades recorrentes.</div>';
+        }
+    } else if (relationship.status === 'accepted') {
+        // Amigos ativos
+        newActionBtn.style.display = 'block';
+        newActionBtn.textContent = 'DESFAZER AMIZADE';
+        newActionBtn.className = 'btn-submit btn-danger';
+        newActionBtn.style.background = 'rgba(239, 68, 68, 0.15)';
+        newActionBtn.style.border = '1px solid rgba(239, 68, 68, 0.3)';
+        newActionBtn.style.color = '#ef4444';
+
+        newActionBtn.addEventListener('click', async () => {
+            if (!confirm('Deseja realmente remover este amigo? Você perderá o acesso às atividades dele.')) return;
+            newActionBtn.disabled = true;
+            const { error: deleteError } = await supabaseClient
+                .from('friendships')
+                .delete()
+                .eq('id', relationship.id);
+            if (!deleteError) {
+                showSystemToast('Amizade desfeita.');
+                modal.style.display = 'none'; // Fecha
+                if (typeof loadFriendsList === 'function') loadFriendsList();
+            } else {
+                showSystemToast('⚠️ Erro ao desfazer amizade.');
+                newActionBtn.disabled = false;
+            }
+        });
+
+        // Carregar atividades recorrentes do amigo!
+        await loadProfileActivities(userId, activitiesList, false);
+    }
+}
+
+// Busca e renderiza as atividades do perfil do jogador
+async function loadProfileActivities(userId, container, isSelf) {
+    if (!container) return;
+
+    // Buscar missões recorrentes (hábitos/diárias) no Supabase
+    const { data: quests, error } = await supabaseClient
+        .from('quests')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('recurring', true);
+
+    if (error) {
+        console.error('Erro ao buscar atividades do perfil:', error.message);
+        container.innerHTML = '<div class="profile-activities-placeholder" style="color: var(--neon-red);">⚠️ Falha ao ler atividades.</div>';
+        return;
+    }
+
+    if (!quests || quests.length === 0) {
+        container.innerHTML = `<div class="profile-activities-placeholder">${isSelf ? 'Você' : 'O jogador'} não possui hábitos ou atividades recorrentes ativas.</div>`;
+        return;
+    }
+
+    container.innerHTML = '';
+
+    // Ordenar: incompletas primeiro
+    quests.sort((a, b) => (a.completed === b.completed) ? 0 : a.completed ? 1 : -1);
+
+    quests.forEach(quest => {
+        const item = document.createElement('div');
+        item.className = 'profile-quest-item';
+        
+        // Estilizar se concluído
+        if (quest.completed) {
+            item.style.opacity = '0.6';
+            item.style.borderLeft = '3px solid #10b981';
+        } else {
+            const skillColors = { physical: '#ef4444', routine: '#3b82f6', mental: '#a855f7', wisdom: '#eab308', focus: '#06b6d4', social: '#10b981' };
+            const color = skillColors[quest.skill] || 'var(--neon-cyan)';
+            item.style.borderLeft = `3px solid ${color}`;
+        }
+
+        const titleBox = document.createElement('div');
+        titleBox.className = 'profile-quest-title-box';
+
+        const emoji = document.createElement('span');
+        emoji.className = 'profile-quest-emoji';
+        emoji.textContent = quest.emoji || '⚔️';
+
+        const title = document.createElement('span');
+        title.className = 'profile-quest-title';
+        title.textContent = quest.title;
+
+        titleBox.appendChild(emoji);
+        titleBox.appendChild(title);
+
+        const meta = document.createElement('span');
+        meta.className = 'profile-quest-meta';
+        
+        // Mostrar status de progresso se for numérica/streak
+        if (quest.target && quest.target > 1) {
+            meta.textContent = `${quest.current || 0}/${quest.target} (${quest.difficulty})`;
+        } else {
+            meta.textContent = quest.completed ? `Concluído` : `${quest.difficulty}`;
+        }
+
+        item.appendChild(titleBox);
+        item.appendChild(meta);
+
+        container.appendChild(item);
+    });
+}
+
+// Ouvintes de fechamento do Modal de Perfil
+function setupPlayerProfileListeners() {
+    const modal = document.getElementById('modal-player-profile');
+    const closeBtn = document.getElementById('close-profile-modal');
+    if (closeBtn && modal) {
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+        // Fechar ao clicar fora da caixa do modal
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+}
+
