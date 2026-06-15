@@ -4509,14 +4509,7 @@ window.updateOnlinePlayersUI = function() {
     const state = window.onlineUsersState || {};
     const presenceKeys = Object.keys(state);
 
-    if (countEl) countEl.textContent = presenceKeys.length;
-
     listEl.innerHTML = '';
-
-    if (presenceKeys.length === 0) {
-        listEl.innerHTML = `<div style="text-align: center; font-size: 0.8rem; color: var(--text-muted); padding: 20px 0;">Nenhum jogador online.</div>`;
-        return;
-    }
 
     const uniquePlayersMap = new Map();
 
@@ -4532,6 +4525,13 @@ window.updateOnlinePlayersUI = function() {
     });
 
     const uniquePlayers = Array.from(uniquePlayersMap.values());
+
+    if (countEl) countEl.textContent = uniquePlayers.length;
+
+    if (uniquePlayers.length === 0) {
+        listEl.innerHTML = `<div style="text-align: center; font-size: 0.8rem; color: var(--text-muted); padding: 20px 0;">Nenhum jogador online.</div>`;
+        return;
+    }
 
     uniquePlayers.forEach(player => {
         const itemDiv = document.createElement('div');
