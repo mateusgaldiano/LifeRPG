@@ -568,6 +568,21 @@ body::before {
         border-left: none;
         padding-left: 0;
     }
+    .modal-box-settings .settings-group-reset {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+        text-align: center !important;
+    }
+    .modal-box-settings .settings-group-reset .settings-group-title {
+        text-align: center !important;
+    }
+    .modal-box-settings .btn-reset-compact {
+        width: 100% !important;
+        justify-content: center !important;
+        display: flex !important;
+        align-items: center !important;
+    }
 }
 
 .quest-progress-badge {
