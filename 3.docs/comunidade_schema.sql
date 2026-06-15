@@ -107,3 +107,9 @@ CREATE OR REPLACE VIEW public_profiles AS
 REVOKE ALL ON public_profiles FROM public;
 REVOKE ALL ON public_profiles FROM anon;
 GRANT SELECT ON public_profiles TO authenticated;
+
+-- ────────────────────────────────────────────────────────────────
+-- 5. ATIVAR REALTIME PARA O CHAT
+-- ────────────────────────────────────────────────────────────────
+-- Adiciona a tabela de mensagens ao canal de publicação em tempo real do Supabase
+ALTER PUBLICATION supabase_realtime ADD TABLE chat_messages;
