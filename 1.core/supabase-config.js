@@ -57,14 +57,29 @@ window._currentUserDbId = null; // id (uuid) da linha em 'users', preenchido ap�
 // AUTH — login/logout com Google
 // --------------------------------------------------------------------------
 window.loginWithGoogle = async function() {
-  const redirectUrl = window.location.origin + window.location.pathname;
-  const { error } = await supabaseClient.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: redirectUrl
+  const btn = document.getElementById('btn-cloud-login');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Abrindo Google...';
+  }
+  try {
+    const redirectUrl = window.location.origin + window.location.pathname;
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl,
+        skipBrowserRedirect: false
+      }
+    });
+    if (error) {
+      console.error('[Supabase Auth]', error.message);
+      if (typeof showSystemToast === 'function') showSystemToast('Erro ao iniciar login: ' + error.message);
+      if (btn) { btn.disabled = false; btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg> ENTRAR COM GOOGLE'; }
     }
-  });
-  if (error) console.error('[Supabase Auth]', error.message);
+  } catch(e) {
+    console.error('[Supabase Auth] Exceção:', e);
+    if (btn) { btn.disabled = false; btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg> ENTRAR COM GOOGLE'; }
+  }
 };
 
 window.logoutSupabase = async function() {
@@ -151,12 +166,20 @@ function updateCloudStatusUI(online) {
   if (dot) dot.classList.toggle('online', online);
   if (label) label.innerText = online ? 'ONLINE' : 'NÃO SINCRONIZADO';
 
-  document.getElementById('btn-cloud-login')?.style?.setProperty(
-    'display', online ? 'none' : 'block'
-  );
-  document.getElementById('btn-cloud-logout')?.style?.setProperty(
-    'display', online ? 'block' : 'none'
-  );
+  const btnLogin = document.getElementById('btn-cloud-login');
+  const btnLogout = document.getElementById('btn-cloud-logout');
+
+  if (btnLogin) {
+    btnLogin.style.display = online ? 'none' : '';
+    btnLogin.disabled = false;
+    // Restaurar label original caso tenha sido alterado durante loading
+    if (!online) {
+      btnLogin.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg> ENTRAR COM GOOGLE';
+    }
+  }
+  if (btnLogout) {
+    btnLogout.style.display = online ? '' : 'none';
+  }
 }
 
 // --------------------------------------------------------------------------
