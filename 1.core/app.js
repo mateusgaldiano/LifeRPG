@@ -1132,6 +1132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializa motor PWA e Configurações
     registerServiceWorker();
     setupSettingsListeners();
+    if (typeof setupSocialModalListeners === 'function') setupSocialModalListeners();
     setupInstallPrompt();
     setupHabitLibraryAndTabs();
     // initChatListeners();
@@ -3253,10 +3254,7 @@ function setupSettingsListeners() {
         btnHeaderTrophies.addEventListener('click', () => switchToTab('achievements'));
     }
 
-    const btnHeaderTavern = document.getElementById('btn-header-tavern');
-    if (btnHeaderTavern) {
-        btnHeaderTavern.addEventListener('click', () => switchToTab('rewards'));
-    }
+
 
 
     // Solicitar permissão de notificação
@@ -5371,6 +5369,50 @@ function setupPlayerProfileListeners() {
         window.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';
+            }
+        });
+    }
+}
+
+// Ouvintes do Modal Social (Chat, Amigos, Clã)
+function setupSocialModalListeners() {
+    const modalSocial = document.getElementById('modal-social');
+    const btnOpenSocial = document.getElementById('btn-header-social');
+    const btnCloseSocial = document.getElementById('close-social-modal');
+
+    if (btnOpenSocial && modalSocial && btnCloseSocial) {
+        btnOpenSocial.addEventListener('click', () => {
+            modalSocial.style.display = 'flex';
+            
+            // Inicializar sub-abas sociais
+            const activeSubtab = document.querySelector('.sub-tab-btn.active');
+            const subtabName = activeSubtab ? activeSubtab.getAttribute('data-subtab') : 'chat';
+            
+            if (subtabName === 'chat') {
+                if (typeof enterCommunityTab === 'function') {
+                    enterCommunityTab();
+                }
+            } else if (subtabName === 'friends') {
+                if (typeof loadFriendsList === 'function') {
+                    loadFriendsList();
+                }
+            }
+        });
+
+        btnCloseSocial.addEventListener('click', () => {
+            modalSocial.style.display = 'none';
+            if (typeof exitCommunityTab === 'function') {
+                exitCommunityTab();
+            }
+        });
+
+        // Clique fora do modal para fechar
+        window.addEventListener('click', (e) => {
+            if (e.target === modalSocial) {
+                modalSocial.style.display = 'none';
+                if (typeof exitCommunityTab === 'function') {
+                    exitCommunityTab();
+                }
             }
         });
     }
