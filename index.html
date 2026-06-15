@@ -45,9 +45,20 @@
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                 </div>
                 <span class="brand-title">THE SYSTEM</span>
-                <button id="btn-open-settings" class="btn-settings-icon" title="Configurações do Sistema">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                </button>
+                <div class="brand-header-actions">
+                    <!-- Troféus -->
+                    <button id="btn-header-trophies" class="btn-header-icon" title="Troféus">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M17 3H7l1 7a4 4 0 0 0 8 0l1-7z"/><path d="M5 3H3a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4h1"/><path d="M19 3h2a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4h-1"/></svg>
+                    </button>
+                    <!-- Taverna / Inventário -->
+                    <button id="btn-header-tavern" class="btn-header-icon" title="Taverna &amp; Inventário">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/><path d="M12 6v1M12 17v1M6 12h1M17 12h1"/></svg>
+                    </button>
+                    <!-- Configurações -->
+                    <button id="btn-open-settings" class="btn-header-icon btn-settings-icon" title="Configurações do Sistema">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    </button>
+                </div>
             </div>
 
             <!-- Player Card (estilo Arise) -->
@@ -165,34 +176,20 @@
 
         <!-- ═══ PAINEL PRINCIPAL ═══ -->
         <div id="main-content-panel">
-            <!-- Nav Tabs -->
+            <!-- Nav Tabs (3 abas) -->
             <nav class="dashboard-tabs">
                 <button class="tab-link active" data-tab="quests" id="tab-btn-quests">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 10c-.83 0-1.5-.67-1.5-1.5v-5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5z"/><path d="M20.5 10H19V8.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/><path d="M9.5 14c.83 0 1.5.67 1.5 1.5v5c0 .83-.67 1.5-1.5 1.5S8 21.33 8 20.5v-5c0-.83.67-1.5 1.5-1.5z"/><path d="M3.5 14H5v1.5c0 .83-.67 1.5-1.5 1.5S2 16.33 2 15.5 2.67 14 3.5 14z"/><path d="M14 14.5c0-.83.67-1.5 1.5-1.5h5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-5c-.83 0-1.5-.67-1.5-1.5z"/><path d="M15.5 9H17v1.5c0 .83-.67 1.5-1.5 1.5S14 11.33 14 10.5 14.67 9 15.5 9z"/><path d="M10 9.5C10 8.67 9.33 8 8.5 8h-5C2.67 8 2 8.67 2 9.5S2.67 11 3.5 11h5c.83 0 1.5-.67 1.5-1.5z"/><path d="M8.5 15H7v-1.5c0-.83.67-1.5 1.5-1.5s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                     MISSÕES
                 </button>
                 <button class="tab-link" data-tab="global" id="tab-btn-global">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-                    VISÃO G.
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                    VISÃO GERAL
                 </button>
-                <button class="tab-link" data-tab="rewards" id="tab-btn-rewards">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                    TAVERNA
+                <button class="tab-link" data-tab="clan" id="tab-btn-clan">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    CLÃ
                 </button>
-                <button class="tab-link" data-tab="achievements" id="tab-btn-achievements">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15l-4 4 1-5-4-3 5-.5L12 6l2 4.5 5 .5-4 3 1 5z"/><path d="M5 21l3-3"/><path d="M19 21l-3-3"/></svg>
-                    TROFÉUS
-                </button>
-                <button class="tab-link" data-tab="community" id="tab-btn-community">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    COMUNIDADE
-                </button>
-                <!-- MENTOR TAB — desabilitado temporariamente
-                <button class="tab-link" data-tab="chat" id="tab-btn-chat">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    MENTOR
-                </button>
-                -->
             </nav>
 
 
@@ -558,7 +555,17 @@
                     </div>
                 </section>
 
+                <!-- ABA: CLÃ -->
+                <section id="tab-clan" class="tab-content">
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:300px; gap:16px; text-align:center; padding:40px 24px;">
+                        <div style="font-size:3rem; filter:grayscale(0.3);">⚔️</div>
+                        <div style="font-family:var(--font-hud); font-size:11px; letter-spacing:3px; color:#ef4444; font-weight:700; text-shadow:0 0 12px rgba(239,68,68,0.5);">EM DESENVOLVIMENTO</div>
+                        <p style="color:var(--text-muted); font-size:0.8rem; font-family:var(--font-body); max-width:240px; line-height:1.6;">O módulo de Clãs está sendo forjado pelo Sistema.<br>Prepare-se.</p>
+                    </div>
+                </section>
+
                 <!-- ABA: CHAT COM MENTOR IROH -->
+
                 <section id="tab-chat" class="tab-content" style="padding:0; height:calc(100vh - 190px); display:none; flex-direction:column;">
                     <div class="chat-container" style="display:flex; flex-direction:column; height:100%; border:1px solid var(--border-color); border-radius:var(--radius-lg); background:var(--bg-card); overflow:hidden;">
                         <div class="chat-header" style="display:flex; align-items:center; gap:14px; padding:18px 28px; border-bottom:1px solid var(--border-color); background:var(--bg-input);">

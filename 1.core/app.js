@@ -3206,6 +3206,35 @@ function setupSettingsListeners() {
         });
     }
 
+    // Atalhos de header: Troféus e Taverna
+    function switchToTab(tabName) {
+        const navButtons = document.querySelectorAll('.tab-link[data-tab]');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const targetTab = document.getElementById(`tab-${tabName}`);
+        if (!targetTab) return;
+        navButtons.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(t => t.classList.remove('active'));
+        const targetBtn = document.querySelector(`.tab-link[data-tab="${tabName}"]`);
+        if (targetBtn) targetBtn.classList.add('active');
+        targetTab.classList.add('active');
+        if (tabName === 'global') renderGlobalDashboard();
+        if (window.innerWidth <= 1023) {
+            const offset = targetTab.getBoundingClientRect().top + window.scrollY - 130;
+            window.scrollTo({ top: offset, behavior: 'smooth' });
+        }
+    }
+
+    const btnHeaderTrophies = document.getElementById('btn-header-trophies');
+    if (btnHeaderTrophies) {
+        btnHeaderTrophies.addEventListener('click', () => switchToTab('achievements'));
+    }
+
+    const btnHeaderTavern = document.getElementById('btn-header-tavern');
+    if (btnHeaderTavern) {
+        btnHeaderTavern.addEventListener('click', () => switchToTab('rewards'));
+    }
+
+
     // Solicitar permissão de notificação
     const btnRequestNotif = document.getElementById('btn-request-notif');
     if (btnRequestNotif) {

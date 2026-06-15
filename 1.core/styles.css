@@ -1016,12 +1016,17 @@ body::before {
    CONFIGURAÇÕES (SETTINGS) & PWA INSTALL BANNER
    ========================================================================== */
 
-.btn-settings-icon {
+.brand-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+}
+.btn-header-icon {
     background: transparent;
     border: none;
-    color: #7B68EE;
+    color: var(--text-muted);
     cursor: pointer;
-    margin-left: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1030,7 +1035,28 @@ body::before {
     transition: all 0.2s ease;
     outline: none;
 }
+.btn-header-icon:hover {
+    color: var(--text-primary);
+    background: rgba(123, 104, 238, 0.1);
+    box-shadow: 0 0 10px var(--glow-purple);
+}
+#btn-header-trophies { color: #fbbf24; }
+#btn-header-trophies:hover { color: #fde68a; background: rgba(251,191,36,0.12); box-shadow: 0 0 10px rgba(251,191,36,0.3); }
+#btn-header-tavern { color: var(--neon-cyan); }
+#btn-header-tavern:hover { color: #a5f3fc; background: rgba(0,242,254,0.1); box-shadow: 0 0 10px var(--glow-blue); }
 #btn-open-settings { color: #7B68EE; }
+.btn-settings-icon {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+    outline: none;
+}
 .btn-settings-icon:hover {
     color: var(--text-primary);
     background: rgba(139, 92, 246, 0.1);
