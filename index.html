@@ -122,10 +122,13 @@
 
             <!-- Atributos — Hexágono + 3 Barras -->
             <div class="attributes-section">
-                <div class="section-header-label">ATRIBUTOS</div>
+                <div class="section-header-row">
+                    <div class="section-header-label">ATRIBUTOS</div>
+                    <button id="btn-toggle-radar" class="btn-toggle-radar">OCULTAR GRÁFICO</button>
+                </div>
 
                 <!-- Radar hexagonal (6 skills) -->
-                <div class="radar-chart-wrapper">
+                <div class="radar-chart-wrapper" id="radar-wrapper">
                     <canvas id="skills-radar-chart" width="260" height="260"></canvas>
                 </div>
 
@@ -325,7 +328,7 @@
 
         <!-- Overlay: SOCIAL MODAL (Chat, Amigos, Clã) -->
         <div id="modal-social" class="modal">
-            <div class="modal-box modal-box-social" style="max-width: 600px; height: 90dvh; display: flex; flex-direction: column;">
+            <div class="modal-box modal-box-social modal-box-lg" style="height: 90dvh; display: flex; flex-direction: column;">
                 <span class="close-modal-btn" id="close-social-modal">&times;</span>
                 
                 <div class="profile-card-header" style="border-bottom: none; padding-bottom: 0;">
@@ -653,7 +656,7 @@
 
         <!-- Modal: Nova Side Quest -->
         <div id="modal-sidequest" class="modal">
-            <div class="modal-box modal-box-large">
+            <div class="modal-box modal-box-large modal-box-lg">
                 <span class="close-modal-btn" id="close-sq-modal">&times;</span>
                 <h3 style="margin-bottom: 15px;">⚔️ NOVA QUEST</h3>
                 
@@ -719,7 +722,7 @@
 
         <!-- Modal: Confirmação de Hábito da Biblioteca -->
         <div id="modal-confirm-habit" class="modal" style="z-index: 2100;">
-            <div class="modal-box modal-box-mini" style="max-width:320px; text-align:center; padding:24px;">
+            <div class="modal-box modal-box-mini modal-box-xs">
                 <span class="close-modal-btn" id="close-confirm-modal">&times;</span>
                 <h4 id="confirm-habit-title" style="font-family:var(--font-hud); color:var(--text-primary); font-size:15px; margin-bottom:8px; margin-top:10px;">Adicionar Hábito?</h4>
                 <p id="confirm-habit-desc" style="font-size:12px; color:var(--text-muted); margin-bottom:20px; line-height:1.4;"></p>
@@ -740,7 +743,7 @@
 
         <!-- Modal: Nova Recompensa -->
         <div id="modal-reward" class="modal">
-            <div class="modal-box">
+            <div class="modal-box modal-box-sm">
                 <span class="close-modal-btn" id="close-rw-modal">&times;</span>
                 <h3>🎁 NOVO ITEM</h3>
                 <form id="form-reward">
@@ -768,7 +771,7 @@
 
         <!-- Modal: Configurações do Sistema -->
         <div id="modal-settings" class="modal">
-            <div class="modal-box modal-box-settings">
+            <div class="modal-box modal-box-settings modal-box-md">
                 <span class="close-modal-btn" id="close-settings-modal">&times;</span>
                 <h3>⚙️ CONFIGURAÇÕES</h3>
                 
@@ -830,7 +833,7 @@
 
         <!-- Overlay: PERFIL DO JOGADOR -->
         <div id="modal-player-profile" class="modal">
-            <div class="modal-box modal-box-profile">
+            <div class="modal-box modal-box-profile modal-box-lg">
                 <span class="close-modal-btn" id="close-profile-modal">&times;</span>
                 
                 <div class="profile-card-header">
@@ -934,7 +937,7 @@
 
         <!-- Modal: Impact Quote -->
         <div id="modal-impact-quote" class="modal">
-            <div class="modal-box quote-modal-box">
+            <div class="modal-box quote-modal-box modal-box-sm">
                 <span class="close-modal-btn" id="close-quote-modal">&times;</span>
                 <div class="quote-content">
                     <h2 id="impact-quote-text">"They don't know me son!"</h2>
@@ -952,7 +955,7 @@
 
     <!-- Onboarding Wizard -->
     <div id="onboarding-wizard" class="modal" style="display: none; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 9999;">
-        <div class="modal-box" style="border: 1px solid var(--neon-purple); max-width: 500px; position: relative;">
+        <div class="modal-box modal-box-wizard modal-box-md">
             <span id="btn-wizard-back" class="close-modal-btn" style="left: 22px; right: auto; font-size: 24px; display: none;">&larr;</span>
             <div id="wizard-step-1" class="wizard-step">
                 <h2 style="color: var(--neon-purple); text-align: center; text-transform: uppercase;">O Despertar</h2>
@@ -1065,7 +1068,7 @@
     
     <!-- Modal: Weekly Boss Chegou -->
     <div id="weekly-boss-modal" class="modal" style="display:none;">
-        <div class="modal-box weekly-boss-modal-box">
+        <div class="modal-box weekly-boss-modal-box modal-box-sm">
             <div class="boss-modal-icon">💀</div>
             <h3 class="boss-modal-title">O SISTEMA INVOCOU UM CHEFE</h3>
             <p class="boss-modal-desc">Sua consistência atraiu um inimigo digno. Você tem <strong>72 horas</strong> para completar 3 dias perfeitos e derrotá-lo.</p>
@@ -1076,7 +1079,7 @@
 
     <!-- Modal: Relatório Semanal (Weekly Report) -->
     <div id="modal-weekly-report" class="modal" style="display:none;">
-        <div class="modal-box weekly-report-modal-box">
+        <div class="modal-box weekly-report-modal-box modal-box-md">
             <span class="close-modal-btn" id="btn-close-weekly-report">&times;</span>
             <h3 class="neon-purple-text font-hud" style="letter-spacing: 2px; text-align: center; margin-bottom: 8px;">[ AVALIAÇÃO DO SISTEMA ]</h3>
             <div id="report-period-text" style="color: var(--neon-purple); font-family: var(--font-hud); font-size: 11px; text-align: center; margin-bottom: 20px; letter-spacing: 1px;">SEMANA 23 (08/06 a 14/06)</div>

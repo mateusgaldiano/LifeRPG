@@ -1802,8 +1802,8 @@ function renderSkills() {
     // Inicializa se não existir no save
     initSkillsState();
     
-    // Desenha o gráfico Radar Hexagonal no Canvas
-    drawRadarChart();
+    // Desenha o gráfico Radar Hexagonal no Canvas (debounced)
+    debouncedDrawRadarChart();
 }
 
 // Inicializa a árvore de skills caso não esteja presente no estado (retrocompatibilidade robusta)
@@ -2846,6 +2846,10 @@ function setupEventListeners() {
             claimWeeklyReport(rewards, weekStr);
         }
     });
+
+    if (typeof setupRadarToggle === 'function') {
+        setupRadarToggle();
+    }
 }
 
 // Abre o modal de zoom do avatar com o título correto e imagem ampliada
@@ -5632,5 +5636,53 @@ function completeTutorialQuestline() {
     spawnFloatingText(20, 'gold');
     
     showSystemToast("🎉 *TUTORIAL CONCLUÍDO!* Você aprendeu os caminhos do Sistema e recebeu +50 XP e +20 🪙!");
+}
+
+// ==========================================================================
+// UTILS & RADAR TOGGLE (MOBILE)
+// ==========================================================================
+
+// Função utilitária de debounce
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        const context = this;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
+// Versão debotada do desenho do radar chart (reduz carga na Main Thread)
+const debouncedDrawRadarChart = debounce(drawRadarChart, 50);
+
+// Lógica de toggle do radar chart para viewports mobile
+function setupRadarToggle() {
+    const btnToggleRadar = document.getElementById('btn-toggle-radar');
+    const radarWrapper = document.getElementById('radar-wrapper');
+    if (!btnToggleRadar || !radarWrapper) return;
+
+    // Função interna para aplicar o estado visual de acordo com o collapsed
+    const setRadarState = (collapsed) => {
+        if (collapsed) {
+            radarWrapper.style.display = 'none';
+            btnToggleRadar.innerText = 'VER GRÁFICO';
+        } else {
+            radarWrapper.style.display = 'flex';
+            btnToggleRadar.innerText = 'OCULTAR GRÁFICO';
+            // Redesenha para garantir correto posicionamento após display:flex
+            drawRadarChart();
+        }
+    };
+
+    // Inicializa no boot verificando o localStorage
+    const isCollapsed = localStorage.getItem('lifeRPG_radarCollapsed') === 'true';
+    setRadarState(isCollapsed);
+
+    // Adiciona o listener de click
+    btnToggleRadar.addEventListener('click', () => {
+        const nowCollapsed = radarWrapper.style.display !== 'none';
+        localStorage.setItem('lifeRPG_radarCollapsed', nowCollapsed ? 'true' : 'false');
+        setRadarState(nowCollapsed);
+    });
 }
 

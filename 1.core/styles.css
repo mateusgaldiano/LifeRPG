@@ -383,12 +383,46 @@ body::before {
 /* ── ATRIBUTOS ───────────────────────────────────────────────────────────── */
 .attributes-section { display: flex; flex-direction: column; gap: 8px; }
 
+.section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-glass);
+    padding-bottom: 3px;
+    margin-bottom: 4px;
+}
+.section-header-row .section-header-label {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
 .section-header-label {
     font-family: var(--font-hud);
     font-size: 8px; font-weight: 700;
     letter-spacing: 2px; color: var(--text-muted);
-    border-bottom: 1px solid var(--border-glass);
-    padding-bottom: 3px;
+}
+.btn-toggle-radar {
+    display: none;
+    font-family: var(--font-hud);
+    font-size: 8px;
+    background: transparent;
+    border: 1px solid var(--border-glass);
+    color: var(--text-muted);
+    border-radius: 4px;
+    padding: 2px 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+.btn-toggle-radar:hover {
+    border-color: var(--neon-purple);
+    color: var(--text-primary);
+}
+@media (max-width: 768px) {
+    .btn-toggle-radar {
+        display: inline-block !important;
+    }
 }
 
 /* Radar Chart */
@@ -849,6 +883,7 @@ body::before {
     box-shadow: 0 40px 80px rgba(15,31,53,0.15);
     animation: modalIn 0.3s var(--ease-back) forwards;
 }
+
 .modal-box h3 { font-family: var(--font-hud); font-size: 16px; color: var(--text-primary); letter-spacing: 2px; margin-bottom: 24px; }
 .close-modal-btn { position: absolute; top: 18px; right: 22px; font-size: 24px; color: var(--text-primary); cursor: pointer; transition: color 0.2s, transform 0.2s; line-height: 1; z-index: 10; }
 .close-modal-btn:hover { color: var(--neon-purple); transform: scale(1.1); }
@@ -3340,5 +3375,16 @@ body::before {
     color: var(--neon-cyan);
     text-shadow: 0 0 6px rgba(6, 182, 212, 0.6);
 }
+
+/* Standardized Modal Sizes & Utilities (Relocated to end for override precedence) */
+.modal-box-xs { max-width: 320px !important; padding: 24px !important; }
+.modal-box-sm { max-width: 380px !important; }
+.modal-box-md { max-width: 500px !important; }
+.modal-box-lg { max-width: 650px !important; }
+
+.modal-box-wizard {
+    border: 1px solid var(--neon-purple) !important;
+}
+
 
 
