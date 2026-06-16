@@ -5,9 +5,7 @@ Estas são as únicas pendências que ainda não foram concluídas no projeto.
 ---
 
 ## 🔴 CRÍTICO
-1. Criar Projeto Firebase e Adicionar Chaves (Ação do Usuário)
-   - O código-fonte de sincronização em nuvem e offline fallback já está pronto.
-   - Requer que o usuário crie um projeto no Firebase Console, habilite Firestore e Auth, e adicione as credenciais em 'firebase-config.js'.
+*Nenhuma pendência crítica em aberto.* Todas as chaves de produção do Supabase, Redirect URIs do Google Cloud OAuth e Políticas de Acesso RLS foram configuradas e validadas.
 
 ---
 
