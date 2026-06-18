@@ -875,6 +875,48 @@ function updateUI() {
     if (typeof renderTutorialBanner === 'function') {
         renderTutorialBanner();
     }
+
+    // Renderiza Buffs Ativos no HUD
+    const buffsListEl = document.getElementById('active-buffs-list');
+    if (buffsListEl) {
+        let buffsHtml = '';
+        if (gameState.buffs) {
+            if (gameState.buffs.autoHeal) {
+                buffsHtml += `
+                    <div class="buff-chip buff-auto-heal" title="Anula a penalidade caso você perca a ofensiva um dia.">
+                        <span class="buff-chip-icon">🧪</span>
+                        <div style="display: flex; flex-direction: column; text-align: left;">
+                            <span class="buff-chip-title">Auto-Cura</span>
+                            <span class="buff-chip-desc">Ativo</span>
+                        </div>
+                    </div>
+                `;
+            }
+            if (gameState.buffs.doubleXp) {
+                buffsHtml += `
+                    <div class="buff-chip buff-double-xp" title="Ganha o dobro de XP em tudo até a meia-noite.">
+                        <span class="buff-chip-icon">📜</span>
+                        <div style="display: flex; flex-direction: column; text-align: left;">
+                            <span class="buff-chip-title">Sabedoria</span>
+                            <span class="buff-chip-desc">Double XP</span>
+                        </div>
+                    </div>
+                `;
+            }
+            if (gameState.buffs.legendaryFocus) {
+                buffsHtml += `
+                    <div class="buff-chip buff-legendary-focus" title="Sua próxima missão concluída concede o triplo (x3) de Ouro.">
+                        <span class="buff-chip-icon">⚡</span>
+                        <div style="display: flex; flex-direction: column; text-align: left;">
+                            <span class="buff-chip-title">Foco Lendário</span>
+                            <span class="buff-chip-desc">x3 Ouro</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        buffsListEl.innerHTML = buffsHtml;
+    }
 }
 
 // Renderiza badges de sinergias ativas abaixo das barras de atributo

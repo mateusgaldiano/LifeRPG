@@ -340,7 +340,33 @@ body::before {
 .resource-val { font-family: var(--font-hud); font-size: 15px; font-weight: 700; color: var(--text-primary); }
 .resource-unit { font-family: var(--font-body); font-size: 7.5px; font-weight: 600; color: var(--text-muted); letter-spacing: 1.5px; align-self: flex-end; margin-bottom: 1.5px; }
 .gold-chip .resource-val { color: var(--neon-gold); text-shadow: 0 0 8px var(--glow-gold); }
-.streak-chip .resource-val { color: #ff773d; text-shadow: 0 0 8px rgba(255,119,61,0.3); }
+/* Active Buffs */
+.active-buffs-list { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; width: 100%; justify-content: flex-start; }
+.buff-chip {
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-sm);
+    padding: 4px 8px;
+    transition: all 0.2s;
+}
+.buff-chip-icon { font-size: 12px; }
+.buff-chip-title {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 9px;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.buff-chip-desc {
+    font-family: var(--font-body);
+    font-size: 8px;
+    color: var(--text-muted);
+}
+.buff-chip.buff-auto-heal { border-color: rgba(34,197,94,0.35); box-shadow: 0 0 5px rgba(34,197,94,0.1); }
+.buff-chip.buff-double-xp { border-color: rgba(99,102,241,0.4); box-shadow: 0 0 5px rgba(99,102,241,0.1); }
+.buff-chip.buff-legendary-focus { border-color: rgba(251,191,36,0.5); box-shadow: 0 0 5px rgba(251,191,36,0.1); }
 
 /* Streak Chip Tiers */
 .streak-chip.streak-tier-3 {
