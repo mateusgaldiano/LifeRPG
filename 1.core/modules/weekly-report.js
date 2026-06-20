@@ -39,19 +39,7 @@ function getPreviousWeekDates(todayDate) {
     return { dates, mondayDate, sundayDate };
 }
 
-function checkAndShowWeeklyReport() {
-    const today = new Date();
-    const currentWeekStr = getISOWeekString(today);
-    
-    const prevWeekDate = new Date(today);
-    prevWeekDate.setDate(today.getDate() - 7);
-    const prevWeekStr = getISOWeekString(prevWeekDate);
-    
-    if (!gameState.history || Object.keys(gameState.history).length === 0) return;
-    if (gameState.lastWeeklyReportYearWeek === prevWeekStr) return;
-    
-    const { dates, mondayDate, sundayDate } = getPreviousWeekDates(today);
-    
+function calculateWeeklyReportSync(history, quests, sideQuests, dates, prevWeekStr, mondayDate, sundayDate) {
     let completedQuests = 0;
     let totalQuests = 0;
     let perfectDays = 0;
@@ -61,7 +49,7 @@ function checkAndShowWeeklyReport() {
     const completedTitles = [];
     
     dates.forEach(dStr => {
-        const log = gameState.history[dStr];
+        const log = history[dStr];
         if (log) {
             activeDaysCount++;
             completedQuests += (log.count || 0);
@@ -78,15 +66,13 @@ function checkAndShowWeeklyReport() {
     });
     
     if (activeDaysCount === 0) {
-        gameState.lastWeeklyReportYearWeek = prevWeekStr;
-        saveGameData();
-        return;
+        return { status: 'no_active_days' };
     }
     
     const survivalRate = totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0;
     
     const skillCounts = {};
-    const allQuests = [...(gameState.quests || []), ...(gameState.sideQuests || [])];
+    const allQuests = [...(quests || []), ...(sideQuests || [])];
     
     completedTitles.forEach(title => {
         const match = allQuests.find(q => q.title === title);
@@ -113,38 +99,38 @@ function checkAndShowWeeklyReport() {
     };
     const topSkillName = skillNames[topSkill] || 'Rotina';
     
-    let rankLabel = 'RANK D';
+    let rankLabel = 'SINTONIA D';
     let rankClass = 'rank-glow-d';
     let goldReward = 0;
     let xpReward = 0;
     let verdictDesc = '';
     
     if (survivalRate >= 90) {
-        rankLabel = 'RANK S';
+        rankLabel = 'SINTONIA S';
         rankClass = 'rank-glow-s';
         goldReward = 80;
         xpReward = 150;
         verdictDesc = '"Desempenho lendário. Suas habilidades crescem em ritmo avassalador. O topo do mundo está ao seu alcance."';
     } else if (survivalRate >= 75) {
-        rankLabel = 'RANK A';
+        rankLabel = 'SINTONIA A';
         rankClass = 'rank-glow-a';
         goldReward = 50;
         xpReward = 100;
         verdictDesc = '"Desempenho formidável. O Sistema reconhece seu vigor e determinação. Continue subindo de nível."';
     } else if (survivalRate >= 50) {
-        rankLabel = 'RANK B';
+        rankLabel = 'SINTONIA B';
         rankClass = 'rank-glow-b';
         goldReward = 30;
         xpReward = 60;
         verdictDesc = '"Progresso aceitável. Suas conquistas são constantes, mas a complacência é sua maior inimiga."';
     } else if (survivalRate >= 30) {
-        rankLabel = 'RANK C';
+        rankLabel = 'SINTONIA C';
         rankClass = 'rank-glow-c';
         goldReward = 15;
         xpReward = 30;
         verdictDesc = '"Abaixo das expectativas. Você está apenas sobrevivendo. O Sistema exige mais empenho e atitude."';
     } else {
-        rankLabel = 'RANK D';
+        rankLabel = 'SINTONIA D';
         rankClass = 'rank-glow-d';
         goldReward = 0;
         xpReward = 0;
@@ -154,6 +140,26 @@ function checkAndShowWeeklyReport() {
     const formatDate = (d) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
     const periodText = `PERÍODO DE AVALIAÇÃO: ${formatDate(mondayDate)} a ${formatDate(sundayDate)}`;
     
+    return {
+        status: 'success',
+        survivalRate,
+        completedQuests,
+        totalQuests,
+        perfectDays,
+        goodDays,
+        missedDays,
+        topSkillName,
+        maxCount,
+        rankLabel,
+        rankClass,
+        goldReward,
+        xpReward,
+        verdictDesc,
+        periodText
+    };
+}
+
+function renderWeeklyReportUI(data, prevWeekStr) {
     const periodEl = document.getElementById('report-period-text');
     const rateValEl = document.getElementById('report-rate-val');
     const rateBarEl = document.getElementById('report-rate-bar');
@@ -166,31 +172,31 @@ function checkAndShowWeeklyReport() {
     const descEl = document.getElementById('report-verdict-desc');
     const btn = document.getElementById('btn-claim-weekly-report');
     
-    if (periodEl) periodEl.innerText = periodText;
-    if (rateValEl) rateValEl.innerText = `${survivalRate}%`;
-    if (rateBarEl) rateBarEl.style.width = `${survivalRate}%`;
-    if (countEl) countEl.innerText = `Concluiu ${completedQuests} de ${totalQuests} missões programadas`;
+    if (periodEl) periodEl.innerText = data.periodText;
+    if (rateValEl) rateValEl.innerText = `${data.survivalRate}%`;
+    if (rateBarEl) rateBarEl.style.width = `${data.survivalRate}%`;
+    if (countEl) countEl.innerText = `Concluiu ${data.completedQuests} de ${data.totalQuests} missões programadas`;
     
-    if (perfEl) perfEl.innerText = perfectDays;
-    if (goodEl) goodEl.innerText = goodDays;
-    if (missEl) missEl.innerText = missedDays;
+    if (perfEl) perfEl.innerText = data.perfectDays;
+    if (goodEl) goodEl.innerText = data.goodDays;
+    if (missEl) missEl.innerText = data.missedDays;
     
     if (focusEl) {
-        if (maxCount > 0) {
-            focusEl.innerHTML = `Você focou majoritariamente na habilidade: <strong style="color: var(--neon-purple);">${topSkillName}</strong> (${maxCount} quests feitas).`;
+        if (data.maxCount > 0) {
+            focusEl.innerHTML = `Você focou majoritariamente na habilidade: <strong style="color: var(--neon-purple);">${data.topSkillName}</strong> (${data.maxCount} quests feitas).`;
         } else {
             focusEl.innerHTML = `Nenhuma missão realizada no período.`;
         }
     }
     
     if (rankEl) {
-        rankEl.innerText = rankLabel;
-        rankEl.className = `font-hud ${rankClass}`;
+        rankEl.innerText = data.rankLabel;
+        rankEl.className = `font-hud ${data.rankClass}`;
     }
-    if (descEl) descEl.innerText = verdictDesc;
+    if (descEl) descEl.innerText = data.verdictDesc;
     
     if (btn) {
-        btn.dataset.rewards = JSON.stringify({ gold: goldReward, xp: xpReward, rank: rankLabel });
+        btn.dataset.rewards = JSON.stringify({ gold: data.goldReward, xp: data.xpReward, rank: data.rankLabel });
         btn.dataset.week = prevWeekStr;
     }
     
@@ -198,10 +204,101 @@ function checkAndShowWeeklyReport() {
     if (modal) modal.style.display = 'flex';
 }
 
+function checkAndShowWeeklyReport() {
+    const today = new Date();
+    const currentWeekStr = getISOWeekString(today);
+    
+    const prevWeekDate = new Date(today);
+    prevWeekDate.setDate(today.getDate() - 7);
+    const prevWeekStr = getISOWeekString(prevWeekDate);
+    
+    if (!gameState.history || Object.keys(gameState.history).length === 0) return;
+    if (gameState.lastWeeklyReportYearWeek === prevWeekStr) return;
+    
+    const { dates, mondayDate, sundayDate } = getPreviousWeekDates(today);
+    
+    const useWorker = typeof(Worker) !== 'undefined' && window.location.protocol !== 'file:';
+    
+    if (useWorker) {
+        let workerTerminated = false;
+        const worker = new Worker('1.core/modules/report-worker.js');
+        
+        const timeout = setTimeout(() => {
+            if (!workerTerminated) {
+                console.warn('[Report Worker] Timeout atingido. Executando fallback na Main Thread.');
+                worker.terminate();
+                workerTerminated = true;
+                runFallback();
+            }
+        }, 4000);
+        
+        worker.postMessage({
+            history: gameState.history,
+            quests: gameState.quests,
+            sideQuests: gameState.sideQuests,
+            dates: dates,
+            prevWeekStr: prevWeekStr,
+            mondayDateStr: mondayDate.toISOString(),
+            sundayDateStr: sundayDate.toISOString()
+        });
+        
+        worker.onmessage = function(e) {
+            if (workerTerminated) return;
+            clearTimeout(timeout);
+            workerTerminated = true;
+            worker.terminate();
+            
+            const msg = e.data;
+            if (msg.status === 'no_active_days') {
+                gameState.lastWeeklyReportYearWeek = msg.prevWeekStr;
+                saveGameData();
+                return;
+            }
+            if (msg.type === 'done') {
+                renderWeeklyReportUI(msg.data, prevWeekStr);
+            }
+        };
+        
+        worker.onerror = function(err) {
+            if (workerTerminated) return;
+            clearTimeout(timeout);
+            console.error('[Report Worker Error]', err);
+            workerTerminated = true;
+            worker.terminate();
+            runFallback();
+        };
+    } else {
+        runFallback();
+    }
+    
+    function runFallback() {
+        const result = calculateWeeklyReportSync(
+            gameState.history,
+            gameState.quests,
+            gameState.sideQuests,
+            dates,
+            prevWeekStr,
+            mondayDate,
+            sundayDate
+        );
+        
+        if (result.status === 'no_active_days') {
+            gameState.lastWeeklyReportYearWeek = prevWeekStr;
+            saveGameData();
+            return;
+        }
+        
+        if (result.status === 'success') {
+            renderWeeklyReportUI(result, prevWeekStr);
+        }
+    }
+}
+
+
 function claimWeeklyReport(rewards, weekStr) {
     const gold = rewards.gold || 0;
     const xp = rewards.xp || 0;
-    const rank = rewards.rank || 'RANK D';
+    const rank = rewards.rank || 'SINTONIA D';
     
     if (xp > 0) {
         gameState.xp += xp;

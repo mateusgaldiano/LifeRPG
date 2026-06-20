@@ -40,7 +40,8 @@ import {
     getActivePerks,
     hasPerk,
     getPerkXpBonus,
-    debounce
+    debounce,
+    getPlayerTerm
 } from './modules/utils.js';
 
 import {
@@ -180,6 +181,7 @@ window.getActivePerks = getActivePerks;
 window.hasPerk = hasPerk;
 window.getPerkXpBonus = getPerkXpBonus;
 window.debounce = debounce;
+window.getPlayerTerm = () => getPlayerTerm(gameState.gender);
 
 // Bind UI
 window.renderAchievements = renderAchievements;

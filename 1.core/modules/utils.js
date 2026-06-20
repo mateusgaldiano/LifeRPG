@@ -42,12 +42,14 @@ function computeAttributes() {
 }
 
 
-function computePlayerTitle(attrs) {
+function computePlayerTitle(attrs, gender = 'male') {
     const w = attrs.willpower.val;
     const i = attrs.intellect.val;
     const h = attrs.health.val;
 
-    if (w < 0.2 && i < 0.2 && h < 0.2) return "Novato";
+    const isFemale = gender === 'female';
+
+    if (w < 0.2 && i < 0.2 && h < 0.2) return isFemale ? "Novata" : "Novato";
 
     const max = Math.max(w, i, h);
     const epsilon = 0.05;
@@ -55,16 +57,16 @@ function computePlayerTitle(attrs) {
     const isI = Math.abs(i - max) < epsilon;
     const isH = Math.abs(h - max) < epsilon;
 
-    if (isW && isI && isH) return "Desperto";
-    if (isW && isH) return "Monge-Atleta";
-    if (isI && isH) return "Sábio Guerreiro";
-    if (isW && isI) return "Mestre da Mente";
+    if (isW && isI && isH) return isFemale ? "Desperta" : "Desperto";
+    if (isW && isH) return isFemale ? "Guerreira-Atleta" : "Monge-Atleta";
+    if (isI && isH) return isFemale ? "Sábia Guerreira" : "Sábio Guerreiro";
+    if (isW && isI) return isFemale ? "Mestra da Mente" : "Mestre da Mente";
 
-    if (isH) return "Guerreiro";
+    if (isH) return isFemale ? "Guerreira" : "Guerreiro";
     if (isI) return "Estrategista";
-    if (isW) return "Estoico";
+    if (isW) return isFemale ? "Estoica" : "Estoico";
 
-    return "Desperto";
+    return isFemale ? "Desperta" : "Desperto";
 }
 
 // ── Definições de Sinergias de Atributos ──────────────────────────────────
@@ -279,6 +281,10 @@ function debounce(func, wait) {
     };
 }
 
+function getPlayerTerm(gender = 'male') {
+    return gender === 'female' ? 'Guerreira' : 'Guerreiro';
+}
+
 export {
     localDateStr,
     hasSkillLV3,
@@ -302,5 +308,6 @@ export {
     getActivePerks,
     hasPerk,
     getPerkXpBonus,
-    debounce
+    debounce,
+    getPlayerTerm
 };

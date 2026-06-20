@@ -419,11 +419,11 @@ function confirmRemoveQuest(id, title) {
 
 function equipItem(type, itemId) {
     if (type === 'title') {
-        gameState.inventory.activeTitle = itemId;
+        gameState.inventory.activeTitle = gameState.inventory.activeTitle === itemId ? null : itemId;
     } else if (type === 'border') {
-        gameState.inventory.activeBorder = itemId;
+        gameState.inventory.activeBorder = gameState.inventory.activeBorder === itemId ? null : itemId;
     } else if (type === 'skin') {
-        gameState.inventory.activeSkin = itemId;
+        gameState.inventory.activeSkin = gameState.inventory.activeSkin === itemId ? 'default' : itemId;
     }
     
     saveGameData();
@@ -445,9 +445,9 @@ function renderInventory() {
         'title_mestre': { name: 'Mestre do Tempo', type: 'title', icon: '⏳', color: 'var(--neon-gold)' },
         'border_neonred': { name: 'Demônio Carmesim', type: 'border', icon: '🖼️', color: 'var(--neon-red)' },
         'default': { name: 'Avatar Padrão do Rank', type: 'skin', icon: '🛡️', color: 'var(--neon-cyan)' },
-        'skin_shadow_master': { name: 'Mestre das Sombras', type: 'skin', icon: '👤', color: 'var(--neon-purple)' },
-        'skin_mist_monarch': { name: 'Monarca da Névoa', type: 'skin', icon: '👥', color: 'var(--neon-cyan)' },
-        'skin_arise_emperor': { name: 'Imperador Arise', type: 'skin', icon: '👑', color: 'var(--neon-gold)' }
+        'skin_shadow_master': { name: 'Borda: Mestre das Sombras', type: 'border', icon: '👤', color: 'var(--neon-purple)' },
+        'skin_mist_monarch': { name: 'Borda: Monarca da Névoa', type: 'border', icon: '👥', color: 'var(--neon-cyan)' },
+        'skin_arise_emperor': { name: 'Borda: Imperador Arise', type: 'border', icon: '👑', color: 'var(--neon-gold)' }
     };
 
     const allUnlocked = [
@@ -501,8 +501,8 @@ function renderInventory() {
 function updateWizardBackBtnVisibility() {
     const btnBack = document.getElementById('btn-wizard-back');
     if (!btnBack) return;
-    const step1 = document.getElementById('wizard-step-1');
-    if (step1 && (step1.style.display === 'block' || step1.style.display === '')) {
+    const step0 = document.getElementById('wizard-step-0');
+    if (step0 && step0.style.display !== 'none') {
         btnBack.style.display = 'none';
     } else {
         btnBack.style.display = 'inline-flex';
@@ -510,12 +510,16 @@ function updateWizardBackBtnVisibility() {
 }
 
 function goBackWizard() {
+    const step0 = document.getElementById('wizard-step-0');
     const step1 = document.getElementById('wizard-step-1');
     const step2 = document.getElementById('wizard-step-2');
     const stepHook = document.getElementById('wizard-step-hook');
     const step3 = document.getElementById('wizard-step-3');
 
-    if (step2 && step2.style.display === 'block') {
+    if (step1 && step1.style.display === 'block') {
+        step1.style.display = 'none';
+        if (step0) step0.style.display = 'block';
+    } else if (step2 && step2.style.display === 'block') {
         step2.style.display = 'none';
         if (step1) step1.style.display = 'block';
     } else if (stepHook && stepHook.style.display === 'block') {
@@ -538,6 +542,19 @@ function initOnboardingWizard() {
     if (!wizardModal) return;
     
     wizardModal.style.cssText = 'display: flex !important; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 24px;';
+    
+    const step0 = document.getElementById('wizard-step-0');
+    const step1 = document.getElementById('wizard-step-1');
+    const step2 = document.getElementById('wizard-step-2');
+    const stepHook = document.getElementById('wizard-step-hook');
+    const step3 = document.getElementById('wizard-step-3');
+    
+    if (step0) step0.style.display = 'block';
+    if (step1) step1.style.display = 'none';
+    if (step2) step2.style.display = 'none';
+    if (stepHook) stepHook.style.display = 'none';
+    if (step3) step3.style.display = 'none';
+    
     updateWizardBackBtnVisibility();
 
     // Botão Voltar
@@ -546,6 +563,37 @@ function initOnboardingWizard() {
         btnBack.addEventListener('click', () => {
             goBackWizard();
         });
+    }
+    
+    // Passo 0: Gênero
+    const btnMale = document.getElementById('btn-gender-male');
+    const btnFemale = document.getElementById('btn-gender-female');
+    
+    const selectGender = (gender) => {
+        gameState.gender = gender;
+        if (btnMale) btnMale.classList.remove('selected');
+        if (btnFemale) btnFemale.classList.remove('selected');
+        
+        const selCard = document.getElementById(`btn-gender-${gender}`);
+        if (selCard) selCard.classList.add('selected');
+        
+        const pStep1 = document.getElementById('wizard-step-1-p');
+        if (pStep1) {
+            pStep1.innerText = `O Sistema te escolheu. Qual é o seu nome, ${gender === 'female' ? 'guerreira' : 'guerreiro'}?`;
+        }
+        
+        setTimeout(() => {
+            if (step0) step0.style.display = 'none';
+            if (step1) step1.style.display = 'block';
+            updateWizardBackBtnVisibility();
+        }, 250);
+    };
+
+    if (btnMale) {
+        btnMale.addEventListener('click', () => selectGender('male'));
+    }
+    if (btnFemale) {
+        btnFemale.addEventListener('click', () => selectGender('female'));
     }
     
     // Passo 1: Nome
@@ -557,8 +605,8 @@ function initOnboardingWizard() {
         if (name) {
             gameState.playerName = name;
             document.getElementById('lbl-player-name').innerText = name.toUpperCase();
-            document.getElementById('wizard-step-1').style.display = 'none';
-            document.getElementById('wizard-step-2').style.display = 'block';
+            if (step1) step1.style.display = 'none';
+            if (step2) step2.style.display = 'block';
             updateWizardBackBtnVisibility();
         } else {
             inputName.style.borderColor = 'red';
@@ -793,12 +841,22 @@ function updateUI() {
     const avatarBorder = document.querySelector('.avatar-hex-border');
     const avatarWrapper = document.querySelector('.avatar-hex-wrapper');
     if (avatarBorder && avatarWrapper) {
-        if (gameState.inventory && gameState.inventory.activeBorder === 'border_neonred') {
+        avatarBorder.className = 'avatar-hex-border';
+        avatarWrapper.className = 'avatar-hex-wrapper';
+        
+        const activeBorder = gameState.inventory?.activeBorder;
+        if (activeBorder === 'border_neonred') {
             avatarBorder.classList.add('border-neonred');
             avatarWrapper.classList.add('glow-neonred');
-        } else {
-            avatarBorder.classList.remove('border-neonred');
-            avatarWrapper.classList.remove('glow-neonred');
+        } else if (activeBorder === 'skin_shadow_master') {
+            avatarBorder.classList.add('border-shadow-master');
+            avatarWrapper.classList.add('glow-shadow-master');
+        } else if (activeBorder === 'skin_mist_monarch') {
+            avatarBorder.classList.add('border-mist-monarch');
+            avatarWrapper.classList.add('glow-mist-monarch');
+        } else if (activeBorder === 'skin_arise_emperor') {
+            avatarBorder.classList.add('border-arise-emperor');
+            avatarWrapper.classList.add('glow-arise-emperor');
         }
     }
 
@@ -860,7 +918,7 @@ function updateUI() {
     // Player Title Dinâmico
     const titleLabel = document.getElementById('lbl-player-title');
     if (titleLabel) {
-        titleLabel.innerText = computePlayerTitle(attrs);
+        titleLabel.innerText = computePlayerTitle(attrs, gameState.gender);
     }
 
     // Avatar e radar chart
@@ -965,18 +1023,15 @@ function updateAvatarImage() {
     const avatarEl = document.getElementById('char-avatar-img');
     if (!avatarEl) return;
     
-    const activeSkin = gameState.inventory?.activeSkin || 'default';
-    if (activeSkin !== 'default') {
-        avatarEl.src = `2.assets/avatars/${activeSkin}.png`;
-        avatarEl.onerror = () => { avatarEl.src = '2.assets/avatars/1.rank-e.png'; };
-    } else {
-        const rank = getRankForLevel(gameState.level);
-        const rankKey = rank.css.replace('rank-', '');
-        const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
-        const num = prefixMap[rankKey] || '1';
-        avatarEl.src = `2.assets/avatars/${num}.rank-${rankKey}.png`;
-        avatarEl.onerror = () => { avatarEl.src = '2.assets/avatars/1.rank-e.png'; };
-    }
+    const gender = gameState.gender || 'male';
+    const folder = gender === 'female' ? '0 - female' : '1 - male';
+    
+    const rank = getRankForLevel(gameState.level);
+    const rankKey = rank.css.replace('rank-', '');
+    const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
+    const num = prefixMap[rankKey] || '1';
+    avatarEl.src = `2.assets/avatars/${folder}/${num}.rank-${rankKey}.png`;
+    avatarEl.onerror = () => { avatarEl.src = `2.assets/avatars/${folder}/1.rank-e.png`; };
 }
 
 // Renderiza a árvore de atributos (Hexagonal Radar Chart) dinamicamente
@@ -1387,33 +1442,24 @@ function openAvatarZoom() {
     
     if (!modal || !imgLarge || !titleEl) return;
     
+    const gender = gameState.gender || 'male';
+    const folder = gender === 'female' ? '0 - female' : '1 - male';
     let level = gameState.level;
     const rank = getRankForLevel(level);
     const rankKey = rank.css.replace('rank-', '');
     
-    const activeSkin = gameState.inventory?.activeSkin || 'default';
-    let src = '';
-    let titleName = '';
-    
-    if (activeSkin !== 'default') {
-        src = `2.assets/avatars/${activeSkin}.png`;
-        const skinNames = {
-            'skin_shadow_master': 'Mestre das Sombras',
-            'skin_mist_monarch': 'Monarca da Névoa',
-            'skin_arise_emperor': 'Imperador Arise'
-        };
-        titleName = skinNames[activeSkin] || 'Skin Especial';
-    } else {
-        const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
-        const num = prefixMap[rankKey] || '1';
-        src = `2.assets/avatars/${num}.rank-${rankKey}.png`;
-        const titleMap = { e: 'Recruta', d: 'Aventureiro', c: 'Caçador', b: 'Elite', a: 'Herói Lendário', s: 'O Sistema' };
-        titleName = titleMap[rankKey] || 'Recruta';
-    }
+    const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
+    const num = prefixMap[rankKey] || '1';
+    const src = `2.assets/avatars/${folder}/${num}.rank-${rankKey}.png`;
+    const titleMap = {
+        male: { e: 'Recruta', d: 'Aventureiro', c: 'Caçador', b: 'Elite', a: 'Herói Lendário', s: 'O Sistema' },
+        female: { e: 'Recruta', d: 'Aventureira', c: 'Caçadora', b: 'Elite', a: 'Heroína Lendária', s: 'O Sistema' }
+    };
+    const titleName = titleMap[gender]?.[rankKey] || 'Recruta';
     
     imgLarge.src = src;
-    imgLarge.onerror = () => { imgLarge.src = '2.assets/avatars/1.rank-e.png'; };
-    titleEl.innerText = `${titleName} - Nível ${level}`;
+    imgLarge.onerror = () => { imgLarge.src = `2.assets/avatars/${folder}/1.rank-e.png`; };
+    titleEl.innerText = `${titleName.toUpperCase()} (${rank.rank})`;
     modal.style.display = 'flex';
 }
 function handleQuestAction(e) {

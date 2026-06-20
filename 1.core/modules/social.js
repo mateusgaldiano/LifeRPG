@@ -1,6 +1,6 @@
 // social.js
 import { gameState, saveGameData, HABIT_LIBRARY } from './state.js';
-import { getRankForLevel, localDateStr } from './utils.js';
+import { getRankForLevel, localDateStr, getPlayerTerm } from './utils.js';
 import { showSystemToast, updateUI } from './ui.js';
 import { addSkillXP } from './game-logic.js';
 
@@ -317,7 +317,7 @@ function sendChatMessage() {
     
     const systemPrompt = `Você é o Tio Iroh, o sábio mentor do desenho Avatar: A Lenda de Aang.
 Você está conversando com o jogador no aplicativo de produtividade gamificada LifeRPG OS.
-O jogador se chama ${gameState.playerName || 'Guerreiro'}.
+O jogador se chama ${gameState.playerName || getPlayerTerm(gameState.gender)}.
 Seu objetivo é dar conselhos sábios, confortantes e motivadores de forma calma, usando metáforas sobre chá, caminhos, natureza e paciência. Fale sempre em português (PT-BR). Seja encorajador, sábio e paciente. Use citações de sabedoria.
 
 ESTADO ATUAL DO JOGADOR NO RPG:
@@ -776,6 +776,8 @@ function initSocialSubTabs() {
             
             if (subtabName === 'friends') {
                 loadFriendsList();
+            } else if (subtabName === 'duels') {
+                loadDuelsList();
             } else if (subtabName === 'ranking') {
                 if (window.currentRankingMode === 'friends') {
                     loadFriendsRanking();
@@ -788,15 +790,19 @@ function initSocialSubTabs() {
 }
 
 // Retorna o endereço correto do avatar baseado na Skin ativa e Rank
-function getPlayerAvatarSrc(activeSkin, rank) {
+function getPlayerAvatarSrc(activeSkin, rank, username) {
     const rankKey = (rank || 'E').toLowerCase();
-    if (activeSkin && activeSkin !== 'default') {
-        return `2.assets/avatars/${activeSkin}.png`;
-    } else {
-        const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
-        const num = prefixMap[rankKey] || '1';
-        return `2.assets/avatars/${num}.rank-${rankKey}.png`;
+    const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
+    const num = prefixMap[rankKey] || '1';
+    
+    let g = 'male';
+    if (typeof gameState !== 'undefined') {
+        if (!username || username === gameState.playerName) {
+            g = gameState.gender || 'male';
+        }
     }
+    const folder = g === 'female' ? '0 - female' : '1 - male';
+    return `2.assets/avatars/${folder}/${num}.rank-${rankKey}.png`;
 }
 
 // Inicializar ouvintes do buscador de amigos
@@ -873,7 +879,7 @@ async function handleFriendSearch() {
     });
 
     const avatar = document.createElement('img');
-    avatar.src = getPlayerAvatarSrc(foundUser.active_skin, foundUser.rank);
+    avatar.src = getPlayerAvatarSrc(foundUser.active_skin, foundUser.rank, foundUser.username);
     avatar.style.width = '36px';
     avatar.style.height = '36px';
     avatar.style.borderRadius = '50%';
@@ -997,7 +1003,7 @@ async function loadFriendsList() {
                 });
 
                 const avatar = document.createElement('img');
-                avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank);
+                avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
                 avatar.style.width = '36px';
                 avatar.style.height = '36px';
                 avatar.style.borderRadius = '50%';
@@ -1135,7 +1141,7 @@ async function loadFriendsList() {
                 statusDot.style.boxShadow = isOnline ? '0 0 8px var(--neon-cyan)' : 'none';
 
                 const avatar = document.createElement('img');
-                avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank);
+                avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
                 avatar.style.width = '36px';
                 avatar.style.height = '36px';
                 avatar.style.borderRadius = '50%';
@@ -1159,17 +1165,40 @@ async function loadFriendsList() {
                 info.appendChild(top);
                 info.appendChild(lvl);
 
+                const rightContainer = document.createElement('div');
+                rightContainer.style.display = 'flex';
+                rightContainer.style.alignItems = 'center';
+                rightContainer.style.gap = '10px';
+
                 const statusText = document.createElement('span');
                 statusText.style.fontSize = '9px';
                 statusText.style.color = isOnline ? 'var(--neon-cyan)' : 'var(--text-muted)';
                 statusText.style.fontFamily = 'var(--font-hud)';
                 statusText.style.fontWeight = 'bold';
                 statusText.textContent = isOnline ? 'ONLINE' : 'OFFLINE';
+                rightContainer.appendChild(statusText);
+
+                // Botao Desafiar PvP
+                const btnChallenge = document.createElement('button');
+                btnChallenge.className = 'btn-toggle-pill';
+                btnChallenge.style.background = 'rgba(251, 191, 36, 0.1)';
+                btnChallenge.style.border = '1px solid rgba(251, 191, 36, 0.3)';
+                btnChallenge.style.color = 'var(--neon-gold)';
+                btnChallenge.style.padding = '4px 10px';
+                btnChallenge.style.fontSize = '10px';
+                btnChallenge.style.fontWeight = 'bold';
+                btnChallenge.style.fontFamily = 'var(--font-hud)';
+                btnChallenge.textContent = '⚔️ DESAFIAR';
+                btnChallenge.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openPvpChallengeModal(user.id);
+                });
+                rightContainer.appendChild(btnChallenge);
 
                 row.appendChild(statusDot);
                 row.appendChild(avatar);
                 row.appendChild(info);
-                row.appendChild(statusText);
+                row.appendChild(rightContainer);
 
                 friendsContainer.appendChild(row);
             });
@@ -1230,7 +1259,7 @@ async function openPlayerProfile(userId) {
 
     // Preencher dados básicos
     nameEl.textContent = user.username;
-    avatarImg.src = getPlayerAvatarSrc(user.active_skin, user.rank);
+    avatarImg.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
     
     if (user.active_title) {
         titleEl.textContent = user.active_title;
@@ -1563,8 +1592,27 @@ function setupSocialModalListeners() {
                 if (typeof loadFriendsList === 'function') {
                     loadFriendsList();
                 }
+            } else if (subtabName === 'duels') {
+                if (typeof loadDuelsList === 'function') {
+                    loadDuelsList();
+                }
             }
         });
+
+        // Configurar botoes do modal PvP
+        const btnClosePvp = document.getElementById('close-pvp-modal');
+        if (btnClosePvp) {
+            btnClosePvp.addEventListener('click', () => {
+                closePvpChallengeModal();
+            });
+        }
+
+        const btnSubmitPvp = document.getElementById('btn-submit-pvp-challenge');
+        if (btnSubmitPvp) {
+            btnSubmitPvp.addEventListener('click', () => {
+                submitPvpChallenge();
+            });
+        }
 
         btnCloseSocial.addEventListener('click', () => {
             modalSocial.style.display = 'none';
@@ -1596,10 +1644,10 @@ function renderTutorialBanner() {
         const descEl = shadowMasterCard.querySelector('p');
         if (gameState.tutorialStep === 2) {
             if (costEl) costEl.innerText = '50 OURO';
-            if (descEl) descEl.innerHTML = 'Guerreiro envolto em sombras com brilho roxo. <span style="color: var(--neon-gold); font-weight: bold;">(Promoção do Tutorial - Sem trava de nível!)</span>';
+            if (descEl) descEl.innerHTML = `Moldura roxa com brilho sombrio de alta intensidade. <span style="color: var(--neon-gold); font-weight: bold;">(Promoção do Tutorial - Sem trava de nível!)</span>`;
         } else {
             if (costEl) costEl.innerText = '250 OURO';
-            if (descEl) descEl.innerText = 'Guerreiro envolto em sombras com brilho roxo. (Requer Rank C)';
+            if (descEl) descEl.innerText = `Moldura roxa com brilho sombrio de alta intensidade. (Requer Rank C)`;
         }
     }
 
@@ -1634,7 +1682,7 @@ function renderTutorialBanner() {
                     <span class="tutorial-step">ETAPA 2 de 2</span>
                 </div>
                 <h3 class="tutorial-title">🎭 A Taverna e a Identidade</h3>
-                <p class="tutorial-desc">Excelente! Você ganhou 50 moedas de Ouro. Agora, navegue até a aba <b>TAVERNA</b> (no rodapé), compre e equipe a skin <b>Mestre das Sombras</b> (liberada por apenas 50 Ouro e sem exigência de nível durante o tutorial!).</p>
+                <p class="tutorial-desc">Excelente! Você ganhou 50 moedas de Ouro. Agora, navegue até a aba <b>TAVERNA</b> (no rodapé) e compre a <b>Borda: Mestre das Sombras</b> (liberada por apenas 50 Ouro e sem exigência de nível de compra durante o tutorial!). Ela será equipada imediatamente em volta do seu avatar do nível atual.</p>
                 <div class="tutorial-footer">
                     <span class="tutorial-reward">🎁 RECOMPENSA FINAL: <b>+50 XP ⚡ +20 Ouro 🪙</b></span>
                 </div>
@@ -1718,7 +1766,7 @@ async function loadGlobalRanking() {
     }
 
     if (!ranking || ranking.length === 0) {
-        rankingContainer.innerHTML = '<div class="friends-empty-state">Nenhum guerreiro registrado no Sistema.</div>';
+        rankingContainer.innerHTML = '<div class="friends-empty-state">Nenhum jogador registrado no Sistema.</div>';
         return;
     }
 
@@ -1784,7 +1832,7 @@ async function loadGlobalRanking() {
         }
 
         const avatar = document.createElement('img');
-        avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank);
+        avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
         avatar.style.width = '36px';
         avatar.style.height = '36px';
         avatar.style.borderRadius = '50%';
@@ -1898,7 +1946,7 @@ async function loadFriendsRanking() {
         }
 
         if (!ranking || ranking.length === 0) {
-            rankingContainer.innerHTML = '<div class="friends-empty-state">Nenhum guerreiro encontrado.</div>';
+            rankingContainer.innerHTML = '<div class="friends-empty-state">Nenhum jogador encontrado.</div>';
             return;
         }
 
@@ -1974,7 +2022,7 @@ async function loadFriendsRanking() {
             }
 
             const avatar = document.createElement('img');
-            avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank);
+            avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
             avatar.style.width = '36px';
             avatar.style.height = '36px';
             avatar.style.borderRadius = '50%';
@@ -2042,6 +2090,498 @@ function showChatBadge() {
     console.log('[Chat] showChatBadge called');
 };
 
+// ──────────────────────────────────────────────────────────────────────────
+// DUELOS PVP (FASE 5)
+// ──────────────────────────────────────────────────────────────────────────
+
+let _pvpOpponentId = null;
+
+function openPvpChallengeModal(opponentId) {
+    _pvpOpponentId = opponentId;
+    const modal = document.getElementById('modal-pvp-challenge');
+    if (modal) {
+        modal.style.display = 'flex';
+        const inputBet = document.getElementById('pvp-gold-bet');
+        if (inputBet) {
+            inputBet.value = 50;
+        }
+    }
+}
+
+function closePvpChallengeModal() {
+    _pvpOpponentId = null;
+    const modal = document.getElementById('modal-pvp-challenge');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+async function submitPvpChallenge() {
+    if (!_pvpOpponentId) return;
+
+    const inputBet = document.getElementById('pvp-gold-bet');
+    const bet = inputBet ? parseInt(inputBet.value, 10) : 50;
+
+    // Validacao de entrada no frontend
+    if (isNaN(bet) || bet <= 0) {
+        showSystemToast('⚠️ Insira um valor valido de ouro maior que zero.');
+        return;
+    }
+
+    if (bet > gameState.gold) {
+        showSystemToast('⚠️ Ouro insuficiente para realizar esta aposta.');
+        return;
+    }
+
+    const btnSubmit = document.getElementById('btn-submit-pvp-challenge');
+    if (btnSubmit) btnSubmit.disabled = true;
+
+    try {
+        const { data, error } = await window.createPvpChallenge(_pvpOpponentId, bet);
+        if (error) {
+            let msg = 'Erro ao enviar desafio.';
+            if (error.message.includes('DUEL_EXISTS')) {
+                msg = '⚠️ Ja existe um duelo ativo ou pendente com este amigo.';
+            } else if (error.message.includes('INSUFFICIENT_GOLD')) {
+                msg = '⚠️ Ouro insuficiente para aposta.';
+            } else if (error.message.includes('NOT_FRIENDS')) {
+                msg = '⚠️ Vocês precisam ser amigos aceitos para duelar.';
+            }
+            showSystemToast(msg);
+        } else {
+            showSystemToast('⚔️ Desafio enviado com sucesso!');
+            closePvpChallengeModal();
+            
+            // Subtrai ouro localmente para atualizar UI imediatamente antes da proxima sincronizacao
+            gameState.gold -= bet;
+            localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+            updateUI();
+            
+            // Recarregar aba/dados
+            const activeSubtab = document.querySelector('.sub-tab-btn.active');
+            const subtabName = activeSubtab ? activeSubtab.getAttribute('data-subtab') : 'chat';
+            if (subtabName === 'duels') {
+                loadDuelsList();
+            } else if (subtabName === 'friends') {
+                loadFriendsList();
+            }
+        }
+    } catch (err) {
+        console.error('[PvP] Erro ao enviar desafio:', err);
+        showSystemToast('⚠️ Erro inesperado ao enviar desafio.');
+    } finally {
+        if (btnSubmit) btnSubmit.disabled = false;
+    }
+}
+
+async function loadDuelsList() {
+    const challengesList = document.getElementById('pvp-challenges-list');
+    const activeList = document.getElementById('pvp-active-list');
+    const historyList = document.getElementById('pvp-history-list');
+
+    if (!challengesList || !activeList || !historyList) return;
+
+    if (!window._currentUserDbId) {
+        const msg = '<div class="friends-empty-state">Faça login com o Google para gerenciar duelos.</div>';
+        challengesList.innerHTML = msg;
+        activeList.innerHTML = msg;
+        historyList.innerHTML = msg;
+        return;
+    }
+
+    challengesList.innerHTML = '<div class="friends-empty-state">Carregando desafios...</div>';
+    activeList.innerHTML = '<div class="friends-empty-state">Carregando duelos ativos...</div>';
+    historyList.innerHTML = '<div class="friends-empty-state">Carregando histórico...</div>';
+
+    try {
+        const { data: duels, error } = await window.getUserDuelsWithScores();
+        if (error) {
+            console.error('[PvP] Erro ao carregar duelos:', error.message);
+            const errMsg = '<div class="friends-empty-state" style="color:var(--neon-red);">⚠️ Erro ao carregar duelos.</div>';
+            challengesList.innerHTML = errMsg;
+            activeList.innerHTML = errMsg;
+            historyList.innerHTML = errMsg;
+            return;
+        }
+
+        challengesList.innerHTML = '';
+        activeList.innerHTML = '';
+        historyList.innerHTML = '';
+
+        const pendingDuels = duels.filter(d => d.status === 'pending');
+        const activeDuels = duels.filter(d => d.status === 'active');
+        const historyDuels = duels.filter(d => d.status === 'finished' || d.status === 'rejected');
+
+        // 1. Renderizar Desafios
+        if (pendingDuels.length > 0) {
+            pendingDuels.forEach(d => {
+                const card = document.createElement('div');
+                card.className = 'online-user-item';
+                card.style.background = 'rgba(251, 191, 36, 0.02)';
+                card.style.border = '1px solid rgba(251, 191, 36, 0.1)';
+                card.style.borderRadius = 'var(--radius-md)';
+                card.style.padding = '12px 16px';
+                card.style.marginBottom = '8px';
+                card.style.display = 'flex';
+                card.style.alignItems = 'center';
+                card.style.justifyContent = 'space-between';
+
+                const info = document.createElement('div');
+                info.style.flex = '1';
+
+                const title = document.createElement('div');
+                title.style.fontWeight = 'bold';
+                title.style.fontSize = '12px';
+                
+                const desc = document.createElement('div');
+                desc.style.fontSize = '10px';
+                desc.style.color = 'var(--text-muted)';
+                desc.style.marginTop = '4px';
+
+                if (d.challenger_id === window._currentUserDbId) {
+                    title.textContent = `⚔️ Desafio enviado para ${d.opponent_username}`;
+                    desc.textContent = `Aposta: ${d.gold_bet} Ouro | Status: Aguardando resposta...`;
+                    info.appendChild(title);
+                    info.appendChild(desc);
+                    
+                    const btnCancel = document.createElement('button');
+                    btnCancel.className = 'btn-toggle-pill';
+                    btnCancel.style.background = 'rgba(239, 68, 68, 0.1)';
+                    btnCancel.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                    btnCancel.style.color = 'var(--text-muted)';
+                    btnCancel.textContent = 'Cancelar';
+                    btnCancel.style.padding = '4px 10px';
+                    btnCancel.style.fontSize = '10px';
+                    btnCancel.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        btnCancel.disabled = true;
+                        const { error: rejectError } = await window.rejectPvpChallenge(d.id);
+                        if (!rejectError) {
+                            showSystemToast('Desafio cancelado e ouro devolvido!');
+                            
+                            // Reembolsa ouro localmente antes do proximo sync
+                            gameState.gold += d.gold_bet;
+                            localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+                            updateUI();
+                            
+                            loadDuelsList();
+                        } else {
+                            showSystemToast('Erro ao cancelar desafio.');
+                            btnCancel.disabled = false;
+                        }
+                    });
+                    card.appendChild(info);
+                    card.appendChild(btnCancel);
+                } else {
+                    title.textContent = `⚔️ Desafio recebido de ${d.challenger_username}`;
+                    desc.textContent = `Aposta: ${d.gold_bet} Ouro`;
+                    info.appendChild(title);
+                    info.appendChild(desc);
+
+                    const actions = document.createElement('div');
+                    actions.style.display = 'flex';
+                    actions.style.gap = '8px';
+
+                    const btnAccept = document.createElement('button');
+                    btnAccept.className = 'btn-toggle-pill active';
+                    btnAccept.style.background = 'rgba(16, 185, 129, 0.2)';
+                    btnAccept.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+                    btnAccept.style.color = '#10b981';
+                    btnAccept.textContent = 'Aceitar';
+                    btnAccept.style.padding = '4px 10px';
+                    btnAccept.style.fontSize = '10px';
+                    btnAccept.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        btnAccept.disabled = true;
+                        btnReject.disabled = true;
+                        
+                        if (gameState.gold < d.gold_bet) {
+                            showSystemToast('⚠️ Ouro insuficiente para cobrir a aposta.');
+                            btnAccept.disabled = false;
+                            btnReject.disabled = false;
+                            return;
+                        }
+
+                        const { error: acceptError } = await window.acceptPvpChallenge(d.id);
+                        if (!acceptError) {
+                            showSystemToast('⚔️ Duelo aceito! Que vença o mais consistente.');
+                            
+                            // Deduz ouro localmente antes do proximo sync
+                            gameState.gold -= d.gold_bet;
+                            localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+                            updateUI();
+                            
+                            loadDuelsList();
+                        } else {
+                            showSystemToast('Erro ao aceitar desafio.');
+                            btnAccept.disabled = false;
+                            btnReject.disabled = false;
+                        }
+                    });
+
+                    const btnReject = document.createElement('button');
+                    btnReject.className = 'btn-toggle-pill';
+                    btnReject.style.background = 'rgba(239, 68, 68, 0.1)';
+                    btnReject.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                    btnReject.style.color = 'var(--text-muted)';
+                    btnReject.textContent = 'Rejeitar';
+                    btnReject.style.padding = '4px 10px';
+                    btnReject.style.fontSize = '10px';
+                    btnReject.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        btnAccept.disabled = true;
+                        btnReject.disabled = true;
+                        const { error: rejectError } = await window.rejectPvpChallenge(d.id);
+                        if (!rejectError) {
+                            showSystemToast('Desafio rejeitado.');
+                            loadDuelsList();
+                        } else {
+                            showSystemToast('Erro ao rejeitar desafio.');
+                            btnAccept.disabled = false;
+                            btnReject.disabled = false;
+                        }
+                    });
+
+                    actions.appendChild(btnAccept);
+                    actions.appendChild(btnReject);
+                    card.appendChild(info);
+                    card.appendChild(actions);
+                }
+
+                challengesList.appendChild(card);
+            });
+        } else {
+            challengesList.innerHTML = '<div class="friends-empty-state">Nenhum desafio pendente.</div>';
+        }
+
+        // 2. Renderizar Duelos Ativos
+        if (activeDuels.length > 0) {
+            activeDuels.forEach(d => {
+                const card = document.createElement('div');
+                card.className = 'online-user-item';
+                card.style.background = 'rgba(0, 242, 254, 0.02)';
+                card.style.border = '1px solid var(--border-color)';
+                card.style.borderRadius = 'var(--radius-md)';
+                card.style.padding = '12px 16px';
+                card.style.marginBottom = '8px';
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.gap = '8px';
+
+                const header = document.createElement('div');
+                header.style.display = 'flex';
+                header.style.justifyContent = 'space-between';
+                header.style.alignItems = 'center';
+                
+                const title = document.createElement('span');
+                title.style.fontWeight = 'bold';
+                title.style.fontSize = '12px';
+                title.style.color = 'var(--text-primary)';
+                
+                const isChallenger = d.challenger_id === window._currentUserDbId;
+                const myScore = isChallenger ? d.challenger_score : d.opponent_score;
+                const opponentScore = isChallenger ? d.opponent_score : d.challenger_score;
+                const opponentName = isChallenger ? d.opponent_username : d.challenger_username;
+
+                title.textContent = `⚔️ Duelo contra ${opponentName}`;
+
+                const betSpan = document.createElement('span');
+                betSpan.style.fontFamily = 'var(--font-hud)';
+                betSpan.style.fontSize = '9px';
+                betSpan.style.color = 'var(--neon-gold)';
+                betSpan.textContent = `Aposta: ${d.gold_bet} Ouro`;
+
+                header.appendChild(title);
+                header.appendChild(betSpan);
+
+                const scoreboard = document.createElement('div');
+                scoreboard.style.display = 'flex';
+                scoreboard.style.justifyContent = 'space-between';
+                scoreboard.style.alignItems = 'center';
+                scoreboard.style.background = 'var(--bg-input)';
+                scoreboard.style.padding = '8px 12px';
+                scoreboard.style.borderRadius = 'var(--radius-sm)';
+                scoreboard.style.fontSize = '11px';
+
+                const mySide = document.createElement('div');
+                mySide.innerHTML = `Você: <strong style="color: var(--neon-cyan); font-size: 13px;">${myScore}</strong> / 7 dias`;
+
+                const VS = document.createElement('div');
+                VS.style.fontFamily = 'var(--font-hud)';
+                VS.style.fontSize = '10px';
+                VS.style.color = 'var(--text-muted)';
+                VS.textContent = 'VS';
+
+                const opponentSide = document.createElement('div');
+                opponentSide.innerHTML = `${opponentName}: <strong style="color: var(--neon-purple); font-size: 13px;">${opponentScore}</strong> / 7 dias`;
+
+                scoreboard.appendChild(mySide);
+                scoreboard.appendChild(VS);
+                scoreboard.appendChild(opponentSide);
+
+                const footer = document.createElement('div');
+                footer.style.display = 'flex';
+                footer.style.justifyContent = 'space-between';
+                footer.style.fontSize = '9px';
+                footer.style.color = 'var(--text-muted)';
+
+                const endDateObj = new Date(d.end_date);
+                const endFormatted = endDateObj.toLocaleDateString('pt-BR', { timeZone: 'UTC', day: '2-digit', month: '2-digit', year: '2-digit' });
+                
+                const endSpan = document.createElement('span');
+                endSpan.textContent = `Término: ${endFormatted}`;
+
+                const statusIndicator = document.createElement('span');
+                statusIndicator.style.fontWeight = 'bold';
+                if (myScore > opponentScore) {
+                    statusIndicator.style.color = 'var(--neon-green)';
+                    statusIndicator.textContent = '🏆 VOCÊ ESTÁ NA FRENTE';
+                } else if (opponentScore > myScore) {
+                    statusIndicator.style.color = '#ef4444';
+                    statusIndicator.textContent = '💀 ADVERSÁRIO NA FRENTE';
+                } else {
+                    statusIndicator.style.color = 'var(--neon-gold)';
+                    statusIndicator.textContent = '⚖️ EMPATE TEMPORÁRIO';
+                }
+
+                footer.appendChild(endSpan);
+                footer.appendChild(statusIndicator);
+
+                card.appendChild(header);
+                card.appendChild(scoreboard);
+                card.appendChild(footer);
+
+                activeList.appendChild(card);
+            });
+        } else {
+            activeList.innerHTML = '<div class="friends-empty-state">Nenhum duelo em andamento.</div>';
+        }
+
+        // 3. Renderizar Histórico
+        if (historyDuels.length > 0) {
+            historyDuels.forEach(d => {
+                const card = document.createElement('div');
+                card.className = 'online-user-item';
+                card.style.background = 'rgba(0, 0, 0, 0.2)';
+                card.style.border = '1px solid var(--border-color)';
+                card.style.borderRadius = 'var(--radius-md)';
+                card.style.padding = '10px 14px';
+                card.style.marginBottom = '8px';
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.gap = '4px';
+
+                const header = document.createElement('div');
+                header.style.display = 'flex';
+                header.style.justifyContent = 'space-between';
+                header.style.alignItems = 'center';
+                header.style.fontSize = '11px';
+
+                const isChallenger = d.challenger_id === window._currentUserDbId;
+                const opponentName = isChallenger ? d.opponent_username : d.challenger_username;
+                
+                const title = document.createElement('span');
+                title.style.fontWeight = 'bold';
+                title.style.textContent = `Duelo contra ${opponentName}`;
+
+                const betSpan = document.createElement('span');
+                betSpan.style.fontFamily = 'var(--font-hud)';
+                betSpan.style.fontSize = '8px';
+                betSpan.style.color = 'var(--text-muted)';
+                betSpan.textContent = `Aposta: ${d.gold_bet} Ouro`;
+
+                header.appendChild(title);
+                header.appendChild(betSpan);
+
+                const resultLine = document.createElement('div');
+                resultLine.style.fontSize = '10px';
+                resultLine.style.display = 'flex';
+                resultLine.style.justifyContent = 'space-between';
+                resultLine.style.marginTop = '2px';
+
+                const scoreSpan = document.createElement('span');
+                scoreSpan.style.color = 'var(--text-secondary)';
+
+                const statusSpan = document.createElement('span');
+                statusSpan.style.fontWeight = 'bold';
+
+                if (d.status === 'rejected') {
+                    scoreSpan.textContent = 'Recusado ou Cancelado';
+                    statusSpan.textContent = '🚫 REJEITADO';
+                    statusSpan.style.color = 'var(--text-muted)';
+                } else {
+                    const myScore = isChallenger ? d.challenger_score : d.opponent_score;
+                    const opponentScore = isChallenger ? d.opponent_score : d.challenger_score;
+                    scoreSpan.textContent = `Placar: ${myScore} a ${opponentScore}`;
+
+                    if (d.winner_id === window._currentUserDbId) {
+                        statusSpan.textContent = `🏆 VITÓRIA (+${d.gold_bet} Ouro)`;
+                        statusSpan.style.color = 'var(--neon-green)';
+                    } else if (d.winner_id === null) {
+                        statusSpan.textContent = '⚖️ EMPATE (Devolvido)';
+                        statusSpan.style.color = 'var(--neon-gold)';
+                    } else {
+                        statusSpan.textContent = `💀 DERROTA (-${d.gold_bet} Ouro)`;
+                        statusSpan.style.color = '#ef4444';
+                    }
+                }
+
+                resultLine.appendChild(scoreSpan);
+                resultLine.appendChild(statusSpan);
+                card.appendChild(header);
+                card.appendChild(resultLine);
+
+                historyList.appendChild(card);
+            });
+        } else {
+            historyList.innerHTML = '<div class="friends-empty-state">Nenhum duelo finalizado ainda.</div>';
+        }
+
+    } catch (err) {
+        console.error('[PvP] Erro inesperado ao carregar lista de duelos:', err);
+        const errHtml = '<div class="friends-empty-state" style="color:var(--neon-red);">⚠️ Erro inesperado ao carregar duelos.</div>';
+        challengesList.innerHTML = errHtml;
+        activeList.innerHTML = errHtml;
+        historyList.innerHTML = errHtml;
+    }
+}
+
+function refreshActiveSocialTab() {
+    updateChatInputState();
+
+    const modalSocial = document.getElementById('modal-social');
+    const isSocialVisible = modalSocial && window.getComputedStyle(modalSocial).display === 'flex';
+    if (!isSocialVisible) return;
+
+    const activeSubtab = document.querySelector('.sub-tab-btn.active');
+    const subtabName = activeSubtab ? activeSubtab.getAttribute('data-subtab') : 'chat';
+    
+    if (subtabName === 'chat') {
+        loadChatMessages();
+    } else if (subtabName === 'friends') {
+        loadFriendsList();
+    } else if (subtabName === 'duels') {
+        loadDuelsList();
+    } else if (subtabName === 'ranking') {
+        const activeRankingMode = document.querySelector('.ranking-toggle-btn.active');
+        const mode = activeRankingMode ? activeRankingMode.dataset.mode : 'global';
+        switchRankingMode(mode);
+    }
+}
+window.refreshActiveSocialTab = refreshActiveSocialTab;
+
+window.openPvpChallengeModal = openPvpChallengeModal;
+window.closePvpChallengeModal = closePvpChallengeModal;
+window.submitPvpChallenge = submitPvpChallenge;
+window.loadDuelsList = loadDuelsList;
+
+window.addEventListener('click', (e) => {
+    const modal = document.getElementById('modal-pvp-challenge');
+    if (e.target === modal) {
+        closePvpChallengeModal();
+    }
+});
+
 export {
     setupHabitLibraryAndTabs,
     addHabitFromLibrary,
@@ -2062,5 +2602,10 @@ export {
     switchRankingMode,
     renderTutorialBanner,
     checkAndProgressTutorialStep1,
-    completeTutorialQuestline
+    completeTutorialQuestline,
+    openPvpChallengeModal,
+    closePvpChallengeModal,
+    submitPvpChallenge,
+    loadDuelsList,
+    refreshActiveSocialTab
 };

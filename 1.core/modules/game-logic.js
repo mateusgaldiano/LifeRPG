@@ -3,7 +3,8 @@ import { gameState, saveGameData, BOSS_QUESTS, DUNGEON_POOL, DUNGEON_DURATION_MS
 import {
     localDateStr, getRankForLevel, getXpToNextForLevel, hasPerk,
     calcStreakMultiplier, calcStreakGoldMultiplier, calcGroupMultiplier,
-    getSynergySkillXpBonus, getSynergyXpBonus, getSynergyGoldBonus, getPerkXpBonus, initSkillsState
+    getSynergySkillXpBonus, getSynergyXpBonus, getSynergyGoldBonus, getPerkXpBonus, initSkillsState,
+    getPlayerTerm
 } from './utils.js';
 import {
     showSystemToast, spawnFloatingText, animateGoldGain, triggerLevelUpOverlay,
@@ -421,7 +422,7 @@ function addSkillXP(skillType) {
         };
         
         setTimeout(() => {
-            showSystemToast(`⭐ *ATRIBUTO UP!* ${gameState.playerName || 'Guerreiro'}, seu treino diário elevou o seu nível de *${skillNamesPT[skillType]}* para o *Nível ${skillObj.level}*! A consistência lapida a mente e o corpo. Muito bem!`);
+            showSystemToast(`⭐ *ATRIBUTO UP!* ${gameState.playerName || getPlayerTerm(gameState.gender)}, seu treino diário elevou o seu nível de *${skillNamesPT[skillType]}* para o *Nível ${skillObj.level}*! A consistência lapida a mente e o corpo. Muito bem!`);
 
         }, 1200);
     }
@@ -641,7 +642,7 @@ function syncQuestsByLevel() {
             // Notifica o usuário no chat via Iroh caso não seja a primeira carga do app
             if (gameState.messages && gameState.messages.length > 0) {
                 setTimeout(() => {
-                    showSystemToast(`🔥 *SISTEMA:* Incrível, ${gameState.playerName || 'Guerreiro'}! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
+                    showSystemToast(`🔥 *SISTEMA:* Incrível, ${gameState.playerName || getPlayerTerm(gameState.gender)}! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
                 }, 1500);
             }
         }
@@ -910,10 +911,10 @@ function applyDailyPenalty() {
     //  Mensagem do Iroh por tom 
     setTimeout(() => {
         const irohMessages = {
-            motivational: `☀️ *SISTEMA:* Você falhou hoje, ${gameState.playerName || 'Guerreiro'}. Mas um tropeço não define sua jornada. _"A jornada mais longa começa com um único passo — e você ainda pode dar o de amanhã."_ Penalidade leve aplicada: −${penalty} XP. Levante-se.`,
-            firm: `⚠️ *SISTEMA:* Dois dias, ${gameState.playerName || 'Guerreiro'}. O Sistema registrou. Sua sequência foi zerada. _"O rio que para de correr logo apodrece."_ −${penalty} XP deduzidos. Não deixe virar hábito.`,
+            motivational: `☀️ *SISTEMA:* Você falhou hoje, ${gameState.playerName || getPlayerTerm(gameState.gender)}. Mas um tropeço não define sua jornada. _"A jornada mais longa começa com um único passo — e você ainda pode dar o de amanhã."_ Penalidade leve aplicada: −${penalty} XP. Levante-se.`,
+            firm: `⚠️ *SISTEMA:* Dois dias, ${gameState.playerName || getPlayerTerm(gameState.gender)}. O Sistema registrou. Sua sequência foi zerada. _"O rio que para de correr logo apodrece."_ −${penalty} XP deduzidos. Não deixe virar hábito.`,
             angry: `☠️ *SISTEMA:* Três dias consecutivos de falha. Penalidade severa aplicada. −${penalty} XP. Suas habilidades sofreram regressão. _"Você conhece seu potencial e ainda assim escolheu a fraqueza."_ Corrija isso agora.`,
-            severe: `💀 *SISTEMA — ALERTA CRÍTICO:* Cinco dias ou mais sem cumprir suas missões. Penalidade máxima: −${penalty} XP. Debuff de 48h ativo. Regressão de habilidades aplicada. _"Um guerreiro que abandona sua disciplina por dias não é mais um guerreiro — é apenas alguém com o uniforme."_ Retorne. Agora.`
+            severe: `💀 *SISTEMA — ALERTA CRÍTICO:* Cinco dias ou mais sem cumprir suas missões. Penalidade máxima: −${penalty} XP. Debuff de 48h ativo. Regressão de habilidades aplicada. _"${getPlayerTerm(gameState.gender) === 'Guerreira' ? 'Uma guerreira que abandona sua disciplina por dias não é mais uma guerreira' : 'Um guerreiro que abandona sua disciplina por dias não é mais um guerreiro'} — é apenas alguém com o uniforme."_ Retorne. Agora.`
         };
         showSystemToast(irohMessages[irohTone]);
 
@@ -1033,22 +1034,27 @@ function buyStoreItem(itemId) {
 
         // Requisitos de Rank (Nível) - ignorados se for a promo do tutorial
         if (itemId === 'skin_shadow_master' && gameState.level < 10 && !isTutorialPromo) {
-            showSystemToast("⚠️ *BLOQUEADO.* Esta skin exige Rank C (Nível 10+) para ser adquirida.");
+            showSystemToast("⚠️ *BLOQUEADO.* Esta borda exige Rank C (Nível 10+) para ser adquirida.");
             return;
         }
         if (itemId === 'skin_mist_monarch' && gameState.level < 15) {
-            showSystemToast("⚠️ *BLOQUEADO.* Esta skin exige Rank B (Nível 15+) para ser adquirida.");
+            showSystemToast("⚠️ *BLOQUEADO.* Esta borda exige Rank B (Nível 15+) para ser adquirida.");
             return;
         }
         if (itemId === 'skin_arise_emperor' && gameState.level < 20) {
-            showSystemToast("⚠️ *BLOQUEADO.* Esta skin exige Rank A (Nível 20+) para ser adquirida.");
+            showSystemToast("⚠️ *BLOQUEADO.* Esta borda exige Rank A (Nível 20+) para ser adquirida.");
             return;
         }
 
         const unlockedSkins = gameState.inventory.unlockedSkins;
         if (unlockedSkins.includes(itemId)) {
-            gameState.inventory.activeSkin = itemId;
-            showSystemToast(`🎭 *Skin Equipada!* Seu avatar foi alterado.`);
+            if (gameState.inventory.activeBorder === itemId) {
+                gameState.inventory.activeBorder = null;
+                showSystemToast(`🎭 *Borda Desequipada!*`);
+            } else {
+                gameState.inventory.activeBorder = itemId;
+                showSystemToast(`🎭 *Borda Equipada!* Seu perfil foi atualizado.`);
+            }
             saveGameData();
             updateUI();
             
@@ -1058,8 +1064,8 @@ function buyStoreItem(itemId) {
             return;
         } else {
             unlockedSkins.push(itemId);
-            gameState.inventory.activeSkin = itemId;
-            showSystemToast(`🎭 *Skin Desbloqueada e Equipada!*`);
+            gameState.inventory.activeBorder = itemId;
+            showSystemToast(`🎭 *Borda Desbloqueada e Equipada!*`);
             
             if (isTutorialPromo) {
                 completeTutorialQuestline();

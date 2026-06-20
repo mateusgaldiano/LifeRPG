@@ -76,6 +76,7 @@ const HABIT_LIBRARY = [
 // evitando o bug clássico do toDateString() que reseta ao viajar entre fusos.
 
 export let gameState = {
+    gender: 'male',
     level: 1,
     xp: 0,
     xpToNext: 100,

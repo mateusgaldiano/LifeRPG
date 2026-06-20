@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LifeRPG OS — The System</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="1.core/styles.css">
 </head>
 <body>
+    <a href="#main-content-panel" class="skip-link">Ir para o conteúdo principal</a>
 
     <!-- Partículas de fundo animadas -->
     <div class="bg-particles">
@@ -47,15 +48,15 @@
                 <span class="brand-title">THE SYSTEM</span>
                 <div class="brand-header-actions">
                     <!-- Troféus -->
-                    <button id="btn-header-trophies" class="btn-header-icon" title="Troféus">
+                    <button id="btn-header-trophies" class="btn-header-icon" title="Troféus" aria-label="Conquistas">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M17 3H7l1 7a4 4 0 0 0 8 0l1-7z"/><path d="M5 3H3a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4h1"/><path d="M19 3h2a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4h-1"/></svg>
                     </button>
                     <!-- Social / Chat -->
-                    <button id="btn-header-social" class="btn-header-icon" title="Social e Chat Global">
+                    <button id="btn-header-social" class="btn-header-icon" title="Social e Chat Global" aria-label="Rede Social">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     </button>
                     <!-- Configurações -->
-                    <button id="btn-open-settings" class="btn-header-icon btn-settings-icon" title="Configurações do Sistema">
+                    <button id="btn-open-settings" class="btn-header-icon btn-settings-icon" title="Configurações do Sistema" aria-label="Configurações">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                     </button>
                 </div>
@@ -185,7 +186,7 @@
         </aside>
 
         <!-- ═══ PAINEL PRINCIPAL ═══ -->
-        <div id="main-content-panel">
+        <main id="main-content-panel">
             <!-- Nav Tabs (3 abas) -->
             <nav class="dashboard-tabs">
                 <button class="tab-link active" data-tab="quests" id="tab-btn-quests">
@@ -283,7 +284,7 @@
                     </div>
                     <div class="heatmap-legend" style="display: flex; gap: 8px; font-size: 0.7rem; justify-content: flex-end; margin-top: 8px; color: var(--text-muted);">
                         <span>Menos</span>
-                        <span class="hm-block" style="background: #1a1b26; width: 10px; height: 10px; border-radius: 2px;"></span>
+                        <span class="hm-block" style="background: rgba(15,31,53,0.06); width: 10px; height: 10px; border-radius: 2px;"></span>
                         <span class="hm-block" style="background: rgba(139,92,246,0.2); width: 10px; height: 10px; border-radius: 2px;"></span>
                         <span class="hm-block" style="background: rgba(139,92,246,0.6); width: 10px; height: 10px; border-radius: 2px;"></span>
                         <span class="hm-block" style="background: var(--neon-purple); width: 10px; height: 10px; border-radius: 2px; box-shadow: 0 0 5px var(--neon-purple);"></span>
@@ -327,6 +328,7 @@
                     </div>
                 </div>
             </div>
+        </main><!-- fim #main-content-panel -->
 
         <!-- Overlay: SOCIAL MODAL (Chat, Amigos, Clã) -->
         <div id="modal-social" class="modal">
@@ -344,6 +346,7 @@
                 <div class="social-sub-tabs" style="margin-top: 15px; margin-bottom: 15px;">
                     <button class="sub-tab-btn active" data-subtab="chat">CHAT GLOBAL</button>
                     <button class="sub-tab-btn" data-subtab="friends">AMIGOS <span id="pending-requests-badge" class="badge-pending" style="display:none;">0</span></button>
+                    <button class="sub-tab-btn" data-subtab="duels">DUELOS</button>
                     <button class="sub-tab-btn" data-subtab="ranking">RANKING</button>
                     <button class="sub-tab-btn" data-subtab="clan-details">CLÃ</button>
                 </div>
@@ -440,6 +443,41 @@
                             <div style="font-size:2.5rem; filter:grayscale(0.3);">⚔️</div>
                             <div style="font-family:var(--font-hud); font-size:11px; letter-spacing:3px; color:#ef4444; font-weight:700; text-shadow:0 0 12px rgba(239,68,68,0.5);">EM DESENVOLVIMENTO</div>
                             <p style="color:var(--text-muted); font-size:0.8rem; font-family:var(--font-body); max-width:260px; line-height:1.6;">O módulo de Clãs está sendo forjado pelo Sistema.<br>Prepare-se para criar alianças e realizar missões em grupo.</p>
+                        </div>
+                    </div>
+
+                    <!-- SUB-ABA 4: DUELOS -->
+                    <div id="subtab-duels" class="sub-tab-content" style="display:none; flex: 1; overflow-y: auto;">
+                        <div class="community-grid-duels" style="display: flex; flex-direction: column; gap: 14px; padding: 4px;">
+                            <!-- Desafios Recebidos -->
+                            <div class="community-card">
+                                <div class="online-header" style="border-bottom: 1px solid var(--border-glass); padding-bottom: 6px; margin-bottom: 10px;">
+                                    <span class="font-hud online-title" style="color: var(--neon-gold);">DESAFIOS RECEBIDOS</span>
+                                </div>
+                                <div id="pvp-challenges-list" class="friends-list-v">
+                                    <div class="friends-empty-state">Nenhum desafio pendente.</div>
+                                </div>
+                            </div>
+
+                            <!-- Duelos Ativos -->
+                            <div class="community-card">
+                                <div class="online-header" style="border-bottom: 1px solid var(--border-glass); padding-bottom: 6px; margin-bottom: 10px;">
+                                    <span class="font-hud online-title" style="color: var(--neon-cyan);">DUELOS ATIVOS</span>
+                                </div>
+                                <div id="pvp-active-list" class="friends-list-v">
+                                    <div class="friends-empty-state">Nenhum duelo em andamento.</div>
+                                </div>
+                            </div>
+
+                            <!-- Histórico de Duelos -->
+                            <div class="community-card">
+                                <div class="online-header" style="border-bottom: 1px solid var(--border-glass); padding-bottom: 6px; margin-bottom: 10px;">
+                                    <span class="font-hud online-title">HISTÓRICO DE DUELOS</span>
+                                </div>
+                                <div id="pvp-history-list" class="friends-list-v">
+                                    <div class="friends-empty-state">Nenhum duelo finalizado ainda.</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -595,21 +633,15 @@
                                     <button class="btn-buy">COMPRAR</button>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- LOJA DE SKINS (AVATARES EXTRAS) -->
-                        <div class="quest-section-header" style="margin-top: 10px;">
-                            <h2>🎭 Loja de Avatares (Skins)</h2>
-                        </div>
-                        <div class="rewards-grid" style="margin-top: 8px; margin-bottom: 16px;">
-                            <!-- Mestre das Sombras -->
+                            <!-- Borda Mestre das Sombras -->
                             <div class="reward-card" onclick="buyStoreItem('skin_shadow_master')">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <div>
-                                        <h3 style="color:var(--neon-purple);">Mestre das Sombras</h3>
-                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Guerreiro envolto em sombras com brilho roxo. (Requer Rank C)</p>
+                                        <h3 style="color:var(--neon-purple);">Borda: Mestre das Sombras</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Moldura roxa com brilho sombrio de alta intensidade. (Requer Rank C)</p>
                                     </div>
-                                    <span style="font-size: 1.5rem;">👤</span>
+                                    <span style="font-size: 1.5rem;">🔮</span>
                                 </div>
                                 <div class="reward-bottom">
                                     <span class="reward-cost">250 OURO</span>
@@ -617,14 +649,14 @@
                                 </div>
                             </div>
 
-                            <!-- Monarca da Névoa -->
+                            <!-- Borda Monarca da Névoa -->
                             <div class="reward-card" onclick="buyStoreItem('skin_mist_monarch')">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <div>
-                                        <h3 style="color:var(--neon-purple);">Monarca da Névoa</h3>
-                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Guerreiro envolto em névoa azul brilhante. (Requer Rank B)</p>
+                                        <h3 style="color:var(--neon-cyan);">Borda: Monarca da Névoa</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Moldura ciano com efeito névoa e pulsação de energia. (Requer Rank B)</p>
                                     </div>
-                                    <span style="font-size: 1.5rem;">👥</span>
+                                    <span style="font-size: 1.5rem;">🌊</span>
                                 </div>
                                 <div class="reward-bottom">
                                     <span class="reward-cost">400 OURO</span>
@@ -632,12 +664,12 @@
                                 </div>
                             </div>
 
-                            <!-- Imperador Arise -->
+                            <!-- Borda Imperador Arise -->
                             <div class="reward-card" onclick="buyStoreItem('skin_arise_emperor')">
                                 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                     <div>
-                                        <h3 style="color:var(--neon-gold);">Imperador Arise</h3>
-                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Guerreiro dourado com asas de pura energia. (Requer Rank A)</p>
+                                        <h3 style="color:var(--neon-gold);">Borda: Imperador Arise</h3>
+                                        <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Moldura dourada imperial com aura de puro prestígio. (Requer Rank A)</p>
                                     </div>
                                     <span style="font-size: 1.5rem;">👑</span>
                                 </div>
@@ -1007,9 +1039,25 @@
     <div id="onboarding-wizard" class="modal" style="display: none; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 9999;">
         <div class="modal-box modal-box-wizard modal-box-md">
             <span id="btn-wizard-back" class="close-modal-btn" style="left: 22px; right: auto; font-size: 24px; display: none;">&larr;</span>
-            <div id="wizard-step-1" class="wizard-step">
+            
+            <div id="wizard-step-0" class="wizard-step">
+                <h2 style="color: var(--neon-purple); text-align: center; text-transform: uppercase;">Gênero</h2>
+                <p style="text-align: center; margin-bottom: 20px;">Como você prefere ser identificado(a)?</p>
+                <div class="wizard-genders-grid">
+                    <div class="gender-card" id="btn-gender-male" data-gender="male">
+                        <div style="font-size: 3.5rem; margin-bottom: 10px;">♂</div>
+                        <strong>Masculino</strong>
+                    </div>
+                    <div class="gender-card" id="btn-gender-female" data-gender="female">
+                        <div style="font-size: 3.5rem; margin-bottom: 10px;">♀</div>
+                        <strong>Feminino</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div id="wizard-step-1" class="wizard-step" style="display: none;">
                 <h2 style="color: var(--neon-purple); text-align: center; text-transform: uppercase;">O Despertar</h2>
-                <p style="text-align: center; margin-bottom: 20px;">O Sistema te escolheu. Qual é o seu nome, guerreiro?</p>
+                <p id="wizard-step-1-p" style="text-align: center; margin-bottom: 20px;">O Sistema te escolheu. Qual é o seu nome, guerreiro?</p>
                 <div class="form-group">
                     <input type="text" id="wizard-name-input" placeholder="Digite seu nome..." autocomplete="off">
                 </div>
@@ -1127,6 +1175,24 @@
         </div>
     </div>
 
+    <!-- Modal: Desafio PvP -->
+    <div id="modal-pvp-challenge" class="modal" style="display:none;">
+        <div class="modal-box modal-box-sm" style="display: flex; flex-direction: column; gap: 14px;">
+            <span class="close-modal-btn" id="close-pvp-modal">&times;</span>
+            <h3 class="font-hud" style="color: var(--neon-gold); letter-spacing: 1.5px; margin-bottom: 5px;">⚔️ DUELO PVP</h3>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
+                Aposte ouro em um duelo de consistência de 7 dias com seu amigo. Quem tiver mais dias perfeitos (perfect days) leva todo o pote!
+            </p>
+            <div class="form-field" style="display: flex; flex-direction: column; gap: 6px;">
+                <label for="pvp-gold-bet" style="font-family: var(--font-hud); font-size: 9px; color: var(--text-muted); letter-spacing: 1px;">QUANTIDADE DE OURO APOSTADA</label>
+                <input type="number" id="pvp-gold-bet" min="10" value="50" class="input-standard" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 10px 14px; border-radius: var(--radius-md); font-size: 14px; width: 100%;">
+            </div>
+            <div class="modal-buttons" style="display: flex; gap: 10px; margin-top: 10px; width: 100%;">
+                <button class="btn-submit" id="btn-submit-pvp-challenge" style="flex: 1; padding: 12px; font-family: var(--font-hud); font-size: 11px; letter-spacing: 1.5px;">ENVIAR DESAFIO</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: Relatório Semanal (Weekly Report) -->
     <div id="modal-weekly-report" class="modal" style="display:none;">
         <div class="modal-box weekly-report-modal-box modal-box-md">
@@ -1174,7 +1240,7 @@
             <!-- Veredito -->
             <div id="report-verdict-box" style="background: linear-gradient(135deg, rgba(147, 51, 234, 0.12) 0%, rgba(109, 40, 217, 0.08) 100%); border: 1px solid var(--neon-purple); padding: 14px; border-radius: 8px; margin-bottom: 22px; text-align: center;">
                 <div style="font-size: 9px; color: var(--text-muted); font-family: var(--font-hud); letter-spacing: 1.5px; margin-bottom: 2px;">VEREDITO DE AVALIAÇÃO</div>
-                <div class="font-hud" id="report-verdict-rank" style="font-size: 22px; font-weight: bold; margin: 4px 0;">RANK D</div>
+                <div class="font-hud" id="report-verdict-rank" style="font-size: 22px; font-weight: bold; margin: 4px 0;">SINTONIA D</div>
                 <div style="font-size: 11px; line-height: 1.4; color: var(--text-secondary); padding: 0 4px;" id="report-verdict-desc">"..."</div>
             </div>
 

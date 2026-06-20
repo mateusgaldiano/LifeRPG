@@ -117,8 +117,14 @@ window.initSupabase = function() {
       if (typeof window.subscribeUserToPush === 'function' && 'Notification' in window && Notification.permission === 'granted') {
         window.subscribeUserToPush();
       }
+      if (typeof window.refreshActiveSocialTab === 'function') {
+        window.refreshActiveSocialTab();
+      }
     } else {
       updateCloudStatusUI(false);
+      if (typeof window.refreshActiveSocialTab === 'function') {
+        window.refreshActiveSocialTab();
+      }
     }
   });
 
@@ -369,6 +375,13 @@ window.syncFromCloud = async function() {
   } catch (err) {
     console.error('[Supabase] Erro ao contar amigos:', err);
   }
+
+  // Finalizar duelos vencidos (lazy loading/finalizacao)
+  try {
+    await window.checkAndFinalizeDuels();
+  } catch (err) {
+    console.error('[Supabase] Erro ao finalizar duelos:', err);
+  }
 };
 
 // --------------------------------------------------------------------------
@@ -607,5 +620,36 @@ window.loadInventoryFromSupabase = async function() {
   if (!gameState.inventory) gameState.inventory = {};
   gameState.inventory.unlockedSkins = unlockedSkins.length ? unlockedSkins : ['default'];
   gameState.inventory.activeSkin = activeSkin;
+};
+
+// --------------------------------------------------------------------------
+// DUELOS PVP (FASE 5)
+// --------------------------------------------------------------------------
+window.getLocalDateString = function() {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+window.createPvpChallenge = async (opponentId, goldBet) => {
+  return await supabaseClient.rpc('create_pvp_challenge', { p_opponent_id: opponentId, p_gold_bet: goldBet });
+};
+
+window.acceptPvpChallenge = async (duelId) => {
+  return await supabaseClient.rpc('accept_pvp_challenge', { p_duel_id: duelId });
+};
+
+window.rejectPvpChallenge = async (duelId) => {
+  return await supabaseClient.rpc('reject_pvp_challenge', { p_duel_id: duelId });
+};
+
+window.checkAndFinalizeDuels = async () => {
+  return await supabaseClient.rpc('check_and_finalize_duels');
+};
+
+window.getUserDuelsWithScores = async () => {
+  return await supabaseClient.rpc('get_user_duels_with_scores');
 };
 

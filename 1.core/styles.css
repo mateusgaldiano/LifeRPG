@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LIFERPG THE SYSTEM â€” Arise Clone CSS
+   LIFERPG THE SYSTEM — Arise Clone CSS
    ========================================================================== */
 
 :root {
@@ -9,14 +9,14 @@
     --bg-input:       #edf2f7;
     --bg-sidebar:     #e8eef5;
 
-    --neon-cyan:      #0ea5e9;
-    --neon-blue:      #0ea5e9;
-    --neon-blue-dim:  #7dd3fc;
-    --neon-gold:      #f59e0b;
-    --neon-orange:    #f97316;
-    --neon-green:     #10b981;
-    --neon-purple:    #6366f1;
-    --neon-red:       #f43f5e;
+    --neon-cyan:      #0369a1;
+    --neon-blue:      #1d4ed8;
+    --neon-blue-dim:  #60a5fa;
+    --neon-gold:      #92400e;
+    --neon-orange:    #c2410c;
+    --neon-green:     #166534;
+    --neon-purple:    #4338ca;
+    --neon-red:       #be123c;
 
     --glow-blue:      rgba(14,165,233,0.15);
     --glow-gold:      rgba(245,158,11,0.15);
@@ -26,8 +26,16 @@
 
     --text-primary:   #0d1117;
     --text-secondary: #374151;
-    --text-muted:     rgba(15,31,53,0.45);
-    --text-light:     rgba(15,31,53,0.65);
+    --text-muted:     #4b5563;
+    --text-light:     #374151;
+
+    --text-cyan:      #0369a1;
+    --text-blue:      #1d4ed8;
+    --text-gold:      #92400e;
+    --text-orange:    #c2410c;
+    --text-green:     #166534;
+    --text-purple:    #4338ca;
+    --text-red:       #be123c;
 
     --border-glass:   rgba(14,165,233,0.15);
     --border-color:   #c8d4e0;
@@ -73,6 +81,30 @@
 /* â”€â”€ RESET â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { height: 100%; }
+
+:focus-visible {
+    outline: 3px solid var(--text-blue);
+    outline-offset: 2px;
+}
+
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 16px;
+    background: var(--text-blue);
+    color: #ffffff;
+    padding: 8px 16px;
+    z-index: 9999;
+    border-radius: var(--radius-sm);
+    transition: top 0.2s var(--ease-out);
+    text-decoration: none;
+    font-family: var(--font-hud);
+    font-size: 11px;
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+}
+.skip-link:focus {
+    top: 16px;
+}
 
 body {
     background: var(--bg-void);
@@ -237,6 +269,42 @@ body::before {
 }
 .avatar-hex-border.border-neonred {
     background: linear-gradient(135deg, var(--neon-red), #ff0055);
+}
+
+/* Purple Shadow Master glow & border */
+@keyframes glow-pulse-purple {
+    0%, 100% { filter: drop-shadow(0 0 5px var(--neon-purple)); }
+    50% { filter: drop-shadow(0 0 15px var(--neon-purple)); }
+}
+.avatar-hex-wrapper.glow-shadow-master {
+    animation: glow-pulse-purple 2s infinite ease-in-out;
+}
+.avatar-hex-border.border-shadow-master {
+    background: linear-gradient(135deg, var(--neon-purple), #9333ea);
+}
+
+/* Cyan Mist Monarch glow & border */
+@keyframes glow-pulse-cyan {
+    0%, 100% { filter: drop-shadow(0 0 5px var(--neon-cyan)); }
+    50% { filter: drop-shadow(0 0 15px var(--neon-cyan)); }
+}
+.avatar-hex-wrapper.glow-mist-monarch {
+    animation: glow-pulse-cyan 2s infinite ease-in-out;
+}
+.avatar-hex-border.border-mist-monarch {
+    background: linear-gradient(135deg, var(--neon-cyan), #0284c7);
+}
+
+/* Gold Arise Emperor glow & border */
+@keyframes glow-pulse-gold {
+    0%, 100% { filter: drop-shadow(0 0 5px var(--neon-gold)); }
+    50% { filter: drop-shadow(0 0 15px var(--neon-gold)); }
+}
+.avatar-hex-wrapper.glow-arise-emperor {
+    animation: glow-pulse-gold 2s infinite ease-in-out;
+}
+.avatar-hex-border.border-arise-emperor {
+    background: linear-gradient(135deg, var(--neon-gold), #ea580c);
 }
 .avatar-hex-wrapper:hover {
     filter: drop-shadow(0 0 10px rgba(123, 104, 238, 0.9));
@@ -578,9 +646,9 @@ body::before {
     letter-spacing: 1.5px;
     margin: 0;
 }
-.willpower-col .quest-column-header h3 { color: var(--neon-purple); }
-.intellect-col .quest-column-header h3 { color: #38bdf8; }
-.health-col .quest-column-header h3 { color: var(--neon-orange); }
+.willpower-col .quest-column-header h3 { color: var(--text-purple); }
+.intellect-col .quest-column-header h3 { color: var(--text-cyan); }
+.health-col .quest-column-header h3 { color: var(--text-orange); }
 
 .quests-actions-footer {
     display: flex;
@@ -710,7 +778,7 @@ body::before {
     background: rgba(16,185,129,0.02);
     opacity: 0.6;
 }
-/* PadrÃ£o tracejado diagonal na quest concluÃ­da */
+/* Padrão tracejado diagonal na quest concluída */
 .quest-card.completed::after {
     content: '';
     position: absolute; inset: 0;
@@ -732,12 +800,12 @@ body::before {
 .quest-title-wrap { display: flex; flex-direction: column; gap: 4px; }
 .quest-title { font-size: 15px; font-weight: 600; color: var(--text-primary); }
 .quest-payouts { display: flex; gap: 10px; }
-.payout-xp  { font-family: var(--font-hud); font-size: 11px; color: var(--neon-purple); }
-.payout-gold { font-family: var(--font-hud); font-size: 11px; color: var(--neon-gold); }
+.payout-xp  { font-family: var(--font-hud); font-size: 11px; color: var(--text-purple); }
+.payout-gold { font-family: var(--font-hud); font-size: 11px; color: var(--text-gold); }
 .diff-badge { font-family: var(--font-hud); font-size: 9px; color: var(--text-muted); }
 
 .quest-complete-btn {
-    width: 32px; height: 32px; flex-shrink: 0;
+    width: 44px; height: 44px; flex-shrink: 0;
     background: rgba(0,242,254,0.05);
     border: 1px solid rgba(0,242,254,0.25);
     border-radius: var(--radius-sm);
@@ -758,13 +826,13 @@ body::before {
     box-shadow: 0 0 12px rgba(16,185,129,0.4);
 }
 
-/* Contador de Ã¡gua */
+/* Contador de água */
 .water-adjust-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-.water-btn { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); color: var(--neon-purple); width: 20px; height: 20px; border-radius: 50%; cursor: pointer; font-size: 12px; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
+.water-btn { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); color: var(--text-purple); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
 .water-btn:hover { background: rgba(139,92,246,0.2); }
 .water-val { font-size: 10px; font-family: var(--font-mono); color: var(--text-secondary); }
 
-/* BotÃµes de aÃ§Ã£o */
+/* Botões de ação */
 .btn-new-quest, .btn-add-reward {
     font-family: var(--font-hud);
     font-size: 9px; font-weight: 700; letter-spacing: 1px;
@@ -882,7 +950,7 @@ body::before {
 }
 #chat-input:focus { border-color: rgba(139,92,246,0.4); box-shadow: 0 0 10px var(--glow-purple); }
 .btn-send {
-    width: 40px; height: 40px;
+    width: 44px; height: 44px;
     background: var(--neon-purple); color: #fff;
     border: none; border-radius: 50%;
     font-size: 16px; font-weight: 900;
@@ -890,7 +958,7 @@ body::before {
     box-shadow: 0 0 12px var(--glow-purple);
     transition: all 0.2s;
 }
-.btn-send:hover { background: #fff; color: var(--neon-purple); transform: scale(1.1); }
+.btn-send:hover { background: #fff; color: var(--text-purple); transform: scale(1.1); }
 
 /* ── MODAIS ────────────────────────────────────────────────────────────────── */
 .modal {
@@ -902,7 +970,7 @@ body::before {
 }
 .modal-box {
     background: #f5f8fc;
-    border: 1px solid var(--border-active);
+    border: 1px solid var(--border-color);
     width: 100%; max-width: 380px;
     border-radius: var(--radius-lg); padding: 28px;
     position: relative;
@@ -911,8 +979,8 @@ body::before {
 }
 
 .modal-box h3 { font-family: var(--font-hud); font-size: 16px; color: var(--text-primary); letter-spacing: 2px; margin-bottom: 24px; }
-.close-modal-btn { position: absolute; top: 18px; right: 22px; font-size: 24px; color: var(--text-primary); cursor: pointer; transition: color 0.2s, transform 0.2s; line-height: 1; z-index: 10; }
-.close-modal-btn:hover { color: var(--neon-purple); transform: scale(1.1); }
+.close-modal-btn { position: absolute; top: 8px; right: 12px; padding: 10px; font-size: 24px; color: var(--text-primary); cursor: pointer; transition: color 0.2s, transform 0.2s; line-height: 1; z-index: 10; }
+.close-modal-btn:hover { color: var(--text-purple); transform: scale(1.1); }
 
 .form-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
 .form-field label { font-family: var(--font-hud); font-size: 12px; color: var(--text-muted); letter-spacing: 1px; }
@@ -1091,7 +1159,7 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px;
+    padding: 13px;
     border-radius: var(--radius-sm);
     transition: all 0.2s ease;
     outline: none;
@@ -1437,9 +1505,9 @@ body::before {
 }
 .day-checkbox span {
     display: inline-block;
-    width: 35px;
-    height: 35px;
-    line-height: 35px;
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
     text-align: center;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.07);
@@ -3412,5 +3480,34 @@ body::before {
     border: 1px solid var(--neon-purple) !important;
 }
 
+.wizard-genders-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
 
+.gender-card {
+    background: var(--surface-bg);
+    border: 1px solid var(--border-glass);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+    user-select: none;
+}
 
+.gender-card:hover {
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.2);
+}
+
+.gender-card.selected {
+    background: rgba(139, 92, 246, 0.1);
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+    color: var(--text-light);
+    font-weight: 700;
+}

@@ -1,0 +1,16 @@
+LifeRPG OS — Pendências de Infraestrutura & Backend
+
+1. Automação de Finalização de Duelos PvP (pg_cron)
+   A função check_and_finalize_duels() é uma RPC no banco de dados que finaliza duelos cuja data de término expirou (end_date < CURRENT_DATE).
+   
+   Para automatizar esse processo (executando uma vez por dia, por exemplo, à meia-noite), configure uma tarefa recorrente (cron) no Supabase.
+   
+   Se tiver a extensão pg_cron ativada no seu banco de dados Supabase, você pode agendar a execução rodando o seguinte comando no SQL Editor:
+   
+   SELECT cron.schedule(
+       'finalize-pvp-duels-daily',
+       '0 0 * * *', -- Roda todos os dias à meia-noite
+       $$ SELECT check_and_finalize_duels(); $$
+   );
+   
+   Nota: Caso o pg_cron não esteja configurado, o aplicativo possui um mecanismo de "lazy finalization" no carregamento inicial que dispara o checkAndFinalizeDuels() via chamada RPC direta do cliente, mas a automação via pg_cron é a recomendada para produção.
