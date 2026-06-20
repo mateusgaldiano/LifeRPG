@@ -445,9 +445,9 @@ function renderInventory() {
         'title_mestre': { name: 'Mestre do Tempo', type: 'title', icon: '⏳', color: 'var(--neon-gold)' },
         'border_neonred': { name: 'Demônio Carmesim', type: 'border', icon: '🖼️', color: 'var(--neon-red)' },
         'default': { name: 'Avatar Padrão do Rank', type: 'skin', icon: '🛡️', color: 'var(--neon-cyan)' },
-        'skin_shadow_master': { name: 'Borda: Mestre das Sombras', type: 'border', icon: '👤', color: 'var(--neon-purple)' },
-        'skin_mist_monarch': { name: 'Borda: Monarca da Névoa', type: 'border', icon: '👥', color: 'var(--neon-cyan)' },
-        'skin_arise_emperor': { name: 'Borda: Imperador Arise', type: 'border', icon: '👑', color: 'var(--neon-gold)' }
+        'skin_shadow_master': { name: 'Mestre das Sombras', type: 'border', icon: '👤', color: 'var(--neon-purple)' },
+        'skin_mist_monarch': { name: 'Monarca da Névoa', type: 'border', icon: '👥', color: 'var(--neon-cyan)' },
+        'skin_arise_emperor': { name: 'Imperador Arise', type: 'border', icon: '👑', color: 'var(--neon-gold)' }
     };
 
     const allUnlocked = [
