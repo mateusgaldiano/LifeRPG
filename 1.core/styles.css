@@ -1497,35 +1497,7 @@ body::before {
     color: var(--text-light);
     font-weight: 700;
 }
-.day-checkbox {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    cursor: pointer;
-}
-.day-checkbox input {
-    display: none;
-}
-.day-checkbox span {
-    display: inline-block;
-    width: 44px;
-    height: 44px;
-    line-height: 44px;
-    text-align: center;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    transition: all 0.2s;
-    font-weight: 600;
-}
-.day-checkbox input:checked + span {
-    background: var(--neon-purple);
-    color: #000;
-    border-color: var(--neon-purple);
-    box-shadow: 0 0 10px var(--neon-purple);
-}
+
 
 /* ── MOBILE SCROLL OVERRIDES ────────────────────────────────────────────── */
 
@@ -3582,4 +3554,113 @@ body::before {
     border-color: var(--neon-purple) !important;
     box-shadow: 0 0 12px var(--glow-purple);
 }
+
+/* --- App Loading Overlay --- */
+#app-loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-main, #0d0e12);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    font-family: var(--font-hud, sans-serif);
+    color: var(--text-primary, #fff);
+}
+
+.app-loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(168, 85, 247, 0.2);
+    border-top-color: var(--neon-purple, #a855f7);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* --- Returning User Login --- */
+.returning-user-banner {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-glass);
+}
+.returning-user-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-family: var(--font-hud);
+    letter-spacing: 1px;
+}
+.btn-returning-login {
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.2s;
+}
+.btn-returning-login:hover {
+    border-color: var(--neon-purple);
+}
+.returning-user-divider {
+    margin-top: 16px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* --- Wizard Days Grid --- */
+.wizard-days-grid {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 0;
+    padding: 0 4px;
+}
+.day-checkbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    flex: 1;
+    min-width: 0;
+}
+.day-checkbox input {
+    display: none;
+}
+.day-checkbox span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 44px;
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary);
+    font-size: 11px;
+    transition: all 0.2s;
+    font-weight: 600;
+}
+.day-checkbox input:checked + span {
+    background: var(--neon-purple);
+    color: #000;
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 10px var(--neon-purple);
+}
+
 

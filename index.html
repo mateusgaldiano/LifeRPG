@@ -32,6 +32,12 @@
     <link rel="stylesheet" href="1.core/styles.css">
 </head>
 <body>
+    <!-- App Loading Overlay -->
+    <div id="app-loading-overlay">
+        <div class="app-loading-spinner"></div>
+        <div style="font-size: 14px; letter-spacing: 2px; text-transform: uppercase;">Carregando Sistema...</div>
+    </div>
+
     <a href="#main-content-panel" class="skip-link">Ir para o conteúdo principal</a>
 
     <!-- Partículas de fundo animadas -->
@@ -847,7 +853,7 @@
                         </div>
                         <div class="form-field" id="weekly-day-selector" style="display:none;">
                             <label>DIAS ATIVOS</label>
-                            <div style="display:flex; gap:6px; margin-top:5px; flex-wrap:wrap;">
+                            <div class="weekly-days-grid" style="margin-top:5px;">
                                 <button type="button" class="weekday-btn" data-day="1">SEG</button>
                                 <button type="button" class="weekday-btn" data-day="2">TER</button>
                                 <button type="button" class="weekday-btn" data-day="3">QUA</button>
@@ -905,7 +911,7 @@
                         ⚡ SIDE QUEST
                     </button>
                 </div>
-                <div id="confirm-habit-weekly-day" style="display:none; gap:5px; margin-top:10px; flex-wrap:wrap; justify-content:center; width:100%;">
+                <div id="confirm-habit-weekly-day" class="weekly-days-grid" style="display:none; margin-top:10px;">
                     <button type="button" class="weekday-btn" data-day="1">SEG</button>
                     <button type="button" class="weekday-btn" data-day="2">TER</button>
                     <button type="button" class="weekday-btn" data-day="3">QUA</button>
@@ -1138,6 +1144,15 @@
             <span id="btn-wizard-back" class="close-modal-btn" style="left: 22px; right: auto; font-size: 24px; display: none;">&larr;</span>
             
             <div id="wizard-step-0" class="wizard-step">
+                <div class="returning-user-banner">
+                    <p class="returning-user-text">Já tem uma conta?</p>
+                    <button type="button" id="btn-returning-user" class="btn-returning-login">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="margin-right: 8px; vertical-align: middle;"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg> ENTRAR COM GOOGLE
+                    </button>
+                    <div class="returning-user-divider">
+                        <span>ou crie sua conta abaixo</span>
+                    </div>
+                </div>
                 <h2 style="color: var(--neon-purple); text-align: center; text-transform: uppercase;">Gênero</h2>
                 <p style="text-align: center; margin-bottom: 20px;">Como você prefere ser identificado(a)?</p>
                 <div class="wizard-genders-grid">
@@ -1224,7 +1239,7 @@
 
                 <label style="color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase;">Quais dias você vai jogar?</label>
                 <p style="font-size: 0.75rem; color: #555; margin-bottom: 10px;">(Dias desmarcados não aplicam penalidade de falha)</p>
-                <div class="wizard-days-grid" style="margin-bottom: 20px; display: flex; gap: 5px; justify-content: space-between;">
+                <div class="wizard-days-grid" style="margin-bottom: 20px;">
                     <label class="day-checkbox"><input type="checkbox" value="0" checked><span>D</span></label>
                     <label class="day-checkbox"><input type="checkbox" value="1" checked><span>S</span></label>
                     <label class="day-checkbox"><input type="checkbox" value="2" checked><span>T</span></label>

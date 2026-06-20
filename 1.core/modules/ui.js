@@ -509,32 +509,48 @@ function updateWizardBackBtnVisibility() {
     }
 }
 
-function goBackWizard() {
+function setWizardStep(stepId) {
     const step0 = document.getElementById('wizard-step-0');
     const step1 = document.getElementById('wizard-step-1');
     const step2 = document.getElementById('wizard-step-2');
     const stepHook = document.getElementById('wizard-step-hook');
     const step3 = document.getElementById('wizard-step-3');
 
-    if (step1 && step1.style.display === 'block') {
-        step1.style.display = 'none';
-        if (step0) step0.style.display = 'block';
-    } else if (step2 && step2.style.display === 'block') {
-        step2.style.display = 'none';
-        if (step1) step1.style.display = 'block';
-    } else if (stepHook && stepHook.style.display === 'block') {
-        stepHook.style.display = 'none';
-        if (step2) step2.style.display = 'block';
-    } else if (step3 && step3.style.display === 'block') {
-        step3.style.display = 'none';
-        const otherCard = document.querySelector('.archetype-card-other');
-        if (otherCard && otherCard.classList.contains('selected')) {
-            if (step2) step2.style.display = 'block';
-        } else {
-            if (stepHook) stepHook.style.display = 'block';
+    if (step0) step0.style.display = (stepId === 'wizard-step-0') ? 'block' : 'none';
+    if (step1) step1.style.display = (stepId === 'wizard-step-1') ? 'block' : 'none';
+    if (step2) step2.style.display = (stepId === 'wizard-step-2') ? 'block' : 'none';
+    if (stepHook) stepHook.style.display = (stepId === 'wizard-step-hook') ? 'block' : 'none';
+    if (step3) step3.style.display = (stepId === 'wizard-step-3') ? 'block' : 'none';
+    
+    if (typeof gameState !== 'undefined') {
+        gameState.tutorialStep = stepId;
+        if (typeof saveGameData === 'function') {
+            saveGameData();
         }
     }
     updateWizardBackBtnVisibility();
+}
+
+function goBackWizard() {
+    const step1 = document.getElementById('wizard-step-1');
+    const step2 = document.getElementById('wizard-step-2');
+    const stepHook = document.getElementById('wizard-step-hook');
+    const step3 = document.getElementById('wizard-step-3');
+
+    if (step1 && step1.style.display === 'block') {
+        setWizardStep('wizard-step-0');
+    } else if (step2 && step2.style.display === 'block') {
+        setWizardStep('wizard-step-1');
+    } else if (stepHook && stepHook.style.display === 'block') {
+        setWizardStep('wizard-step-2');
+    } else if (step3 && step3.style.display === 'block') {
+        const otherCard = document.querySelector('.archetype-card-other');
+        if (otherCard && otherCard.classList.contains('selected')) {
+            setWizardStep('wizard-step-2');
+        } else {
+            setWizardStep('wizard-step-hook');
+        }
+    }
 }
 
 function initOnboardingWizard() {
@@ -549,19 +565,34 @@ function initOnboardingWizard() {
     const stepHook = document.getElementById('wizard-step-hook');
     const step3 = document.getElementById('wizard-step-3');
     
-    if (step0) step0.style.display = 'block';
-    if (step1) step1.style.display = 'none';
-    if (step2) step2.style.display = 'none';
-    if (stepHook) stepHook.style.display = 'none';
-    if (step3) step3.style.display = 'none';
+    // Intelligent step recovery
+    let startStep = 'wizard-step-0';
+    if (gameState.tutorialStep && document.getElementById(gameState.tutorialStep)) {
+        startStep = gameState.tutorialStep;
+        if (startStep === 'wizard-step-hook' && gameState.archetype) {
+            setupHookStep(gameState.archetype);
+        }
+    }
+    setWizardStep(startStep);
     
-    updateWizardBackBtnVisibility();
-
     // Botão Voltar
     const btnBack = document.getElementById('btn-wizard-back');
     if (btnBack) {
-        btnBack.addEventListener('click', () => {
+        // Clear old event listener to prevent duplicate calls
+        const newBtnBack = btnBack.cloneNode(true);
+        btnBack.parentNode.replaceChild(newBtnBack, btnBack);
+        newBtnBack.addEventListener('click', () => {
             goBackWizard();
+        });
+    }
+
+    // Botão Já Tenho Conta
+    const btnReturning = document.getElementById('btn-returning-user');
+    if (btnReturning) {
+        btnReturning.addEventListener('click', () => {
+            if (typeof window.loginWithGoogle === 'function') {
+                window.loginWithGoogle();
+            }
         });
     }
     
@@ -583,42 +614,46 @@ function initOnboardingWizard() {
         }
         
         setTimeout(() => {
-            if (step0) step0.style.display = 'none';
-            if (step1) step1.style.display = 'block';
-            updateWizardBackBtnVisibility();
+            setWizardStep('wizard-step-1');
         }, 250);
     };
 
     if (btnMale) {
-        btnMale.addEventListener('click', () => selectGender('male'));
+        const newBtnMale = btnMale.cloneNode(true);
+        btnMale.parentNode.replaceChild(newBtnMale, btnMale);
+        newBtnMale.addEventListener('click', () => selectGender('male'));
     }
     if (btnFemale) {
-        btnFemale.addEventListener('click', () => selectGender('female'));
+        const newBtnFemale = btnFemale.cloneNode(true);
+        btnFemale.parentNode.replaceChild(newBtnFemale, btnFemale);
+        newBtnFemale.addEventListener('click', () => selectGender('female'));
     }
     
     // Passo 1: Nome
     const btnNext1 = document.getElementById('btn-wizard-next-1');
     const inputName = document.getElementById('wizard-name-input');
     
-    btnNext1.addEventListener('click', () => {
-        const name = inputName.value.trim();
-        if (name) {
-            gameState.playerName = name;
-            document.getElementById('lbl-player-name').innerText = name.toUpperCase();
-            if (step1) step1.style.display = 'none';
-            if (step2) step2.style.display = 'block';
-            updateWizardBackBtnVisibility();
-        } else {
-            inputName.style.borderColor = 'red';
-        }
-    });
+    if (btnNext1) {
+        const newBtnNext1 = btnNext1.cloneNode(true);
+        btnNext1.parentNode.replaceChild(newBtnNext1, btnNext1);
+        newBtnNext1.addEventListener('click', () => {
+            const name = inputName.value.trim();
+            if (name) {
+                gameState.playerName = name;
+                document.getElementById('lbl-player-name').innerText = name.toUpperCase();
+                setWizardStep('wizard-step-2');
+            } else {
+                inputName.style.borderColor = 'red';
+            }
+        });
+    }
 
     // Passo 2: Arquétipo
     const btnNext2 = document.getElementById('btn-wizard-next-2');
     const archCards = document.querySelectorAll('.archetype-card');
     const otherInputContainer = document.getElementById('wizard-other-container');
     const otherInput = document.getElementById('wizard-other-input');
-    let selectedArch = null;
+    let selectedArch = gameState.archetype || null;
 
     archCards.forEach(card => {
         card.addEventListener('click', () => {
@@ -642,31 +677,32 @@ function initOnboardingWizard() {
         }
     });
 
-    btnNext2.addEventListener('click', () => {
-        if (selectedArch) {
-            if (selectedArch === 'outros') {
-                gameState.archetype = otherInput.value.trim() || 'Desconhecido';
-                // Pula direto pro juramento se for 'outros'
-                document.getElementById('wizard-step-2').style.display = 'none';
-                document.getElementById('wizard-step-3').style.display = 'block';
-            } else {
-                gameState.archetype = selectedArch;
-                // Configura a tela de Hook
-                setupHookStep(selectedArch);
-                document.getElementById('wizard-step-2').style.display = 'none';
-                document.getElementById('wizard-step-hook').style.display = 'block';
+    if (btnNext2) {
+        const newBtnNext2 = btnNext2.cloneNode(true);
+        btnNext2.parentNode.replaceChild(newBtnNext2, btnNext2);
+        newBtnNext2.addEventListener('click', () => {
+            if (selectedArch) {
+                if (selectedArch === 'outros') {
+                    gameState.archetype = otherInput.value.trim() || 'Desconhecido';
+                    setWizardStep('wizard-step-3');
+                } else {
+                    gameState.archetype = selectedArch;
+                    setupHookStep(selectedArch);
+                    setWizardStep('wizard-step-hook');
+                }
             }
-            updateWizardBackBtnVisibility();
-        }
-    });
+        });
+    }
 
     // Passo Hook
     const btnNextHook = document.getElementById('btn-wizard-next-hook');
-    btnNextHook.addEventListener('click', () => {
-        document.getElementById('wizard-step-hook').style.display = 'none';
-        document.getElementById('wizard-step-3').style.display = 'block';
-        updateWizardBackBtnVisibility();
-    });
+    if (btnNextHook) {
+        const newBtnNextHook = btnNextHook.cloneNode(true);
+        btnNextHook.parentNode.replaceChild(newBtnNextHook, btnNextHook);
+        newBtnNextHook.addEventListener('click', () => {
+            setWizardStep('wizard-step-3');
+        });
+    }
 
     // Passo 3: Comprometimento e Finalização
     const btnFinish = document.getElementById('btn-wizard-finish');
@@ -682,27 +718,35 @@ function initOnboardingWizard() {
         });
     });
 
-    btnFinish.addEventListener('click', () => {
-        if (selectedHours) {
-            gameState.dailyCommitmentMins = parseInt(selectedHours);
-            
-            // Coletar dias selecionados
-            const dayCheckboxes = document.querySelectorAll('.day-checkbox input:checked');
-            const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
-            gameState.activeDays = selectedDays.length > 0 ? selectedDays : [0,1,2,3,4,5,6]; // Fallback
-            
-            // Adapta o deck de missões com base no arquétipo e no tempo
-            applyArchetypeDeck(selectedArch, gameState.dailyCommitmentMins);
-            
-            wizardModal.style.cssText = 'display: none !important;';
-            saveGameData();
-            updateUI();
-            
-            setTimeout(() => {
-                showSystemToast(`Despertar concluído, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
-            }, 1000);
-        }
-    });
+    if (btnFinish) {
+        const newBtnFinish = btnFinish.cloneNode(true);
+        btnFinish.parentNode.replaceChild(newBtnFinish, btnFinish);
+        newBtnFinish.addEventListener('click', () => {
+            if (selectedHours) {
+                gameState.dailyCommitmentMins = parseInt(selectedHours);
+                
+                // Coletar dias selecionados
+                const dayCheckboxes = document.querySelectorAll('.day-checkbox input:checked');
+                const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
+                gameState.activeDays = selectedDays.length > 0 ? selectedDays : [0,1,2,3,4,5,6]; // Fallback
+                
+                // Adapta o deck de missões com base no arquétipo e no tempo
+                applyArchetypeDeck(selectedArch, gameState.dailyCommitmentMins);
+                
+                // FINALIZAR TUTORIAL
+                gameState.tutorialCompleted = true;
+                gameState.tutorialStep = null;
+                
+                wizardModal.style.cssText = 'display: none !important;';
+                saveGameData();
+                updateUI();
+                
+                setTimeout(() => {
+                    showSystemToast(`Despertar concluído, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
+                }, 1000);
+            }
+        });
+    }
 }
 
 function setupHookStep(archetype) {

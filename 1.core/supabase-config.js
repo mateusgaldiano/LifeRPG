@@ -109,36 +109,58 @@ window.logoutSupabase = async function() {
 // INIT — chamado no lugar de initFirebase()
 // --------------------------------------------------------------------------
 window.initSupabase = function() {
-  supabaseClient.auth.onAuthStateChange(async (event, session) => {
-    if (session?.user) {
-      updateCloudStatusUI(true);
-      await ensureUserProfile(session.user);
-      await syncFromCloud();
-      if (typeof window.subscribeUserToPush === 'function' && 'Notification' in window && Notification.permission === 'granted') {
-        window.subscribeUserToPush();
+  return new Promise((resolve) => {
+    let resolved = false;
+    const done = (status = { isReturningUser: false, tutorialCompleted: false }) => {
+      if (!resolved) {
+        resolved = true;
+        resolve(status);
       }
-      if (typeof window.refreshActiveSocialTab === 'function') {
-        window.refreshActiveSocialTab();
-      }
-    } else {
-      updateCloudStatusUI(false);
-      if (typeof window.refreshActiveSocialTab === 'function') {
-        window.refreshActiveSocialTab();
-      }
-    }
-  });
+    };
 
-  // Checar sessão existente ao carregar
-  supabaseClient.auth.getSession().then(({ data }) => {
-    if (data?.session?.user) {
-      updateCloudStatusUI(true);
-      ensureUserProfile(data.session.user).then(() => {
-        syncFromCloud();
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        updateCloudStatusUI(true);
+        const profile = await ensureUserProfile(session.user);
+        await syncFromCloud();
         if (typeof window.subscribeUserToPush === 'function' && 'Notification' in window && Notification.permission === 'granted') {
           window.subscribeUserToPush();
         }
-      });
-    }
+        if (typeof window.refreshActiveSocialTab === 'function') {
+          window.refreshActiveSocialTab();
+        }
+        done(profile);
+      } else {
+        updateCloudStatusUI(false);
+        if (typeof window.refreshActiveSocialTab === 'function') {
+          window.refreshActiveSocialTab();
+        }
+        done({ isReturningUser: false, tutorialCompleted: false });
+      }
+    });
+
+    // Checar sessão existente ao carregar
+    supabaseClient.auth.getSession().then(async ({ data }) => {
+      if (data?.session?.user) {
+        updateCloudStatusUI(true);
+        try {
+          const profile = await ensureUserProfile(data.session.user);
+          await syncFromCloud();
+          if (typeof window.subscribeUserToPush === 'function' && 'Notification' in window && Notification.permission === 'granted') {
+            window.subscribeUserToPush();
+          }
+          done(profile);
+        } catch (e) {
+          console.error('[Supabase init session error]', e);
+          done({ isReturningUser: false, tutorialCompleted: false });
+        }
+      } else {
+        done({ isReturningUser: false, tutorialCompleted: false });
+      }
+    }).catch((err) => {
+      console.error('[Supabase getSession error]', err);
+      done({ isReturningUser: false, tutorialCompleted: false });
+    });
   });
 };
 
@@ -213,6 +235,8 @@ window.updateCloudStatusUI = function(online) {
 // GARANTIR PERFIL — cria persons + users se for o primeiro login
 // --------------------------------------------------------------------------
 async function ensureUserProfile(authUser) {
+  let isReturningUser = false;
+  let tutorialCompleted = false;
   try {
     // ── PASSO 1: Verificar/criar em persons ──────────────────────────────
     const { data: person, error: personSelectError } = await supabaseClient
@@ -239,7 +263,7 @@ async function ensureUserProfile(authUser) {
         if (typeof showSystemToast === 'function') {
           showSystemToast('Erro ao criar perfil: ' + personInsertError.message);
         }
-        return; // Não adianta continuar se persons falhou
+        return { isReturningUser, tutorialCompleted };
       }
       console.log('[Supabase] Person criada com sucesso:', authUser.id);
     }
@@ -247,7 +271,7 @@ async function ensureUserProfile(authUser) {
     // ── PASSO 2: Verificar/criar em users ────────────────────────────────
     const { data: userRow, error: userSelectError } = await supabaseClient
       .from('users')
-      .select('id')
+      .select('id, settings')
       .eq('person_id', authUser.id)
       .maybeSingle();
 
@@ -256,6 +280,8 @@ async function ensureUserProfile(authUser) {
     }
 
     if (!userRow) {
+      isReturningUser = false;
+      tutorialCompleted = gameState.tutorialCompleted || false;
       // PRIMEIRO LOGIN — fazer upload do progresso local atual
       const rankLetter = getRankForLevel(gameState.level).css.replace('rank-', '').toUpperCase();
       const { data: newUser, error: userInsertError } = await supabaseClient
@@ -274,6 +300,8 @@ async function ensureUserProfile(authUser) {
           settings: {
             achievements:  gameState.achievements || [],
             unlockedSkins: gameState.inventory?.unlockedSkins || ['default'],
+            tutorialCompleted: gameState.tutorialCompleted || false,
+            tutorialStep: gameState.tutorialStep || null,
           },
           last_active_at: new Date().toISOString(),
         }, { onConflict: 'person_id' })
@@ -285,7 +313,7 @@ async function ensureUserProfile(authUser) {
         if (typeof showSystemToast === 'function') {
           showSystemToast('Erro ao salvar perfil do jogador: ' + (userInsertError?.message || 'resposta vazia'));
         }
-        return;
+        return { isReturningUser, tutorialCompleted };
       }
 
       console.log('[Supabase] User criado com sucesso:', newUser.id);
@@ -297,6 +325,8 @@ async function ensureUserProfile(authUser) {
       await syncInventoryToSupabase();
 
     } else {
+      isReturningUser = true;
+      tutorialCompleted = userRow.settings?.tutorialCompleted ?? false;
       window._currentUserDbId = userRow.id;
       console.log('[Supabase] User existente carregado:', userRow.id);
     }
@@ -313,6 +343,7 @@ async function ensureUserProfile(authUser) {
       showSystemToast('Erro inesperado no login. Verifique o console.');
     }
   }
+  return { isReturningUser, tutorialCompleted };
 }
 
 
@@ -345,6 +376,8 @@ window.syncFromCloud = async function() {
     gameState.playerName = cloudUser.username;
 
     gameState.achievements = cloudUser.settings?.achievements || [];
+    gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
+    gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
 
     await loadQuestsFromSupabase();
     await loadHistoryFromSupabase();
@@ -405,6 +438,8 @@ window.saveToSupabase = async function() {
     p_settings: {
       achievements: gameState.achievements || [],
       unlockedSkins: gameState.inventory?.unlockedSkins || ['default'],
+      tutorialCompleted: gameState.tutorialCompleted || false,
+      tutorialStep: gameState.tutorialStep || null,
     }
   });
 
