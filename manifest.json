@@ -2,7 +2,7 @@
   "name": "LifeRPG — The System",
   "short_name": "LifeRPG",
   "description": "Gamified habit tracker — Level Up In Real Life",
-  "start_url": "index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",

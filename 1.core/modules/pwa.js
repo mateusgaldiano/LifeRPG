@@ -321,7 +321,7 @@ function setupInstallPrompt() {
 }
 
 
-const VAPID_PUBLIC_KEY = 'BH7TgtovtrYn69kmU8SF6FEpUAETTGLZbiFCu23vDzIOANA1LPM5gwVXX71aqg6X6somwGLtH0Cy-uZXq2ROVJI';
+const VAPID_PUBLIC_KEY = 'BFcQZ5Z7RIi0rv9EjL9vwQK6Hj9EhaFRKke0nLuD22nwzl8NhEirmyEGWYmYP5toC3-OfycWS8jaep9JKn0wYfg';
 
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);

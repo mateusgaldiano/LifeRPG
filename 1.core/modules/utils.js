@@ -285,7 +285,32 @@ function getPlayerTerm(gender = 'male') {
     return gender === 'female' ? 'Guerreira' : 'Guerreiro';
 }
 
+async function trackEvent(eventName, properties = {}) {
+    console.log(`[Analytics] Track Event: ${eventName}`, properties);
+    if (typeof supabaseClient === 'undefined') {
+        console.warn('[Analytics] Supabase client não encontrado. Evento não enviado para nuvem.');
+        return;
+    }
+    const userId = window._currentUserDbId || null;
+    try {
+        const { error } = await supabaseClient
+            .from('analytics_events')
+            .insert({
+                user_id: userId,
+                event_name: eventName,
+                properties: properties,
+                created_at: new Date().toISOString()
+            });
+        if (error) {
+            console.error('[Analytics] Erro ao salvar evento no Supabase:', error.message);
+        }
+    } catch (err) {
+        console.error('[Analytics] Erro inesperado ao salvar evento:', err);
+    }
+}
+
 export {
+    trackEvent,
     localDateStr,
     hasSkillLV3,
     getRankForLevel,

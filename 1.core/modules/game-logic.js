@@ -1,7 +1,7 @@
 // game-logic.js
 import { gameState, saveGameData, BOSS_QUESTS, DUNGEON_POOL, DUNGEON_DURATION_MS, ALL_HABITS_DATABASE } from './state.js';
 import {
-    localDateStr, getRankForLevel, getXpToNextForLevel, hasPerk,
+    trackEvent, localDateStr, getRankForLevel, getXpToNextForLevel, hasPerk,
     calcStreakMultiplier, calcStreakGoldMultiplier, calcGroupMultiplier,
     getSynergySkillXpBonus, getSynergyXpBonus, getSynergyGoldBonus, getPerkXpBonus, initSkillsState,
     getPlayerTerm
@@ -953,17 +953,20 @@ function buyStoreItem(itemId) {
 
     // Validar restrição de nível do Pergaminho do Foco Lendário (Requer Nível 10)
     if (itemId === 'buff_legendary_focus' && gameState.level < 10) {
+        trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
         showSystemToast("⚠️ *BLOQUEADO.* O Pergaminho do Foco Lendário exige nível 10+ para ser adquirido.");
         return;
     }
 
     // Validar restrição de nível do Cálice da Imortalidade (Late-Game)
     if (itemId === 'buff_immortality' && gameState.level < 15) {
+        trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
         showSystemToast("⚠️ *BLOQUEADO.* O Cálice da Imortalidade exige nível 15+ para ser adquirido.");
         return;
     }
 
     if ((gameState.gold || 0) < cost) {
+        trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'insufficient_gold' });
         showSystemToast(`⚠️ *OURO INSUFICIENTE.* O Sistema não faz caridade. Você precisa de ${cost} 💰.`);
         return;
     }
@@ -974,6 +977,7 @@ function buyStoreItem(itemId) {
         
         if (itemId === 'buff_autoHeal') {
             if (gameState.buffs.autoHeal) {
+                trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'already_active' });
                 showSystemToast("⚠️ Você já possui uma Poção de Cura ativa no inventário.");
                 return;
             }
@@ -982,6 +986,7 @@ function buyStoreItem(itemId) {
         } 
         else if (itemId === 'buff_doubleXp') {
             if (gameState.buffs.doubleXp) {
+                trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'already_active' });
                 showSystemToast("⚠️ Seu Pergaminho já está ativo até meia-noite!");
                 return;
             }
@@ -990,6 +995,7 @@ function buyStoreItem(itemId) {
         }
         else if (itemId === 'buff_legendary_focus') {
             if (gameState.buffs.legendaryFocus) {
+                trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'already_active' });
                 showSystemToast("⚠️ Você já possui o Pergaminho do Foco Lendário ativo no inventário.");
                 return;
             }
@@ -1034,14 +1040,17 @@ function buyStoreItem(itemId) {
 
         // Requisitos de Rank (Nível) - ignorados se for a promo do tutorial
         if (itemId === 'skin_shadow_master' && gameState.level < 10 && !isTutorialPromo) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
             showSystemToast("⚠️ *BLOQUEADO.* Esta borda exige Rank C (Nível 10+) para ser adquirida.");
             return;
         }
         if (itemId === 'skin_mist_monarch' && gameState.level < 15) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
             showSystemToast("⚠️ *BLOQUEADO.* Esta borda exige Rank B (Nível 15+) para ser adquirida.");
             return;
         }
         if (itemId === 'skin_arise_emperor' && gameState.level < 20) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
             showSystemToast("⚠️ *BLOQUEADO.* Esta borda exige Rank A (Nível 20+) para ser adquirida.");
             return;
         }
@@ -1074,6 +1083,7 @@ function buyStoreItem(itemId) {
     }
 
     // Cobra o ouro
+    trackEvent('item_purchased', { item_id: itemId, cost: cost, level: gameState.level });
     gameState.gold -= cost;
     saveGameData();
     updateUI();

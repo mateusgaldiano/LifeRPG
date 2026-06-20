@@ -228,11 +228,11 @@ async function ensureUserProfile(authUser) {
     if (!person) {
       const { error: personInsertError } = await supabaseClient
         .from('persons')
-        .insert({
+        .upsert({
           id:    authUser.id,
           email: authUser.email,
           name:  authUser.user_metadata?.full_name || authUser.email,
-        });
+        }, { onConflict: 'id' });
 
       if (personInsertError) {
         console.error('[Supabase] Erro ao criar person:', personInsertError.message, personInsertError.code);
@@ -260,7 +260,7 @@ async function ensureUserProfile(authUser) {
       const rankLetter = getRankForLevel(gameState.level).css.replace('rank-', '').toUpperCase();
       const { data: newUser, error: userInsertError } = await supabaseClient
         .from('users')
-        .insert({
+        .upsert({
           person_id:      authUser.id,
           username:       gameState.playerName || authUser.email,
           level:          gameState.level,
@@ -276,9 +276,9 @@ async function ensureUserProfile(authUser) {
             unlockedSkins: gameState.inventory?.unlockedSkins || ['default'],
           },
           last_active_at: new Date().toISOString(),
-        })
+        }, { onConflict: 'person_id' })
         .select('id')
-        .single();
+        .maybeSingle();
 
       if (userInsertError || !newUser) {
         console.error('[Supabase] Erro ao criar user:', userInsertError?.message, userInsertError?.code);

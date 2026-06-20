@@ -897,6 +897,28 @@ function updateUI() {
         xpBarInnerEl.style.width = `${xpPercent}%`;
     }
 
+    // Tooltip de XP Faltante (GAME-006)
+    const xpSectionEl = document.querySelector('.xp-section');
+    if (xpSectionEl) {
+        const xpRemaining = Math.max(0, gameState.xpToNext - gameState.xp);
+        const nextLevel = (gameState.level || 1) + 1;
+        xpSectionEl.title = `Faltam ${xpRemaining} XP para o Nível ${nextLevel}`;
+    }
+
+    // Grupo Multiplier Chip (BUG-007)
+    const groupChipEl = document.getElementById('group-multiplier-chip');
+    const groupMultEl = document.getElementById('lbl-group-mult');
+    if (groupChipEl && groupMultEl) {
+        const friendsCount = gameState.friendsCount || 0;
+        if (friendsCount > 0) {
+            const mult = calcGroupMultiplier();
+            groupMultEl.innerText = `x${mult.toFixed(2)}`;
+            groupChipEl.style.display = 'flex';
+        } else {
+            groupChipEl.style.display = 'none';
+        }
+    }
+
     // Progresso diário
     const totalDailies = gameState.quests.length;
     const completedDailies = gameState.quests.filter(q => q.completed).length;

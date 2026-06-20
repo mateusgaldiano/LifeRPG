@@ -3511,3 +3511,43 @@ body::before {
     color: var(--text-light);
     font-weight: 700;
 }
+
+/* Heatmap Empty State (UX-007) */
+.empty-heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    width: max-content;
+    margin: 18px auto;
+}
+
+.empty-heatmap-cell {
+    width: 14px;
+    height: 14px;
+    background-color: var(--bg-input);
+    border-radius: 2px;
+    animation: emptyCellPulse 2s infinite ease-in-out;
+}
+
+.empty-heatmap-cell:nth-child(5n+1) { animation-delay: 0.1s; }
+.empty-heatmap-cell:nth-child(5n+2) { animation-delay: 0.3s; }
+.empty-heatmap-cell:nth-child(5n+3) { animation-delay: 0.5s; }
+.empty-heatmap-cell:nth-child(5n+4) { animation-delay: 0.7s; }
+.empty-heatmap-cell:nth-child(5n+5) { animation-delay: 0.9s; }
+
+.empty-heatmap-cell.level-0 { background-color: rgba(71, 85, 105, 0.2); }
+.empty-heatmap-cell.level-1 { background-color: rgba(124, 58, 237, 0.25); }
+.empty-heatmap-cell.level-2 { background-color: rgba(124, 58, 237, 0.45); }
+.empty-heatmap-cell.level-3 { background-color: rgba(124, 58, 237, 0.7); }
+.empty-heatmap-cell.level-4 { background-color: rgba(124, 58, 237, 0.95); }
+
+@keyframes emptyCellPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(0.92);
+        filter: brightness(1.3);
+    }
+}

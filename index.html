@@ -10,6 +10,20 @@
     <meta name="theme-color" content="#e8eef5">
     <link rel="manifest" href="manifest.json">
 
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mateusgaldiano.github.io/LifeRPG_Dev/">
+    <meta property="og:title" content="LifeRPG OS — The System">
+    <meta property="og:description" content="Gamified habit tracker — Level Up In Real Life. Transforme suas tarefas em missões diárias, ganhe XP e suba de nível!">
+    <meta property="og:image" content="2.assets/og-preview.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://mateusgaldiano.github.io/LifeRPG_Dev/">
+    <meta property="twitter:title" content="LifeRPG OS — The System">
+    <meta property="twitter:description" content="Gamified habit tracker — Level Up In Real Life. Transforme suas tarefas em missões diárias, ganhe XP e suba de nível!">
+    <meta property="twitter:image" content="2.assets/og-preview.png">
+
     <!-- Fontes Arise-style -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -113,7 +127,7 @@
                         <span id="lbl-streak" class="resource-val">0</span>
                         <span class="resource-unit">DIAS</span>
                     </div>
-                    <div class="resource-chip group-chip" id="group-multiplier-chip" style="display: none !important;">
+                    <div class="resource-chip group-chip" id="group-multiplier-chip">
                         <span class="resource-icon">👥</span>
                         <span id="lbl-group-mult" class="resource-val">x1.00</span>
                         <span class="resource-unit">GRUPO</span>
@@ -263,14 +277,49 @@
                 </div>
 
                 <!-- ESTADO VAZIO -->
-                <div id="global-empty-state" class="dashboard-card" style="display: none; padding: 20px 14px; text-align: center; margin-top: 10px;">
-                    <span style="font-size: 2.2rem; display: block; margin-bottom: 8px;">📊</span>
-                    <h3 style="color: var(--neon-purple); margin-bottom: 8px;">SEU MAPA TÁTICO ESTÁ SENDO GERADO</h3>
-                    <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; max-width: 320px; margin: 0 auto;">
-                        O painel de consistência anual e gráficos de desempenho precisam de dados históricos para renderizar.
-                        <br><br>
-                        <strong style="color: var(--text-primary);">💡 Complete as suas missões diárias hoje</strong> e amanhã esta tela revelará suas primeiras estatísticas e seu heatmap de hábitos!
+                <div id="global-empty-state" class="dashboard-card" style="display: none; padding: 24px 18px; text-align: center; margin-top: 10px;">
+                    <div style="font-size: 2.5rem; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.4));">🛡️</div>
+                    <h3 style="color: var(--neon-purple); font-family: var(--font-hud); letter-spacing: 1px; margin-bottom: 10px; font-size: 1.1rem;">BEM-VINDO AO MAPA TÁTICO</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; max-width: 380px; margin: 0 auto 18px auto;">
+                        A consistência esculpe o seu caráter. Este painel irá rastrear cada dia de sua jornada rumo à maestria. Complete suas missões diárias para desbloquear o seu heatmap e gráficos de progresso anual.
                     </p>
+                    
+                    <!-- Heatmap Preview Grid -->
+                    <div class="empty-heatmap-grid" title="Visualização prévia do Heatmap">
+                        <div class="empty-heatmap-cell level-0"></div>
+                        <div class="empty-heatmap-cell level-1"></div>
+                        <div class="empty-heatmap-cell level-0"></div>
+                        <div class="empty-heatmap-cell level-2"></div>
+                        <div class="empty-heatmap-cell level-0"></div>
+                        
+                        <div class="empty-heatmap-cell level-1"></div>
+                        <div class="empty-heatmap-cell level-3"></div>
+                        <div class="empty-heatmap-cell level-1"></div>
+                        <div class="empty-heatmap-cell level-0"></div>
+                        <div class="empty-heatmap-cell level-2"></div>
+                        
+                        <div class="empty-heatmap-cell level-2"></div>
+                        <div class="empty-heatmap-cell level-4"></div>
+                        <div class="empty-heatmap-cell level-3"></div>
+                        <div class="empty-heatmap-cell level-1"></div>
+                        <div class="empty-heatmap-cell level-0"></div>
+                        
+                        <div class="empty-heatmap-cell level-0"></div>
+                        <div class="empty-heatmap-cell level-2"></div>
+                        <div class="empty-heatmap-cell level-1"></div>
+                        <div class="empty-heatmap-cell level-3"></div>
+                        <div class="empty-heatmap-cell level-1"></div>
+                        
+                        <div class="empty-heatmap-cell level-1"></div>
+                        <div class="empty-heatmap-cell level-0"></div>
+                        <div class="empty-heatmap-cell level-2"></div>
+                        <div class="empty-heatmap-cell level-0"></div>
+                        <div class="empty-heatmap-cell level-3"></div>
+                    </div>
+                    
+                    <span style="display: inline-block; color: var(--neon-cyan); font-size: 0.75rem; font-family: var(--font-mono); letter-spacing: 0.5px; margin-top: 10px; text-transform: uppercase;">
+                        [ AGUARDANDO PRIMEIRAS ATIVIDADES ]
+                    </span>
                 </div>
 
                 
