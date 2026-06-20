@@ -294,9 +294,9 @@ function cleanObjectEncoding(obj) {
 
 function loadGameData() {
     // FORÇAR RESET ÚNICO PEDIDO PELO USUÁRIO (Nível 1, 0 Gold, 0 Streak)
-    if (localStorage.getItem('force_reset_v3') !== 'true') {
+    if (localStorage.getItem('force_reset_v4') !== 'true') {
         localStorage.removeItem('lifeRPG_gameState');
-        localStorage.setItem('force_reset_v3', 'true');
+        localStorage.setItem('force_reset_v4', 'true');
         resetGameState({
             level: 1,
             xp: 0,

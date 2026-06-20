@@ -158,7 +158,7 @@ function setupSettingsListeners() {
             const confirmed = confirm("🔥 TEM CERTEZA QUE DESEJA APAGAR TODO O SEU PROGRESSO?\n\nEsta ação destruirá seu histórico, atributos, missões e inventário. Você voltará ao nível 1 e o Onboarding será reiniciado.\n\nESTA AÇÃO NÃO PODE SER DESFEITA.");
             if (confirmed) {
                 localStorage.removeItem('lifeRPG_gameState');
-                localStorage.removeItem('force_reset_v3');
+                localStorage.removeItem('force_reset_v4');
                 localStorage.removeItem('lifeRPG_chatCache');
                 alert("O Sistema foi resetado. Reiniciando simulação...");
                 window.location.reload();
