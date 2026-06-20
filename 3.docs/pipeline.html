@@ -1,0 +1,487 @@
+﻿<USER_REQUEST>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeRPG OS â€” Pipeline de Melhorias v2.0</title>
+<style>
+  :root {
+    --bg: #0b1120;
+    --bg-card: #111827;
+    --bg-input: #1a2235;
+    --border: rgba(99,102,241,.22);
+    --neon-purple: #7c3aed;
+    --neon-cyan: #22d3ee;
+    --neon-gold: #f59e0b;
+    --neon-red: #ef4444;
+    --neon-green: #22c55e;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --font-hud: 'Orbitron', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* cluster colors */
+    --c-bug: #ef4444;
+    --c-game: #f59e0b;
+    --c-ux: #a78bfa;
+    --c-mobile: #60a5fa;
+    --c-sec: #f97316;
+    --c-eng: #34d399;
+    --c-data: #38bdf8;
+    --c-social: #fb7185;
+    --c-mkt: #facc15;
+    --c-a11y: #c084fc;
+    --c-onboard: #4ade80;
+    --c-meta: #7B68EE;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .page-header {
+    background: linear-gradient(135deg, #0b1120 0%, #1a0a2e 50%, #0b1120 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 32px 24px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 40px rgba(124,58,237,.15);
+  }
+  .header-top {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 18px;
+  }
+  .logo-icon {
+    font-size: 1.8rem;
+    filter: drop-shadow(0 0 14px #7c3aed);
+  }
+  .header-title { font-family: var(--font-hud); }
+  .header-title h1 {
+    font-size: 18px; letter-spacing: 3px; color: var(--neon-cyan);
+    text-shadow: 0 0 20px rgba(34,211,238,.4);
+  }
+  .header-title p {
+    font-size: 10px; color: var(--text-muted); letter-spacing: 1.5px; margin-top: 2px;
+  }
+  .header-stats {
+    margin-left: auto; display: flex; gap: 20px;
+  }
+  .stat-pill {
+    background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.3);
+    border-radius: 20px; padding: 4px 14px;
+    font-family: var(--font-hud); font-size: 10px; letter-spacing: 1px;
+    color: var(--neon-purple);
+  }
+  .stat-pill span { color: var(--text-primary); font-size: 13px; font-weight: 700; margin-right: 4px; }
+
+  /* CONTROLS */
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  }
+  .search-box {
+    background: var(--bg-input); border: 1px solid var(--border);
+    color: var(--text-primary); padding: 7px 14px; border-radius: 6px;
+    font-family: var(--font-body); font-size: 12px; width: 240px; outline: none;
+    transition: border-color .2s;
+  }
+  .search-box:focus { border-color: var(--neon-purple); }
+  .search-box::placeholder { color: var(--text-muted); }
+
+  .filter-label {
+    font-size: 10px; color: var(--text-muted); letter-spacing: 1px;
+    font-family: var(--font-hud); align-self: center;
+  }
+
+  .filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .filter-btn {
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-secondary); cursor: pointer;
+    border-radius: 4px; padding: 4px 10px; font-size: 11px;
+    font-family: var(--font-body); transition: all .15s;
+    white-space: nowrap;
+  }
+  .filter-btn:hover { border-color: var(--neon-purple); color: var(--neon-purple); }
+  .filter-btn.active { background: var(--neon-purple); border-color: var(--neon-purple); color: #fff; }
+
+  .sort-btn {
+    background: var(--bg-input); border: 1px solid var(--border);
+    color: var(--text-secondary); cursor: pointer; border-radius: 4px;
+    padding: 4px 10px; font-size: 11px; font-family: var(--font-body);
+    transition: all .15s;
+  }
+  .sort-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+
+  /* CLUSTER LEGEND */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    padding: 12px 32px; border-bottom: 1px solid rgba(255,255,255,.04);
+    background: rgba(0,0,0,.2);
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 10px; color: var(--text-muted); letter-spacing: .5px;
+    cursor: pointer; padding: 3px 8px; border-radius: 4px;
+    transition: background .15s;
+  }
+  .legend-item:hover { background: rgba(255,255,255,.04); color: var(--text-secondary); }
+  .legend-item.active { color: var(--text-primary); background: rgba(255,255,255,.06); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+  /* TABLE */
+  .table-wrap {
+    padding: 0 32px 40px;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%; border-collapse: collapse; margin-top: 20px;
+    font-size: 12px;
+  }
+  thead th {
+    font-family: var(--font-hud); font-size: 9px; letter-spacing: 1.5px;
+    color: var(--text-muted); text-align: left; padding: 10px 12px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+    cursor: pointer; user-select: none;
+  }
+  thead th:hover { color: var(--neon-cyan); }
+  thead th.sorted-asc::after { content: ' â†‘'; color: var(--neon-cyan); }
+  thead th.sorted-desc::after { content: ' â†“'; color: var(--neon-cyan); }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,.03);
+    transition: background .1s;
+  }
+  tbody tr:hover { background: rgba(124,58,237,.05); }
+  tbody tr.hidden { display: none; }
+  tbody tr.done { opacity: .4; }
+
+  td { padding: 9px 12px; vertical-align: middle; }
+
+  .td-id {
+    font-family: var(--font-mono); font-size: 10px; color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .cluster-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; font-weight: 600; letter-spacing: .5px;
+    padding: 3px 8px; border-radius: 4px; white-space: nowrap;
+  }
+
+  .persona-tag {
+    font-size: 10px; color: var(--text-muted); font-style: italic;
+    white-space: nowrap;
+  }
+
+  .td-item {
+    max-width: 340px; line-height: 1.45;
+    color: var(--text-primary);
+  }
+  .td-item .item-title { font-weight: 600; margin-bottom: 2px; }
+  .td-item .item-desc {
+    font-size: 11px; color: var(--text-muted); line-height: 1.4;
+  }
+
+  .badge {
+    display: inline-block; padding: 2px 7px; border-radius: 3px;
+    font-size: 10px; font-weight: 700; letter-spacing: .5px;
+    font-family: var(--font-hud); white-space: nowrap;
+  }
+
+  /* Impacto */
+  .imp-p0 { background: rgba(239,68,68,.15); color: #ef4444; border: 1px solid rgba(239,68,68,.3); }
+  .imp-p1 { background: rgba(245,158,11,.12); color: #f59e0b; border: 1px solid rgba(245,158,11,.3); }
+  .imp-p2 { background: rgba(124,58,237,.12); color: #a78bfa; border: 1px solid rgba(124,58,237,.3); }
+  .imp-p3 { background: rgba(71,85,105,.15); color: #64748b; border: 1px solid rgba(71,85,105,.3); }
+
+  /* EsforÃ§o */
+  .ef-xs { background: rgba(34,197,94,.1); color: #4ade80; border: 1px solid rgba(34,197,94,.2); }
+  .ef-s  { background: rgba(34,211,238,.1); color: #67e8f9; border: 1px solid rgba(34,211,238,.2); }
+  .ef-m  { background: rgba(245,158,11,.1); color: #fbbf24; border: 1px solid rgba(245,158,11,.2); }
+  .ef-l  { background: rgba(239,68,68,.1); color: #f87171; border: 1px solid rgba(239,68,68,.2); }
+  .ef-xl { background: rgba(124,58,237,.12); color: #a78bfa; border: 1px solid rgba(124,58,237,.3); }
+
+  /* Tipo */
+  .tipo-bug   { color: #ef4444; }
+  .tipo-feat  { color: #22d3ee; }
+  .tipo-enh   { color: #a78bfa; }
+  .tipo-tech  { color: #34d399; }
+  .tipo-sec   { color: #f97316; }
+  .tipo-data  { color: #38bdf8; }
+  .tipo-cont  { color: #facc15; }
+
+  /* Fase */
+  .fase-now   { color: #ef4444; font-weight: 700; }
+  .fase-near  { color: #f59e0b; }
+  .fase-fut   { color: #64748b; }
+
+  .td-notas {
+    font-size: 11px; color: var(--text-muted); max-width: 240px;
+    line-height: 1.4;
+  }
+  .td-notas code {
+    background: rgba(124,58,237,.15); color: #c4b5fd;
+    padding: 1px 5px; border-radius: 3px;
+    font-family: var(--font-mono); font-size: 10px;
+  }
+
+  /* Done toggle */
+  .done-toggle {
+    width: 16px; height: 16px; border-radius: 3px;
+    border: 1px solid var(--border); background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all .15s; flex-shrink: 0;
+  }
+  .done-toggle:hover { border-color: var(--neon-green); background: rgba(34,197,94,.1); }
+  .done-toggle.checked { background: var(--neon-green); border-color: var(--neon-green); }
+  .done-toggle.checked::after { content: 'âœ“'; color: #000; font-size: 10px; font-weight: 900; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center; padding: 60px 32px;
+    color: var(--text-muted); font-family: var(--font-hud);
+    font-size: 11px; letter-spacing: 2px; display: none;
+  }
+  .empty-state.show { display: block; }
+
+  /* Counter */
+  #visible-count {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--text-muted); margin-left: auto; align-self: center;
+  }
+
+  .controls-row2 {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 10px;
+  }
+
+  .reset-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-muted); cursor: pointer; padding: 4px 10px;
+    border-radius: 4px; font-size: 11px; transition: all .15s;
+  }
+  .reset-btn:hover { border-color: var(--neon-red); color: var(--neon-red); }
+
+  @media(max-width: 900px) {
+    .page-header { padding: 16px; }
+    .table-wrap { padding: 0 12px 40px; }
+    .legend { padding: 10px 12px; }
+    .header-stats { display: none; }
+    .td-notas { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-top">
+    <div class="logo-icon">âš¡</div>
+    <div class="header-title">
+      <h1>LIFERPG OS â€” PIPELINE</h1>
+      <p>AUDITORIA COMPLETA v2.0 Â· MULTI-PERSONA Â· GERADO EM 20/06/2026</p>
+    </div>
+    <div class="header-stats">
+      <div class="stat-pill"><span id="cnt-total">0</span>ITENS</div>
+      <div class="stat-pill"><span id="cnt-p0">0</span>P0 CRÃTICO</div>
+      <div class="stat-pill"><span id="cnt-done">0</span>CONCLUÃDOS</div>
+    </div>
+  </div>
+  <div class="controls">
+    <input class="search-box" id="search" placeholder="ðŸ” Buscar item, cluster, persona...">
+    <span class="filter-label">PRIORIDADE:</span>
+    <div class="filter-group" id="fg-prioridade">
+      <button class="filter-btn active" data-filter="prioridade" data-val="all">TODOS</button>
+      <button class="filter-btn" data-filter="prioridade" data-val="P0">P0 CRÃTICO</button>
+      <button class="filter-btn" data-filter="prioridade" data-val="P1">P1 ALTO</button>
+      <button class="filter-btn" data-filter="prioridade" data-val="P2">P2 MÃ‰DIO</button>
+      <button class="filter-btn" data-filter="prioridade" data-val="P3">P3 FUTURO</button>
+    </div>
+    <span class="filter-label">FASE:</span>
+    <div class="filter-group" id="fg-fase">
+      <button class="filter-btn active" data-filter="fase" data-val="all">TODAS</button>
+      <button class="filter-btn" data-filter="fase" data-val="Agora">AGORA</button>
+      <button class="filter-btn" data-filter="fase" data-val="PrÃ³ximas semanas">PRÃ“X. SEMANAS</button>
+      <button class="filter-btn" data-filter="fase" data-val="Futuro">FUTURO</button>
+    </div>
+  </div>
+  <div class="controls-row2">
+    <span class="filter-label">ESFORÃ‡O:</span>
+    <div class="filter-group" id="fg-esforco">
+      <button class="filter-btn active" data-filter="esforco" data-val="all">TODOS</button>
+      <button class="filter-btn" data-filter="esforco" data-val="XS">XS</button>
+      <button class="filter-btn" data-filter="esforco" data-val="S">S</button>
+      <button class="filter-btn" data-filter="esforco" data-val="M">M</button>
+      <button class="filter-btn" data-filter="esforco" data-val="L">L</button>
+      <button class="filter-btn" data-filter="esforco" data-val="XL">XL</button>
+    </div>
+    <button class="reset-btn" id="reset-done">â†º MOSTRAR CONCLUÃDOS</button>
+    <button class="reset-btn" id="reset-filters">âœ• LIMPAR FILTROS</button>
+    <span id="visible-count">â€” itens</span>
+  </div>
+</div>
+
+<div class="legend" id="cluster-legend"></div>
+
+<div class="table-wrap">
+  <div class="empty-state" id="empty-state">[ NENHUM ITEM ENCONTRADO ]</div>
+  <table id="pipeline-table">
+    <thead>
+      <tr>
+        <th></th>
+        <th data-sort="id">ID</th>
+        <th data-sort="cluster">CLUSTER</th>
+        <th data-sort="persona">PERSONA</th>
+        <th>ITEM</th>
+        <th data-sort="prioridade">PRIO</th>
+        <th data-sort="esforco">ESFORÃ‡O</th>
+        <th data-sort="tipo">TIPO</th>
+        <th data-sort="fase">FASE</th>
+        <th>NOTAS / REFERÃŠNCIA</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<script>
+const CLUSTERS = {
+  'Bug CrÃ­tico':    { color: '#ef4444', emoji: 'ðŸ›' },
+  'Game Design':    { color: '#f59e0b', emoji: 'ðŸŽ®' },
+  'UX / Visual':    { color: '#a78bfa', emoji: 'ðŸŽ¨' },
+  'Mobile & PWA':   { color: '#60a5fa', emoji: 'ðŸ“±' },
+  'SeguranÃ§a':      { color: '#f97316', emoji: 'ðŸ”’' },
+  'Engenharia':     { color: '#34d399', emoji: 'âš¡' },
+  'Analytics':      { color: '#38bdf8', emoji: 'ðŸ“Š' },
+  'Social':         { color: '#fb7185', emoji: 'ðŸŒ' },
+  'Marketing':      { color: '#facc15', emoji: 'ðŸ“¢' },
+  'Acessibilidade': { color: '#c084fc', emoji: 'â™¿' },
+  'Onboarding':     { color: '#4ade80', emoji: 'ðŸ§­' },
+  'Meta-ProgressÃ£o':{ color: '#7B68EE', emoji: 'ðŸ†' },
+};
+
+const TIPO_CLASSES = {
+  'Bug': 'tipo-bug', 'Feature': 'tipo-feat', 'Enhancement': 'tipo-enh',
+  'Tech Debt': 'tipo-tech', 'SeguranÃ§a': 'tipo-sec', 'Analytics': 'tipo-data', 'ConteÃºdo': 'tipo-cont'
+};
+
+const PRIO_CLASSES = { 'P0': 'imp-p0', 'P1': 'imp-p1', 'P2': 'imp-p2', 'P3': 'imp-p3' };
+const EF_CLASSES   = { 'XS': 'ef-xs', 'S': 'ef-s', 'M': 'ef-m', 'L': 'ef-l', 'XL': 'ef-xl' };
+const FASE_CLASSES = { 'Agora': 'fase-now', 'PrÃ³ximas semanas': 'fase-near', 'Futuro': 'fase-fut' };
+
+const items = [
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ BUG CRÃTICO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'Bug CrÃ­tico', persona:'Engenheiro Backend', titulo:'ensureUserProfile 403/409 no primeiro login OAuth', desc:'Bloqueia: chip de grupo, notificaÃ§Ãµes push e validaÃ§Ã£o de cloud sync. Causa: race condition entre INSERT em persons e users no primeiro OAuth.', prio:'P0', esforco:'M', tipo:'Bug', fase:'Agora', notas:'Ver `ensureUserProfile` em state.js. Usar upsert ou verificar com `maybeSingle` antes de inserir.' },
+  { cluster:'Bug CrÃ­tico', persona:'Engenheiro Frontend', titulo:'Mensagens do chat global nÃ£o aparecem ao enviar', desc:'UsuÃ¡rio envia mensagem, ela nÃ£o aparece no canal. Provavelmente falta de inscriÃ§Ã£o no canal Realtime ou erro de RLS na tabela de chat.', prio:'P0', esforco:'S', tipo:'Bug', fase:'Agora', notas:'Verificar `social.js` â†’ subscribe no canal de chat e RLS da tabela no Supabase.' },
+  { cluster:'Bug CrÃ­tico', persona:'Engenheiro PWA', titulo:'PWA manifest start_url scope mismatch â†’ 404 ao abrir', desc:'App instalado abre em 404 porque start_url nÃ£o bate com scope do manifest.json. Afeta todos os usuÃ¡rios que instalaram o PWA.', prio:'P0', esforco:'XS', tipo:'Bug', fase:'Agora', notas:'Verificar `manifest.json`: start_url deve ser "/LifeRPG_Dev/" ou equivalente. Confirmar scope.' },
+  { cluster:'Bug CrÃ­tico', persona:'SeguranÃ§a', titulo:'VAPID private key comprometida â€” gerar novo par urgente', desc:'A chave privada VAPID apareceu em documento de plano. Deve ser tratada como comprometida. NotificaÃ§Ãµes push estÃ£o completamente nÃ£o funcionais.', prio:'P0', esforco:'XS', tipo:'SeguranÃ§a', fase:'Agora', notas:'Gerar novo par com `web-push generate-vapid-keys`. Armazenar private key APENAS em Supabase Edge Function Secrets.' },
+  { cluster:'Bug CrÃ­tico', persona:'Tech Lead', titulo:'CLAUDE.md desatualizado (referÃªncias ao Firebase)', desc:'CLAUDE.md ainda menciona firebase-config.js e Firestore na seÃ§Ã£o 6. Executor (Claude Code) pode se confundir e editar arquivos errados.', prio:'P1', esforco:'S', tipo:'Tech Debt', fase:'Agora', notas:'Reescrever seÃ§Ã£o de arquivos: substituir toda referÃªncia Firebase por Supabase. Atualizar tabelas, funÃ§Ãµes RPC, mÃ³dulos ES.' },
+  { cluster:'Bug CrÃ­tico', persona:'Engenheiro Frontend', titulo:'16 chamadas `trackEvent` sem implementaÃ§Ã£o funcional', desc:'Analytics completamente cegas. `window.trackEvent` nÃ£o envia dados ao Supabase, todo o comportamento do usuÃ¡rio Ã© desconhecido.', prio:'P1', esforco:'M', tipo:'Bug', fase:'PrÃ³ximas semanas', notas:'Implementar `trackEvent` em `utils.js` com insert na tabela `analytics_events`. Deduplicar chamadas jÃ¡ existentes no cÃ³digo.' },
+  { cluster:'Bug CrÃ­tico', persona:'Backend', titulo:'pg_cron para `check_and_finalize_duels` â€” confirmaÃ§Ã£o pendente', desc:'A funÃ§Ã£o de finalizar duelos PvP pode nunca ser chamada se o cron nÃ£o foi criado no banco. Duelos ficam eternamente "ativos".', prio:'P1', esforco:'XS', tipo:'Bug', fase:'Agora', notas:'Confirmar com `SELECT * FROM cron.job` no Supabase SQL editor. Criar se ausente.' },
+  { cluster:'Bug CrÃ­tico', persona:'Engenheiro Frontend', titulo:'`switchRankingMode` e `switchTavernaTab` chamados inline (onclick)', desc:'FunÃ§Ãµes chamadas via onclick no HTML mas definidas em mÃ³dulos ES â€” podem nÃ£o estar expostas em window, causando erro silencioso em algumas situaÃ§Ãµes.', prio:'P1', esforco:'S', tipo:'Bug', fase:'PrÃ³ximas semanas', notas:'Migrar para event listeners em `app.js` ou expor explicitamente em `window.*`.' },
+  { cluster:'Bug CrÃ­tico', persona:'Engenheiro', titulo:'Group multiplier chip oculto permanentemente (display:none !important)', desc:'Chip de grupo nunca aparece porque a condiÃ§Ã£o que o mostra depende de ensureUserProfile funcionar (bug P0). ExperiÃªncia de amigos perdida.', prio:'P1', esforco:'XS', tipo:'Bug', fase:'Agora', notas:'Dependente da correÃ§Ã£o do bug #1. Ao resolver, revisar lÃ³gica de `friendsCount` bidirecional.' },
+  { cluster:'Bug CrÃ­tico', persona:'QA', titulo:'`hasSkillLV3()` referenciada em spawnDungeon mas nÃ£o visÃ­vel no escopo exportado', desc:'FunÃ§Ã£o pode estar em utils.js ou ser local. Se nÃ£o estiver importada corretamente, dungeons nunca spawnam.', prio:'P1', esforco:'XS', tipo:'Bug', fase:'PrÃ³ximas semanas', notas:'Verificar imports em game-logic.js. Confirmar se funÃ§Ã£o existe em utils.js e estÃ¡ sendo exportada.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ GAME DESIGN â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'Game Design', persona:'Game Designer', titulo:'Penalidade P0 (40% XP + skill regression) muito punitiva para novos jogadores', desc:'UsuÃ¡rio ausente 5 dias perde 40% do XP e habilidades regridem. Pode causar abandono permanente. Novos usuÃ¡rios tÃªm menos resistÃªncia emocional.', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'SugestÃ£o: penalty cap por nÃ­vel (novatos < nÃ­vel 10 cap em 15%). Adicionar "comeback boost" ao retornar.' },
+  { cluster:'Game Design', persona:'Game Designer', titulo:'Buff Double XP consumido na primeira quest completada sem aviso visual prÃ©vio', desc:'UsuÃ¡rio compra Double XP, completa uma quest pequena por acidente e perde o buff. UX confusa, percepÃ§Ã£o de desperdÃ­cio.', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Mostrar indicador pulsante no quest card quando Double XP estÃ¡ ativo. Confirmar consumo se quest < 50 XP.' },
+  { cluster:'Game Design', persona:'Game Designer', titulo:'Sem "comeback mechanic" para usuÃ¡rios que voltam apÃ³s longa ausÃªncia', desc:'Voltar depois de 7+ dias sem jogar Ã© desanimador (perdeu XP, streak zerado). Sem incentivo para reengajar.', prio:'P1', esforco:'M', tipo:'Feature', fase:'PrÃ³ximas semanas', notas:'Implementar "Modo Retorno": multiplier de 1.5x por 3 dias ao voltar apÃ³s 7+ dias ausente. Mensagem especial do Iroh.' },
+  { cluster:'Game Design', persona:'Game Designer', titulo:'Legendary Focus buff (x3 Gold) sem indicador visual no quest card', desc:'UsuÃ¡rio compra buff mas nÃ£o tem feedback visual claro de qual quest vai ativar o multiplicador. Pode completar quest errada.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar badge dourado nos cards de quest quando Legendary Focus estÃ¡ ativo. Toast de confirmaÃ§Ã£o ao consumir.' },
+  { cluster:'Game Design', persona:'Game Designer', titulo:'Falta sistema de missÃµes recorrentes nÃ£o-diÃ¡rias (semanais/mensais)', desc:'Todas as missÃµes sÃ£o diÃ¡rias ou side quests one-shot. Sem missÃ£o semanal de meta de hÃ¡bitos ou desafio mensal.', prio:'P2', esforco:'L', tipo:'Feature', fase:'Futuro', notas:'Sistema de "Weekly Challenge": ex. completar 20 missÃµes na semana. Recompensa extra de Gold/XP.' },
+  { cluster:'Game Design', persona:'Economista', titulo:'Gold inflation risk: sem gold sink consistente em late game', desc:'UsuÃ¡rio nÃ­vel 20+ acumula Gold mais rÃ¡pido do que gasta. Buffs baratos (50-800 Gold) perdem significado. Itens novos no roadmap sÃ£o necessÃ¡rios.', prio:'P2', esforco:'M', tipo:'Feature', fase:'Futuro', notas:'Planejar gold sinks: clan treasury, weekly auction, item de XP boost premium 1500 Gold.' },
+  { cluster:'Game Design', persona:'Game Designer', titulo:'XP curve escalation nÃ£o comunicada ao usuÃ¡rio', desc:'UsuÃ¡rio nÃ£o sabe quanto XP precisa para o prÃ³ximo nÃ­vel. Pode desmotivar se o progresso visual parece lento.', prio:'P2', esforco:'XS', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar tooltip na XP bar: "1240 / 2000 XP para NÃ­vel 15". Mostrar a curva simplificada no perfil.' },
+  { cluster:'Game Design', persona:'Game Designer', titulo:'Shield earn rate (7 dias = 1 shield) lento para novos usuÃ¡rios', desc:'Primeiro shield sÃ³ aparece apÃ³s 7 dias de consistÃªncia perfeita. UsuÃ¡rio novo que falhei uma vez antes disso sofre penalidade sem proteÃ§Ã£o.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'SugestÃ£o: Dar 1 shield grÃ¡tis ao completar onboarding. Comunicar claramente no wizard.' },
+  { cluster:'Game Design', persona:'PsicÃ³logo Comportamental', titulo:'Daily reset horÃ¡rio indefinido para o usuÃ¡rio', desc:'UsuÃ¡rio nÃ£o sabe se as quests resetam Ã  00h local, 00h UTC ou outro horÃ¡rio. Pode completar uma quest "do dia errado".', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Mostrar countdown "Resetando em Xh Ym" na aba MissÃµes. Tornar explÃ­cito que Ã© 00h local no Settings.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ UX / VISUAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'UX / Visual', persona:'Designer UX', titulo:'Settings modal muito denso â€” fontes pequenas (feedback confirmado esposa)', desc:'Modal de configuraÃ§Ãµes identificado como inacessÃ­vel pela usuÃ¡ria secundÃ¡ria. Fonte 10-11px em labels Ã© ilegÃ­vel em mobile.', prio:'P0', esforco:'M', tipo:'Enhancement', fase:'Agora', notas:'Escalar: body 15px, quest-title 15px, section-title 22px, settings labels 13px. Condensar notificaÃ§Ãµes em toggle Ãºnico.' },
+  { cluster:'UX / Visual', persona:'Designer Visual', titulo:'3 colunas de quest em mobile ficam muito estreitas', desc:'Layout de 3 colunas (Willpower / Intellect / Vitality) em telas < 380px resulta em cards espremidos com texto cortado.', prio:'P1', esforco:'M', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Em mobile: colapsar para 1 coluna com tabs (ForÃ§a de Vontade / Intelecto / Vitalidade) ou accordion.' },
+  { cluster:'UX / Visual', persona:'UX Writer', titulo:'Toast messages do Iroh muito longas para ler em tempo hÃ¡bil', desc:'Toasts com mensagens de 3-4 linhas do Iroh somem antes de serem lidas. Penalidade de 5 dias tem texto com 4 parÃ¡grafos.', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Implementar toasts longos em modal prÃ³prio. Toasts curtos: 4-5 segundos. Toasts longos: exigir "ENTENDIDO".' },
+  { cluster:'UX / Visual', persona:'Designer UX', titulo:'Radar chart sem legenda clara â€” skills difÃ­ceis de identificar nos eixos', desc:'HexÃ¡gono com 6 eixos sem labels visÃ­veis no grÃ¡fico. UsuÃ¡rio precisa decorar a ordem das skills.', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar labels textuais nos vÃ©rtices do hexÃ¡gono. Tooltip ao hover mostrando nome + nÃ­vel da skill.' },
+  { cluster:'UX / Visual', persona:'Designer UX', titulo:'Level Up overlay genÃ©rico â€” nÃ£o mostra o que desbloqueou', desc:'Overlay diz "NÃVEL 7" mas nÃ£o informa novos hÃ¡bitos desbloqueados, boss quests ativadas ou rank up.', prio:'P1', esforco:'M', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Enriquecer overlay: listar novos hÃ¡bitos do nÃ­vel, boss quest ativada, prÃ³xima skill desbloqueada.' },
+  { cluster:'UX / Visual', persona:'Designer UX', titulo:'Side Quest sem indicador visual distinto do Daily no card', desc:'Cards de Side Quest e Daily Quest sÃ£o visualmente idÃªnticos. UsuÃ¡rio confunde os tipos de missÃ£o.', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar badge "SIDE" roxo ou Ã­cone âš¡ distinto. Borda lateral colorida diferente.' },
+  { cluster:'UX / Visual', persona:'Designer UX', titulo:'Heatmap anual sem tooltip em mobile (data + nÂº de quests)', desc:'Em mobile, hover nÃ£o funciona. UsuÃ¡rio nÃ£o sabe o que significa cada quadrado do heatmap.', prio:'P2', esforco:'M', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Implementar tap-to-tooltip em mobile. Mostrar data e "X missÃµes concluÃ­das".' },
+  { cluster:'UX / Visual', persona:'UX Writer', titulo:'Empty state da aba "VisÃ£o Global" pouco motivacional', desc:'Texto diz "O painel precisa de dados histÃ³ricos". UsuÃ¡rio novo sente que o app estÃ¡ vazio, nÃ£o que estÃ¡ progredindo.', prio:'P2', esforco:'XS', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Reescrever: "Seu mapa tÃ¡tico estÃ¡ em formaÃ§Ã£o. Complete a primeira missÃ£o para revelar sua primeira marca." Com mini-preview animado.' },
+  { cluster:'UX / Visual', persona:'Designer Visual', titulo:'Clan tab placeholder "EM DESENVOLVIMENTO" pouco polido', desc:'Card com texto "em desenvolvimento" nÃ£o passa profissionalismo. UsuÃ¡rio convidado para ver o app vÃª feature incompleta.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Substituir por teaser estilizado com countdown ou "PrÃ©-registro de ClÃ£s". Manter a estÃ©tica RPG.' },
+  { cluster:'UX / Visual', persona:'Designer UX', titulo:'Active buffs list pode ficar visualmente lotada com mÃºltiplos buffs ativos', desc:'Quando Double XP + Shield + AutoHeal estÃ£o ativos, a lista embaixo do player card pode transbordar.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'Futuro', notas:'Implementar collapse: mÃ¡ximo 2 buffs visÃ­veis + "+N mais". Expandir ao clicar.' },
+  { cluster:'UX / Visual', persona:'Designer UX', titulo:'Weekly Report modal com texto muito pequeno em mobile', desc:'Fontes de 8-9px no relatÃ³rio semanal sÃ£o ilegÃ­veis em iPhone SE ou telas â‰¤ 375px.', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'MÃ­nimo 11px em todos os textos do report. Reestruturar grid para 2 colunas em mobile.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ MOBILE & PWA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'Mobile & PWA', persona:'Engenheiro PWA', titulo:'iOS Safari: virtual keyboard empurra chat UI (overflow)', desc:'Ao abrir o teclado no chat global no iPhone, o campo de input pode ser coberto. Problema clÃ¡ssico de `dvh` vs `svh`.', prio:'P1', esforco:'M', tipo:'Bug', fase:'PrÃ³ximas semanas', notas:'Usar `visualViewport` API para ajustar altura do modal de chat. Ou `env(keyboard-inset-height)`.' },
+  { cluster:'Mobile & PWA', persona:'Engenheiro PWA', titulo:'Social modal: 90dvh pode ultrapassar safe area no iPhone X+', desc:'Modal social com `height: 90dvh` nÃ£o considera a safe area do iPhone. Bottom preso atrÃ¡s do home indicator.', prio:'P1', esforco:'XS', tipo:'Bug', fase:'PrÃ³ximas semanas', notas:'Adicionar `padding-bottom: env(safe-area-inset-bottom)` no .modal-box-social.' },
+  { cluster:'Mobile & PWA', persona:'QA Mobile', titulo:'NotificaÃ§Ãµes push: sistema completamente nÃ£o funcional (VAPID invÃ¡lida)', desc:'Dependente da correÃ§Ã£o de seguranÃ§a P0 (novo par VAPID). ApÃ³s correÃ§Ã£o, validar SW registration e permission flow.', prio:'P0', esforco:'M', tipo:'Bug', fase:'Agora', notas:'ApÃ³s novo VAPID: testar subscribe(), verificar endpoint no Supabase Edge Function de notificaÃ§Ã£o.' },
+  { cluster:'Mobile & PWA', persona:'Engenheiro PWA', titulo:'Service Worker: cache sem versionamento explÃ­cito â†’ updates lentos', desc:'Sem versÃ£o no cache key, usuÃ¡rios podem ficar presos em versÃµes antigas do app por horas/dias.', prio:'P1', esforco:'S', tipo:'Tech Debt', fase:'PrÃ³ximas semanas', notas:'Adicionar versÃ£o no CACHE_NAME: `liferpg-v1.2.0`. Implementar `skipWaiting` + `clientsClaim`.' },
+  { cluster:'Mobile & PWA', persona:'QA Mobile', titulo:'BotÃ£o "INSTALAR APLICATIVO" aparece sÃ³ na sidebar â€” nÃ£o visÃ­vel no onboarding', desc:'UsuÃ¡rios que nÃ£o abrem a sidebar nunca veem o prompt de instalaÃ§Ã£o. Taxa de instalaÃ§Ã£o PWA provavelmente baixa.', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar prompt de instalaÃ§Ã£o ao final do wizard de onboarding (passo 4 ou 5).' },
+  { cluster:'Mobile & PWA', persona:'Designer UX', titulo:'Sem feedback de estado offline â€” usuÃ¡rio nÃ£o sabe se perdeu conexÃ£o', desc:'App falha silenciosamente quando offline. Quests completadas offline podem perder dados.', prio:'P1', esforco:'M', tipo:'Feature', fase:'PrÃ³ximas semanas', notas:'Implementar banner de "Modo Offline" no topo. Queue de aÃ§Ãµes offline com sync ao reconectar.' },
+  { cluster:'Mobile & PWA', persona:'QA Mobile', titulo:'Onboarding: gender/archetype cards podem ser apertados em phones pequenos', desc:'Grid de gender (â™‚/â™€) e archetype (4 cards) pode ser ilegÃ­vel em iPhone SE (375px).', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Garantir min-width nos cards, scroll vertical no wizard. Testar em 320px.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ SEGURANÃ‡A â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'SeguranÃ§a', persona:'Security Engineer', titulo:'VAPID private key exposta em documento â€” crÃ­tico (duplicado de Bug #4 para visibilidade)', desc:'Qualquer pessoa com acesso ao Drive pode usar a chave para enviar notificaÃ§Ãµes push em nome do app. Risco de phishing.', prio:'P0', esforco:'XS', tipo:'SeguranÃ§a', fase:'Agora', notas:'AÃ§Ã£o imediata: revogar/gerar novo par. Nunca armazenar em Docs. Edge Function Secrets apenas.' },
+  { cluster:'SeguranÃ§a', persona:'Security Engineer', titulo:'Chat global sem moderaÃ§Ã£o ou rate limiting â€” risco de spam/abuso', desc:'UsuÃ¡rio pode enviar centenas de mensagens por minuto. Sem filtro de conteÃºdo ofensivo ou NSFW.', prio:'P1', esforco:'M', tipo:'SeguranÃ§a', fase:'PrÃ³ximas semanas', notas:'Implementar rate limit no Supabase RLS: max 10 msgs/min por user_id. Avaliar word filter bÃ¡sico.' },
+  { cluster:'SeguranÃ§a', persona:'Security Engineer', titulo:'Friend search por username exato permite user enumeration', desc:'Buscar "mateus" revela se o usuÃ¡rio existe, potencialmente expondo dados de usuÃ¡rios para terceiros.', prio:'P2', esforco:'S', tipo:'SeguranÃ§a', fase:'PrÃ³ximas semanas', notas:'Retornar resposta genÃ©rica se usuÃ¡rio nÃ£o encontrado. NÃ£o distinguir "nÃ£o existe" de "nÃ£o Ã© amigo".' },
+  { cluster:'SeguranÃ§a', persona:'Security Engineer', titulo:'PvP goldBet sem validaÃ§Ã£o de saldo no frontend antes de enviar', desc:'UsuÃ¡rio pode tentar apostar mais gold do que tem. Deve ser validado antes de chamar `createPvpChallenge`.', prio:'P2', esforco:'XS', tipo:'SeguranÃ§a', fase:'PrÃ³ximas semanas', notas:'Adicionar validaÃ§Ã£o em `buyStoreItem` pattern: if gold < bet, show toast error.' },
+  { cluster:'SeguranÃ§a', persona:'Backend', titulo:'PresenÃ§a Supabase: sessÃµes zombie podem aparecer como "online"', desc:'Se usuÃ¡rio fechar app abruptamente (crash), presenÃ§a pode nÃ£o ser limpa. Outros veem usuÃ¡rio "online" indefinidamente.', prio:'P2', esforco:'S', tipo:'Bug', fase:'PrÃ³ximas semanas', notas:'Configurar `heartbeatInterval` no canal Presence. Definir timeout de presenÃ§a no servidor.' },
+  { cluster:'SeguranÃ§a', persona:'Backend', titulo:'Verificar RLS em todas as tabelas Supabase', desc:'Confirmar que persons, users, inventory, pvp_duels, friendships, global_chat tÃªm RLS ativo e polÃ­ticas adequadas.', prio:'P1', esforco:'S', tipo:'SeguranÃ§a', fase:'Agora', notas:'SQL: SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = \'public\'. Todas devem ter rowsecurity = true.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ ENGENHARIA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'Engenharia', persona:'Arquiteto', titulo:'social.js: 110KB â€” candidato a code splitting / lazy loading', desc:'O maior mÃ³dulo do app Ã© carregado na inicializaÃ§Ã£o. UsuÃ¡rios que nunca abrem o modal Social pagam o custo sempre.', prio:'P2', esforco:'M', tipo:'Tech Debt', fase:'PrÃ³ximas semanas', notas:'Implementar `import()` dinÃ¢mico ao clicar no Ã­cone Social. Reduz bundle inicial em ~40%.' },
+  { cluster:'Engenharia', persona:'Arquiteto', titulo:'styles.css: 110KB sem minificaÃ§Ã£o ou purge para produÃ§Ã£o', desc:'CSS nÃ£o Ã© minificado. Provavelmente inclui classes nÃ£o usadas do tema ou estilos de features descontinuadas.', prio:'P2', esforco:'M', tipo:'Tech Debt', fase:'Futuro', notas:'Implementar PurgeCSS no pipeline de build. Target: <40KB gzipped.' },
+  { cluster:'Engenharia', persona:'Engenheiro', titulo:'Imagens de avatar 1MB+ sem WebP ou lazy loading', desc:'rank-a.png e rank-s.png tÃªm ~1MB cada. Carregados na inicializaÃ§Ã£o, impactam First Contentful Paint.', prio:'P1', esforco:'M', tipo:'Tech Debt', fase:'PrÃ³ximas semanas', notas:'Converter para WebP (target <80KB cada). Implementar `loading="lazy"` nas imagens de avatar.' },
+  { cluster:'Engenharia', persona:'Engenheiro', titulo:'Circular dependency potencial: ui.js â†” game-logic.js', desc:'game-logic.js importa de ui.js (renderQuests, updateUI) e ui.js importa de game-logic.js. Pode causar erros em bundlers ou tree shaking.', prio:'P1', esforco:'M', tipo:'Tech Debt', fase:'PrÃ³ximas semanas', notas:'Extrair funÃ§Ãµes UI puras para um terceiro mÃ³dulo (render.js). game-logic nÃ£o deve importar UI diretamente.' },
+  { cluster:'Engenharia', persona:'Engenheiro', titulo:'`setInterval` em verificaÃ§Ãµes de dungeon/boss â€” verificar memory leaks ao mudar de aba', desc:'Intervalos podem acumular se nÃ£o forem limpos ao trocar de contexto. NÃ£o hÃ¡ `clearInterval` visÃ­vel no cÃ³digo.', prio:'P2', esforco:'S', tipo:'Tech Debt', fase:'PrÃ³ximas semanas', notas:'Armazenar refs de interval e limpar em `visibilitychange`. Usar Page Visibility API.' },
+  { cluster:'Engenharia', persona:'Arquiteto', titulo:'GitHub Pages sem CDN configurado â€” TTFB alto fora do Brasil', desc:'UsuÃ¡rios internacionais (esposa usando o app na mesma casa mas em outras redes) podem ter latÃªncia. GitHub Pages sem edge.', prio:'P3', esforco:'L', tipo:'Enhancement', fase:'Futuro', notas:'Avaliar Cloudflare Pages como hosting alternativo com CDN global e headers customizados.' },
+  { cluster:'Engenharia', persona:'QA', titulo:'Web Worker de weekly report: confirmar que estÃ¡ realmente offloading', desc:'report-worker.js existe, mas precisa verificar se a comunicaÃ§Ã£o estÃ¡ funcionando e o Worker nÃ£o estÃ¡ travando a UI.', prio:'P2', esforco:'XS', tipo:'Tech Debt', fase:'PrÃ³ximas semanas', notas:'Testar com DevTools > Performance. O report pesado deve aparecer como Worker thread, nÃ£o main thread.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ ANALYTICS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'Analytics', persona:'Data Analyst', titulo:'trackEvent nÃ£o envia dados â€” analytics completamente cegas', desc:'16 pontos de tracking no cÃ³digo, nenhum funcional. ImpossÃ­vel saber taxa de conclusÃ£o de quests, horÃ¡rios de uso, conversÃ£o da loja.', prio:'P1', esforco:'M', tipo:'Analytics', fase:'PrÃ³ximas semanas', notas:'Implementar insert em `analytics_events` com user_id, event_name, properties, timestamp. Exemplos: quest_completed, buff_purchased.' },
+  { cluster:'Analytics', persona:'Data Analyst', titulo:'Sem mÃ©tricas de retenÃ§Ã£o D1/D7/D30 por cohort', desc:'Sem dados de quando usuÃ¡rios param de jogar. ImpossÃ­vel diagnosticar churn ou otimizar onboarding.', prio:'P1', esforco:'M', tipo:'Analytics', fase:'PrÃ³ximas semanas', notas:'Implementar evento `session_start` com last_seen. Query simples no Supabase para retenÃ§Ã£o por cohort.' },
+  { cluster:'Analytics', persona:'Data Analyst', titulo:'Weekly Report calculado localmente â€” nÃ£o persiste no Supabase', desc:'Dados do relatÃ³rio semanal vivem sÃ³ no Worker local. NÃ£o Ã© possÃ­vel ver histÃ³rico de relatÃ³rios passados.', prio:'P2', esforco:'M', tipo:'Feature', fase:'Futuro', notas:'Salvar relatÃ³rio semanal em tabela `weekly_reports` ao "CONFIRMAR AVALIAÃ‡ÃƒO".' },
+  { cluster:'Analytics', persona:'Product Manager', titulo:'Sem anÃ¡lise de "quest mais completada" para recomendar na biblioteca', desc:'Biblioteca de hÃ¡bitos nÃ£o ordena por popularidade. UsuÃ¡rio novato vÃª lista plana sem signal de o que funciona.', prio:'P2', esforco:'M', tipo:'Feature', fase:'Futuro', notas:'Agregar completions anÃ´nimas por habit_id. Mostrar badge "ðŸ”¥ Popular" nas mais completadas.' },
+  { cluster:'Analytics', persona:'Data Analyst', titulo:'Sem evento de "buff comprado" para medir conversÃ£o da Taverna', desc:'ImpossÃ­vel saber quais buffs sÃ£o mais comprados, qual faixa de nÃ­vel compra mais, ou se preÃ§os estÃ£o calibrados.', prio:'P1', esforco:'XS', tipo:'Analytics', fase:'PrÃ³ximas semanas', notas:'Adicionar `trackEvent(\'buff_purchased\', {item_id, cost, player_level})` em `buyStoreItem`.' },
+  { cluster:'Analytics', persona:'Data Analyst', titulo:'Heatmap sem validaÃ§Ã£o de integridade com dados locais', desc:'Heatmap lÃª de `history` no Supabase, mas quests offline completadas podem nÃ£o sincronizar corretamente.', prio:'P2', esforco:'M', tipo:'Bug', fase:'Futuro', notas:'Implementar reconciliaÃ§Ã£o de `history` local vs Supabase no sync. Alert se divergÃªncia > 10%.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ SOCIAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'Social', persona:'Product Manager Social', titulo:'Sem chat privado (DM) entre amigos', desc:'Amigos sÃ³ se comunicam pelo chat global ou fora do app. Feature altamente solicitada em apps de hÃ¡bitos com social.', prio:'P2', esforco:'XL', tipo:'Feature', fase:'Futuro', notas:'Tabela `direct_messages (from_user, to_user, content, created_at)` com RLS bidirecional.' },
+  { cluster:'Social', persona:'Designer UX Social', titulo:'Friends: busca por username exato difÃ­cil (sem autocomplete)', desc:'Para adicionar amigo, usuÃ¡rio precisa saber o username exato (case-sensitive). Atrito alto.', prio:'P1', esforco:'M', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Implementar busca por prefixo (ILIKE \'%termo%\'). Limitar a 5 resultados. Mostrar avatar + rank.' },
+  { cluster:'Social', persona:'Game Designer', titulo:'Sem notificaÃ§Ã£o push ao receber desafio PvP', desc:'UsuÃ¡rio recebe desafio PvP mas sÃ³ descobre ao abrir o app. Taxa de aceitaÃ§Ã£o provavelmente muito baixa.', prio:'P1', esforco:'M', tipo:'Feature', fase:'PrÃ³ximas semanas', notas:'ApÃ³s correÃ§Ã£o do VAPID: enviar push notification via Edge Function ao criar pvp_challenge.' },
+  { cluster:'Social', persona:'Designer UX', titulo:'Sem botÃ£o de desafio PvP direto do modal de perfil de outro jogador', desc:'Para desafiar um amigo, usuÃ¡rio precisa: Amigos â†’ encontrar â†’ desafiar. Fluxo longo.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar botÃ£o "âš”ï¸ DESAFIAR" no modal-player-profile. Abrir modal-pvp-challenge com target prÃ©-preenchido.' },
+  { cluster:'Social', persona:'Engenheiro Social', titulo:'Ranking: sem paginaÃ§Ã£o visÃ­vel alÃ©m dos top-N itens', desc:'Se houver 100+ jogadores, o ranking carrega tudo de uma vez. Performance e UX degradam.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Implementar paginaÃ§Ã£o offset: `LIMIT 20 OFFSET page*20`. Scroll infinito ou botÃ£o "Ver mais".' },
+  { cluster:'Social', persona:'Game Designer', titulo:'Sem reaÃ§Ãµes/emojis em mensagens do chat global', desc:'Chat Ã© sÃ³ texto. Pequenas reaÃ§Ãµes (ðŸ‘ âš¡ ðŸ”¥) aumentam engajamento sem exigir resposta completa.', prio:'P3', esforco:'M', tipo:'Feature', fase:'Futuro', notas:'Implementar tabela `chat_reactions (message_id, user_id, emoji)`. Limitar a 5 emojis prÃ©-definidos.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ MARKETING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'Marketing', persona:'Growth Hacker', titulo:'Weekly Report sem botÃ£o de compartilhar (screenshot/imagem)', desc:'Um relatÃ³rio semanal com "Taxa de SobrevivÃªncia 87% ðŸ”¥" Ã© conteÃºdo viral natural. Sem share, a oportunidade se perde.', prio:'P1', esforco:'M', tipo:'Feature', fase:'PrÃ³ximas semanas', notas:'Usar `html2canvas` ou `Canvas` API para gerar imagem do report. Share via Web Share API.' },
+  { cluster:'Marketing', persona:'Growth Hacker', titulo:'Sem meta tags og:image â€” links compartilhados sem preview visual', desc:'Ao compartilhar o link do LifeRPG no WhatsApp ou Twitter, aparece card vazio. ImpressÃ£o de app inacabado.', prio:'P1', esforco:'XS', tipo:'Enhancement', fase:'Agora', notas:'Adicionar `og:image`, `og:title`, `og:description`, `twitter:card` no index.html. Criar imagem 1200x630px.' },
+  { cluster:'Marketing', persona:'Growth Hacker', titulo:'Sem sistema de convite para crescimento orgÃ¢nico', desc:'Amigos sÃ£o adicionados por username, sem link de convite. Crescimento depende de usuÃ¡rios conhecerem o app de outra forma.', prio:'P2', esforco:'M', tipo:'Feature', fase:'Futuro', notas:'Gerar link de convite Ãºnico: `liferpg.app/invite/CODE`. Quem aceita ganha 50 Gold, quem convidou ganha 30 Gold.' },
+  { cluster:'Marketing', persona:'Growth Hacker', titulo:'Conquista especial para convidar amigos (growth incentive)', desc:'Sem conquista/reward por convidar jogadores. Incentivo social nÃ£o estÃ¡ conectado Ã  economy do game.', prio:'P2', esforco:'S', tipo:'Feature', fase:'Futuro', notas:'Achievement "Recrutador": adicionar 3 amigos. Achievement "LÃ­der": ter 10 amigos. Recompensas em Gold.' },
+  { cluster:'Marketing', persona:'Product Manager', titulo:'Sem landing page pÃºblica com CTA de instalaÃ§Ã£o do PWA', desc:'Compartilhar o link abre o app direto. NÃ£o hÃ¡ pÃ¡gina que explique o produto e convenÃ§a alguÃ©m nÃ£o-familiar.', prio:'P2', esforco:'L', tipo:'Feature', fase:'Futuro', notas:'Landing page estÃ¡tica no GitHub Pages: headline, 3 features, screenshots, botÃ£o de instalar.' },
+  { cluster:'Marketing', persona:'PsicÃ³logo Comportamental', titulo:'Sem "streak em risco" notification (ex: 22h sem completar hoje)', desc:'Lembrete Ã s 22h se o streak estÃ¡ em risco Ã© o push notification de maior impacto para retenÃ§Ã£o. Sistema jÃ¡ tem infra de horÃ¡rios (manhÃ£/noite).', prio:'P1', esforco:'M', tipo:'Feature', fase:'PrÃ³ximas semanas', notas:'ApÃ³s VAPID correto: enviar push "âš ï¸ Seu streak de X dias estÃ¡ em risco!" se nenhuma daily foi completada Ã s 22h.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ ACESSIBILIDADE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'Acessibilidade', persona:'Especialista A11y', titulo:'Radar chart (Canvas) sem descriÃ§Ã£o alternativa para screen readers', desc:'Canvas Ã© opaco para tecnologias assistivas. UsuÃ¡rios com deficiÃªncia visual nÃ£o tÃªm acesso aos dados de atributos.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'Futuro', notas:'Adicionar `aria-label` no canvas com valores atuais. Incluir tabela hidden assistivamente com os mesmos dados.' },
+  { cluster:'Acessibilidade', persona:'Especialista A11y', titulo:'Toasts/Overlays nÃ£o acessÃ­veis para leitores de tela', desc:'Toast container nÃ£o tem `role="status"` ou `aria-live`. Overlays de Level Up nÃ£o sÃ£o anunciados.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar `role="status" aria-live="polite"` no #toast-container. `aria-modal="true"` nos overlays.' },
+  { cluster:'Acessibilidade', persona:'Especialista A11y', titulo:'Overlays animados sem respeito a prefers-reduced-motion', desc:'Level Up, Quest Cleared e Penalty overlays tÃªm animaÃ§Ãµes que podem causar desconforto para usuÃ¡rios com condiÃ§Ãµes vestibulares.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar `@media (prefers-reduced-motion: reduce)` no styles.css. Desabilitar animaÃ§Ãµes de flash/flash-red.' },
+  { cluster:'Acessibilidade', persona:'UX Mobile', titulo:'BotÃµes âœ•/âœ“ nos quest cards podem ser < 44px (alvos de toque insuficientes)', desc:'Apple HIG e Google Material recomendam mÃ­nimo 44x44px de Ã¡rea de toque. BotÃµes pequenos causam erros de toque.', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Garantir min 44px de padding/area de toque nos botÃµes âœ• e âœ“. Verificar com DevTools mobile simulation.' },
+  { cluster:'Acessibilidade', persona:'Especialista A11y', titulo:'Contraste insuficiente de --text-muted sobre fundos claros no tema Neblina Ãrtica', desc:'Tema light pode ter contraste < 4.5:1 em elementos secundÃ¡rios. WCAG AA exige 4.5:1 para texto normal.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Auditar com Colour Contrast Analyser. Escurecer --text-muted no modo light para no mÃ­nimo #5a6070.' },
+  { cluster:'Acessibilidade', persona:'Especialista A11y', titulo:'Focus trap nÃ£o implementado visivelmente em modais', desc:'UsuÃ¡rios de teclado podem "escapar" do modal. NecessÃ¡rio para acessibilidade bÃ¡sica e alguns usuÃ¡rios de poder.', prio:'P2', esforco:'M', tipo:'Enhancement', fase:'Futuro', notas:'Implementar focus trap em todos os modais: Tab deve ciclar entre elementos focÃ¡veis dentro do modal apenas.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ ONBOARDING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  { cluster:'Onboarding', persona:'UX Designer', titulo:'Wizard pede gÃªnero como primeiro passo â€” pode ser sensÃ­vel ou exclusivo', desc:'Primeiro passo Ã© escolha binÃ¡ria Masculino/Feminino. Exclui nÃ£o-binÃ¡rios e pode criar fricÃ§Ã£o logo de inÃ­cio.', prio:'P1', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar 3Âª opÃ§Ã£o "Neutro" ou mover para depois do nome. Tornar a escolha de avatar opcional.' },
+  { cluster:'Onboarding', persona:'PsicÃ³logo Comportamental', titulo:'Hook habit do onboarding genÃ©rico ("Meditar por 3 minutos") â€” pouca personalizaÃ§Ã£o real', desc:'Depois de escolher archetype, o hÃ¡bito sugerido Ã© uma string hardcoded. UsuÃ¡rio que escolheu "Corpo" esperaria algo de treino, nÃ£o meditaÃ§Ã£o.', prio:'P1', esforco:'M', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Mapear archetype â†’ lista de 3 hÃ¡bitos sugeridos. UsuÃ¡rio escolhe 1. Adicionar ao gameState como primeira daily.' },
+  { cluster:'Onboarding', persona:'Product Manager', titulo:'Sem tutorial interativo apÃ³s onboarding (highlights, tooltips contextuais)', desc:'UsuÃ¡rio termina o wizard e cai no app sem saber o que fazer. Sidebar, tabs, quest cards â€” tudo sem contexto.', prio:'P1', esforco:'L', tipo:'Feature', fase:'PrÃ³ximas semanas', notas:'Implementar "Tutorial Questline" (jÃ¡ existe div no HTML). Usar overlay com highlight + tooltip em 5 steps.' },
+  { cluster:'Onboarding', persona:'Game Designer', titulo:'UsuÃ¡rio nÃ£o sabe o que Ã© "Dungeon" atÃ© chegar no nÃ­vel de skill 3', desc:'Feature de Dungeon aparece sem aviso prÃ©vio ao atingir o requisito. Surprise sem contexto Ã© confuso.', prio:'P2', esforco:'S', tipo:'Enhancement', fase:'PrÃ³ximas semanas', notas:'Adicionar entrada na sidebar ou tutorial "Em construÃ§Ã£o: ao nÃ­vel 3 de skill, missÃµes especiais serÃ£o reveladas".' },
+  { cluster:'Onboarding', persona:'UX Designer', titulo:'Sem Quick Start guide ou FAQ acessÃ­vel dentro do app', desc:'UsuÃ¡rio com dÃºvida sobre mecÃ¢nicas (shields, buffs, dungeon) nÃ£o tem onde consultar sem sair do app.', prio:'P2', esforco:'M', tipo:'Feature', fase:'Futuro', notas:'Implementar modal "Como Funciona" no botÃ£o de ajuda na sidebar. GlossÃ¡rio de termos do jogo.' },
+
+  // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+<truncated 10586 bytes>
+
+NOTE: The output was truncated because it was too long. Use a more targeted query or a smaller range to get the information you need.
