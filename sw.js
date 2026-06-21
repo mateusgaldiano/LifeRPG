@@ -3,7 +3,8 @@
    Cache-first strategy + Local notifications scheduling
    ========================================================================== */
 
-const CACHE_NAME = 'liferpg-v34';
+const CACHE_VERSION = 'v1.3.0';
+const CACHE_NAME = `liferpg-cache-${CACHE_VERSION}`;
 const ASSETS_TO_CACHE = [
     './',
     'index.html',
@@ -50,41 +51,55 @@ self.addEventListener('install', (event) => {
     );
 });
 
-// ── ACTIVATE: remove old caches ───────────────────────────────────────────────
+// ── ACTIVATE: remove old caches and claim/notify clients ──────────────────────
 self.addEventListener('activate', (event) => {
     event.waitUntil(
-        caches.keys().then((keys) =>
-            Promise.all(
+        caches.keys()
+            .then(keys => Promise.all(
                 keys
                     .filter(key => key !== CACHE_NAME)
                     .map(key => caches.delete(key))
-            )
-        ).then(() => self.clients.claim())
+            ))
+            .then(() => self.clients.claim())
+            .then(() => self.clients.matchAll({ type: 'window' }))
+            .then(clients => {
+                clients.forEach(client =>
+                    client.postMessage({ type: 'SW_UPDATED' })
+                );
+            })
     );
 });
 
-// ── FETCH: Cache-First strategy ───────────────────────────────────────────────
+// ── FETCH: Network-first for index.html, Cache-first for assets ───────────────
 self.addEventListener('fetch', (event) => {
     // Only handle GET requests
     if (event.request.method !== 'GET') return;
     // Skip cross-origin requests
     if (!event.request.url.startsWith(self.location.origin)) return;
 
+    const url = new URL(event.request.url);
+
+    // index.html: SEMPRE da rede
+    if (url.pathname === '/' ||
+        url.pathname.endsWith('/LifeRPG/') ||
+        url.pathname.endsWith('/LifeRPG_Dev/') ||
+        url.pathname.endsWith('index.html')) {
+        event.respondWith(
+            fetch(event.request)
+                .catch(() => caches.match(event.request))
+        );
+        return;
+    }
+
+    // Outros assets (JS, CSS, imagens): cache-first com fallback para rede
     event.respondWith(
         caches.match(event.request).then((cached) => {
-            if (cached) return cached;
-            // Not in cache: fetch from network and cache it
-            return fetch(event.request).then((response) => {
+            return cached || fetch(event.request).then((response) => {
                 if (response.ok) {
                     const clone = response.clone();
                     caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
                 }
                 return response;
-            }).catch(() => {
-                // Offline fallback
-                if (event.request.destination === 'document') {
-                    return caches.match('index.html');
-                }
             });
         })
     );

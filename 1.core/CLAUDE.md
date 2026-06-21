@@ -27,12 +27,17 @@ O **LifeRPG OS** (v2.0) é um aplicativo web progressivo (PWA) de gamificação 
 
 ---
 
-## 🐙 4. Repositórios e Fluxo de Trabalho (Git)
-*   **Fluxo de Deploy**: Sempre subir as alterações para testes e validações no repositório de desenvolvimento antes de atualizar o repositório principal de produção.
+## 🐙 4. Repositórios e Fluxo de Trabalho (Git) & Workflow de Deploy
+*   **Fluxo de Deploy**:
+    1.  Toda alteração que vai para produção ou homologação **exige** o incremento manual do cache no arquivo `sw.js`:
+        `const CACHE_VERSION = 'v1.X.Y';` (ex: `v1.3.1`).
+    2.  Subir e testar as alterações no repositório de homologação primeiro:
+        PowerShell: `git push dev-origin dev:main`
+    3.  Após validação completa, subir para o repositório principal de produção:
+        PowerShell: `git push origin dev:main`
 *   **Repositório de Testes (Dev)**:
     *   **Remoto**: `dev-origin` (aponta para `https://github.com/mateusgaldiano/LifeRPG_Dev`)
     *   **Deploy**: Roda no GitHub Pages a partir da branch `main` do remoto `dev-origin`.
-    *   **PowerShell comando**: `git push dev-origin dev:main` (envia a branch local `dev` para a principal de desenvolvimento).
 *   **Repositório de Produção (Prod)**:
     *   **Remoto**: `origin` (aponta para `https://github.com/mateusgaldiano/LifeRPG`)
     *   **Deploy**: Deploy de produção estável.

@@ -23,6 +23,12 @@ function registerServiceWorker() {
             .catch(err => {
                 console.error('[App] Erro SW:', err);
             });
+
+        navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data?.type === 'SW_UPDATED') {
+                window.location.reload();
+            }
+        });
     }
 }
 
