@@ -156,6 +156,7 @@ export let gameState = {
     inventory: { unlockedTitles: [], unlockedBorders: [], unlockedSkins: ['default'], activeTitle: null, activeBorder: null, activeSkin: 'default' },
     notificationTimes: { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 },
     lastWeeklyReportYearWeek: "",
+    lastWelcomeDateShown: "",   // guarda a data do último toast de boas-vindas (YYYY-MM-DD)
     tutorialStep: 1,
     tutorialCompleted: false,
     friendsCount: 0
@@ -485,6 +486,9 @@ function loadGameData() {
         }
         if (parsed.friendsCount === undefined) {
             parsed.friendsCount = 0;
+        }
+        if (!parsed.lastWelcomeDateShown) {
+            parsed.lastWelcomeDateShown = "";
         }
         if (!parsed.inventory) {
             parsed.inventory = { unlockedTitles: [], unlockedBorders: [], unlockedSkins: ['default'], activeTitle: null, activeBorder: null, activeSkin: 'default' };

@@ -371,25 +371,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Verifica e exibe o Relatório Semanal
     setTimeout(() => { checkAndShowWeeklyReport(); }, 800);
 
-    // Mensagem de boas-vindas na primeira vez
-    if ((!gameState.messages || gameState.messages.length === 0) && gameState.playerName) {
-        if (!gameState.messages) gameState.messages = [];
-        setTimeout(() => {
-            showSystemToast(`Bem-vindo ao LifeRPG, ${gameState.playerName}. O Sistema está ativo. Complete suas missões.`);
-        }, 1000);
-    }
-
-    // Loop de Retenção D1 -> D2
-    const welcomeD2Shown = localStorage.getItem('lifeRPG_d2_welcome_shown') === 'true';
-    if (!welcomeD2Shown && gameState.playerName && gameState.history) {
-        const yesterdayStr = localDateStr(new Date(Date.now() - 86400000));
-        const yesterdayStats = gameState.history[yesterdayStr];
-        
-        if (yesterdayStats && (yesterdayStats.status === 'perfect' || yesterdayStats.status === 'good')) {
-            localStorage.setItem('lifeRPG_d2_welcome_shown', 'true');
+    // Mensagem de boas-vindas — apenas no primeiro acesso do dia
+    if (gameState.playerName) {
+        const todayForWelcome = localDateStr();
+        if (gameState.lastWelcomeDateShown !== todayForWelcome) {
+            gameState.lastWelcomeDateShown = todayForWelcome;
+            saveGameData();
             setTimeout(() => {
-                showSystemToast(`🌅 *BOM RETORNO, ${gameState.playerName.toUpperCase()}!*\n\nO Sistema identificou sua consistência ontem (${yesterdayStats.count}/${yesterdayStats.total} tarefas). Continue focado hoje!`);
-            }, 3000);
+                showSystemToast(`Bem-vindo ao LifeRPG, ${gameState.playerName}. O Sistema está ativo. Complete suas missões.`);
+            }, 1000);
         }
     }
 

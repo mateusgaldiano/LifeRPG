@@ -206,6 +206,10 @@ function renderWeeklyReportUI(data, prevWeekStr) {
 
 function checkAndShowWeeklyReport() {
     const today = new Date();
+
+    // Avaliação semanal só na segunda-feira
+    if (today.getDay() !== 1) return;
+
     const currentWeekStr = getISOWeekString(today);
     
     const prevWeekDate = new Date(today);
