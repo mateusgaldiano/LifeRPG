@@ -708,44 +708,44 @@ function initOnboardingWizard() {
     const hourCards = document.querySelectorAll('.hour-card');
     let selectedHours = null;
 
+    // Clone PRIMEIRO
+    const newBtnFinish = btnFinish.cloneNode(true);
+    btnFinish.parentNode.replaceChild(newBtnFinish, btnFinish);
+
     hourCards.forEach(card => {
         card.addEventListener('click', () => {
             hourCards.forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             selectedHours = card.getAttribute('data-hours');
-            btnFinish.disabled = false;
+            newBtnFinish.disabled = false;   // ← referencia o botão no DOM
         });
     });
 
-    if (btnFinish) {
-        const newBtnFinish = btnFinish.cloneNode(true);
-        btnFinish.parentNode.replaceChild(newBtnFinish, btnFinish);
-        newBtnFinish.addEventListener('click', () => {
-            if (selectedHours) {
-                gameState.dailyCommitmentMins = parseInt(selectedHours);
-                
-                // Coletar dias selecionados
-                const dayCheckboxes = document.querySelectorAll('.day-checkbox input:checked');
-                const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
-                gameState.activeDays = selectedDays.length > 0 ? selectedDays : [0,1,2,3,4,5,6]; // Fallback
-                
-                // Adapta o deck de missões com base no arquétipo e no tempo
-                applyArchetypeDeck(selectedArch, gameState.dailyCommitmentMins);
-                
-                // FINALIZAR TUTORIAL
-                gameState.tutorialCompleted = true;
-                gameState.tutorialStep = null;
-                
-                wizardModal.style.cssText = 'display: none !important;';
-                saveGameData();
-                updateUI();
-                
-                setTimeout(() => {
-                    showSystemToast(`Despertar concluído, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
-                }, 1000);
-            }
-        });
-    }
+    newBtnFinish.addEventListener('click', () => {
+        if (selectedHours) {
+            gameState.dailyCommitmentMins = parseInt(selectedHours);
+            
+            // Coletar dias selecionados
+            const dayCheckboxes = document.querySelectorAll('.day-checkbox input:checked');
+            const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
+            gameState.activeDays = selectedDays.length > 0 ? selectedDays : [0,1,2,3,4,5,6]; // Fallback
+            
+            // Adapta o deck de missões com base no arquétipo e no tempo
+            applyArchetypeDeck(selectedArch, gameState.dailyCommitmentMins);
+            
+            // FINALIZAR TUTORIAL
+            gameState.tutorialCompleted = true;
+            gameState.tutorialStep = null;
+            
+            wizardModal.style.cssText = 'display: none !important;';
+            saveGameData();
+            updateUI();
+            
+            setTimeout(() => {
+                showSystemToast(`Despertar concluído, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
+            }, 1000);
+        }
+    });
 }
 
 function setupHookStep(archetype) {
