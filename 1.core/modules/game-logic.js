@@ -651,19 +651,25 @@ function syncQuestsByLevel() {
             return false;
         });
         if (!exists) {
-            const fresh = { ...dbHabit };
-            // Preserva progresso de água se já existia quest similar
-            const similarWater = gameState.quests.find(q =>
-                (q.id === dbHabit.id || (dbHabit.baseId && q.id === dbHabit.baseId)) && q.current !== undefined
-            );
-            if (similarWater) fresh.current = similarWater.current;
-            updatedQuests.push(fresh);
+            const limit = gameState.dailyCommitmentMins || 60;
+            const habitDur = dbHabit.duration || 5;
+            let currentTotalDuration = updatedQuests.reduce((sum, q) => sum + (q.duration || 5), 0);
             
-            // Notifica o usuário no chat via Iroh caso não seja a primeira carga do app
-            if (gameState.messages && gameState.messages.length > 0) {
-                setTimeout(() => {
-                    showSystemToast(`🔥 *SISTEMA:* Incrível, ${gameState.playerName || getPlayerTerm(gameState.gender)}! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
-                }, 1500);
+            if (currentTotalDuration + habitDur <= limit) {
+                const fresh = { ...dbHabit };
+                // Preserva progresso de água se já existia quest similar
+                const similarWater = gameState.quests.find(q =>
+                    (q.id === dbHabit.id || (dbHabit.baseId && q.id === dbHabit.baseId)) && q.current !== undefined
+                );
+                if (similarWater) fresh.current = similarWater.current;
+                updatedQuests.push(fresh);
+                
+                // Notifica o usuário no chat via Iroh caso não seja a primeira carga do app
+                if (gameState.messages && gameState.messages.length > 0) {
+                    setTimeout(() => {
+                        showSystemToast(`🔥 *SISTEMA:* Incrível, ${gameState.playerName || getPlayerTerm(gameState.gender)}! Ao alcançar o nível *${level}*, você desbloqueou uma nova quest diária: *"${dbHabit.title}"*! Que ela fortaleça a sua rotina!`);
+                    }, 1500);
+                }
             }
         }
     });

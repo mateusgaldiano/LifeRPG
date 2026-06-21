@@ -9,67 +9,67 @@ import { syncQuestsByLevel, checkDungeonExpiry, checkWeeklyBossExpiry, spawnDung
 // Banco de dados mestre de hábitos por nível do LifeRPG
 const ALL_HABITS_DATABASE = [
     // Bracket 1 (Nível 1 ao 4)
-    { id: 'q-db-acordar', baseId: 'q-acordar', title: 'Acordar Cedo', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' },
-    { id: 'q-db-malhar', baseId: 'q-malhar', title: 'Treinar de Força / Corrida', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' },
-    { id: 'q-db-ler', baseId: 'q-ler', title: 'Leitura (Mínimo 15min)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' },
-    { id: 'q-db-meditar', baseId: 'q-meditar', title: 'Meditar (10 min)', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' },
-    { id: 'q-db-agua', baseId: 'q-agua2', title: 'Beber Água (8 copos)', type: 'daily', icon: '💧', completed: false, xp: 20, gold: 10, target: 8, current: 0, minLevel: 1, skill: 'physical' },
-    { id: 'q-db-familia', baseId: 'q-familia', title: 'Mandar mensagem/ligar para Família', type: 'daily', icon: '❤️', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' },
+    { id: 'q-db-acordar', baseId: 'q-acordar', title: 'Acordar Cedo (5 min)', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, duration: 5, minLevel: 1, skill: 'routine' },
+    { id: 'q-db-malhar', baseId: 'q-malhar', title: 'Treinar de Força / Corrida (45 min)', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, duration: 45, minLevel: 1, skill: 'physical' },
+    { id: 'q-db-ler', baseId: 'q-ler', title: 'Leitura (15 min)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 1, skill: 'wisdom' },
+    { id: 'q-db-meditar', baseId: 'q-meditar', title: 'Meditar (10 min)', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, duration: 10, minLevel: 1, skill: 'mental' },
+    { id: 'q-db-agua', baseId: 'q-agua2', title: 'Beber Água (8 copos - 5 min)', type: 'daily', icon: '💧', completed: false, xp: 20, gold: 10, target: 8, current: 0, duration: 5, minLevel: 1, skill: 'physical' },
+    { id: 'q-db-familia', baseId: 'q-familia', title: 'Mandar mensagem/ligar para Família (5 min)', type: 'daily', icon: '❤️', completed: false, xp: 15, gold: 8, duration: 5, minLevel: 1, skill: 'social' },
     
     // Bracket 2 (Nível 5 ao 9)
-    { id: 'q-db-deepwork', baseId: 'q-estudo', title: '30 min em projeto pessoal', type: 'daily', icon: '💻', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'productivity' },
-    { id: 'q-db-estudo', baseId: 'q-estudo', title: 'Estudo: 30min na área profissional', type: 'daily', icon: '🧠', completed: false, xp: 25, gold: 12, minLevel: 5, skill: 'wisdom' },
-    { id: 'q-db-checkin', baseId: null, title: 'Check-in Emocional no Diário', type: 'daily', icon: '📝', completed: false, xp: 15, gold: 8, minLevel: 5, skill: 'mental' },
+    { id: 'q-db-deepwork', baseId: 'q-estudo', title: '30 min em projeto pessoal', type: 'daily', icon: '💻', completed: false, xp: 25, gold: 12, duration: 30, minLevel: 5, skill: 'productivity' },
+    { id: 'q-db-estudo', baseId: 'q-estudo', title: 'Estudo Profissional (30 min)', type: 'daily', icon: '🧠', completed: false, xp: 25, gold: 12, duration: 30, minLevel: 5, skill: 'wisdom' },
+    { id: 'q-db-checkin', baseId: null, title: 'Check-in Emocional no Diário (5 min)', type: 'daily', icon: '📝', completed: false, xp: 15, gold: 8, duration: 5, minLevel: 5, skill: 'mental' },
     
     // Bracket 3 (Nível 10+)
-    { id: 'q-db-estoico', baseId: null, title: 'Estoicismo: 10min de leitura filosófica', type: 'daily', icon: '🏛️', completed: false, xp: 20, gold: 10, minLevel: 10, skill: 'mental' },
-    { id: 'q-db-producao', baseId: null, title: 'Produção: Criar 1 conteúdo autoral', type: 'daily', icon: '✍️', completed: false, xp: 25, gold: 12, minLevel: 10, skill: 'productivity' }
+    { id: 'q-db-estoico', baseId: null, title: 'Leitura de Estoicismo (10 min)', type: 'daily', icon: '🏛️', completed: false, xp: 20, gold: 10, duration: 10, minLevel: 10, skill: 'mental' },
+    { id: 'q-db-producao', baseId: null, title: 'Produção: Criar 1 conteúdo autoral (20 min)', type: 'daily', icon: '✍️', completed: false, xp: 25, gold: 12, duration: 20, minLevel: 10, skill: 'productivity' }
 ];
 
 // Biblioteca mestre de 30 hábitos curados para a aba Biblioteca do modal
 const HABIT_LIBRARY = [
     // Físico (Physical)
-    { id: 'lib-corrida', title: 'Treino de Corrida de 20 min', icon: '🏃', difficulty: 'easy', skill: 'physical' },
-    { id: 'lib-forca', title: 'Treino de Força (Calistenia/Academia)', icon: '🏋️‍♂️', difficulty: 'medium', skill: 'physical' },
-    { id: 'lib-alongamento', title: 'Alongamento / Mobilidade (10 min)', icon: '🧘', difficulty: 'easy', skill: 'physical' },
-    { id: 'lib-caminhada', title: 'Caminhada de 5.000 passos', icon: '🚶', difficulty: 'easy', skill: 'physical' },
-    { id: 'lib-alimentacao', title: 'Refeição 100% limpa (Sem doces)', icon: '🥦', difficulty: 'medium', skill: 'physical' },
+    { id: 'lib-corrida', title: 'Treino de Corrida (20 min)', icon: '🏃', difficulty: 'easy', duration: 20, skill: 'physical' },
+    { id: 'lib-forca', title: 'Treino de Força (Calistenia/Academia) (45 min)', icon: '🏋️‍♂️', difficulty: 'medium', duration: 45, skill: 'physical' },
+    { id: 'lib-alongamento', title: 'Alongamento / Mobilidade (10 min)', icon: '🧘', difficulty: 'easy', duration: 10, skill: 'physical' },
+    { id: 'lib-caminhada', title: 'Caminhada de 5.000 passos (30 min)', icon: '🚶', difficulty: 'easy', duration: 30, skill: 'physical' },
+    { id: 'lib-alimentacao', title: 'Refeição 100% limpa (Sem doces) (10 min)', icon: '🥦', difficulty: 'medium', duration: 10, skill: 'physical' },
 
     // Mental (Mental)
-    { id: 'lib-meditacao', title: 'Meditação Guiada (10 min)', icon: '🧘', difficulty: 'easy', skill: 'mental' },
-    { id: 'lib-gratidao', title: 'Diário de Gratidão (3 coisas)', icon: '📝', difficulty: 'easy', skill: 'mental' },
-    { id: 'lib-humor', title: 'Fazer check-in de humor', icon: '💭', difficulty: 'easy', skill: 'mental' },
-    { id: 'lib-respiracao', title: 'Respiração controlada (5 min)', icon: '🌬️', difficulty: 'easy', skill: 'mental' },
-    { id: 'lib-visualizacao', title: 'Visualização de metas', icon: '🔮', difficulty: 'easy', skill: 'mental' },
+    { id: 'lib-meditacao', title: 'Meditação Guiada (10 min)', icon: '🧘', difficulty: 'easy', duration: 10, skill: 'mental' },
+    { id: 'lib-gratidao', title: 'Diário de Gratidão (3 coisas) (5 min)', icon: '📝', difficulty: 'easy', duration: 5, skill: 'mental' },
+    { id: 'lib-humor', title: 'Fazer check-in de humor (2 min)', icon: '💭', difficulty: 'easy', duration: 2, skill: 'mental' },
+    { id: 'lib-respiracao', title: 'Respiração controlada (5 min)', icon: '🌬️', difficulty: 'easy', duration: 5, skill: 'mental' },
+    { id: 'lib-visualizacao', title: 'Visualização de metas (5 min)', icon: '🔮', difficulty: 'easy', duration: 5, skill: 'mental' },
 
     // Foco / Produtividade (Productivity)
-    { id: 'lib-deepwork', title: '30 min em projeto pessoal', icon: '💻', difficulty: 'medium', skill: 'productivity' },
-    { id: 'lib-organizar', title: 'Organizar mesa de trabalho / Quarto', icon: '🧹', difficulty: 'easy', skill: 'productivity' },
-    { id: 'lib-planejar', title: 'Planejar tarefas do dia seguinte', icon: '📅', difficulty: 'easy', skill: 'productivity' },
-    { id: 'lib-revisar', title: 'Revisar objetivos semanais', icon: '🎯', difficulty: 'easy', skill: 'productivity', type: 'weekly', defaultDaysOfWeek: [0] },
-    { id: 'lib-estudar-ferramenta', title: 'Estudar nova ferramenta (30 min)', icon: '🌐', difficulty: 'medium', skill: 'productivity' },
+    { id: 'lib-deepwork', title: '30 min em projeto pessoal', icon: '💻', difficulty: 'medium', duration: 30, skill: 'productivity' },
+    { id: 'lib-organizar', title: 'Organizar mesa de trabalho / Quarto (15 min)', icon: '🧹', difficulty: 'easy', duration: 15, skill: 'productivity' },
+    { id: 'lib-planejar', title: 'Planejar tarefas do dia seguinte (10 min)', icon: '📅', difficulty: 'easy', duration: 10, skill: 'productivity' },
+    { id: 'lib-revisar', title: 'Revisar objetivos semanais (20 min)', icon: '🎯', difficulty: 'easy', duration: 20, skill: 'productivity', type: 'weekly', defaultDaysOfWeek: [0] },
+    { id: 'lib-estudar-ferramenta', title: 'Estudar nova ferramenta (30 min)', icon: '🌐', difficulty: 'medium', duration: 30, skill: 'productivity' },
 
     // Saber / Sabedoria (Wisdom)
-    { id: 'lib-ler-livro', title: 'Ler 10 páginas de um livro', icon: '📚', difficulty: 'easy', skill: 'wisdom' },
-    { id: 'lib-aula-podcast', title: 'Assistir 1 aula/podcast educativo', icon: '🎧', difficulty: 'easy', skill: 'wisdom' },
-    { id: 'lib-escrita-criativa', title: 'Praticar escrita criativa (15 min)', icon: '✍️', difficulty: 'easy', skill: 'wisdom' },
-    { id: 'lib-curso-online', title: 'Fazer um curso online (30 min)', icon: '🧠', difficulty: 'medium', skill: 'wisdom' },
-    { id: 'lib-logica-xadrez', title: 'Resolver 3 problemas de xadrez', icon: '🧩', difficulty: 'easy', skill: 'wisdom' },
+    { id: 'lib-ler-livro', title: 'Ler 10 páginas de um livro (15 min)', icon: '📚', difficulty: 'easy', duration: 15, skill: 'wisdom' },
+    { id: 'lib-aula-podcast', title: 'Assistir 1 aula/podcast educativo (20 min)', icon: '🎧', difficulty: 'easy', duration: 20, skill: 'wisdom' },
+    { id: 'lib-escrita-criativa', title: 'Praticar escrita criativa (15 min)', icon: '✍️', difficulty: 'easy', duration: 15, skill: 'wisdom' },
+    { id: 'lib-curso-online', title: 'Fazer um curso online (30 min)', icon: '🧠', difficulty: 'medium', duration: 30, skill: 'wisdom' },
+    { id: 'lib-logica-xadrez', title: 'Resolver 3 problemas de xadrez (15 min)', icon: '🧩', difficulty: 'easy', duration: 15, skill: 'wisdom' },
 
     // Rotina (Routine)
-    { id: 'lib-sem-celular', title: 'Sem celular ao acordar por 30 min', icon: '🚫', difficulty: 'medium', skill: 'routine' },
-    { id: 'lib-cama', title: 'Arrumei a cama ao levantar', icon: '🛏️', difficulty: 'easy', skill: 'routine' },
-    { id: 'lib-dormir-cedo', title: 'Dormir antes das 23h', icon: '💤', difficulty: 'medium', skill: 'routine' },
-    { id: 'lib-skincare', title: 'Skincare matinal / noturno', icon: '🧴', difficulty: 'easy', skill: 'routine' },
-    { id: 'lib-preparar-dia', title: 'Preparar roupas para amanhã', icon: '💼', difficulty: 'easy', skill: 'routine' },
-    { id: 'lib-meal-prep', title: 'Meal Prep Semanal', icon: '🥦', difficulty: 'medium', skill: 'routine', type: 'weekly', defaultDaysOfWeek: [0] },
+    { id: 'lib-sem-celular', title: 'Sem celular ao acordar por 30 min (30 min)', icon: '🚫', difficulty: 'medium', duration: 30, skill: 'routine' },
+    { id: 'lib-cama', title: 'Arrumei a cama ao levantar (2 min)', icon: '🛏️', difficulty: 'easy', duration: 2, skill: 'routine' },
+    { id: 'lib-dormir-cedo', title: 'Dormir antes das 23h (10 min)', icon: '💤', difficulty: 'medium', duration: 10, skill: 'routine' },
+    { id: 'lib-skincare', title: 'Skincare matinal / noturno (5 min)', icon: '🧴', difficulty: 'easy', duration: 5, skill: 'routine' },
+    { id: 'lib-preparar-dia', title: 'Preparar roupas para amanhã (5 min)', icon: '💼', difficulty: 'easy', duration: 5, skill: 'routine' },
+    { id: 'lib-meal-prep', title: 'Meal Prep Semanal (60 min)', icon: '🥦', difficulty: 'medium', duration: 60, skill: 'routine', type: 'weekly', defaultDaysOfWeek: [0] },
 
     // Social (Social)
-    { id: 'lib-familia-msg', title: 'Mensagem carinhosa para família', icon: '❤️', difficulty: 'easy', skill: 'social' },
-    { id: 'lib-amigo-ligar', title: 'Ligar para um amigo antigo', icon: '📞', difficulty: 'medium', skill: 'social' },
-    { id: 'lib-escuta-ativa', title: 'Praticar escuta ativa', icon: '👂', difficulty: 'easy', skill: 'social' },
-    { id: 'lib-ajudar-alguem', title: 'Ajudar alguém de forma altruísta', icon: '🤝', difficulty: 'medium', skill: 'social' },
-    { id: 'lib-evento-grupo', title: 'Participar de grupo comunitário', icon: '👥', difficulty: 'hard', skill: 'social' }
+    { id: 'lib-familia-msg', title: 'Mensagem carinhosa para família (3 min)', icon: '❤️', difficulty: 'easy', duration: 3, skill: 'social' },
+    { id: 'lib-amigo-ligar', title: 'Ligar para um amigo antigo (15 min)', icon: '📞', difficulty: 'medium', duration: 15, skill: 'social' },
+    { id: 'lib-escuta-ativa', title: 'Praticar escuta ativa (10 min)', icon: '👂', difficulty: 'easy', duration: 10, skill: 'social' },
+    { id: 'lib-ajudar-alguem', title: 'Ajudar alguém de forma altruísta (10 min)', icon: '🤝', difficulty: 'medium', duration: 10, skill: 'social' },
+    { id: 'lib-evento-grupo', title: 'Participar de grupo comunitário (60 min)', icon: '👥', difficulty: 'hard', duration: 60, skill: 'social' }
 ];
 
 // 📆 Utilitário de Data Local (timezone-safe) 📆
@@ -542,6 +542,23 @@ function loadGameData() {
             } else {
                 if (q.current === undefined || q.current === null) q.current = 0;
                 if (q.target === undefined || q.target === null) q.target = 8;
+            }
+            
+            // Extrai a duração do título ou infere com base em palavras-chave
+            if (!q.duration) {
+                const match = q.title?.match(/\((\d+)\s*min\)/i);
+                if (match) {
+                    q.duration = parseInt(match[1]);
+                } else {
+                    const t = q.title?.toLowerCase() || '';
+                    if (t.includes('treinar') || t.includes('força') || t.includes('corrida') || t.includes('academia') || t.includes('calistenia')) {
+                        q.duration = 45;
+                    } else if (t.includes('projeto pessoal') || t.includes('estudo') || t.includes('curso')) {
+                        q.duration = 30;
+                    } else {
+                        q.duration = 5;
+                    }
+                }
             }
         };
 

@@ -592,6 +592,17 @@ window.loadQuestsFromSupabase = async function() {
         icon: q.emoji,
         completed: completedToday.has(q.local_id) ? true : !!q.completed,
         fromLibrary: q.from_library,
+        duration: (() => {
+          const match = q.title?.match(/\((\d+)\s*min\)/i);
+          if (match) return parseInt(match[1]);
+          const t = q.title?.toLowerCase() || '';
+          if (t.includes('treinar') || t.includes('força') || t.includes('corrida') || t.includes('academia') || t.includes('calistenia')) {
+            return 45;
+          } else if (t.includes('projeto pessoal') || t.includes('estudo') || t.includes('curso')) {
+            return 30;
+          }
+          return 5;
+        })(),
         current: (q.local_id?.includes('agua') || q.title?.toLowerCase().includes('água') || q.title?.toLowerCase().includes('agua') || q.emoji === '💧')
           ? (q.current !== null && q.current !== undefined ? q.current : 0)
           : undefined,

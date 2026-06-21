@@ -777,45 +777,45 @@ function applyArchetypeDeck(archetype, minutes) {
     
     // 1. O Micro-hábito base (sempre garantido pelo Hook)
     if (archetype === 'corpo') {
-        deck.push({ id: 'q-agua', title: 'Beber 1 copo de água ao acordar', type: 'daily', icon: '💧', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'physical' });
+        deck.push({ id: 'q-agua', title: 'Beber 1 copo de água ao acordar (2 min)', type: 'daily', icon: '💧', completed: false, xp: 20, gold: 10, duration: 2, minLevel: 1, skill: 'physical' });
     } else if (archetype === 'foco') {
-        deck.push({ id: 'q-ler', title: '15 minutos de leitura (sem celular)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'wisdom' });
+        deck.push({ id: 'q-ler', title: 'Leitura (15 min)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 1, skill: 'wisdom' });
     } else if (archetype === 'zen') {
-        deck.push({ id: 'q-meditar', title: 'Meditar por 3 minutos', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'mental' });
+        deck.push({ id: 'q-meditar', title: 'Meditar por 3 minutos (3 min)', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, duration: 3, minLevel: 1, skill: 'mental' });
     } else if (archetype === 'rotina') {
-        deck.push({ id: 'q-cama', title: 'Arrumar a cama ao levantar', type: 'daily', icon: '🛏️', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
+        deck.push({ id: 'q-cama', title: 'Arrumar a cama ao levantar (2 min)', type: 'daily', icon: '🛏️', completed: false, xp: 15, gold: 8, duration: 2, minLevel: 1, skill: 'routine' });
     } else {
-        deck.push({ id: 'q-foco', title: 'Dar o primeiro passo no meu objetivo', type: 'daily', icon: '🎯', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'productivity' });
+        deck.push({ id: 'q-foco', title: 'Dar o primeiro passo no meu objetivo (10 min)', type: 'daily', icon: '🎯', completed: false, xp: 20, gold: 10, duration: 10, minLevel: 1, skill: 'productivity' });
     }
 
     // 2. Escalonando a quantidade de hábitos pelo Tempo (minutos)
     if (minutes >= 30) {
         // Adiciona mais um hábito rápido
-        deck.push({ id: 'q-acordar', title: 'Acordar Cedo (Horário Fixo)', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'routine' });
-        if (archetype !== 'corpo') deck.push({ id: 'q-agua2', title: 'Beber Água (8 copos)', type: 'daily', icon: '💧', completed: false, xp: 15, gold: 8, target: 8, current: 0, minLevel: 1, skill: 'physical' });
+        deck.push({ id: 'q-acordar', title: 'Acordar Cedo (Horário Fixo) (5 min)', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, duration: 5, minLevel: 1, skill: 'routine' });
+        if (archetype !== 'corpo') deck.push({ id: 'q-agua2', title: 'Beber Água (8 copos - 5 min)', type: 'daily', icon: '💧', completed: false, xp: 15, gold: 8, target: 8, current: 0, duration: 5, minLevel: 1, skill: 'physical' });
     }
 
     if (minutes >= 60) {
         // Adiciona hábitos de esforço médio/alto (1 hora permite treino ou estudos intensos)
         if (archetype === 'corpo' || archetype === 'zen') {
-            deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida (45min)', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
+            deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida (45 min)', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, duration: 45, minLevel: 1, skill: 'physical' });
         } else {
-            deck.push({ id: 'q-estudo', title: '30 min em projeto pessoal', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
+            deck.push({ id: 'q-estudo', title: '30 min em projeto pessoal', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, duration: 30, minLevel: 1, skill: 'productivity' });
         }
     }
 
     if (minutes >= 120) {
         // Hardcore: Um mix completo (Físico + Mental + Sabedoria + Social)
-        deck.push({ id: 'q-detox', title: 'Rotina Noturna', type: 'daily', icon: '📵', completed: false, xp: 20, gold: 10, minLevel: 1, skill: 'mental' });
+        deck.push({ id: 'q-detox', title: 'Rotina Noturna (15 min)', type: 'daily', icon: '📵', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 1, skill: 'mental' });
         
         // Se já não tiver Treino, adiciona Treino. Se já não tiver Deep Work, adiciona Deep Work.
         const hasTreino = deck.some(q => q.id === 'q-malhar');
         const hasEstudo = deck.some(q => q.id === 'q-estudo');
         
-        if (!hasTreino) deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'physical' });
-        if (!hasEstudo) deck.push({ id: 'q-estudo', title: '30 min em projeto pessoal', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, minLevel: 1, skill: 'productivity' });
+        if (!hasTreino) deck.push({ id: 'q-malhar', title: 'Treinar de Força / Corrida (45 min)', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, duration: 45, minLevel: 1, skill: 'physical' });
+        if (!hasEstudo) deck.push({ id: 'q-estudo', title: '30 min em projeto pessoal', type: 'daily', icon: '💻', completed: false, xp: 30, gold: 15, duration: 30, minLevel: 1, skill: 'productivity' });
         
-        deck.push({ id: 'q-social', title: 'Conectar com Família/Amigo (Sem tela)', type: 'daily', icon: '❤️', completed: false, xp: 15, gold: 8, minLevel: 1, skill: 'social' });
+        deck.push({ id: 'q-social', title: 'Conectar com Família/Amigo (Sem tela) (10 min)', type: 'daily', icon: '❤️', completed: false, xp: 15, gold: 8, duration: 10, minLevel: 1, skill: 'social' });
     }
     
     // Substitui o banco ativo e re-renderiza
