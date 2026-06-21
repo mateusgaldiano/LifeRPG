@@ -199,11 +199,21 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
         gameState.sideQuests.push(newQuest);
         showSystemToast(`⚡ "${h.title}" adicionada às Side Quests!`);
     } else {
+        const limit = gameState.dailyCommitmentMins || 60;
+        const curTotal = (gameState.quests || []).reduce((sum, q) => sum + (q.duration || 5), 0);
+        const habDur = h.duration || 5;
+        
         gameState.quests.push(newQuest);
         if (type === 'weekly') {
             showSystemToast(`📅 "${h.title}" adicionada às Missões Semanais!`);
         } else {
             showSystemToast(`📅 "${h.title}" adicionada às Missões Diárias!`);
+        }
+        
+        if (curTotal + habDur > limit) {
+            setTimeout(() => {
+                showSystemToast(`🌟 *EVOLUÇÃO:* Incrível! Parabéns por dedicar mais tempo para se aprimorar!`);
+            }, 1200);
         }
     }
 
@@ -301,7 +311,15 @@ function renderHabitLibrary(filter = 'all', search = '') {
                     if (habit.difficulty === 'easy') { diffLabel = 'Fácil'; xp = 10; gold = 5; }
                     else if (habit.difficulty === 'hard') { diffLabel = 'Difícil'; xp = 50; gold = 30; }
 
-                    confirmDesc.innerHTML = 'Deseja adicionar o hábito <b>"' + habit.title + '"</b>?<br><br>Recompensas ao concluir: <b>+' + xp + ' XP</b> · <b>+' + gold + ' Ouro</b> · <b>+' + xp + ' Skill XP</b>';
+                    let msgExtra = '';
+                    const limit = gameState.dailyCommitmentMins || 60;
+                    const curTotal = (gameState.quests || []).reduce((sum, q) => sum + (q.duration || 5), 0);
+                    const habDur = habit.duration || 5;
+                    if (curTotal + habDur > limit) {
+                        msgExtra = '<br><br><span style="font-size: 0.75rem; color: #fbbf24; opacity: 0.9; display: block; text-align: center; margin-top: 10px; line-height: 1.3;">🌟 Parabéns por decidir dedicar mais tempo à sua evolução pessoal! Você está estendendo sua rotina diária planejada.</span>';
+                    }
+
+                    confirmDesc.innerHTML = 'Deseja adicionar o hábito <b>"' + habit.title + '"</b>?<br><br>Recompensas ao concluir: <b>+' + xp + ' XP</b> · <b>+' + gold + ' Ouro</b> · <b>+' + xp + ' Skill XP</b>' + msgExtra;
                     
                     const confirmDailyBtn = document.getElementById('btn-habit-confirm-daily');
                     const confirmSideBtn = document.getElementById('btn-habit-confirm-side');
