@@ -400,9 +400,6 @@ window.syncFromCloud = async function() {
 
     saveGameData(); // persiste no localStorage também
     updateUI();
-    if (typeof showSystemToast === 'function') {
-        showSystemToast('☁️ Dados da nuvem carregados com sucesso.');
-    }
   } else {
     // Local ganha — subir para a nuvem
     await saveToSupabase();
@@ -498,9 +495,6 @@ window.saveToSupabase = async function() {
     // Re-trackear presença com os dados de nível/rank atualizados
     if (typeof window.initPresence === 'function') {
       window.initPresence(window._currentUserDbId, gameState.playerName, gameState.level, rankLetter);
-    }
-    if (typeof showSystemToast === 'function') {
-        showSystemToast('☁️ Dados sincronizados com a nuvem.');
     }
   }
 };
