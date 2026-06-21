@@ -769,6 +769,7 @@ window.deleteCurrentUserCloudProfile = async function() {
   const { error } = await supabaseClient.from('users').delete().eq('person_id', user.id);
   if (error) {
     console.error('[Supabase] Erro ao deletar perfil da nuvem:', error);
+    throw error;
   } else {
     console.log('[Supabase] Perfil da nuvem deletado com sucesso');
   }

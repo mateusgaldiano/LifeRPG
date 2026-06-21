@@ -196,6 +196,9 @@ CREATE POLICY "users_insert_secure" ON users
     AND rank = 'E'
   );
 
+CREATE POLICY "users_delete_own" ON users
+  FOR DELETE USING (auth.uid() = person_id);
+
 CREATE POLICY "quests_own_data" ON quests
   FOR ALL USING (
     user_id IN (SELECT id FROM users WHERE person_id = auth.uid())

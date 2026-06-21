@@ -193,6 +193,8 @@ function setupSettingsListeners() {
                     await window.deleteCurrentUserCloudProfile();
                 } catch (e) {
                     console.error('[Hard Reset] Erro ao limpar perfil na nuvem:', e);
+                    alert("Erro ao limpar dados na nuvem: " + (e.message || e) + "\n\nO reset foi cancelado.");
+                    return;
                 }
             }
 

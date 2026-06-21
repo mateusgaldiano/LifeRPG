@@ -150,6 +150,11 @@ CREATE POLICY "users_insert_secure" ON users
     AND rank = 'CANDIDATO'
   );
 
+-- Criar a política de exclusão (DELETE) própria para permitir o Hard Reset
+DROP POLICY IF EXISTS "users_delete_own" ON users;
+CREATE POLICY "users_delete_own" ON users
+  FOR DELETE USING (auth.uid() = person_id);
+
 
 -- 1.4. CHECK CONSTRAINTS DE SEGURANÇA E INTEGRIDADE
 -- Validações a nível de banco para garantir valores sãos
