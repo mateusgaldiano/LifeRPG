@@ -282,7 +282,7 @@ window.subscribeUserToPush = subscribeUserToPush;
 window.unsubscribeUserFromPush = unsubscribeUserFromPush;
 
 // bootstrapping
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     // 1. Carrega dados locais do jogo
     loadGameData();
 
@@ -290,16 +290,50 @@ document.addEventListener('DOMContentLoaded', async () => {
     let isReturningUser = false;
     let tutorialCompleted = false;
     if (typeof window.initSupabase === 'function') {
-        try {
-            const status = await window.initSupabase();
-            isReturningUser = status.isReturningUser;
-            tutorialCompleted = status.tutorialCompleted;
-        } catch (e) {
+        window.initSupabase().then((status) => {
+            isReturningUser = status?.isReturningUser || false;
+            tutorialCompleted = status?.tutorialCompleted || false;
+
+            // Decisão do Onboarding Wizard com base no status do usuário após carregar Supabase
+            const wizardModal = document.getElementById('onboarding-wizard');
+            if (window._currentUserDbId) {
+                // Usuário logado
+                if (isReturningUser) {
+                    if (tutorialCompleted) {
+                        if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
+                        checkFeatureUnlocks();
+                    } else {
+                        initOnboardingWizard();
+                    }
+                } else {
+                    if (gameState.tutorialCompleted) {
+                        if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
+                        checkFeatureUnlocks();
+                    } else {
+                        initOnboardingWizard();
+                    }
+                }
+            }
+
+            const overlay = document.getElementById('app-loading-overlay');
+            if (overlay) {
+                overlay.style.transition = 'opacity 0.5s ease';
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 500);
+            }
+        }).catch((e) => {
             console.error('[App Bootstrap] Erro ao inicializar Supabase:', e);
-        }
+            const overlay = document.getElementById('app-loading-overlay');
+            if (overlay) overlay.style.display = 'none';
+        });
+    } else {
+        const overlay = document.getElementById('app-loading-overlay');
+        if (overlay) overlay.style.display = 'none';
     }
 
-    // 3. Inicializa abas e renderiza a UI (com dados reais sincronizados)
+    // 3. Inicializa abas e renderiza a UI (com dados locais preliminares)
     initTabs();
     renderQuests();
     renderRewards();
@@ -359,46 +393,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Decisão do Onboarding Wizard com base no status do usuário
+    // Decisão inicial do Onboarding Wizard (Convidado/Guest)
     const wizardModal = document.getElementById('onboarding-wizard');
-    
-    if (window._currentUserDbId) {
-        // Usuário logado
-        if (isReturningUser) {
-            if (tutorialCompleted) {
-                // Usuário antigo que já completou o onboarding -> fechar/ocultar wizard
-                if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
-                checkFeatureUnlocks();
-            } else {
-                // Usuário antigo que ainda não completou -> retomar wizard de onde parou
-                initOnboardingWizard();
-            }
-        } else {
-            // Primeiro login de um novo usuário -> iniciar/retomar wizard
-            if (gameState.tutorialCompleted) {
-                if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
-                checkFeatureUnlocks();
-            } else {
-                initOnboardingWizard();
-            }
-        }
-    } else {
-        // Usuário não logado (Convidado/Guest)
+    if (!window._currentUserDbId) {
         if (gameState.tutorialCompleted) {
             if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
             checkFeatureUnlocks();
         } else {
             initOnboardingWizard();
         }
-    }
-
-    // Esconder Loading Overlay suavemente
-    const overlay = document.getElementById('app-loading-overlay');
-    if (overlay) {
-        overlay.style.transition = 'opacity 0.5s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 500);
     }
 });

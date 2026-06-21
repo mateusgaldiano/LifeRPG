@@ -294,57 +294,7 @@ function cleanObjectEncoding(obj) {
 
 
 function loadGameData() {
-    // FORÇAR RESET ÚNICO PEDIDO PELO USUÁRIO (Nível 1, 0 Gold, 0 Streak)
-    if (localStorage.getItem('force_reset_v4') !== 'true') {
-        localStorage.removeItem('lifeRPG_gameState');
-        localStorage.setItem('force_reset_v4', 'true');
-        resetGameState({
-            level: 1,
-            xp: 0,
-            xpToNext: 100,
-            gold: 0,
-            streak: 0,
-            history: {},
-            shields: 0,
-            consecutiveStreak7Days: 0,
-            consecutiveMisses: 0,
-            bossQuest: null,
-            activeDungeon: null,
-            weeklyBoss: null,
-            lastCheckedDate: localDateStr(),
-            unlockedAchievements: [],
-            quests: [],
-            sideQuests: [],
-            rewards: [
-                { id: 'r-serie', title: 'Assistir 1 Hora de Série', cost: 35, icon: '📺' },
-                { id: 'r-cheat', title: 'Refeição Livre / Doce', cost: 80, icon: '🍔' },
-                { id: 'r-game',  title: 'Jogar Videogame por 1h',  cost: 45, icon: '🎮' }
-            ],
-            skills: {
-                physical:     { level: 1, xp: 0, xpToNext: 5 },
-                mental:       { level: 1, xp: 0, xpToNext: 5 },
-                productivity: { level: 1, xp: 0, xpToNext: 5 },
-                social:       { level: 1, xp: 0, xpToNext: 5 },
-                wisdom:       { level: 1, xp: 0, xpToNext: 5 },
-                routine:      { level: 1, xp: 0, xpToNext: 5 }
-            },
-            messages: [],
-            notificationTimes: {
-                morningHour: 7, morningMin: 0,
-                eveningHour: 19, eveningMin: 0
-            },
-            history: {}, // Store daily logs { "2026-06-08": { status: "perfect", count: 3, total: 3, completedIds: [] } }
-            buffs: { autoHeal: false, doubleXp: false, legendaryFocus: false, shieldDays: 0 },
-            inventory: { unlockedTitles: [], unlockedBorders: [], unlockedSkins: ['default'], activeTitle: null, activeBorder: null, activeSkin: 'default' },
-            lastWeeklyReportYearWeek: "",
-            tutorialStep: 1,
-            tutorialCompleted: false,
-            friendsCount: 0
-        });
-        saveGameData();
-        window.location.reload();
-        return;
-    }
+    localStorage.setItem('force_reset_v4', 'true');
 
     // Migration from old key to new key
     let data = localStorage.getItem('lifeRPG_gameState');
