@@ -136,7 +136,7 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
     const isSq = (type === 'side');
     const activeList = isSq ? (gameState.sideQuests || []) : (gameState.quests || []);
     
-    const alreadyExists = activeList.some(q => {
+    const conflicting = activeList.find(q => {
         const t1 = q.title.toLowerCase();
         const t2 = h.title.toLowerCase();
         if (t1 === t2) return true;
@@ -162,14 +162,15 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
 
     });
 
-    if (alreadyExists) {
-        showSystemToast(`⚠️ Você já possui uma missão ativa semelhante a "${h.title}"!`);
+    if (conflicting) {
+        showSystemToast(`⚠️ Você já tem "${conflicting.title}" que é semelhante a "${h.title}".`);
         // Fecha modais para não travar a UI
         const modalConfirm = document.getElementById('modal-confirm-habit');
         if (modalConfirm) modalConfirm.style.display = 'none';
         const modalSq = document.getElementById('modal-sidequest');
         if (modalSq) modalSq.style.display = 'none';
         selectedLibraryHabit = null;
+
         return;
     }
 
