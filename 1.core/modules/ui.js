@@ -1233,13 +1233,16 @@ function renderQuests() {
                             quest.title?.toLowerCase().includes('agua') || 
                             quest.icon === '💧' || 
                             quest.emoji === '💧';
-            if (isWater && quest.current !== undefined && quest.target !== undefined) {
+            const hasCounter = quest.current !== undefined && quest.target !== undefined && quest.target > 1;
+            if (hasCounter) {
+                const label = isWater ? ` copos` : '';
                 extraHTML = `<div class="water-adjust-row">
                     <button class="water-btn btn-minus" data-id="${quest.id}">−</button>
-                    <span class="water-val">${quest.current || 0}/${quest.target || 8} copos</span>
+                    <span class="water-val">${quest.current || 0}/${quest.target}${label}</span>
                     <button class="water-btn btn-plus" data-id="${quest.id}">+</button>
                 </div>`;
             }
+
 
             card.innerHTML = `
                 <button class="quest-remove-btn"
