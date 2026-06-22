@@ -598,13 +598,21 @@ function loadGameData() {
                             q.title?.toLowerCase().includes('agua') || 
                             q.icon === '💧' || 
                             q.emoji === '💧';
-            if (!isWater) {
+
+            // Preserva contador se target > 1 (água OU qualquer outra quest com contador, ex: higienização bucal 0/2)
+            const hasExplicitCounter = q.target !== undefined && q.target !== null && q.target > 1;
+
+            if (!isWater && !hasExplicitCounter) {
+                // Quest simples sem contador — limpa campos residuais
                 delete q.current;
                 delete q.target;
-            } else {
+            } else if (isWater && !hasExplicitCounter) {
+                // Água sem target definido → garante padrão 8 copos
                 if (q.current === undefined || q.current === null) q.current = 0;
                 if (q.target === undefined || q.target === null) q.target = 8;
             }
+            // Se hasExplicitCounter === true: preserva target e current como estão
+
             
             // Extrai a duração do título ou infere com base em palavras-chave
             if (!q.duration) {
