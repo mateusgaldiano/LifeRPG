@@ -91,7 +91,7 @@ const HABIT_LIBRARY = [
     { id: 'lib-estudolong-hard', title: 'Estudo aprofundado em curso online ou livro complexo', icon: '🧠', difficulty: 'hard', duration: 60, skill: 'wisdom' },
 
     // Rotina (routine)
-    { id: 'lib-dente-easy', title: 'Higienização bucal completa (manhã e noite)', icon: '🪥', difficulty: 'easy', duration: 5, skill: 'routine', current: 0, target: 2 },
+    { id: 'lib-dente-easy', title: 'Higienização bucal', icon: '🪥', difficulty: 'easy', duration: 5, skill: 'routine', current: 0, target: 2 },
     { id: 'lib-roupa-easy', title: 'Preparar roupas e organizar bolsa para o dia seguinte', icon: '💼', difficulty: 'easy', duration: 5, skill: 'routine' },
     { id: 'lib-casa-easy', title: 'Organizar a casa (lavar louça e arrumar superfícies)', icon: '🍽️', difficulty: 'easy', duration: 15, skill: 'routine' },
     { id: 'lib-cozinhar-med', title: 'Preparar e cozinhar uma refeição saudável do zero', icon: '🥦', difficulty: 'medium', duration: 30, skill: 'routine' },
