@@ -11,6 +11,15 @@ import {
     showImpactQuote, renderQuests, updateUI, renderAchievements, checkFeatureUnlocks
 } from './ui.js';
 
+// Verifica se o Pergaminho de Double XP está ativo (dura até meia-noite, não consome na 1ª quest)
+function isDoubleXpActive() {
+    const b = gameState.buffs;
+    if (!b) return false;
+    if (b.doubleXpExpiresAt && Date.now() < b.doubleXpExpiresAt) return true;
+    if (b.doubleXp === true) return true; // compatibilidade com saves antigos (boolean)
+    return false;
+}
+
 // Gera uma nova dungeon aleatória
 function spawnDungeon() {
     if (!hasSkillLV3()) return;
@@ -60,10 +69,9 @@ function completeDungeon() {
     let xpGain = d.xp;
     let goldGain = d.gold;
 
-    // Verifica Double XP Buff
-    if (gameState.buffs && gameState.buffs.doubleXp) {
+    // Verifica Double XP Buff (dura até meia-noite — não desativa na 1ª quest)
+    if (isDoubleXpActive()) {
         xpGain *= 2;
-        gameState.buffs.doubleXp = false;
     }
 
     gameState.xp   = (gameState.xp   || 0) + xpGain;
@@ -501,11 +509,10 @@ function toggleQuest(id) {
             quest.current = quest.target || 8;
         }
         
-        // Aplica Double XP Buff se ativo
+        // Aplica Double XP Buff se ativo (dura até meia-noite — não consome na 1ª quest)
         let xpGained = quest.xp;
-        if (gameState.buffs && gameState.buffs.doubleXp) {
+        if (isDoubleXpActive()) {
             xpGained *= 2;
-            gameState.buffs.doubleXp = false;
         }
 
         // Aplica Pergaminho do Foco Lendário se ativo (multiplica o ouro ganho por 3)
@@ -1022,13 +1029,17 @@ function buyStoreItem(itemId) {
             showSystemToast("🧪 *POÇÃO COMPRADA!* Seu próximo erro será perdoado. O Sistema protege os preparados.");
         } 
         else if (itemId === 'buff_doubleXp') {
-            if (gameState.buffs.doubleXp) {
+            if (isDoubleXpActive()) {
                 trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'already_active' });
                 showSystemToast("⚠️ Seu Pergaminho já está ativo até meia-noite!");
                 return;
             }
-            gameState.buffs.doubleXp = true;
-            showSystemToast("📜 *CONHECIMENTO ADQUIRIDO!* Todo XP ganho hoje será DOBRADO. Vá trabalhar.");
+            // Define expiração na próxima meia-noite local
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+            gameState.buffs.doubleXp = false;          // limpa boolean legado
+            gameState.buffs.doubleXpExpiresAt = midnight.getTime();
+            showSystemToast("📜 *CONHECIMENTO ADQUIRIDO!* Todo XP ganho até meia-noite será DOBRADO. Vá trabalhar.");
         }
         else if (itemId === 'buff_legendary_focus') {
             if (gameState.buffs.legendaryFocus) {

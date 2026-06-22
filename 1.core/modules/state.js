@@ -476,7 +476,7 @@ function loadGameData() {
 
         // Migration: Ensure buffs and inventory exist
         if (!parsed.buffs) {
-            parsed.buffs = { autoHeal: false, doubleXp: false, legendaryFocus: false, shieldDays: 0 };
+            parsed.buffs = { autoHeal: false, doubleXp: false, doubleXpExpiresAt: null, legendaryFocus: false, shieldDays: 0 };
         } else if (parsed.buffs.legendaryFocus === undefined) {
             parsed.buffs.legendaryFocus = false;
         }
