@@ -84,10 +84,12 @@ function setupSettingsListeners() {
         const btnSync = document.getElementById('btn-cloud-sync');
         if (btnSync) {
             btnSync.addEventListener('click', async () => {
-                if (typeof window.syncFromCloud === 'function') {
+                // forceLoadFromCloud: sempre puxa da nuvem sem comparação de conflito
+                const syncFn = window.forceLoadFromCloud || window.syncFromCloud;
+                if (typeof syncFn === 'function') {
                     btnSync.disabled = true;
                     btnSync.textContent = 'Sincronizando...';
-                    await window.syncFromCloud();
+                    await syncFn();
                     btnSync.disabled = false;
                     btnSync.textContent = '☁️ SINCRONIZAR DADOS';
                 }

@@ -404,6 +404,8 @@ function confirmRemoveQuest(id, title) {
         saveGameData();
         renderQuests();
         showSystemToast(`✕ Missão removida.`);
+        // Deleta do Supabase imediatamente para não reaparecer em outros dispositivos
+        if (typeof window.deleteQuestFromCloud === 'function') window.deleteQuestFromCloud(id);
         return;
     }
 
@@ -414,6 +416,8 @@ function confirmRemoveQuest(id, title) {
         saveGameData();
         renderQuests();
         showSystemToast(`✕ Side Quest removida.`);
+        // Deleta do Supabase imediatamente para não reaparecer em outros dispositivos
+        if (typeof window.deleteQuestFromCloud === 'function') window.deleteQuestFromCloud(id);
     }
 };
 

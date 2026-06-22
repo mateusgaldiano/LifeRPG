@@ -456,6 +456,67 @@ window.syncFromCloud = async function() {
 };
 
 // --------------------------------------------------------------------------
+// FORCE LOAD FROM CLOUD — botão sincronizar, sempre puxa da nuvem
+// --------------------------------------------------------------------------
+window.forceLoadFromCloud = async function() {
+  if (!window._currentUserDbId) return;
+
+  const { data: cloudUser } = await supabaseClient
+    .from('users')
+    .select('*')
+    .eq('id', window._currentUserDbId)
+    .single();
+
+  if (!cloudUser) return;
+
+  // Sempre sobrescreve com dados da nuvem — sem comparação
+  gameState.level     = cloudUser.level;
+  gameState.xp        = cloudUser.xp;
+  gameState.gold      = cloudUser.gold;
+  gameState.streak    = cloudUser.streak;
+  gameState.archetype = cloudUser.archetype;
+  gameState.skills    = cloudUser.skills;
+
+  const cleanDbUsername = cloudUser.username && !cloudUser.username.includes('@') ? cloudUser.username : null;
+  gameState.playerName = cleanDbUsername || gameState.playerName;
+  window._currentUsername = cloudUser.username;
+
+  gameState.achievements = cloudUser.settings?.achievements || [];
+  gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
+  gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
+
+  await loadQuestsFromSupabase();
+  await loadHistoryFromSupabase();
+  await loadInventoryFromSupabase();
+
+  saveGameData();
+  updateUI();
+
+  if (typeof window.renderQuests === 'function') window.renderQuests();
+  if (typeof window.renderRewards === 'function') window.renderRewards();
+  if (typeof window.renderSkills === 'function') window.renderSkills();
+  if (typeof window.drawRadarChart === 'function') window.drawRadarChart();
+  if (typeof window.updateAvatarImage === 'function') window.updateAvatarImage();
+
+  // Contagem de amigos
+  try {
+    const { count } = await supabaseClient
+      .from('friendships')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'accepted')
+      .or(`requester_id.eq.${window._currentUserDbId},target_id.eq.${window._currentUserDbId}`);
+    if (gameState) {
+      gameState.friendsCount = count || 0;
+      localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+    }
+  } catch (err) {
+    console.error('[Supabase] Erro ao contar amigos:', err);
+  }
+
+  console.log('[Supabase] forceLoadFromCloud concluído.');
+};
+
+// --------------------------------------------------------------------------
 // SAVE TO CLOUD — chamado a cada saveGameData(), se logado
 // --------------------------------------------------------------------------
 window.saveToSupabase = async function() {
@@ -537,6 +598,8 @@ async function syncQuestsToSupabase() {
     ...(gameState.sideQuests || []).map(q => ({ ...q, type: q.type || 'side' })),
   ];
 
+  const localIds = allQuests.map(q => q.id);
+
   const rows = allQuests.map(q => {
     let serializedType = q.type;
     if (q.type === 'weekly') {
@@ -561,14 +624,42 @@ async function syncQuestsToSupabase() {
     };
   });
 
-  if (rows.length === 0) return;
+  if (rows.length > 0) {
+    const { error } = await supabaseClient
+      .from('quests')
+      .upsert(rows, { onConflict: 'user_id,local_id' });
+    if (error) console.error('[Supabase] syncQuestsToSupabase upsert:', error.message);
+  }
 
+  // Deletar do Supabase quests que não existem mais localmente (anti-orphan)
+  if (localIds.length > 0) {
+    const { error: delError } = await supabaseClient
+      .from('quests')
+      .delete()
+      .eq('user_id', window._currentUserDbId)
+      .not('local_id', 'in', `(${localIds.map(id => `"${id}"`).join(',')})`);
+    if (delError) console.error('[Supabase] syncQuestsToSupabase delete orphans:', delError.message);
+  } else {
+    // Nenhuma quest local — deletar tudo do usuário no Supabase
+    const { error: delAllError } = await supabaseClient
+      .from('quests')
+      .delete()
+      .eq('user_id', window._currentUserDbId);
+    if (delAllError) console.error('[Supabase] syncQuestsToSupabase delete all:', delAllError.message);
+  }
+}
+
+// Deleta uma quest específica do Supabase imediatamente (chamado ao remover manualmente)
+window.deleteQuestFromCloud = async function(localId) {
+  if (!window._currentUserDbId || !localId) return;
   const { error } = await supabaseClient
     .from('quests')
-    .upsert(rows, { onConflict: 'user_id,local_id' });
-
-  if (error) console.error('[Supabase] syncQuestsToSupabase:', error.message);
-}
+    .delete()
+    .eq('user_id', window._currentUserDbId)
+    .eq('local_id', localId);
+  if (error) console.error('[Supabase] deleteQuestFromCloud:', error.message);
+  else console.log('[Supabase] Quest deletada da nuvem:', localId);
+};
 
 window.loadQuestsFromSupabase = async function() {
   if (!window._currentUserDbId) return;

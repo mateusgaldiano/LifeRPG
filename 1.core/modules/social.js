@@ -144,7 +144,8 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
         // Verifica palavras-chave de colisão
         const keywords = [
             ['água', 'agua', 'copo', 'copos', '💧'],
-            ['treinar', 'malhar', 'corrida', 'força', 'força / corrida', 'forca', 'exercício', 'academia', 'calistenia', '🏋️'],
+            ['treinar', 'malhar', 'corrida', 'força', 'força / corrida', 'forca', 'exercício', 'academia', 'calistenia'],
+            ['alongamento', 'alongar', 'flexibilidade', 'yoga', 'pilates', '🧘‍♂️'],
             ['meditar', 'meditação', 'meditacao', '🧘'],
             ['leitura', 'ler', 'livro', '📚'],
             ['acordar', '🌅'],
@@ -158,6 +159,7 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
             if (q1Matches && q2Matches) return true;
         }
         return false;
+
     });
 
     if (alreadyExists) {

@@ -101,6 +101,8 @@ const HABIT_LIBRARY = [
     { id: 'lib-louca-easy', title: 'Lavar e secar a louça acumulada da principal refeição', icon: '🍽️', difficulty: 'easy', duration: 15, skill: 'routine' },
     { id: 'lib-rotnoite-med', title: 'Rotina Noturna completa (desconexão, chá, luz baixa)', icon: '📵', difficulty: 'medium', duration: 30, skill: 'routine' },
     { id: 'lib-mealprep-med', title: 'Preparação de refeições saudáveis (Meal Prep diário)', icon: '🥦', difficulty: 'medium', duration: 45, skill: 'routine' },
+    { id: 'lib-banho-frio-easy', title: 'Finalizar o banho com 30s de água fria', icon: '🚿', difficulty: 'easy', duration: 2, skill: 'routine' },
+    { id: 'lib-banho-gelado-hard', title: 'Banho completo com água fria (contraste térmico)', icon: '🧊', difficulty: 'hard', duration: 10, skill: 'routine' },
 
     // Social (social)
     { id: 'lib-elogio-easy', title: 'Dar um elogio sincero a alguém próximo', icon: '💬', difficulty: 'easy', duration: 2, skill: 'social' },
