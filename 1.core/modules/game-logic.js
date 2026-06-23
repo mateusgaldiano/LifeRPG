@@ -602,7 +602,9 @@ function adjustWater(id, operation) {
                     quest._legendaryFocusConsumed = true;
                 }
                 quest.completed = true;
-                addRewards(quest.xp, goldGained);
+                let xpGained = quest.xp;
+                if (isDoubleXpActive()) { xpGained *= 2; }
+                addRewards(xpGained, goldGained);
                 addSkillXP(skillType);
                 
                 checkAllDailies();
@@ -648,7 +650,8 @@ function syncQuestsByLevel() {
                 ['leitura', 'ler', 'livro', '📚'],
                 ['acordar', '🌅'],
                 ['cama', '🛏️'],
-                ['família', 'familia', 'amigo', 'social', 'conectar', '❤️', '📞']
+                ['família', 'familia', 'amigo', 'social', 'conectar', '❤️', '📞'],
+                ['higienização', 'higienizacao', 'bucal', 'dente', 'dental', 'fio dental', '🪥']
             ];
             for (const group of keywords) {
                 const q1Matches = group.some(kw => t1.includes(kw) || q.icon === kw || q.emoji === kw || q.id?.includes(kw));
