@@ -410,6 +410,15 @@ window.syncFromCloud = async function() {
     gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
     gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
 
+    if (cloudUser.settings?.buffs) {
+      const localExpires = gameState.buffs?.doubleXpExpiresAt || 0;
+      const cloudExpires = cloudUser.settings.buffs?.doubleXpExpiresAt || 0;
+      gameState.buffs = { ...cloudUser.settings.buffs };
+      if (localExpires > cloudExpires) {
+        gameState.buffs.doubleXpExpiresAt = localExpires;
+      }
+    }
+
     await loadQuestsFromSupabase();
     await loadHistoryFromSupabase();
     await loadInventoryFromSupabase();

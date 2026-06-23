@@ -975,7 +975,7 @@ function applyDailyPenalty(yesterdayStr) {
 // ==========================================================================
 // LOJA E TAVERNA (COMPRA DE BUFFS E COSMÉTICOS)
 // ==========================================================================
-function buyStoreItem(itemId) {
+async function buyStoreItem(itemId) {
     const prices = {
         'buff_autoHeal': 100,
         'buff_doubleXp': 50,
@@ -1043,6 +1043,7 @@ function buyStoreItem(itemId) {
             gameState.buffs.doubleXp = false;          // limpa boolean legado
             gameState.buffs.doubleXpExpiresAt = midnight.getTime();
             showSystemToast("📜 *CONHECIMENTO ADQUIRIDO!* Todo XP ganho até meia-noite será DOBRADO. Vá trabalhar.");
+            await saveToCloud();
         }
         else if (itemId === 'buff_legendary_focus') {
             if (gameState.buffs.legendaryFocus) {
