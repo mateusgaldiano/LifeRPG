@@ -410,18 +410,10 @@ window.syncFromCloud = async function() {
     gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
     gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
 
-    if (cloudUser.settings?.buffs) {
-      const localExpires = gameState.buffs?.doubleXpExpiresAt || 0;
-      const cloudExpires = cloudUser.settings.buffs?.doubleXpExpiresAt || 0;
-      gameState.buffs = { ...cloudUser.settings.buffs };
-      if (localExpires > cloudExpires) {
-        gameState.buffs.doubleXpExpiresAt = localExpires;
-      }
-    }
-
     await loadQuestsFromSupabase();
     await loadHistoryFromSupabase();
     await loadInventoryFromSupabase();
+    await window.loadBuffsFromSupabase();
 
     saveGameData(); // persiste no localStorage também
     updateUI();
@@ -497,6 +489,7 @@ window.forceLoadFromCloud = async function() {
   await loadQuestsFromSupabase();
   await loadHistoryFromSupabase();
   await loadInventoryFromSupabase();
+  await window.loadBuffsFromSupabase();
 
   saveGameData();
   updateUI();
@@ -589,10 +582,10 @@ window.saveToSupabase = async function() {
     }
   } else {
     gameState._lastSyncedAt = new Date().toISOString();
-    // Re-trackear presença com os dados de nível/rank atualizados
     if (typeof window.initPresence === 'function') {
       window.initPresence(window._currentUserDbId, gameState.playerName, gameState.level, rankLetter);
     }
+    await window.saveBuffsToSupabase();
   }
 };
 
@@ -829,6 +822,105 @@ async function syncInventoryToSupabase() {
 
   if (error) console.error('[Supabase] syncInventoryToSupabase:', error.message);
 }
+
+// --------------------------------------------------------------------------
+// USER BUFFS — salva, carrega e consome buffs da tabela user_buffs
+// --------------------------------------------------------------------------
+
+window.saveBuffsToSupabase = async function() {
+  if (!window._currentUserDbId) return;
+
+  const buffs = gameState.buffs || {};
+  const rows = [];
+
+  if (buffs.doubleXpExpiresAt && Date.now() < buffs.doubleXpExpiresAt) {
+    rows.push({
+      user_id:    window._currentUserDbId,
+      buff_type:  'doubleXp',
+      expires_at: new Date(buffs.doubleXpExpiresAt).toISOString(),
+    });
+  }
+
+  if (buffs.autoHeal) {
+    rows.push({
+      user_id:    window._currentUserDbId,
+      buff_type:  'autoHeal',
+      expires_at: null,
+    });
+  }
+
+  if (buffs.legendaryFocus) {
+    rows.push({
+      user_id:    window._currentUserDbId,
+      buff_type:  'legendaryFocus',
+      expires_at: null,
+    });
+  }
+
+  const activeTypes = rows.map(r => r.buff_type);
+  if (activeTypes.length > 0) {
+    await supabaseClient
+      .from('user_buffs')
+      .delete()
+      .eq('user_id', window._currentUserDbId)
+      .not('buff_type', 'in', `(${activeTypes.map(t => `"${t}"`).join(',')})`);
+  } else {
+    await supabaseClient
+      .from('user_buffs')
+      .delete()
+      .eq('user_id', window._currentUserDbId);
+  }
+
+  if (rows.length > 0) {
+    const { error } = await supabaseClient
+      .from('user_buffs')
+      .upsert(rows, { onConflict: 'user_id,buff_type' });
+    if (error) console.error('[Supabase] saveBuffsToSupabase:', error.message);
+  }
+};
+
+window.loadBuffsFromSupabase = async function() {
+  if (!window._currentUserDbId) return;
+
+  const { data, error } = await supabaseClient
+    .from('user_buffs')
+    .select('buff_type, expires_at')
+    .eq('user_id', window._currentUserDbId);
+
+  if (error || !data) return;
+
+  if (!gameState.buffs) {
+    gameState.buffs = { autoHeal: false, doubleXp: false, doubleXpExpiresAt: null, legendaryFocus: false, shieldDays: 0 };
+  }
+
+  gameState.buffs.autoHeal          = false;
+  gameState.buffs.legendaryFocus    = false;
+  gameState.buffs.doubleXp          = false;
+  gameState.buffs.doubleXpExpiresAt = null;
+
+  const now = Date.now();
+  data.forEach(row => {
+    if (row.buff_type === 'doubleXp') {
+      const expiresMs = row.expires_at ? new Date(row.expires_at).getTime() : 0;
+      if (expiresMs > now) {
+        gameState.buffs.doubleXpExpiresAt = expiresMs;
+      }
+    } else if (row.buff_type === 'autoHeal') {
+      gameState.buffs.autoHeal = true;
+    } else if (row.buff_type === 'legendaryFocus') {
+      gameState.buffs.legendaryFocus = true;
+    }
+  });
+};
+
+window.deleteBuffFromSupabase = async function(buffType) {
+  if (!window._currentUserDbId) return;
+  await supabaseClient
+    .from('user_buffs')
+    .delete()
+    .eq('user_id', window._currentUserDbId)
+    .eq('buff_type', buffType);
+};
 
 window.loadInventoryFromSupabase = async function() {
   if (!window._currentUserDbId) return;

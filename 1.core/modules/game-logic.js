@@ -523,6 +523,7 @@ function toggleQuest(id) {
             // de repassar à função addRewards(), que posteriormente aplicará o multiplicador de grupo e outras sinergias.
             goldGained *= 3;
             gameState.buffs.legendaryFocus = false;
+            if (window.deleteBuffFromSupabase) window.deleteBuffFromSupabase('legendaryFocus');
             quest._legendaryFocusConsumed = true;
         }
 
@@ -599,6 +600,7 @@ function adjustWater(id, operation) {
                     // se empilham de forma multiplicativa (em conjunto).
                     goldGained *= 3;
                     gameState.buffs.legendaryFocus = false;
+                    if (window.deleteBuffFromSupabase) window.deleteBuffFromSupabase('legendaryFocus');
                     quest._legendaryFocusConsumed = true;
                 }
                 quest.completed = true;
@@ -833,6 +835,7 @@ function applyDailyPenalty(yesterdayStr) {
     // ── 1. Verifica Poção de Cura (Prioridade Máxima) ────────────────────────
     if (gameState.buffs && gameState.buffs.autoHeal) {
         gameState.buffs.autoHeal = false;
+        if (window.deleteBuffFromSupabase) window.deleteBuffFromSupabase('autoHeal');
         gameState.consecutiveMisses = 0; // Reseta o contador para evitar penalidades severas nos dias seguintes
 
         // delay de 500ms para não competir visualmente com outros toasts/eventos de reset diário
@@ -1030,6 +1033,7 @@ async function buyStoreItem(itemId) {
             }
             gameState.buffs.autoHeal = true;
             showSystemToast("🧪 *POÇÃO COMPRADA!* Seu próximo erro será perdoado. O Sistema protege os preparados.");
+            if (window.saveBuffsToSupabase) await window.saveBuffsToSupabase();
         } 
         else if (itemId === 'buff_doubleXp') {
             if (isDoubleXpActive()) {
@@ -1043,7 +1047,7 @@ async function buyStoreItem(itemId) {
             gameState.buffs.doubleXp = false;          // limpa boolean legado
             gameState.buffs.doubleXpExpiresAt = midnight.getTime();
             showSystemToast("📜 *CONHECIMENTO ADQUIRIDO!* Todo XP ganho até meia-noite será DOBRADO. Vá trabalhar.");
-            await saveToCloud();
+            if (window.saveBuffsToSupabase) await window.saveBuffsToSupabase();
         }
         else if (itemId === 'buff_legendary_focus') {
             if (gameState.buffs.legendaryFocus) {
@@ -1053,6 +1057,7 @@ async function buyStoreItem(itemId) {
             }
             gameState.buffs.legendaryFocus = true;
             showSystemToast("📜 *FOCO LENDÁRIO ATIVADO!* Sua próxima missão concluída dará o TRIPLO (x3) de Ouro.");
+            if (window.saveBuffsToSupabase) await window.saveBuffsToSupabase();
         }
         else if (itemId === 'buff_shield') {
             gameState.shields = (gameState.shields || 0) + 1;
