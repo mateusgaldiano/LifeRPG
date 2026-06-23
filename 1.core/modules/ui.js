@@ -1,5 +1,5 @@
 // ui.js
-import { gameState, saveGameData } from './state.js';
+import { gameState, saveGameData, APP_VERSION } from './state.js';
 import {
     localDateStr, getRankForLevel, debounce, hasPerk, calcStreakMultiplier,
     calcStreakGoldMultiplier, calcGroupMultiplier, getSynergyXpBonus,
@@ -1462,6 +1462,12 @@ function setupEventListeners() {
     document.getElementById('quests-list-willpower')?.addEventListener('click', handleQuestAction);
     document.getElementById('quests-list-intellect')?.addEventListener('click', handleQuestAction);
     document.getElementById('quests-list-health')?.addEventListener('click', handleQuestAction);
+
+    // Inject App Version on settings open
+    document.getElementById('btn-open-settings')?.addEventListener('click', () => {
+        const lbl = document.getElementById('app-version-label');
+        if (lbl) lbl.textContent = APP_VERSION;
+    });
 
     // Taverna
     // Modais
