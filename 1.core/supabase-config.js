@@ -59,25 +59,51 @@ window._isSupabaseAuthenticated = false; // flag síncrono — atualizado por on
 // --------------------------------------------------------------------------
 window.loginWithGoogle = async function() {
   const btn = document.getElementById('btn-cloud-login');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Abrindo Google...';
+  const GOOGLE_BTN_HTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg> ENTRAR COM GOOGLE';
+  const restoreBtn = () => { if (btn) { btn.disabled = false; btn.innerHTML = GOOGLE_BTN_HTML; } };
+
+  // Guarda: se o SDK do Supabase não carregou (CDN bloqueada/offline), o clique
+  // não pode falhar em silêncio — avisa o usuário e o console.
+  if (typeof supabaseClient === 'undefined' || !supabaseClient || !supabaseClient.auth) {
+    console.error('[Supabase Auth] supabaseClient indisponível — o SDK do Supabase não carregou.');
+    if (typeof showSystemToast === 'function') showSystemToast('Erro: o SDK do Supabase não carregou. Verifique sua conexão e recarregue.');
+    restoreBtn();
+    return;
   }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Abrindo Google...'; }
+
   try {
     const redirectUrl = window.location.origin + window.location.pathname;
-    const { error } = await supabaseClient.auth.signInWithOAuth({
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: redirectUrl }
+      options: {
+        redirectTo: redirectUrl,
+        skipBrowserRedirect: true  // nós mesmos navegamos — controle total + erro visível
+      }
     });
+
     if (error) {
-      console.error('[Supabase Auth]', error.message);
+      console.error('[Supabase Auth] signInWithOAuth retornou erro:', error.message);
       if (typeof showSystemToast === 'function') showSystemToast('Erro ao iniciar login: ' + error.message);
-      if (btn) { btn.disabled = false; btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg> ENTRAR COM GOOGLE'; }
+      restoreBtn();
       return;
     }
+
+    if (data && data.url) {
+      console.log('[Supabase Auth] Redirecionando para o Google OAuth...');
+      window.location.assign(data.url);  // navegação explícita e confiável
+      return;
+    }
+
+    // Chegou aqui sem url e sem error → estado inesperado (não fica em silêncio)
+    console.error('[Supabase Auth] Nenhuma URL de OAuth retornada pelo Supabase.', data);
+    if (typeof showSystemToast === 'function') showSystemToast('Erro: não foi possível abrir o login do Google. Verifique se o provedor Google está habilitado no Supabase.');
+    restoreBtn();
   } catch(e) {
-    console.error('[Supabase Auth] Exceção:', e);
-    if (btn) { btn.disabled = false; btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg> ENTRAR COM GOOGLE'; }
+    console.error('[Supabase Auth] Exceção ao iniciar login:', e);
+    if (typeof showSystemToast === 'function') showSystemToast('Erro inesperado no login: ' + (e.message || e));
+    restoreBtn();
   }
 };
 

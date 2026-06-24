@@ -3,7 +3,7 @@
    Cache-first strategy + Local notifications scheduling
    ========================================================================== */
 
-const CACHE_VERSION = 'v1.5.4';
+const CACHE_VERSION = 'v1.5.5';
 const CACHE_NAME = `liferpg-cache-${CACHE_VERSION}`;
 const ASSETS_TO_CACHE = [
     './',
