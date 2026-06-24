@@ -287,7 +287,7 @@ async function ensureUserProfile(authUser) {
     // ── PASSO 2: Verificar/criar em users ────────────────────────────────
     const { data: userRow, error: userSelectError } = await supabaseClient
       .from('users')
-      .select('id, username, settings')
+      .select('id, settings')
       .eq('person_id', authUser.id)
       .maybeSingle();
 
@@ -340,7 +340,7 @@ async function ensureUserProfile(authUser) {
 
       console.log('[Supabase] User criado com sucesso:', newUser.id);
       window._currentUserDbId = newUser.id;
-      window._currentUsername = newUser.username;
+      window._currentUsername = person?.username || null;
 
       // Upload de quests e history existentes localmente
       await syncQuestsToSupabase();
@@ -351,11 +351,9 @@ async function ensureUserProfile(authUser) {
       isReturningUser = true;
       tutorialCompleted = userRow.settings?.tutorialCompleted ?? false;
       window._currentUserDbId = userRow.id;
-      window._currentUsername = userRow.username;
-      
-      const cleanDbUsername = userRow.username && !userRow.username.includes('@') ? userRow.username : null;
-      if (!gameState.playerName && cleanDbUsername) {
-        gameState.playerName = cleanDbUsername;
+      window._currentUsername = person?.username || null;
+      if (!gameState.playerName && person?.username && !person.username.includes('@')) {
+        gameState.playerName = person.username;
       }
       console.log('[Supabase] User existente carregado:', userRow.id);
     }
@@ -407,13 +405,19 @@ window.syncFromCloud = async function() {
     gameState.archetype = cloudUser.archetype;
     gameState.skills    = cloudUser.skills;
     
-    const cleanDbUsername = cloudUser.username && !cloudUser.username.includes('@') ? cloudUser.username : null;
-    gameState.playerName = cleanDbUsername || gameState.playerName;
-    window._currentUsername = cloudUser.username;
-
     gameState.achievements = cloudUser.settings?.achievements || [];
     gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
     gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
+
+    const { data: { user: authUserSync } } = await supabaseClient.auth.getUser();
+    if (authUserSync) {
+      const { data: personData } = await supabaseClient
+        .from('persons').select('username').eq('id', authUserSync.id).maybeSingle();
+      if (personData?.username && !personData.username.includes('@')) {
+        gameState.playerName = personData.username;
+        window._currentUsername = personData.username;
+      }
+    }
 
     await loadQuestsFromSupabase();
     await loadHistoryFromSupabase();
@@ -483,13 +487,19 @@ window.forceLoadFromCloud = async function() {
   gameState.archetype = cloudUser.archetype;
   gameState.skills    = cloudUser.skills;
 
-  const cleanDbUsername = cloudUser.username && !cloudUser.username.includes('@') ? cloudUser.username : null;
-  gameState.playerName = cleanDbUsername || gameState.playerName;
-  window._currentUsername = cloudUser.username;
-
   gameState.achievements = cloudUser.settings?.achievements || [];
   gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
   gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
+
+  const { data: { user: authUserForce } } = await supabaseClient.auth.getUser();
+  if (authUserForce) {
+    const { data: personData } = await supabaseClient
+      .from('persons').select('username').eq('id', authUserForce.id).maybeSingle();
+    if (personData?.username && !personData.username.includes('@')) {
+      gameState.playerName = personData.username;
+      window._currentUsername = personData.username;
+    }
+  }
 
   await loadQuestsFromSupabase();
   await loadHistoryFromSupabase();
