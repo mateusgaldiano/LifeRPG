@@ -33,6 +33,14 @@ Rodada de correções de cloud sync, login, ranks e consolidação de versão.
 - Validação de rank do RPC alinhada aos tiers reais do app. `a809ef3` `c3e34d1`
 - Script idempotente de alinhamento do banco: [`3.docs/fix_sync_username_persons.sql`](fix_sync_username_persons.sql).
 
+### Documentação & triagem do pipeline (P0)
+- `CLAUDE.md` seção 6 reescrita: Firebase → Supabase + arquitetura ES Modules (resolve **TECH-001**).
+- Criado `3.docs/CHANGELOG.md` (este arquivo) como registro de versões.
+- Criado `3.docs/fix_p0_db.sql`: auditoria de RLS (**SEG-002**), reaplicação do chat global (**BUG-002**) e pg_cron de finalização de duelos (**BUG-004**) — rodar no Supabase.
+- `3.docs/pipeline.html` reconciliado: removidos os itens já concluídos (**TECH-001, BUG-005, PWA-002, META-002**); pendentes mantidos.
+- Verificados como **já implementados** (sem ação necessária): BUG-001 (upsert + `maybeSingle` + try/catch), BUG-003 (manifest com `start_url`/`scope` relativos), BUG-005 (listeners de ranking/taverna), MKT-001 (meta tags og/twitter + `og-preview.png`), PWA-002 (SW com `skipWaiting`/`clients.claim`/limpeza de cache), META-002 (avatares E–S nos dois gêneros).
+- Pendências P0 que exigem ação externa: **UX-001** (escalonamento de fontes do modal Settings — requer validação visual) e **SEG-001** (gerar par VAPID + configurar Secrets no Supabase).
+
 ### Notas de versão
 - Antes desta versão havia **dois números** independentes: `CACHE_VERSION` do Service Worker (chegou a `v1.5.7`) e `APP_VERSION` da UI (`v2.1.0`). Foram **unificados** em `v2.1.1`.
 
