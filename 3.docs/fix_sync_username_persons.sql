@@ -104,9 +104,9 @@ BEGIN
   -- VALIDAÇÃO 3: CONSISTÊNCIA DE RANK (alinhada aos tiers do client em state.js)
   v_expected_rank := CASE
     WHEN p_level >= 35 THEN 'MONARCA'
-    WHEN p_level >= 30 THEN 'GOVERNANTE'
-    WHEN p_level >= 25 THEN 'NACIONAL'
-    WHEN p_level >= 20 THEN 'S'
+    WHEN p_level >= 30 THEN 'NACIONAL'
+    WHEN p_level >= 25 THEN 'S'
+    WHEN p_level >= 20 THEN 'A'
     WHEN p_level >= 15 THEN 'B'
     WHEN p_level >= 10 THEN 'C'
     WHEN p_level >= 5  THEN 'D'

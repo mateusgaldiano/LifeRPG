@@ -1117,9 +1117,9 @@ function updateAvatarImage() {
         d:          { num: '2', name: 'd' },
         c:          { num: '3', name: 'c' },
         b:          { num: '4', name: 'b' },
+        a:          { num: '5', name: 'a' },
         s:          { num: '6', name: 's' },
         nacional:   { num: '6', name: 's' },
-        governante: { num: '6', name: 's' },
         monarca:    { num: '6', name: 's' }
     };
     

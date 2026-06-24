@@ -201,9 +201,9 @@ const IMPACT_QUOTES = [
 //  Sistema de RANK (Solo Leveling) 
 const RANK_THRESHOLDS = [
     { min: 35, rank: 'Monarca', css: 'rank-monarca' },
-    { min: 30, rank: 'Governante', css: 'rank-governante' },
-    { min: 25, rank: 'Nacional', css: 'rank-nacional' },
-    { min: 20, rank: 'RANK S', css: 'rank-s' },
+    { min: 30, rank: 'Nacional', css: 'rank-nacional' },
+    { min: 25, rank: 'RANK S', css: 'rank-s' },
+    { min: 20, rank: 'RANK A', css: 'rank-a' },
     { min: 15, rank: 'RANK B', css: 'rank-b' },
     { min: 10, rank: 'RANK C', css: 'rank-c' },
     { min: 5,  rank: 'RANK D', css: 'rank-d' },
