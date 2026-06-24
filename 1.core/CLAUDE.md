@@ -29,11 +29,12 @@ O **LifeRPG OS** (v2.0) é um aplicativo web progressivo (PWA) de gamificação 
 
 ## 🐙 4. Repositórios e Fluxo de Trabalho (Git) & Workflow de Deploy
 *   **Fluxo de Deploy**:
-    1.  Toda alteração que vai para produção ou homologação **exige** o incremento manual do cache no arquivo `sw.js`:
-        `const CACHE_VERSION = 'v1.X.Y';` (ex: `v1.3.1`).
-    2.  Subir e testar as alterações no repositório de homologação primeiro:
+    1.  Toda alteração que vai para produção ou homologação **exige** o bump da **versão única** em `1.core/version.js`:
+        `self.APP_VERSION = 'v2.X.Y';`. Esse valor é a fonte única — alimenta tanto a versão exibida nas Configurações quanto o `CACHE_VERSION` do Service Worker (`sw.js` lê via `importScripts`). **Não** há mais dois números.
+    2.  Registrar a mudança em `3.docs/CHANGELOG.md` (entrada nova no topo, com data e mudanças agrupadas).
+    3.  Subir e testar as alterações no repositório de homologação primeiro:
         PowerShell: `git push dev-origin dev:main`
-    3.  Após validação completa, subir para o repositório principal de produção:
+    4.  Após validação completa, subir para o repositório principal de produção:
         PowerShell: `git push origin dev:main`
 *   **Repositório de Testes (Dev)**:
     *   **Remoto**: `dev-origin` (aponta para `https://github.com/mateusgaldiano/LifeRPG_Dev`)

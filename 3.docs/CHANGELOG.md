@@ -1,0 +1,53 @@
+# Changelog — LifeRPG OS
+
+Registro de todas as mudanças relevantes do projeto. Formato baseado em
+[Keep a Changelog](https://keepachangelog.com/pt-BR/).
+
+> **Fonte única de versão:** [`1.core/version.js`](../1.core/version.js).
+> A cada release, bump o valor lá **e** adicione uma entrada aqui.
+> O mesmo número aparece nas Configurações (engrenagens) e no cache do Service Worker.
+
+---
+
+## [v2.1.1] — 2026-06-24
+
+Rodada de correções de cloud sync, login, ranks e consolidação de versão.
+
+### Adicionado
+- Buffs persistidos no Supabase via tabela `user_buffs` (doubleXp, autoHeal, legendaryFocus). `0641c82`
+- Versão do app exibida no modal de Configurações. `f556f49` `dfd2283`
+- `username` sincronizado em `persons` + dados da conta (email/nome/username) no modal de Configurações. `ee001c0`
+- Nova progressão de ranks: **A** (20–24), **S** (25–29), **Nacional** (30–34), **Monarca** (35+). Removido Governante. `c3e34d1`
+- **Fonte única de versão** em `1.core/version.js`, lida pela UI e pelo Service Worker. `4c4e3e5`
+
+### Corrigido
+- `adjustWater()` não aplicava o buff de XP dobrado (quest de água ignorava `isDoubleXpActive()`). `92b8439`
+- `doubleXpExpiresAt` era sobrescrito no merge cloud/local. `d2673a4`
+- `username` passou a ser lido de `persons` em vez de `users` (ensureUserProfile, syncFromCloud, forceLoadFromCloud). `063f5c7`
+- Login com Google não redirecionava (removido `skipBrowserRedirect`) e não falha mais em silêncio — agora reporta erro claro se o SDK não carregar ou o provedor estiver desabilitado. `7ceeb4a` `fa5c539`
+- Higienização bucal virou contador **0/2** (auto-corrige saves antigos sem contador; não herda o 8 da água). `ab1ca67`
+
+### Banco de dados (Supabase)
+- Recriada a função `sync_user_state_secure` e forçado reload do schema cache do PostgREST (resolve _"Could not find the function … in the schema cache"_). `746623b`
+- Restaurada `users.username` e sincronizada com `persons.username` — corrige PvP, ranking e RPC quebrados pela migração de username. `25bba7e`
+- Validação de rank do RPC alinhada aos tiers reais do app. `a809ef3` `c3e34d1`
+- Script idempotente de alinhamento do banco: [`3.docs/fix_sync_username_persons.sql`](fix_sync_username_persons.sql).
+
+### Notas de versão
+- Antes desta versão havia **dois números** independentes: `CACHE_VERSION` do Service Worker (chegou a `v1.5.7`) e `APP_VERSION` da UI (`v2.1.0`). Foram **unificados** em `v2.1.1`.
+
+---
+
+## [v2.1.0] — baseline anterior
+
+Estado do app antes desta rodada de correções (referência).
+
+---
+
+## Processo de release
+
+1. Aplicar e validar as mudanças de código (`node --check` nos `.js` alterados).
+2. Bump da versão em [`1.core/version.js`](../1.core/version.js) (ex.: `v2.1.1` → `v2.1.2`).
+3. Adicionar uma entrada aqui no topo, com data e mudanças agrupadas (Adicionado / Corrigido / Banco de dados).
+4. Se houver alteração de schema/RPC no Supabase, versionar o `.sql` em `3.docs/` e rodar no SQL Editor.
+5. Commit + push em `dev-origin dev:main` (homologação) e, após validar, `origin dev:main` (produção).
