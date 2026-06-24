@@ -65,21 +65,15 @@ window.loginWithGoogle = async function() {
   }
   try {
     const redirectUrl = window.location.origin + window.location.pathname;
-    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+    const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: redirectUrl,
-        skipBrowserRedirect: true  // ← nós mesmos fazemos o redirect
-      }
+      options: { redirectTo: redirectUrl }
     });
     if (error) {
       console.error('[Supabase Auth]', error.message);
       if (typeof showSystemToast === 'function') showSystemToast('Erro ao iniciar login: ' + error.message);
       if (btn) { btn.disabled = false; btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg> ENTRAR COM GOOGLE'; }
       return;
-    }
-    if (data?.url) {
-      window.location.href = data.url;  // ← redirect explícito
     }
   } catch(e) {
     console.error('[Supabase Auth] Exceção:', e);
