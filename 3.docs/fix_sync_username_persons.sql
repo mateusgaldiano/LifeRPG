@@ -78,6 +78,7 @@ DECLARE
   v_xp_needed INT;
   v_xp_total_old INT := 0;
   v_xp_total_new INT := 0;
+  v_expected_rank TEXT;
   i INT;
 BEGIN
   SELECT id, level, xp, gold, streak
@@ -100,14 +101,20 @@ BEGIN
     RAISE EXCEPTION '[VAL_ERR_XP_OVERFLOW] XP enviado (%) é maior ou igual ao limite de subida (%) para o nível %.', p_xp, v_xp_needed, p_level;
   END IF;
 
-  -- VALIDAÇÃO 3: CONSISTÊNCIA DE RANK
-  IF (p_level >= 20 AND p_rank <> 'S') OR
-     (p_level >= 15 AND p_level < 20 AND p_rank <> 'A') OR
-     (p_level >= 10 AND p_level < 15 AND p_rank <> 'B') OR
-     (p_level >= 5 AND p_level < 10 AND p_rank <> 'C') OR
-     (p_level >= 3 AND p_level < 5 AND p_rank <> 'D') OR
-     (p_level < 3 AND p_rank <> 'E') THEN
-    RAISE EXCEPTION '[VAL_ERR_INVALID_RANK] Rank "%" inválido para o nível %.', p_rank, p_level;
+  -- VALIDAÇÃO 3: CONSISTÊNCIA DE RANK (alinhada aos tiers do client em state.js)
+  v_expected_rank := CASE
+    WHEN p_level >= 35 THEN 'MONARCA'
+    WHEN p_level >= 30 THEN 'GOVERNANTE'
+    WHEN p_level >= 25 THEN 'NACIONAL'
+    WHEN p_level >= 20 THEN 'S'
+    WHEN p_level >= 15 THEN 'B'
+    WHEN p_level >= 10 THEN 'C'
+    WHEN p_level >= 5  THEN 'D'
+    WHEN p_level >= 3  THEN 'E'
+    ELSE 'CANDIDATO'
+  END;
+  IF upper(p_rank) <> v_expected_rank THEN
+    RAISE EXCEPTION '[VAL_ERR_INVALID_RANK] Rank "%" inválido para o nível % (esperado %).', p_rank, p_level, v_expected_rank;
   END IF;
 
   -- VALIDAÇÃO 4: LIMITE FIXO DE GANHO DE RECURSOS
