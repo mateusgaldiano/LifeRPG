@@ -1,7 +1,7 @@
 # LifeRPG OS — Pipeline de Pendências
 
 > **Sincronizado automaticamente com `pipeline.html`.** Não editar à mão — editar o array `items` no HTML e ressincronizar.
-> **Total: 28 itens pendentes.**
+> **Total: 20 itens pendentes.**
 
 ---
 
@@ -23,7 +23,7 @@ Ver 1.core/modules/social.js.
 7. Commit: "fix: subscription Realtime no chat global + RLS policy de SELECT"
 ```
 
-## 🟡 P1 — ALTO (16)
+## 🟡 P1 — ALTO (9)
 
 ### PWA-001 · iOS Safari: virtual keyboard empurra chat UI
 **Cluster:** Mobile & PWA | **Esforço:** M | **Tipo:** Bug | **Fase:** Próximas semanas
@@ -80,19 +80,6 @@ Ver 1.core/styles.css.
 6. Commit: "feat: layout responsivo de quests em mobile (1 coluna com tabs)"
 ```
 
-### UX-003 · Toast messages do Iroh muito longas
-**Cluster:** UX/Visual | **Esforço:** S | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-Ver 1.core/modules/ui.js, 1.core/styles.css.
-1. Em ui.js, localizar a função showSystemToast
-2. Adicionar lógica de duração baseada em tamanho: const duration = msg.length > 120 ? 8000 : 4500;
-3. Para toasts com mais de 200 caracteres (mensagens de penalidade severa do Iroh): abrir em modal próprio ao invés de toast
-4. Criar função showIrohMessage(text) que abre um modal leve com o texto formatado e botão ENTENDIDO
-5. Em game-logic.js, substituir os irohMessages de penalidade severa (tone === 'severe' e tone === 'angry') para chamar showIrohMessage em vez de showSystemToast
-6. Commit: "feat: toasts longos do Iroh abrem em modal — melhora legibilidade"
-```
-
 ### UX-004 · Level Up overlay não mostra o que desbloqueou
 **Cluster:** UX/Visual | **Esforço:** M | **Tipo:** Enhancement | **Fase:** Próximas semanas
 
@@ -107,20 +94,6 @@ Ver 1.core/modules/ui.js, index.html.
 7. Commit: "feat: overlay de Level Up exibe hábitos desbloqueados e boss quest ativada"
 ```
 
-### UX-005 · Radar chart sem labels nos vértices
-**Cluster:** UX/Visual | **Esforço:** S | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-Ver 1.core/modules/ui.js.
-1. Em ui.js, localizar a função que renderiza o radar chart (skills-radar-chart canvas)
-2. Após desenhar o hexágono preenchido, adicionar renderização de labels nos 6 vértices
-3. Labels curtos: FÍS / MEN / FOC / SAB / ROT / CON
-4. Posicionar via ctx.fillText() offset da extremidade de cada vértice (adicionar 8-12px além do raio máximo)
-5. Font: 9px Inter, cor: var(--text-muted) → como hex literal (ex: #475569) pois canvas não aceita CSS vars
-6. Adicionar tooltip no hover do canvas: ao detectar mouse próximo a um vértice, mostrar div tooltip com nome completo + nível
-7. Commit: "feat: labels nos vértices do radar chart e tooltip no hover"
-```
-
 ### UX-006 · Weekly Report com texto pequeno em mobile
 **Cluster:** UX/Visual | **Esforço:** S | **Tipo:** Enhancement | **Fase:** Próximas semanas
 
@@ -133,47 +106,6 @@ Ver 1.core/styles.css.
 4. Aumentar padding interno de 8px para 12px nos .report-stat-card
 5. Taxa de Sobrevivência: aumentar font-size de 38px para 34px em mobile para caber melhor
 6. Commit: "fix: legibilidade do Weekly Report em mobile — font sizes e grid responsivo"
-```
-
-### GAME-001 · Penalidade P0 muito punitiva para novos jogadores (< nível 10)
-**Cluster:** Game Design | **Esforço:** S | **Tipo:** Feature | **Fase:** Próximas semanas
-
-```
-Ver 1.core/modules/game-logic.js.
-1. Em game-logic.js, localizar a função applyDailyPenalty
-2. Após determinar xpPenaltyPct, adicionar cap por nível:
-   if (gameState.level < 10) {
-     xpPenaltyPct = Math.min(xpPenaltyPct, 0.10); // cap 10% para iniciantes
-     streakReset = misses >= 3 ? true : false; // streak só reseta com 3+ falhas para novatos
-   }
-3. Adicionar mensagem diferenciada do Iroh para tone 'severe' quando nível < 10 (mais encorajador, menos punitivo)
-4. Commit: "game: cap de penalidade para jogadores nível < 10 — reduzir churn de novatos"
-```
-
-### GAME-002 · Buff Double XP sem indicador visual nos quest cards
-**Cluster:** Game Design | **Esforço:** S | **Tipo:** Feature | **Fase:** Próximas semanas
-
-```
-1. Em ui.js, localizar a função renderQuests (que gera o HTML dos cards de quest)
-2. Se gameState.buffs?.doubleXp === true: adicionar no card um badge pulsante "2x XP" acima do payout
-3. Badge HTML: <span class="buff-active-badge double-xp-badge">⚡ 2x XP</span>
-4. Em styles.css, criar .buff-active-badge: background rgba(251,191,36,0.15), border 1px solid #fbbf24, color #fbbf24, font-size 9px, padding 2px 6px, border-radius 3px, animation pulse 1.5s infinite
-5. Fazer o mesmo para buffs.legendaryFocus: badge "x3 💰 GOLD" em amarelo-ouro
-6. Commit: "feat: indicadores visuais de buffs ativos (Double XP, Legendary Focus) nos quest cards"
-```
-
-### GAME-003 · Daily reset sem countdown visível para o usuário
-**Cluster:** Game Design | **Esforço:** S | **Tipo:** Feature | **Fase:** Próximas semanas
-
-```
-1. Adicionar elemento no header da aba Missões: <div id="reset-countdown" class="reset-countdown"></div>
-2. Em ui.js, criar função updateResetCountdown() que calcula tempo até meia-noite local:
-   const now = new Date(); const midnight = new Date(); midnight.setHours(24,0,0,0);
-   const diff = midnight - now; const h = Math.floor(diff/3600000); const m = Math.floor((diff%3600000)/60000);
-   document.getElementById('reset-countdown').textContent = `🔄 Reset em ${h}h ${m}m`;
-3. Chamar updateResetCountdown() no boot e com setInterval a cada 60 segundos
-4. Estilizar: font-size 11px, color var(--text-muted), font-family var(--font-hud), letter-spacing 1px
-5. Commit: "feat: countdown de reset diário na aba de Missões"
 ```
 
 ### SOCIAL-001 · Friends: busca por prefixo ao invés de username exato
@@ -212,31 +144,6 @@ Ver 1.core/modules/social.js.
 4. Commit: "feat: push notification de streak em risco às 22h via Edge Function + pg_cron"
 ```
 
-### A11Y-001 · Botões ✕/✓ com área de toque insuficiente em mobile
-**Cluster:** Acessibilidade | **Esforço:** S | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-Ver 1.core/styles.css.
-1. Abrir styles.css e localizar estilos dos botões de completar/remover quest (✓ e ✕)
-2. Garantir min-width: 44px; min-height: 44px; em todos os botões de ação dos quest cards
-3. Se visualmente não couber 44px de botão, usar padding negativo:
-   .btn-quest-complete { min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; margin: -8px; padding: 8px; }
-4. Verificar também os botões de + e - do contador de água: mesma regra de 44px
-5. Commit: "a11y: aumentar área de toque dos botões de quest para mínimo 44x44px"
-```
-
-### A11Y-002 · Toasts e overlays sem ARIA
-**Cluster:** Acessibilidade | **Esforço:** S | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-1. Em index.html, localizar #toast-container e adicionar role="status" aria-live="polite" aria-atomic="true"
-2. Localizar #level-up-overlay e adicionar role="dialog" aria-modal="true" aria-labelledby="levelup-title"
-3. Localizar #quest-cleared-overlay e adicionar role="status" aria-live="assertive"
-4. Localizar #penalty-overlay e adicionar role="alertdialog" aria-modal="true"
-5. Em styles.css, adicionar @media (prefers-reduced-motion: reduce) { .levelup-flash, .quest-cleared-overlay, .flash-red-penalty { animation: none !important; transition: none !important; } }
-6. Commit: "a11y: adicionar ARIA roles em toasts/overlays + respeitar prefers-reduced-motion"
-```
-
 ### META-001 · Novos achievements — expandir catálogo
 **Cluster:** Meta-Progressão | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
 
@@ -253,7 +160,7 @@ Ver 1.core/modules/game-logic.js.
 4. Commit: "feat: 5 novos achievements — Dia Lendário, Veterano, Lenda, Gladiador, Aliança"
 ```
 
-## 🟣 P2 — MÉDIO (4)
+## 🟣 P2 — MÉDIO (3)
 
 ### GAME-004 · Comeback mechanic para usuários que voltam após 7+ dias
 **Cluster:** Game Design | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
@@ -277,16 +184,6 @@ Ver 1.core/modules/state.js.
 4. Épico: chance de 10%, Raro: 25%, Comum: 65%
 5. Em game-logic.js, spawnDungeon(): usar Math.random() para determinar raridade e aplicar multiplicador de recompensa
 6. Commit: "feat: expandir dungeon pool para 20+ missões com sistema de raridade"
-```
-
-### A11Y-003 · Radar chart com descrição para screen readers
-**Cluster:** Acessibilidade | **Esforço:** S | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-1. Em index.html, adicionar após o canvas do radar: <div class="sr-only" id="radar-description" aria-live="polite"></div>
-2. Em ui.js, após renderizar o radar, injetar texto: "Atributos: Força de Vontade nível X, Intelecto nível Y, ..."
-3. Adicionar aria-labelledby="radar-description" no canvas
-4. Commit: "a11y: descrição de texto para o radar chart — acessibilidade screen readers"
 ```
 
 ### MKT-003 · Weekly Report: botão de compartilhar

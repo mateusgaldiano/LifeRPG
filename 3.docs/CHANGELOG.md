@@ -9,6 +9,27 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.9] — 2026-06-24
+
+Lote de itens "S" (pequenos) de acessibilidade e game design.
+
+### Adicionado
+- **GAME-003** — countdown até o reset diário no topo da aba Missões (atualiza a cada minuto).
+- **A11Y-003** — descrição textual do radar de atributos para leitores de tela (`role="img"` + `aria-describedby` + `.sr-only`).
+
+### Melhorado
+- **A11Y-001** — botão de remover quest (✕) passou de 28px para **44px** (alvo de toque mínimo WCAG, igual ao botão concluir).
+
+### Já estavam prontos (removidos do pipeline)
+- UX-003 (duração de toast), GAME-001 (teto de penalidade), GAME-002 (indicador de buff), A11Y-002 (ARIA), **UX-005** (o radar **já tinha** labels nos vértices).
+
+### Avaliados e adiados (continuam no pipeline)
+- **UX-006** (fontes do Weekly Report em mobile) — precisa do DOM exato do relatório; CSS visual que não consigo validar aqui.
+- **SOCIAL-002** (botão de duelo no modal de perfil) — wiring no `social.js` (lazy), risco moderado sem teste.
+- **BUG-002** (chat global) — código completo; falta só **verificar ao vivo** com o SQL aplicado.
+
+---
+
 ## [v2.1.8] — 2026-06-24
 
 Lote de Onboarding do pipeline.

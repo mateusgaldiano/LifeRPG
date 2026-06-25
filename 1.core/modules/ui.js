@@ -215,6 +215,12 @@ function drawRadarChart() {
             ctx.fillText('LV' + skill.level, lx, ly + 6);
         }
 
+        // A11Y-003: descrição textual do radar para leitores de tela
+        const radarDesc = document.getElementById('radar-description');
+        if (radarDesc) {
+            radarDesc.textContent = 'Atributos: ' + skillTypes.map(t => `${skillLabels[t]} nível ${getR(t).skill.level}`).join(', ') + '.';
+        }
+
     } catch (err) {
         console.error('[Radar] Erro ao desenhar:', err);
     }
@@ -878,6 +884,20 @@ function applyArchetypeDeck(archetype, minutes) {
 // ==========================================================================
 
 // Atualiza informações gerais do Personagem
+// GAME-003: countdown até o reset diário (meia-noite local)
+function updateResetCountdown() {
+    const el = document.getElementById('reset-countdown');
+    if (!el) return;
+    const now = new Date();
+    const midnight = new Date();
+    midnight.setHours(24, 0, 0, 0);
+    const diff = midnight - now;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    el.textContent = `🔄 Reset diário em ${h}h ${m}m`;
+}
+setInterval(updateResetCountdown, 60000);
+
 function updateUI() {
     const lvlEl = document.getElementById('lbl-level');
     if (lvlEl) lvlEl.innerText = gameState.level;
@@ -1007,6 +1027,8 @@ function updateUI() {
         buffIndEl.innerHTML = parts.join('');
         buffIndEl.style.display = parts.length ? '' : 'none';
     }
+
+    updateResetCountdown(); // GAME-003
 
     // Grupo Multiplier Chip (BUG-007)
     const groupChipEl = document.getElementById('group-multiplier-chip');

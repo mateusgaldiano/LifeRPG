@@ -153,7 +153,8 @@
 
                 <!-- Radar hexagonal (6 skills) -->
                 <div class="radar-chart-wrapper" id="radar-wrapper">
-                    <canvas id="skills-radar-chart" width="260" height="260"></canvas>
+                    <canvas id="skills-radar-chart" width="260" height="260" role="img" aria-describedby="radar-description"></canvas>
+                    <div id="radar-description" class="sr-only" aria-live="polite"></div>
                 </div>
 
                 <!-- 3 Barras resumo (estilo Arise) -->
@@ -230,6 +231,8 @@
             
                 <!-- ABA: MISSÕES -->
                 <div id="tab-quests" class="tab-content active">
+                    <!-- GAME-003: countdown até o reset diário -->
+                    <div id="reset-countdown" class="reset-countdown"></div>
                     <!-- Weekly Boss ativo -->
                     <div id="weekly-boss-container" style="display:none; margin-bottom: 20px;"></div>
                     <!-- Dungeon Ativa -->

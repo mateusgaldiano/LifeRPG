@@ -1527,6 +1527,28 @@ body::before {
     box-shadow: 0 0 10px rgba(139, 92, 246, 0.25);
 }
 
+/* A11Y-003: conteúdo só para leitores de tela */
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* GAME-003: countdown até o reset diário */
+.reset-countdown {
+    text-align: center;
+    font-family: var(--font-hud);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+}
+.reset-countdown:empty { display: none; }
+
 
 /* ── MOBILE SCROLL OVERRIDES ────────────────────────────────────────────── */
 
@@ -2696,8 +2718,8 @@ body::before {
 
 /* -- Botão de remoção do card de missão ---------------------------- */
 .quest-remove-btn {
-    width: 28px;
-    height: 28px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
     background: rgba(255, 59, 59, 0.08);
     border: 1px solid rgba(255, 59, 59, 0.25);
