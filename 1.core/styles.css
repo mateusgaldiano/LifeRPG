@@ -3075,7 +3075,16 @@ body::before {
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
 }
 
-/* GAME-002: badges de buff ativo nos cards de quest */
+/* GAME-002: indicador persistente de buff ativo no cabeçalho da barra de XP */
+.buff-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 8px;
+    margin-right: auto;
+}
+
+/* GAME-002: badges de buff ativo */
 .buff-badge {
     display: inline-flex;
     align-items: center;

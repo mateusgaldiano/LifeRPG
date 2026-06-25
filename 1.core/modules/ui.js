@@ -961,6 +961,18 @@ function updateUI() {
         xpSectionEl.title = `Faltam ${xpRemaining} XP para o Nível ${nextLevel}`;
     }
 
+    // GAME-002: indicador persistente de buff ativo (visível enquanto o buff durar)
+    const buffIndEl = document.getElementById('buff-indicator');
+    if (buffIndEl) {
+        const b = gameState.buffs || {};
+        const dxpActive = (b.doubleXpExpiresAt && Date.now() < b.doubleXpExpiresAt) || b.doubleXp === true;
+        const parts = [];
+        if (dxpActive) parts.push('<span class="buff-badge buff-xp">⚡ 2x XP</span>');
+        if (b.legendaryFocus) parts.push('<span class="buff-badge buff-gold">x3 💰</span>');
+        buffIndEl.innerHTML = parts.join('');
+        buffIndEl.style.display = parts.length ? '' : 'none';
+    }
+
     // Grupo Multiplier Chip (BUG-007)
     const groupChipEl = document.getElementById('group-multiplier-chip');
     const groupMultEl = document.getElementById('lbl-group-mult');
@@ -1228,12 +1240,6 @@ function renderQuests() {
             const diffLabel = diffMap[quest.skill] || 'RANK E';
 
             let extraHTML = '';
-            // GAME-002: badge de buffs ativos (XP dobrado / foco lendário) no card
-            let buffBadge = '';
-            const _b = gameState.buffs || {};
-            const _dxpActive = (_b.doubleXpExpiresAt && Date.now() < _b.doubleXpExpiresAt) || _b.doubleXp === true;
-            if (_dxpActive) buffBadge += '<span class="buff-badge buff-xp">⚡ 2x XP</span>';
-            if (_b.legendaryFocus) buffBadge += '<span class="buff-badge buff-gold">x3 💰</span>';
             const isWater = quest.id?.includes('agua') ||
                             quest.title?.toLowerCase().includes('água') ||
                             quest.title?.toLowerCase().includes('agua') ||
@@ -1264,7 +1270,6 @@ function renderQuests() {
                             <span class="diff-badge">${diffLabel}</span>
                             <span class="payout-xp">+${quest.xp} XP</span>
                             <span class="payout-gold">+${quest.gold} 🪙</span>
-                            ${buffBadge}
                         </div>
                         ${extraHTML}
                     </div>

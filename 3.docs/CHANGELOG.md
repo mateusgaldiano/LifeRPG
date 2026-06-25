@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.4] — 2026-06-24
+
+### Corrigido
+- **GAME-002 (fix)** — o indicador de XP duplo sumia ao concluir uma quest (o badge ficava preso ao card, que esmaece quando concluído). Trocado por um **indicador persistente** no cabeçalho da barra de XP, atualizado no `updateUI()` — agora fica visível enquanto o buff estiver ativo. Vale também para o Foco Lendário (x3 💰).
+
+---
+
 ## [v2.1.3] — 2026-06-24
 
 Lote de itens "S" do pipeline (puro código, aditivos).
