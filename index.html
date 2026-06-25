@@ -1187,6 +1187,10 @@
                         <div style="font-size: 3.5rem; margin-bottom: 10px;">♀</div>
                         <strong>Feminino</strong>
                     </div>
+                    <div class="gender-card" id="btn-gender-neutral" data-gender="neutral">
+                        <div style="font-size: 3.5rem; margin-bottom: 10px;">⚡</div>
+                        <strong>Neutro</strong>
+                    </div>
                 </div>
             </div>
 
@@ -1238,10 +1242,10 @@
                 <h2 style="color: var(--neon-purple); text-transform: uppercase;">A Primeira Missão</h2>
                 <div style="font-size: 3rem; margin: 15px 0;" id="hook-icon">🎯</div>
                 <p style="margin-bottom: 15px; font-size: 1.1rem;">Excelente escolha.</p>
-                <p style="color: var(--text-light); margin-bottom: 25px;">Com base no arquétipo <strong id="hook-arch-name" style="color: var(--neon-purple);">Mente Sã</strong>, o Sistema sugere começar com este micro-hábito hoje:</p>
-                
-                <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid var(--neon-purple); padding: 15px; border-radius: 8px; margin-bottom: 25px;">
-                    <strong id="hook-habit-title" style="font-size: 1.2rem;">Meditar por 3 minutos</strong>
+                <p style="color: var(--text-light); margin-bottom: 20px;">Com base no arquétipo <strong id="hook-arch-name" style="color: var(--neon-purple);">Mente Sã</strong>, escolha o micro-hábito para começar hoje:</p>
+
+                <div id="hook-habit-options" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                    <!-- JS renderiza 3 opções aqui -->
                 </div>
 
                 <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">A grande jornada começa com o primeiro passo. Aceita a missão?</p>

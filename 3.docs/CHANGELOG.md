@@ -9,6 +9,17 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.8] — 2026-06-24
+
+Lote de Onboarding do pipeline.
+
+### Adicionado
+- **ONBOARD-001 (parcial)** — 3ª opção de gênero **Neutro** no wizard (alias de avatares para masculino). _Reorder dos steps (gênero após o nome) **não** feito: rewire de navegação de alto risco e baixo valor; o texto do passo de nome depende do gênero._
+- **ONBOARD-002** — passo do Hook agora oferece **3 micro-hábitos** por arquétipo (cards selecionáveis); o escolhido vira a primeira daily (`applyArchetypeDeck` usa a escolha, com fallback por arquétipo).
+- **ONBOARD-003** — ao concluir o onboarding, o banner de instalação do PWA é revelado (Android/desktop via `deferredPrompt`; iOS já exibe automaticamente). Função `window.promptInstallAfterOnboarding` no `pwa.js`.
+
+---
+
 ## [v2.1.7] — 2026-06-24
 
 ### Engenharia

@@ -362,6 +362,15 @@ function setupInstallPrompt() {
     }
 }
 
+// ONBOARD-003: revela o banner de instalação logo após o onboarding (Android/desktop).
+// No iOS o banner já é exibido automaticamente. Não força nada se o usuário já dispensou.
+window.promptInstallAfterOnboarding = function() {
+    const banner = document.getElementById('pwa-install-banner');
+    if (deferredPrompt && banner && localStorage.getItem('pwa_install_dismissed') !== 'true') {
+        banner.classList.add('show');
+    }
+};
+
 
 const VAPID_PUBLIC_KEY = 'BFcQZ5Z7RIi0rv9EjL9vwQK6Hj9EhaFRKke0nLuD22nwzl8NhEirmyEGWYmYP5toC3-OfycWS8jaep9JKn0wYfg';
 

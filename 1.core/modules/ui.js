@@ -600,38 +600,33 @@ function initOnboardingWizard() {
         });
     }
     
-    // Passo 0: Gênero
-    const btnMale = document.getElementById('btn-gender-male');
-    const btnFemale = document.getElementById('btn-gender-female');
-    
+    // Passo 0: Gênero (ONBOARD-001: inclui opção neutra)
     const selectGender = (gender) => {
         gameState.gender = gender;
-        if (btnMale) btnMale.classList.remove('selected');
-        if (btnFemale) btnFemale.classList.remove('selected');
-        
+        document.querySelectorAll('.gender-card').forEach(c => c.classList.remove('selected'));
+
         const selCard = document.getElementById(`btn-gender-${gender}`);
         if (selCard) selCard.classList.add('selected');
-        
+
         const pStep1 = document.getElementById('wizard-step-1-p');
         if (pStep1) {
-            pStep1.innerText = `O Sistema te escolheu. Qual é o seu nome, ${gender === 'female' ? 'guerreira' : 'guerreiro'}?`;
+            const term = gender === 'female' ? 'guerreira' : gender === 'neutral' ? 'guerreiro(a)' : 'guerreiro';
+            pStep1.innerText = `O Sistema te escolheu. Qual é o seu nome, ${term}?`;
         }
-        
+
         setTimeout(() => {
             setWizardStep('wizard-step-1');
         }, 250);
     };
 
-    if (btnMale) {
-        const newBtnMale = btnMale.cloneNode(true);
-        btnMale.parentNode.replaceChild(newBtnMale, btnMale);
-        newBtnMale.addEventListener('click', () => selectGender('male'));
-    }
-    if (btnFemale) {
-        const newBtnFemale = btnFemale.cloneNode(true);
-        btnFemale.parentNode.replaceChild(newBtnFemale, btnFemale);
-        newBtnFemale.addEventListener('click', () => selectGender('female'));
-    }
+    ['male', 'female', 'neutral'].forEach(g => {
+        const btn = document.getElementById(`btn-gender-${g}`);
+        if (btn) {
+            const fresh = btn.cloneNode(true);
+            btn.parentNode.replaceChild(fresh, btn);
+            fresh.addEventListener('click', () => selectGender(g));
+        }
+    });
     
     // Passo 1: Nome
     const btnNext1 = document.getElementById('btn-wizard-next-1');
@@ -748,40 +743,80 @@ function initOnboardingWizard() {
             setTimeout(() => {
                 showSystemToast(`Despertar concluído, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
             }, 1000);
+
+            // ONBOARD-003: oferece instalar o PWA logo após o onboarding
+            setTimeout(() => {
+                if (typeof window.promptInstallAfterOnboarding === 'function') window.promptInstallAfterOnboarding();
+            }, 2200);
         }
     });
 }
 
+// ONBOARD-002: 3 micro-hábitos sugeridos por arquétipo (usuário escolhe 1)
+const ARCHETYPE_HOOK_HABITS = {
+    corpo: [
+        { title: 'Beber 1 copo de água ao acordar', skill: 'physical', xp: 10, gold: 5, duration: 2, icon: '💧' },
+        { title: 'Treinar 20 minutos', skill: 'physical', xp: 30, gold: 15, duration: 20, icon: '🏋️' },
+        { title: 'Caminhar 30 minutos', skill: 'physical', xp: 25, gold: 12, duration: 30, icon: '🚶' },
+    ],
+    foco: [
+        { title: '15 minutos de leitura (sem celular)', skill: 'wisdom', xp: 20, gold: 10, duration: 15, icon: '📚' },
+        { title: 'Bloco de 25 min (Pomodoro)', skill: 'productivity', xp: 30, gold: 15, duration: 25, icon: '🧠' },
+        { title: 'Planejar o dia em 5 minutos', skill: 'routine', xp: 15, gold: 8, duration: 5, icon: '📅' },
+    ],
+    zen: [
+        { title: 'Meditar por 3 minutos', skill: 'mental', xp: 10, gold: 5, duration: 3, icon: '🧘' },
+        { title: 'Journaling — 3 gratidões', skill: 'wisdom', xp: 15, gold: 8, duration: 5, icon: '📝' },
+        { title: 'Sem tela 30min antes de dormir', skill: 'routine', xp: 20, gold: 10, duration: 30, icon: '🌙' },
+    ],
+    rotina: [
+        { title: 'Arrumar a cama ao levantar', skill: 'routine', xp: 10, gold: 5, duration: 2, icon: '🛏️' },
+        { title: 'Dormir antes das 23h', skill: 'routine', xp: 20, gold: 10, duration: 5, icon: '😴' },
+        { title: 'Acordar no horário planejado', skill: 'routine', xp: 25, gold: 12, duration: 5, icon: '⏰' },
+    ],
+};
+const ARCHETYPE_HOOK_NAMES = {
+    corpo: 'Alta Performance & Corpo', foco: 'Foco & Produtividade',
+    zen: 'Zen & Saúde Mental', rotina: 'Estilo de Vida & Rotina',
+};
+
 function setupHookStep(archetype) {
     const lblArch = document.getElementById('hook-arch-name');
-    const lblHabit = document.getElementById('hook-habit-title');
     const icon = document.getElementById('hook-icon');
+    const optionsEl = document.getElementById('hook-habit-options');
+    const habits = ARCHETYPE_HOOK_HABITS[archetype] || ARCHETYPE_HOOK_HABITS.rotina;
 
-    if (archetype === 'corpo') {
-        lblArch.innerText = 'Alta Performance & Corpo';
-        lblHabit.innerText = 'Beber 1 copo de água ao acordar';
-        icon.innerText = '💧';
-    } else if (archetype === 'foco') {
-        lblArch.innerText = 'Foco & Produtividade';
-        lblHabit.innerText = '15 minutos de leitura (sem celular)';
-        icon.innerText = '📚';
-    } else if (archetype === 'zen') {
-        lblArch.innerText = 'Zen & Saúde Mental';
-        lblHabit.innerText = 'Meditar por 3 minutos';
-        icon.innerText = '🧘';
-    } else if (archetype === 'rotina') {
-        lblArch.innerText = 'Estilo de Vida & Rotina';
-        lblHabit.innerText = 'Arrumar a cama ao levantar';
-        icon.innerText = '🛏️';
-    }
+    if (lblArch) lblArch.innerText = ARCHETYPE_HOOK_NAMES[archetype] || 'Sua Jornada';
+    if (icon) icon.innerText = habits[0].icon || '🎯';
+    if (!optionsEl) return;
+
+    optionsEl.innerHTML = '';
+    gameState._selectedHookHabit = habits[0]; // primeira pré-selecionada
+
+    habits.forEach((h, i) => {
+        const card = document.createElement('div');
+        card.className = 'hook-habit-card' + (i === 0 ? ' selected' : '');
+        card.innerHTML = `<span style="font-size:1.3rem; margin-right:10px;">${h.icon}</span><strong>${h.title}</strong>`;
+        card.addEventListener('click', () => {
+            optionsEl.querySelectorAll('.hook-habit-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            gameState._selectedHookHabit = h;
+            if (icon) icon.innerText = h.icon;
+        });
+        optionsEl.appendChild(card);
+    });
 }
 
 function applyArchetypeDeck(archetype, minutes) {
     let deck = [];
     
-    // 1. O Micro-hábito base (sempre garantido pelo Hook)
+    // 1. O Micro-hábito base (ONBOARD-002: usa o hábito escolhido no Hook, se houver; senão fallback por arquétipo)
     let baseQuest = null;
-    if (archetype === 'corpo') {
+    const hook = gameState._selectedHookHabit;
+    if (archetype !== 'outros' && hook && hook.title) {
+        const sk = hook.skill || 'routine';
+        baseQuest = { id: 'q-hook-' + sk, title: `${hook.title} (${hook.duration || 5} min)`, type: 'daily', icon: hook.icon || '🎯', completed: false, xp: hook.xp || 10, gold: hook.gold || 5, duration: hook.duration || 5, minLevel: 1, skill: sk };
+    } else if (archetype === 'corpo') {
         baseQuest = { id: 'q-agua', title: 'Beber 1 copo de água ao acordar (2 min)', type: 'daily', icon: '💧', completed: false, xp: 10, gold: 5, duration: 2, minLevel: 1, skill: 'physical' };
     } else if (archetype === 'foco') {
         baseQuest = { id: 'q-ler', title: 'Leitura (15 min)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 1, skill: 'wisdom' };
