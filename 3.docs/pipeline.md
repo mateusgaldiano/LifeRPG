@@ -1,11 +1,11 @@
 # LifeRPG OS — Pipeline de Pendências
 
 > **Sincronizado automaticamente com `pipeline.html`.** Não editar à mão — editar o array `items` no HTML e ressincronizar.
-> **Total: 36 itens pendentes.**
+> **Total: 28 itens pendentes.**
 
 ---
 
-## 🔴 P0 — CRÍTICO (2)
+## 🔴 P0 — CRÍTICO (1)
 
 ### BUG-002 · Mensagens do chat global não aparecem ao enviar
 **Cluster:** Bug Crítico | **Esforço:** S | **Tipo:** Bug | **Fase:** Agora
@@ -23,23 +23,7 @@ Ver 1.core/modules/social.js.
 7. Commit: "fix: subscription Realtime no chat global + RLS policy de SELECT"
 ```
 
-### SEG-002 · Verificar RLS em todas as tabelas Supabase
-**Cluster:** Segurança | **Esforço:** S | **Tipo:** Segurança | **Fase:** Agora
-
-Confirmar que persons, users, inventory, pvp_duels, friendships, global_chat têm RLS ativo.
-
-```
-1. Acessar Supabase Dashboard → SQL Editor
-2. Executar: SELECT tablename, rowsecurity FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename;
-3. Para cada tabela com rowsecurity = false: executar ALTER TABLE nome_tabela ENABLE ROW LEVEL SECURITY;
-4. Verificar policies existentes: SELECT tablename, policyname, cmd FROM pg_policies WHERE schemaname = 'public';
-5. Tabelas que devem ter RLS: persons, users, quests, history, items, inventory, analytics_events, pvp_duels, friendships, global_chat, weekly_reports
-6. Garantir que cada tabela tem ao menos 1 policy para usuários autenticados
-7. Documentar resultado em CLAUDE.md seção de segurança
-8. Commit: "chore: habilitar RLS em todas as tabelas do schema public"
-```
-
-## 🟡 P1 — ALTO (20)
+## 🟡 P1 — ALTO (16)
 
 ### PWA-001 · iOS Safari: virtual keyboard empurra chat UI
 **Cluster:** Mobile & PWA | **Esforço:** M | **Tipo:** Bug | **Fase:** Próximas semanas
@@ -70,21 +54,6 @@ Ver 1.core/modules/social.js, 1.core/styles.css.
    window.addEventListener('offline', () => document.getElementById('offline-banner').style.display = 'block');
    window.addEventListener('online', () => { document.getElementById('offline-banner').style.display = 'none'; saveToCloud(); });
 4. Commit: "feat: banner de modo offline + trigger de sync ao reconectar"
-```
-
-### ENG-001 · Imagens de avatar 1MB+ sem otimização
-**Cluster:** Engenharia | **Esforço:** M | **Tipo:** Tech Debt | **Fase:** Próximas semanas
-
-```
-1. Instalar sharp ou squoosh CLI se disponível: npm install -g @squoosh/cli
-2. Converter cada avatar PNG para WebP com qualidade 80: squoosh-cli --webp '{"quality":80}' 2.assets/avatars/*.png
-3. Target: cada arquivo < 80KB
-4. Atualizar referências no HTML: 2.assets/avatars/1.rank-e.png → 1.rank-e.webp
-5. Adicionar fallback no HTML para browsers sem suporte WebP:
-   <picture><source srcset="2.assets/avatars/1.rank-e.webp" type="image/webp"><img id="char-avatar-img" src="2.assets/avatars/1.rank-e.png" alt="Avatar"></picture>
-6. Em ui.js, buscar todas as referências que atualizam o src do avatar e atualizar para .webp
-7. Adicionar loading="lazy" no elemento <img id="char-avatar-img">
-8. Commit: "perf: converter avatares para WebP e adicionar lazy loading"
 ```
 
 ### UX-002 · 3 colunas de quest muito estreitas em mobile
@@ -231,20 +200,6 @@ Ver 1.core/modules/social.js.
 5. Commit: "feat: botão de desafio PvP direto do modal de perfil do jogador"
 ```
 
-### SEC-001 · Chat global: rate limit para evitar spam
-**Cluster:** Segurança | **Esforço:** M | **Tipo:** Segurança | **Fase:** Próximas semanas
-
-```
-1. No Supabase SQL Editor, adicionar RLS policy de rate limit em global_chat:
-   CREATE POLICY "Rate limit chat messages" ON global_chat FOR INSERT TO authenticated WITH CHECK (
-     (SELECT COUNT(*) FROM global_chat WHERE user_id = auth.uid() AND created_at > NOW() - INTERVAL '1 minute') < 10
-   );
-2. Em social.js, adicionar debounce no botão de envio:
-   let lastMsgTime = 0;
-   btnSend.addEventListener('click', () => { if (Date.now() - lastMsgTime < 3000) { showToast('Aguarde 3 segundos entre mensagens'); return; } lastMsgTime = Date.now(); sendMessage(); });
-3. Commit: "security: rate limit de 10 msgs/min no chat global via RLS + debounce 3s no frontend"
-```
-
 ### MKT-002 · "Streak em risco" push notification às 22h
 **Cluster:** Marketing | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
 
@@ -282,37 +237,6 @@ Ver 1.core/styles.css.
 6. Commit: "a11y: adicionar ARIA roles em toasts/overlays + respeitar prefers-reduced-motion"
 ```
 
-### ONBOARD-001 · Wizard: adicionar 3ª opção de gênero + mover para após o nome
-**Cluster:** Onboarding | **Esforço:** S | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-Ver index.html, 1.core/modules/app.js.
-1. Em index.html, localizar #wizard-step-0 (seleção de gênero)
-2. Adicionar terceiro card: <div class="gender-card" id="btn-gender-neutral" data-gender="neutral"><div style="font-size: 3.5rem; margin-bottom: 10px;">⚡</div><strong>Neutro</strong></div>
-3. No app.js/pwa.js, adicionar data-gender="neutral" ao handler de seleção existente
-4. Alterar a ordem dos steps: mover step de gênero para APÓS step-1 (nome do jogador)
-5. Update lógica de navegação entre steps (back/next buttons)
-6. Commit: "feat: adicionar opção de gênero neutro no onboarding + reordenar step para após nome"
-```
-
-### ONBOARD-002 · Hook habit do onboarding personalizado por archetype
-**Cluster:** Onboarding | **Esforço:** M | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-Ver 1.core/modules/game-logic.js ou app.js.
-1. Criar mapa de archetype → hábitos sugeridos:
-   const ARCHETYPE_HABITS = {
-     corpo: [{ title: 'Treinar 20 minutos', skill: 'physical', xp: 30, gold: 15 }, { title: 'Beber 2L de água', skill: 'physical', xp: 20, gold: 10 }, { title: 'Caminhar 30 minutos', skill: 'physical', xp: 25, gold: 12 }],
-     foco: [{ title: 'Trabalhar em bloco de 25 minutos (Pomodoro)', skill: 'productivity', xp: 30, gold: 15 }, { title: 'Planejar o dia em 5 minutos', skill: 'routine', xp: 15, gold: 8 }, { title: 'Ler 15 páginas', skill: 'wisdom', xp: 25, gold: 12 }],
-     zen: [{ title: 'Meditar por 5 minutos', skill: 'mental', xp: 20, gold: 10 }, { title: 'Journaling — 3 gratidões', skill: 'wisdom', xp: 15, gold: 8 }, { title: 'Sem tela 30min antes de dormir', skill: 'routine', xp: 20, gold: 10 }],
-     rotina: [{ title: 'Dormir antes das 23h', skill: 'routine', xp: 20, gold: 10 }, { title: 'Acordar no horário planejado', skill: 'routine', xp: 25, gold: 12 }, { title: 'Refeições sem tela', skill: 'routine', xp: 15, gold: 8 }],
-     outros: [{ title: 'Completar 1 tarefa importante', skill: 'productivity', xp: 30, gold: 15 }]
-   };
-2. No wizard-step-hook, ao invés de hábito único hardcoded: renderizar os 3 hábitos do archetype selecionado como cards clicáveis
-3. Usuário seleciona 1, que é salvo como primeira daily ao finalizar o wizard
-4. Commit: "feat: hook habits do onboarding personalizados por archetype — 3 opções por tipo"
-```
-
 ### META-001 · Novos achievements — expandir catálogo
 **Cluster:** Meta-Progressão | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
 
@@ -329,7 +253,7 @@ Ver 1.core/modules/game-logic.js.
 4. Commit: "feat: 5 novos achievements — Dia Lendário, Veterano, Lenda, Gladiador, Aliança"
 ```
 
-## 🟣 P2 — MÉDIO (7)
+## 🟣 P2 — MÉDIO (4)
 
 ### GAME-004 · Comeback mechanic para usuários que voltam após 7+ dias
 **Cluster:** Game Design | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
@@ -340,18 +264,6 @@ Ver 1.core/modules/game-logic.js.
 3. Em game-logic.js, em addRewards(): se _comebackMode === true, multiplicar XP por 1.5
 4. Mensagem especial do Iroh ao detectar retorno longo
 5. Commit: "feat: Modo Retorno — 1.5x XP por 3 dias após ausência de 7+ dias"
-```
-
-### ENG-002 · social.js: lazy loading ao abrir o modal Social
-**Cluster:** Engenharia | **Esforço:** M | **Tipo:** Tech Debt | **Fase:** Próximas semanas
-
-```
-1. Em app.js, no evento de clique do botão #btn-header-social:
-   const { initSocial } = await import('./modules/social.js');
-   initSocial();
-2. Remover import estático de social.js no topo de app.js
-3. Garantir que a referência ao modal social funciona após import dinâmico
-4. Commit: "perf: lazy load do módulo social.js — import dinâmico ao abrir modal"
 ```
 
 ### GAME-005 · Dungeon pool: expandir para 20+ missões com raridade
@@ -388,28 +300,6 @@ Ver 1.core/modules/weekly-report.js, index.html.
    - Se Web Share API disponível: navigator.share({ files: [imageFile], title: 'Meu Relatório LifeRPG' })
    - Fallback: download direto da imagem
 3. Commit: "feat: botão de compartilhar relatório semanal como imagem"
-```
-
-### SEC-003 · Presença Supabase: configurar heartbeat e expiração de sessões zombie
-**Cluster:** Segurança | **Esforço:** S | **Tipo:** Segurança | **Fase:** Próximas semanas
-
-```
-Ver 1.core/modules/social.js.
-1. Em social.js, localizar initPresence() ou o código de channel Presence
-2. Ao criar o canal Presence, configurar: { config: { presence: { key: userId }, heartbeat_interval_ms: 30000 } }
-3. Adicionar limpeza no evento beforeunload: window.addEventListener('beforeunload', () => presenceChannel.untrack())
-4. Commit: "fix: heartbeat de 30s e cleanup de presença ao fechar o app"
-```
-
-### ONBOARD-003 · Prompt de instalação PWA no final do onboarding
-**Cluster:** Onboarding | **Esforço:** S | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-1. Em app.js ou pwa.js, capturar o evento beforeinstallprompt: let deferredPrompt; window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
-2. No wizard step final (btn-wizard-finish), após completar o onboarding:
-   if (deferredPrompt) { const step = document.getElementById('wizard-step-install'); if (step) step.style.display = 'block'; }
-3. Adicionar step extra no wizard (wizard-step-install) com texto "📱 Instale o app para a experiência completa" e botão INSTALAR que chama deferredPrompt.prompt()
-4. Commit: "feat: prompt de instalação PWA ao final do onboarding wizard"
 ```
 
 ## ⚪ P3 — FUTURO (7)
