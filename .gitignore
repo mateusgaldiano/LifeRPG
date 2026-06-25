@@ -1,0 +1,5 @@
+# Ferramentas locais (conversão de imagens — não fazem parte do app)
+node_modules/
+package.json
+package-lock.json
+convert-avatars.mjs

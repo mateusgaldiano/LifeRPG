@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.6] — 2026-06-24
+
+### Engenharia
+- **ENG-001 (conclusão)** — avatares convertidos de PNG para **WebP** (qualidade 80): **15,4 MB → 2,4 MB (–85%)**. Referências de avatar no `ui.js` agora apontam para `.webp`, com `.png` mantido como fallback no `onerror`. Os PNGs seguem no repo como fallback.
+
+---
+
 ## [v2.1.5] — 2026-06-24
 
 Lote de Segurança e Engenharia do pipeline.
@@ -19,7 +26,7 @@ Lote de Segurança e Engenharia do pipeline.
 - **SEC-003** — já resolvido na v2.1.3 (cleanup de presença no `pagehide`).
 
 ### Engenharia
-- **ENG-001** — `loading="lazy"` + `decoding="async"` nos avatares de modal (perfil e avatar grande), que pesam ~0,8–1,2 MB; o avatar do header recebeu `decoding="async"`. _Conversão para WebP (ganho maior) exige tooling de imagem — pendente._
+- **ENG-001** — `loading="lazy"` + `decoding="async"` nos avatares de modal; avatar do header com `decoding="async"`. _(WebP feito na v2.1.6.)_
 
 ### Deploy
 - Fluxo de homologação (Dev) **pausado** no CLAUDE.md — push só no prod por enquanto.

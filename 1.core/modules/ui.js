@@ -1136,7 +1136,7 @@ function updateAvatarImage() {
     };
     
     const mapping = avatarFileMap[rankKey] || { num: '1', name: 'e' };
-    avatarEl.src = `2.assets/avatars/${folder}/${mapping.num}.rank-${mapping.name}.png`;
+    avatarEl.src = `2.assets/avatars/${folder}/${mapping.num}.rank-${mapping.name}.webp`;
     avatarEl.onerror = () => { avatarEl.src = `2.assets/avatars/${folder}/1.rank-e.png`; };
 }
 
@@ -1669,7 +1669,7 @@ function openAvatarZoom() {
     
     const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
     const num = prefixMap[rankKey] || '1';
-    const src = `2.assets/avatars/${folder}/${num}.rank-${rankKey}.png`;
+    const src = `2.assets/avatars/${folder}/${num}.rank-${rankKey}.webp`;
     const titleMap = {
         male: { e: 'Recruta', d: 'Aventureiro', c: 'Caçador', b: 'Elite', a: 'Herói Lendário', s: 'O Sistema' },
         female: { e: 'Recruta', d: 'Aventureira', c: 'Caçadora', b: 'Elite', a: 'Heroína Lendária', s: 'O Sistema' }
