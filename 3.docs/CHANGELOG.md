@@ -9,6 +9,23 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.5] — 2026-06-24
+
+Lote de Segurança e Engenharia do pipeline.
+
+### Segurança
+- **SEC-001** — reforço **server-side** do rate limit do chat global: trigger `enforce_chat_rate_limit` (máx. 10 msgs/min por usuário) em [`3.docs/sec_chat_ratelimit.sql`](sec_chat_ratelimit.sql). _O frontend já limitava 1 msg/2s ([social.js](../1.core/modules/social.js) `handleSendMessage`)._
+- **SEG-002** — auditoria de RLS disponível em [`3.docs/fix_p0_db.sql`](fix_p0_db.sql) (rodar no Supabase).
+- **SEC-003** — já resolvido na v2.1.3 (cleanup de presença no `pagehide`).
+
+### Engenharia
+- **ENG-001** — `loading="lazy"` + `decoding="async"` nos avatares de modal (perfil e avatar grande), que pesam ~0,8–1,2 MB; o avatar do header recebeu `decoding="async"`. _Conversão para WebP (ganho maior) exige tooling de imagem — pendente._
+
+### Deploy
+- Fluxo de homologação (Dev) **pausado** no CLAUDE.md — push só no prod por enquanto.
+
+---
+
 ## [v2.1.4] — 2026-06-24
 
 ### Corrigido
