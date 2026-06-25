@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.7] — 2026-06-24
+
+### Engenharia
+- **ENG-002 (variante segura)** — `social.js` (~110KB) deixou de ser importado estaticamente; agora é carregado via `import()` dinâmico em **idle** (`requestIdleCallback`, fallback `setTimeout`), fora do caminho do 1º paint. A inicialização (`setupSocialModalListeners`, `setupHabitLibraryAndTabs`) e os globais `window.*` são hidratados em `loadSocialModule()` após o load. _Escolhida a variante "defer em idle" em vez de "on-demand ao abrir o modal" porque o `social.js` é um god-module que também contém a biblioteca de hábitos e o tutorial (ambos críticos no boot) — on-demand exigiria split do módulo._
+
+---
+
 ## [v2.1.6] — 2026-06-24
 
 ### Engenharia

@@ -113,28 +113,8 @@ import {
     claimWeeklyReport
 } from './modules/weekly-report.js';
 
-import {
-    setupHabitLibraryAndTabs,
-    addHabitFromLibrary,
-    receiveMessage,
-    showChatBadge,
-    enterCommunityTab,
-    exitCommunityTab,
-    loadChatMessages,
-    initSocialSubTabs,
-    loadFriendsList,
-    loadFriendsRanking,
-    loadGlobalRanking,
-    openPlayerProfile,
-    setupSocialModalListeners,
-    initFriendsSearchListeners,
-    handleFriendSearch,
-    updateOnlinePlayersUI,
-    switchRankingMode,
-    renderTutorialBanner,
-    checkAndProgressTutorialStep1,
-    completeTutorialQuestline
-} from './modules/social.js';
+// ENG-002: social.js (modal social + biblioteca de hábitos + tutorial, ~110KB) é
+// carregado dinamicamente em idle (ver loadSocialModule), fora do caminho do 1º paint.
 
 import {
     registerServiceWorker,
@@ -252,27 +232,45 @@ window.getPreviousWeekDates = getPreviousWeekDates;
 window.checkAndShowWeeklyReport = checkAndShowWeeklyReport;
 window.claimWeeklyReport = claimWeeklyReport;
 
-// Bind Social
-window.setupHabitLibraryAndTabs = setupHabitLibraryAndTabs;
-window.addHabitFromLibrary = addHabitFromLibrary;
-window.receiveMessage = receiveMessage;
-window.showChatBadge = showChatBadge;
-window.enterCommunityTab = enterCommunityTab;
-window.exitCommunityTab = exitCommunityTab;
-window.loadChatMessages = loadChatMessages;
-window.initSocialSubTabs = initSocialSubTabs;
-window.loadFriendsList = loadFriendsList;
-window.loadFriendsRanking = loadFriendsRanking;
-window.loadGlobalRanking = loadGlobalRanking;
-window.openPlayerProfile = openPlayerProfile;
-window.setupSocialModalListeners = setupSocialModalListeners;
-window.initFriendsSearchListeners = initFriendsSearchListeners;
-window.handleFriendSearch = handleFriendSearch;
-window.updateOnlinePlayersUI = updateOnlinePlayersUI;
-window.switchRankingMode = switchRankingMode;
-window.renderTutorialBanner = renderTutorialBanner;
-window.checkAndProgressTutorialStep1 = checkAndProgressTutorialStep1;
-window.completeTutorialQuestline = completeTutorialQuestline;
+// ENG-002: carrega social.js sob demanda (idle) e hidrata os globais usados por
+// HTML/onclick e outros módulos. Memoizado — só carrega uma vez.
+let _socialModulePromise = null;
+function loadSocialModule() {
+    if (_socialModulePromise) return _socialModulePromise;
+    _socialModulePromise = import('./modules/social.js').then(m => {
+        window.setupHabitLibraryAndTabs = m.setupHabitLibraryAndTabs;
+        window.addHabitFromLibrary = m.addHabitFromLibrary;
+        window.receiveMessage = m.receiveMessage;
+        window.showChatBadge = m.showChatBadge;
+        window.enterCommunityTab = m.enterCommunityTab;
+        window.exitCommunityTab = m.exitCommunityTab;
+        window.loadChatMessages = m.loadChatMessages;
+        window.initSocialSubTabs = m.initSocialSubTabs;
+        window.loadFriendsList = m.loadFriendsList;
+        window.loadFriendsRanking = m.loadFriendsRanking;
+        window.loadGlobalRanking = m.loadGlobalRanking;
+        window.openPlayerProfile = m.openPlayerProfile;
+        window.setupSocialModalListeners = m.setupSocialModalListeners;
+        window.initFriendsSearchListeners = m.initFriendsSearchListeners;
+        window.handleFriendSearch = m.handleFriendSearch;
+        window.updateOnlinePlayersUI = m.updateOnlinePlayersUI;
+        window.switchRankingMode = m.switchRankingMode;
+        window.renderTutorialBanner = m.renderTutorialBanner;
+        window.checkAndProgressTutorialStep1 = m.checkAndProgressTutorialStep1;
+        window.completeTutorialQuestline = m.completeTutorialQuestline;
+        // Wire-up que antes rodava no boot
+        if (typeof m.setupSocialModalListeners === 'function') m.setupSocialModalListeners();
+        if (typeof m.setupHabitLibraryAndTabs === 'function') m.setupHabitLibraryAndTabs();
+        // Re-render para refletir o banner de tutorial agora que o módulo existe
+        if (typeof window.updateUI === 'function') window.updateUI();
+        return m;
+    }).catch(err => {
+        console.error('[ENG-002] Falha ao carregar social.js:', err);
+        _socialModulePromise = null; // permite nova tentativa
+    });
+    return _socialModulePromise;
+}
+window.loadSocialModule = loadSocialModule;
 
 // Bind PWA
 window.registerServiceWorker = registerServiceWorker;
@@ -345,10 +343,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializa motor PWA e Configurações
     registerServiceWorker();
     setupSettingsListeners();
-    if (typeof setupSocialModalListeners === 'function') setupSocialModalListeners();
     setupInstallPrompt();
-    setupHabitLibraryAndTabs();
     setupPullToRefresh(); // arrastar = sincronizar quando logado
+
+    // ENG-002: carrega social.js (modal + biblioteca + tutorial) em idle, fora do 1º paint.
+    // setupSocialModalListeners e setupHabitLibraryAndTabs rodam dentro de loadSocialModule().
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => loadSocialModule(), { timeout: 2000 });
+    } else {
+        setTimeout(loadSocialModule, 200);
+    }
 
     // Listeners do Ranking (BUG-005) e das sub-abas de Sala de Troféus/Ranking
     const btnRankGlobal = document.getElementById('btn-ranking-global');
