@@ -204,7 +204,16 @@ let presenceChannel = null;
 let presenceSubscribed = false;
 window.onlineUsersState = {};
 
+let _presenceUnloadHooked = false;
 window.initPresence = function(userId, username, level, rank) {
+  // SEC-003: ao fechar/ocultar o app, remove a presença para não deixar sessão zumbi
+  if (!_presenceUnloadHooked) {
+    _presenceUnloadHooked = true;
+    window.addEventListener('pagehide', () => {
+      try { if (presenceChannel && presenceSubscribed) presenceChannel.untrack(); } catch (e) {}
+    });
+  }
+
   const trackPayload = {
     user_id: userId,
     username: username,

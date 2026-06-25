@@ -9,6 +9,26 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.3] — 2026-06-24
+
+Lote de itens "S" do pipeline (puro código, aditivos).
+
+### Adicionado
+- **GAME-002** — badge de buff ativo (⚡ 2x XP / x3 💰) nos cards de quest quando o buff está vigente.
+
+### Corrigido / Melhorado
+- **GAME-001** — teto de penalidade para iniciantes (< nível 10): XP máx. 10%, sem perda de atributos e streak só reseta com 3+ falhas (reduz churn de novatos).
+- **UX-003** — toasts do Iroh agora têm duração proporcional ao tamanho do texto (até 8,5s para mensagens longas).
+- **A11Y-002** — `role`/`aria-live` em toasts e overlays (level-up, quest cleared, penalidade) + `@media (prefers-reduced-motion: reduce)`.
+- **SEC-003** — presença removida no `pagehide` (evita sessões "zumbi" no chat/online).
+
+### Pipeline
+- Removido **UX-001** (não era bug — descartado a pedido). `pipeline.html`/`pipeline.md` sincronizados (36 itens).
+
+## [v2.1.2] — 2026-06-24
+
+- **Estética:** sub-abas da aba Social (CHAT/AMIGOS/DUELOS/CLÃ) migradas para o tema claro e correção do overflow do "CLÃ" (`white-space:nowrap`, fontes/spacing menores, "CHAT GLOBAL"→"CHAT").
+
 ## [v2.1.1] — 2026-06-24
 
 Rodada de correções de cloud sync, login, ranks e consolidação de versão.

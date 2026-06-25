@@ -897,7 +897,14 @@ function applyDailyPenalty(yesterdayStr) {
         irohTone        = 'motivational';
     }
 
-    //  Aplica penalidade de XP 
+    // GAME-001: suaviza penalidades para iniciantes (< nível 10) — reduz churn de novatos
+    if (gameState.level < 10) {
+        xpPenaltyPct = Math.min(xpPenaltyPct, 0.10); // teto de 10% de XP
+        skillPenalty = false;                        // sem perda de atributos
+        if (misses < 3) streakReset = false;         // streak só reseta com 3+ falhas
+    }
+
+    //  Aplica penalidade de XP
     const penalty = Math.max(5, Math.round(gameState.xp * xpPenaltyPct));
     gameState.xp  = Math.max(0, gameState.xp - penalty);
 

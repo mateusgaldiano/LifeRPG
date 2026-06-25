@@ -1228,10 +1228,16 @@ function renderQuests() {
             const diffLabel = diffMap[quest.skill] || 'RANK E';
 
             let extraHTML = '';
-            const isWater = quest.id?.includes('agua') || 
-                            quest.title?.toLowerCase().includes('água') || 
-                            quest.title?.toLowerCase().includes('agua') || 
-                            quest.icon === '💧' || 
+            // GAME-002: badge de buffs ativos (XP dobrado / foco lendário) no card
+            let buffBadge = '';
+            const _b = gameState.buffs || {};
+            const _dxpActive = (_b.doubleXpExpiresAt && Date.now() < _b.doubleXpExpiresAt) || _b.doubleXp === true;
+            if (_dxpActive) buffBadge += '<span class="buff-badge buff-xp">⚡ 2x XP</span>';
+            if (_b.legendaryFocus) buffBadge += '<span class="buff-badge buff-gold">x3 💰</span>';
+            const isWater = quest.id?.includes('agua') ||
+                            quest.title?.toLowerCase().includes('água') ||
+                            quest.title?.toLowerCase().includes('agua') ||
+                            quest.icon === '💧' ||
                             quest.emoji === '💧';
             const hasCounter = quest.current !== undefined && quest.target !== undefined && quest.target > 1;
             if (hasCounter) {
@@ -1258,6 +1264,7 @@ function renderQuests() {
                             <span class="diff-badge">${diffLabel}</span>
                             <span class="payout-xp">+${quest.xp} XP</span>
                             <span class="payout-gold">+${quest.gold} 🪙</span>
+                            ${buffBadge}
                         </div>
                         ${extraHTML}
                     </div>
@@ -1423,12 +1430,16 @@ function showSystemToast(text, type = '') {
     
     toast.innerHTML = formattedText;
     container.appendChild(toast);
-    
+
+    // UX-003: toasts longos (mensagens do Iroh) ficam mais tempo na tela
+    const plainLen = text.replace(/[*_\n]/g, '').length;
+    const duration = plainLen > 160 ? 8500 : plainLen > 90 ? 6000 : 3500;
+
     setTimeout(() => {
         if (toast.parentNode) {
             toast.parentNode.removeChild(toast);
         }
-    }, 3000);
+    }, duration);
 }
 
 function showImpactQuote() {

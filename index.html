@@ -1096,7 +1096,7 @@
         </div>
 
         <!-- Overlay: LEVEL UP (estilo Arise) -->
-        <div id="level-up-overlay" class="levelup-overlay">
+        <div id="level-up-overlay" class="levelup-overlay" role="dialog" aria-modal="true" aria-label="Subiu de nível">
             <div class="levelup-content">
                 <div class="levelup-system-text">— SISTEMA —</div>
                 <div class="levelup-flash"></div>
@@ -1111,7 +1111,7 @@
         </div>
 
         <!-- Overlay: QUEST CLEARED -->
-        <div id="quest-cleared-overlay" class="quest-cleared-overlay">
+        <div id="quest-cleared-overlay" class="quest-cleared-overlay" role="status" aria-live="assertive">
             <div class="quest-cleared-content">
                 <div class="quest-cleared-check">✓</div>
                 <div class="quest-cleared-title">QUEST CLEARED!</div>
@@ -1132,7 +1132,7 @@
 
 
         <!-- Overlay: PENALIDADE -->
-        <div id="penalty-overlay" class="penalty-overlay">
+        <div id="penalty-overlay" class="penalty-overlay" role="alertdialog" aria-modal="true" aria-label="Penalidade aplicada">
             <div class="penalty-content">
                 <div class="penalty-icon">☠️</div>
                 <div class="penalty-title">PENALIDADE APLICADA</div>
@@ -1158,7 +1158,7 @@
     </div>
 
     <!-- Container de Toasts (Notificações) -->
-    <div id="toast-container" class="toast-container"></div>
+    <div id="toast-container" class="toast-container" role="status" aria-live="polite" aria-atomic="true"></div>
 
     <!-- Onboarding Wizard -->
     <div id="onboarding-wizard" class="modal" style="display: none; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); z-index: 9999;">

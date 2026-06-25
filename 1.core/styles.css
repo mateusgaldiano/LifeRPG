@@ -3075,6 +3075,47 @@ body::before {
     box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
 }
 
+/* GAME-002: badges de buff ativo nos cards de quest */
+.buff-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-family: var(--font-hud);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    animation: buff-pulse 1.6s ease-in-out infinite;
+}
+.buff-badge.buff-xp {
+    color: #b45309;
+    background: rgba(251, 191, 36, 0.18);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+}
+.buff-badge.buff-gold {
+    color: #92600a;
+    background: rgba(245, 158, 11, 0.18);
+    border: 1px solid rgba(245, 158, 11, 0.5);
+}
+@keyframes buff-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
+
+/* A11Y-002: respeita usuários que pedem menos movimento */
+@media (prefers-reduced-motion: reduce) {
+    .buff-badge,
+    .levelup-flash,
+    .levelup-overlay,
+    .quest-cleared-overlay,
+    .penalty-overlay,
+    .cloud-dot {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
 /* Grid de Amigos */
 .community-grid-friends {
     display: flex;
