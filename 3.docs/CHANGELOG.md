@@ -9,6 +9,15 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.18] — 2026-06-26
+
+### Economia — Reavaliação de Rank (ralo estrutural)
+Modelo cerimônia + prestígio (mérito preservado): o rank do avatar sobe por nível; a **Reavaliação** é uma compra OPCIONAL que entrega o **título de prestígio** do rank.
+- Custo escalonado: D 250 · C 600 · B 1.200 · A 2.500 · S 4.500 · Nacional 7.000 · Monarca 12.000.
+- Títulos: O Iniciado · O Caçador · A Elite · Herói Lendário · O Soberano · Nível Nacional · O Monarca (auto-equipados, cor dourada).
+- Banner no topo da aba Missões aparece quando há uma reavaliação disponível.
+- `gameState.rankEvaluationsClaimed` rastreia as já feitas. _(Conhecido: títulos/reavaliações ainda não sincronizam pra nuvem — persistem no localStorage; sync é follow-up.)_
+
 ## [v2.1.17] — 2026-06-26
 
 ### Economia — Multiplicador de renda por rank

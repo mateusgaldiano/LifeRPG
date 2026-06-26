@@ -25,6 +25,60 @@ function getActiveXpMultiplier() {
     return isDoubleXpActive() ? (gameState.buffs?.xpMult || 2) : 1;
 }
 
+// ── REAVALIAÇÃO DE RANK ────────────────────────────────────────────────────
+// O rank sobe por nível (mérito). A reavaliação é uma compra OPCIONAL (custo
+// escalonado) que entrega o título de prestígio do rank — o ouro vira status.
+const RANK_EVALUATIONS = {
+    d:        { minLevel: 5,  cost: 250,   titleId: 'rank_d',        titleLabel: 'O Iniciado' },
+    c:        { minLevel: 10, cost: 600,   titleId: 'rank_c',        titleLabel: 'O Caçador' },
+    b:        { minLevel: 15, cost: 1200,  titleId: 'rank_b',        titleLabel: 'A Elite' },
+    a:        { minLevel: 20, cost: 2500,  titleId: 'rank_a',        titleLabel: 'Herói Lendário' },
+    s:        { minLevel: 25, cost: 4500,  titleId: 'rank_s',        titleLabel: 'O Soberano' },
+    nacional: { minLevel: 30, cost: 7000,  titleId: 'rank_nacional', titleLabel: 'Nível Nacional' },
+    monarca:  { minLevel: 35, cost: 12000, titleId: 'rank_monarca',  titleLabel: 'O Monarca' },
+};
+const RANK_EVAL_ORDER = ['d', 'c', 'b', 'a', 's', 'nacional', 'monarca'];
+
+// Retorna a reavaliação de menor rank ainda não reivindicada que o jogador já pode fazer (ou null).
+function getPendingRankEvaluation() {
+    const claimed = gameState.rankEvaluationsClaimed || [];
+    const lvl = gameState.level || 1;
+    for (const key of RANK_EVAL_ORDER) {
+        const ev = RANK_EVALUATIONS[key];
+        if (lvl >= ev.minLevel && !claimed.includes(key)) return { key, ...ev };
+    }
+    return null;
+}
+
+function buyRankEvaluation(rankKey) {
+    const ev = RANK_EVALUATIONS[rankKey];
+    if (!ev) return;
+    if ((gameState.level || 1) < ev.minLevel) {
+        showSystemToast('⚠️ Você ainda não atingiu o nível para esta reavaliação.');
+        return;
+    }
+    if (!gameState.rankEvaluationsClaimed) gameState.rankEvaluationsClaimed = [];
+    if (gameState.rankEvaluationsClaimed.includes(rankKey)) return;
+    if ((gameState.gold || 0) < ev.cost) {
+        showSystemToast(`⚠️ Ouro insuficiente. A Reavaliação custa ${ev.cost} 🪙.`);
+        return;
+    }
+
+    gameState.gold -= ev.cost;
+    gameState.rankEvaluationsClaimed.push(rankKey);
+
+    if (!gameState.inventory) gameState.inventory = { unlockedTitles: [], unlockedBorders: [], unlockedSkins: ['default'], activeTitle: null, activeBorder: null, activeSkin: 'default' };
+    if (!gameState.inventory.unlockedTitles) gameState.inventory.unlockedTitles = [];
+    if (!gameState.inventory.unlockedTitles.includes(ev.titleId)) gameState.inventory.unlockedTitles.push(ev.titleId);
+    gameState.inventory.activeTitle = ev.titleId;
+
+    trackEvent('rank_evaluation_claimed', { rank: rankKey, cost: ev.cost });
+    showSystemToast(`⚜️ *REAVALIAÇÃO CONCLUÍDA!* O Sistema te promove a Rank ${rankKey.toUpperCase()}. Novo título: _"${ev.titleLabel}"_.`);
+    saveGameData();
+    updateUI();
+    if (window.saveBuffsToSupabase) window.saveToCloud && window.saveToCloud();
+}
+
 // Multiplicador de renda (XP + ouro) por rank do avatar — alimenta o loop rank→renda→tomos.
 function getRankIncomeMultiplier() {
     const lvl = gameState.level || 1;
@@ -1211,5 +1265,7 @@ export {
     saveToCloud,
     ACHIEVEMENTS_DEFS,
     showQuestCleared,
-    syncQuestsByLevel
+    syncQuestsByLevel,
+    getPendingRankEvaluation,
+    buyRankEvaluation
 };

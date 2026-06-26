@@ -1549,6 +1549,44 @@ body::before {
 }
 .reset-countdown:empty { display: none; }
 
+/* Banner da Reavaliação de Rank */
+.rank-eval-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 0 16px rgba(251, 191, 36, 0.12);
+}
+.rank-eval-info { min-width: 0; }
+.rank-eval-label {
+    font-family: var(--font-hud);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #b45309;
+}
+.rank-eval-desc { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+.rank-eval-desc strong { color: var(--text-primary); }
+.rank-eval-btn {
+    flex-shrink: 0;
+    font-family: var(--font-hud);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    background: #fbbf24;
+    color: #1a1a1a;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.rank-eval-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
 
 /* ── MOBILE SCROLL OVERRIDES ────────────────────────────────────────────── */
 

@@ -103,7 +103,8 @@ import {
     saveToCloud,
     ACHIEVEMENTS_DEFS,
     showQuestCleared,
-    syncQuestsByLevel
+    syncQuestsByLevel,
+    buyRankEvaluation
 } from './modules/game-logic.js';
 
 import {
@@ -221,6 +222,7 @@ window.deductRewards = deductRewards;
 window.applyDailyPenalty = applyDailyPenalty;
 window.checkAllDailies = checkAllDailies;
 window.buyStoreItem = buyStoreItem;
+window.buyRankEvaluation = buyRankEvaluation;
 window.saveToCloud = saveToCloud;
 window.ACHIEVEMENTS_DEFS = ACHIEVEMENTS_DEFS;
 window.showQuestCleared = showQuestCleared;

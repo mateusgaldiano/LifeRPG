@@ -5,7 +5,7 @@ import {
     calcStreakGoldMultiplier, calcGroupMultiplier, getSynergyXpBonus,
     getSynergyGoldBonus, getPerkXpBonus, initSkillsState, isQuestActiveOnDay
 } from './utils.js';
-import { toggleQuest, adjustWater, buyStoreItem, completeDungeon, showQuestCleared } from './game-logic.js';
+import { toggleQuest, adjustWater, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation } from './game-logic.js';
 import { setupSettingsListeners } from './pwa.js';
 
 function renderAchievements() {
@@ -898,6 +898,24 @@ function updateResetCountdown() {
 }
 setInterval(updateResetCountdown, 60000);
 
+// Banner da Reavaliação de Rank (aparece quando há uma disponível)
+function renderRankEvaluationBanner() {
+    const banner = document.getElementById('rank-evaluation-banner');
+    if (!banner) return;
+    const ev = (typeof getPendingRankEvaluation === 'function') ? getPendingRankEvaluation() : null;
+    if (!ev) { banner.style.display = 'none'; banner.innerHTML = ''; return; }
+    const canAfford = (gameState.gold || 0) >= ev.cost;
+    banner.style.display = 'block';
+    banner.innerHTML = `
+        <div class="rank-eval-card">
+            <div class="rank-eval-info">
+                <div class="rank-eval-label">⚜️ REAVALIAÇÃO DE RANK ${ev.key.toUpperCase()} DISPONÍVEL</div>
+                <div class="rank-eval-desc">Reivindique sua promoção e receba o título <strong>"${ev.titleLabel}"</strong>.</div>
+            </div>
+            <button class="rank-eval-btn" ${canAfford ? '' : 'disabled'} onclick="buyRankEvaluation('${ev.key}')">${ev.cost} 🪙</button>
+        </div>`;
+}
+
 function updateUI() {
     const lvlEl = document.getElementById('lbl-level');
     if (lvlEl) lvlEl.innerText = gameState.level;
@@ -935,14 +953,19 @@ function updateUI() {
     // COSMÉTICOS (Títulos e Bordas)
     const titleLabels = {
         'title_implacavel': 'O Implacável',
-        'title_mestre': 'Mestre do Tempo'
+        'title_mestre': 'Mestre do Tempo',
+        'rank_d': 'O Iniciado', 'rank_c': 'O Caçador', 'rank_b': 'A Elite',
+        'rank_a': 'Herói Lendário', 'rank_s': 'O Soberano',
+        'rank_nacional': 'Nível Nacional', 'rank_monarca': 'O Monarca'
     };
     const playerTitle = document.getElementById('lbl-player-title');
     if (playerTitle) {
         if (gameState.inventory && gameState.inventory.activeTitle) {
-            playerTitle.innerText = titleLabels[gameState.inventory.activeTitle] || 'Desperto';
-            if (gameState.inventory.activeTitle === 'title_implacavel') playerTitle.style.color = 'var(--neon-purple)';
-            if (gameState.inventory.activeTitle === 'title_mestre') playerTitle.style.color = 'var(--neon-gold)';
+            const at = gameState.inventory.activeTitle;
+            playerTitle.innerText = titleLabels[at] || 'Desperto';
+            if (at === 'title_implacavel') playerTitle.style.color = 'var(--neon-purple)';
+            else if (at === 'title_mestre') playerTitle.style.color = 'var(--neon-gold)';
+            else if (at.startsWith('rank_')) playerTitle.style.color = 'var(--neon-gold)';
         } else {
             playerTitle.innerText = 'Desperto';
             playerTitle.style.color = 'var(--text-muted)';
@@ -1029,6 +1052,7 @@ function updateUI() {
     }
 
     updateResetCountdown(); // GAME-003
+    renderRankEvaluationBanner();
 
     // Grupo Multiplier Chip (BUG-007)
     const groupChipEl = document.getElementById('group-multiplier-chip');
