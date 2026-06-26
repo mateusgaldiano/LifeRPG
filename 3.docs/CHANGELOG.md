@@ -9,6 +9,19 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.12] — 2026-06-25
+
+### Game design — Avaliação semanal (SINTONIA) mais justa
+Antes a SINTONIA era **só pela % de conclusão**, então quem assumia 1 tarefa fácil e a cumpria (100%) ganhava **S**, enquanto quem assumia 10 e fazia 7 (70%) ficava em B — punindo a ambição. Novo cálculo:
+- **Score = 70% Volume + 30% Consistência.** Volume = `min(100, conclusões × 6.5)`; Consistência = % do que foi assumido.
+- **Gates de tempo:** **S** exige **≥ 2h** de atividade na semana; **A** exige **≥ 1h** (soma das durações das missões concluídas). Sem o tempo, o rank é rebaixado.
+- O relatório agora mostra o **tempo total de atividade** ao lado das missões concluídas.
+
+## [v2.1.11] — 2026-06-25
+- **chore:** de-duplicação de higiene bucal na biblioteca de hábitos (`social.js`).
+
+---
+
 ## [v2.1.10] — 2026-06-25
 
 ### Corrigido — Reset diário (bug: quests de ontem continuavam "concluídas")

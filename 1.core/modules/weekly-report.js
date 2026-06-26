@@ -99,43 +99,41 @@ function calculateWeeklyReportSync(history, quests, sideQuests, dates, prevWeekS
     };
     const topSkillName = skillNames[topSkill] || 'Rotina';
     
-    let rankLabel = 'SINTONIA D';
-    let rankClass = 'rank-glow-d';
-    let goldReward = 0;
-    let xpReward = 0;
-    let verdictDesc = '';
-    
-    if (survivalRate >= 90) {
-        rankLabel = 'SINTONIA S';
-        rankClass = 'rank-glow-s';
-        goldReward = 80;
-        xpReward = 150;
-        verdictDesc = '"Desempenho lendário. Suas habilidades crescem em ritmo avassalador. O topo do mundo está ao seu alcance."';
-    } else if (survivalRate >= 75) {
-        rankLabel = 'SINTONIA A';
-        rankClass = 'rank-glow-a';
-        goldReward = 50;
-        xpReward = 100;
-        verdictDesc = '"Desempenho formidável. O Sistema reconhece seu vigor e determinação. Continue subindo de nível."';
-    } else if (survivalRate >= 50) {
-        rankLabel = 'SINTONIA B';
-        rankClass = 'rank-glow-b';
-        goldReward = 30;
-        xpReward = 60;
-        verdictDesc = '"Progresso aceitável. Suas conquistas são constantes, mas a complacência é sua maior inimiga."';
-    } else if (survivalRate >= 30) {
-        rankLabel = 'SINTONIA C';
-        rankClass = 'rank-glow-c';
-        goldReward = 15;
-        xpReward = 30;
-        verdictDesc = '"Abaixo das expectativas. Você está apenas sobrevivendo. O Sistema exige mais empenho e atitude."';
-    } else {
-        rankLabel = 'SINTONIA D';
-        rankClass = 'rank-glow-d';
-        goldReward = 0;
-        xpReward = 0;
-        verdictDesc = '"Desempenho patético. Você corre risco de estagnação. Desperte antes que seja tarde demais."';
-    }
+    // ── SINTONIA: 70% Volume + 30% Consistência, com gates de tempo ──────────
+    // Volume satura em 100 por volta de ~15 conclusões na semana.
+    const volumeScore = Math.min(100, completedQuests * 6.5);
+    const score = Math.round(0.7 * volumeScore + 0.3 * survivalRate);
+
+    // Tempo total de atividade concluída na semana (minutos), pela duração de cada conclusão.
+    const totalMinutes = completedTitles.reduce((sum, title) => {
+        const q = allQuests.find(x => x.title === title);
+        return sum + (q && q.duration ? q.duration : 5);
+    }, 0);
+
+    let tier;
+    if (score >= 90) tier = 'S';
+    else if (score >= 75) tier = 'A';
+    else if (score >= 50) tier = 'B';
+    else if (score >= 30) tier = 'C';
+    else tier = 'D';
+
+    // Gates de tempo: S exige >= 2h de atividade; A exige >= 1h.
+    if (tier === 'S' && totalMinutes < 120) tier = 'A';
+    if (tier === 'A' && totalMinutes < 60) tier = 'B';
+
+    const TIER_MAP = {
+        S: { label: 'SINTONIA S', cls: 'rank-glow-s', gold: 80, xp: 150, desc: '"Desempenho lendário. Suas habilidades crescem em ritmo avassalador. O topo do mundo está ao seu alcance."' },
+        A: { label: 'SINTONIA A', cls: 'rank-glow-a', gold: 50, xp: 100, desc: '"Desempenho formidável. O Sistema reconhece seu vigor e determinação. Continue subindo de nível."' },
+        B: { label: 'SINTONIA B', cls: 'rank-glow-b', gold: 30, xp: 60,  desc: '"Progresso aceitável. Suas conquistas são constantes, mas a complacência é sua maior inimiga."' },
+        C: { label: 'SINTONIA C', cls: 'rank-glow-c', gold: 15, xp: 30,  desc: '"Abaixo das expectativas. Você está apenas sobrevivendo. O Sistema exige mais empenho e atitude."' },
+        D: { label: 'SINTONIA D', cls: 'rank-glow-d', gold: 0,  xp: 0,   desc: '"Desempenho patético. Você corre risco de estagnação. Desperte antes que seja tarde demais."' },
+    };
+    const tierData = TIER_MAP[tier];
+    const rankLabel = tierData.label;
+    const rankClass = tierData.cls;
+    const goldReward = tierData.gold;
+    const xpReward = tierData.xp;
+    const verdictDesc = tierData.desc;
     
     const formatDate = (d) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
     const periodText = `PERÍODO DE AVALIAÇÃO: ${formatDate(mondayDate)} a ${formatDate(sundayDate)}`;
@@ -143,6 +141,8 @@ function calculateWeeklyReportSync(history, quests, sideQuests, dates, prevWeekS
     return {
         status: 'success',
         survivalRate,
+        score,
+        totalMinutes,
         completedQuests,
         totalQuests,
         perfectDays,
@@ -175,7 +175,12 @@ function renderWeeklyReportUI(data, prevWeekStr) {
     if (periodEl) periodEl.innerText = data.periodText;
     if (rateValEl) rateValEl.innerText = `${data.survivalRate}%`;
     if (rateBarEl) rateBarEl.style.width = `${data.survivalRate}%`;
-    if (countEl) countEl.innerText = `Concluiu ${data.completedQuests} de ${data.totalQuests} missões programadas`;
+    if (countEl) {
+        const tm = data.totalMinutes || 0;
+        const h = Math.floor(tm / 60), m = tm % 60;
+        const timeStr = h > 0 ? `${h}h${m > 0 ? ' ' + m + 'min' : ''}` : `${m}min`;
+        countEl.innerText = `Concluiu ${data.completedQuests} de ${data.totalQuests} missões · ${timeStr} de atividade`;
+    }
     
     if (perfEl) perfEl.innerText = data.perfectDays;
     if (goodEl) goodEl.innerText = data.goodDays;
