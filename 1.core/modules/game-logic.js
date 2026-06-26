@@ -20,6 +20,11 @@ function isDoubleXpActive() {
     return false;
 }
 
+// Multiplicador de XP ativo (2/3/5 conforme o tomo); 1 se nenhum ativo.
+function getActiveXpMultiplier() {
+    return isDoubleXpActive() ? (gameState.buffs?.xpMult || 2) : 1;
+}
+
 // Gera uma nova dungeon aleatória
 function spawnDungeon() {
     if (!hasSkillLV3()) return;
@@ -510,10 +515,7 @@ function toggleQuest(id) {
         }
         
         // Aplica Double XP Buff se ativo (dura até meia-noite — não consome na 1ª quest)
-        let xpGained = quest.xp;
-        if (isDoubleXpActive()) {
-            xpGained *= 2;
-        }
+        let xpGained = quest.xp * getActiveXpMultiplier();
 
         // Aplica Pergaminho do Foco Lendário se ativo (multiplica o ouro ganho por 3)
         let goldGained = quest.gold;
@@ -604,8 +606,7 @@ function adjustWater(id, operation) {
                     quest._legendaryFocusConsumed = true;
                 }
                 quest.completed = true;
-                let xpGained = quest.xp;
-                if (isDoubleXpActive()) { xpGained *= 2; }
+                let xpGained = quest.xp * getActiveXpMultiplier();
                 addRewards(xpGained, goldGained);
                 addSkillXP(skillType);
                 
@@ -988,7 +989,9 @@ function applyDailyPenalty(yesterdayStr) {
 async function buyStoreItem(itemId) {
     const prices = {
         'buff_autoHeal': 100,
-        'buff_doubleXp': 50,
+        'buff_doubleXp': 80,
+        'buff_tripleXp': 360,
+        'buff_megaXp': 800,
         'buff_shield': 150,
         'buff_immortality': 800,
         'buff_legendary_focus': 400,
@@ -1042,18 +1045,23 @@ async function buyStoreItem(itemId) {
             showSystemToast("🧪 *POÇÃO COMPRADA!* Seu próximo erro será perdoado. O Sistema protege os preparados.");
             if (window.saveBuffsToSupabase) await window.saveBuffsToSupabase();
         } 
-        else if (itemId === 'buff_doubleXp') {
+        else if (itemId === 'buff_doubleXp' || itemId === 'buff_tripleXp' || itemId === 'buff_megaXp') {
             if (isDoubleXpActive()) {
                 trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'already_active' });
-                showSystemToast("⚠️ Seu Pergaminho já está ativo até meia-noite!");
+                showSystemToast("⚠️ Você já tem um Pergaminho de XP ativo. Espere ele acabar.");
                 return;
             }
-            // Define expiração na próxima meia-noite local
-            const midnight = new Date();
-            midnight.setHours(24, 0, 0, 0);
+            const TOMES = {
+                buff_doubleXp: { mult: 2, days: 1, nome: 'Pergaminho de Sabedoria' },
+                buff_tripleXp: { mult: 3, days: 3, nome: 'Tomo do Conhecimento' },
+                buff_megaXp:   { mult: 5, days: 5, nome: 'Grimório Lendário' },
+            };
+            const t = TOMES[itemId];
+            const exp = new Date(); exp.setHours(0, 0, 0, 0); exp.setDate(exp.getDate() + t.days);
             gameState.buffs.doubleXp = false;          // limpa boolean legado
-            gameState.buffs.doubleXpExpiresAt = midnight.getTime();
-            showSystemToast("📜 *CONHECIMENTO ADQUIRIDO!* Todo XP ganho até meia-noite será DOBRADO. Vá trabalhar.");
+            gameState.buffs.doubleXpExpiresAt = exp.getTime();
+            gameState.buffs.xpMult = t.mult;
+            showSystemToast(`📜 *${t.nome.toUpperCase()}!* Todo XP será multiplicado por ${t.mult}× pelos próximos ${t.days} dia(s). Vá trabalhar.`);
             if (window.saveBuffsToSupabase) await window.saveBuffsToSupabase();
         }
         else if (itemId === 'buff_legendary_focus') {

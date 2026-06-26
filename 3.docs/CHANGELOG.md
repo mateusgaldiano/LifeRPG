@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.16] — 2026-06-26
+
+### Loja — Tomos de XP em 3 tiers (Caminho B: duração + custo)
+- **Pergaminho de Sabedoria:** 2× XP · 1 dia · 80 ouro.
+- **Tomo do Conhecimento:** 3× XP · 3 dias · 360 ouro.
+- **Grimório Lendário:** 5× XP · 5 dias · 800 ouro (custo-benefício melhor — 40/unidade — mas só quem é rico/ranqueado alcança).
+- Buff agora guarda `xpMult` (2/3/5); aplicação de XP usa `getActiveXpMultiplier()`; persistência na nuvem via `buff_type` (doubleXp/tripleXp/megaXp), sem migração de schema. Indicador no HUD mostra o multiplicador real.
+
 ## [v2.1.15] — 2026-06-26
 - **SINTONIA S mais rara:** fator de volume `× 6.5 → × 2` (satura em ~50 conclusões/semana). Antes 5/10 perfis tiravam S; agora só os hiper-dedicados. Simulação: Iron Man/Personal/Concurseiro = S, Empreendedor = A, Executivo = C.
 

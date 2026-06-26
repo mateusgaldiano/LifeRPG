@@ -1022,7 +1022,7 @@ function updateUI() {
         const b = gameState.buffs || {};
         const dxpActive = (b.doubleXpExpiresAt && Date.now() < b.doubleXpExpiresAt) || b.doubleXp === true;
         const parts = [];
-        if (dxpActive) parts.push('<span class="buff-badge buff-xp">⚡ 2x XP</span>');
+        if (dxpActive) parts.push(`<span class="buff-badge buff-xp">⚡ ${b.xpMult || 2}x XP</span>`);
         if (b.legendaryFocus) parts.push('<span class="buff-badge buff-gold">x3 💰</span>');
         buffIndEl.innerHTML = parts.join('');
         buffIndEl.style.display = parts.length ? '' : 'none';

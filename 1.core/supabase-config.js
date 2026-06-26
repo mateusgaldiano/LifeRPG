@@ -882,9 +882,10 @@ window.saveBuffsToSupabase = async function() {
   const rows = [];
 
   if (buffs.doubleXpExpiresAt && Date.now() < buffs.doubleXpExpiresAt) {
+    const m = buffs.xpMult || 2;
     rows.push({
       user_id:    window._currentUserDbId,
-      buff_type:  'doubleXp',
+      buff_type:  m >= 5 ? 'megaXp' : m >= 3 ? 'tripleXp' : 'doubleXp',
       expires_at: new Date(buffs.doubleXpExpiresAt).toISOString(),
     });
   }
@@ -945,13 +946,15 @@ window.loadBuffsFromSupabase = async function() {
   gameState.buffs.legendaryFocus    = false;
   gameState.buffs.doubleXp          = false;
   gameState.buffs.doubleXpExpiresAt = null;
+  gameState.buffs.xpMult            = null;
 
   const now = Date.now();
   data.forEach(row => {
-    if (row.buff_type === 'doubleXp') {
+    if (row.buff_type === 'doubleXp' || row.buff_type === 'tripleXp' || row.buff_type === 'megaXp') {
       const expiresMs = row.expires_at ? new Date(row.expires_at).getTime() : 0;
       if (expiresMs > now) {
         gameState.buffs.doubleXpExpiresAt = expiresMs;
+        gameState.buffs.xpMult = row.buff_type === 'megaXp' ? 5 : row.buff_type === 'tripleXp' ? 3 : 2;
       }
     } else if (row.buff_type === 'autoHeal') {
       gameState.buffs.autoHeal = true;
