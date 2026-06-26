@@ -25,6 +25,19 @@ function getActiveXpMultiplier() {
     return isDoubleXpActive() ? (gameState.buffs?.xpMult || 2) : 1;
 }
 
+// Multiplicador de renda (XP + ouro) por rank do avatar — alimenta o loop rank→renda→tomos.
+function getRankIncomeMultiplier() {
+    const lvl = gameState.level || 1;
+    if (lvl >= 35) return 2.5;  // Monarca
+    if (lvl >= 30) return 2.0;  // Nacional
+    if (lvl >= 25) return 1.75; // S
+    if (lvl >= 20) return 1.5;  // A
+    if (lvl >= 15) return 1.35; // B
+    if (lvl >= 10) return 1.2;  // C
+    if (lvl >= 5)  return 1.1;  // D
+    return 1.0;                  // E / Candidato
+}
+
 // Gera uma nova dungeon aleatória
 function spawnDungeon() {
     if (!hasSkillLV3()) return;
@@ -700,8 +713,9 @@ function addRewards(xpGained, goldGained) {
     const groupMult   = calcGroupMultiplier(); // Multiplicador de grupo
     
     const perkXp = getPerkXpBonus(); // +25% se Lenda Imortal ativo
-    const bonusXp = Math.round(xpGained * (multiplier + synergyXp + perkXp) * groupMult);
-    const bonusGold = Math.round(goldGained * (1 + synergyGold + streakGold) * groupMult);
+    const rankMult = getRankIncomeMultiplier(); // renda escala com o rank do avatar
+    const bonusXp = Math.round(xpGained * (multiplier + synergyXp + perkXp) * groupMult * rankMult);
+    const bonusGold = Math.round(goldGained * (1 + synergyGold + streakGold) * groupMult * rankMult);
     
     gameState.xp += bonusXp;
     gameState.gold += bonusGold;

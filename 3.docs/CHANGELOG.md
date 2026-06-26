@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.17] — 2026-06-26
+
+### Economia — Multiplicador de renda por rank
+- XP e ouro por quest agora escalam com o rank do avatar: D ×1.1 · C ×1.2 · B ×1.35 · A ×1.5 · S ×1.75 · Nacional ×2.0 · Monarca ×2.5 (Candidato/E ×1.0). Aplicado em `addRewards`, compõe com streak/sinergia/grupo/tomo. Destrava a curva de fim de jogo e alimenta o loop rank→renda→tomos. (SINTONIA semanal segue flat.)
+
 ## [v2.1.16] — 2026-06-26
 
 ### Loja — Tomos de XP em 3 tiers (Caminho B: duração + custo)
