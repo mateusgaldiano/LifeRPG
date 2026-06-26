@@ -150,7 +150,8 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
             ['leitura', 'ler', 'livro', '📚'],
             ['acordar', '🌅'],
             ['cama', '🛏️'],
-            ['família', 'familia', 'amigo', 'social', 'conectar', '❤️', '📞']
+            ['família', 'familia', 'amigo', 'social', 'conectar', '❤️', '📞'],
+            ['higienização', 'higienizacao', 'bucal', 'dente', 'dental', 'fio dental', '🪥']
         ];
         
         for (const group of keywords) {
