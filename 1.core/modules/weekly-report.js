@@ -124,12 +124,12 @@ function calculateWeeklyReportSync(history, quests, sideQuests, dates, prevWeekS
     if (tier === 'A' && totalMinutes < 60) tier = 'B';
 
     const TIER_MAP = {
-        S: { label: 'SINTONIA S', cls: 'rank-glow-s', gold: 80, xp: 150, desc: '"Desempenho lendário. Pouquíssimos alcançam este nível. Suas habilidades crescem em ritmo avassalador — o topo do mundo está ao seu alcance."' },
-        A: { label: 'SINTONIA A', cls: 'rank-glow-a', gold: 50, xp: 100, desc: '"Desempenho formidável. O Sistema reconhece seu vigor e determinação. Continue assim e o rank S deixará de ser um sonho."' },
-        B: { label: 'SINTONIA B', cls: 'rank-glow-b', gold: 30, xp: 60,  desc: '"Progresso sólido. Suas conquistas são constantes, mas a complacência é sua maior inimiga."' },
-        C: { label: 'SINTONIA C', cls: 'rank-glow-c', gold: 15, xp: 30,  desc: '"Na média. Você está sobrevivendo, mas o Sistema exige mais empenho e volume."' },
-        D: { label: 'SINTONIA D', cls: 'rank-glow-d', gold: 5,  xp: 15,  desc: '"Desempenho fraco. Você está estagnando. O Sistema observa — e não tem paciência com a inércia."' },
-        E: { label: 'SINTONIA E', cls: 'rank-glow-e', gold: 0,  xp: 0,   desc: '"Praticamente inerte. O Sistema mal registrou sua presença esta semana. Desperte, ou seja esquecido."' },
+        S: { label: 'SINTONIA S', cls: 'rank-glow-s', gold: 160, xp: 300, desc: '"Desempenho lendário. Pouquíssimos alcançam este nível. Suas habilidades crescem em ritmo avassalador — o topo do mundo está ao seu alcance."' },
+        A: { label: 'SINTONIA A', cls: 'rank-glow-a', gold: 100, xp: 200, desc: '"Desempenho formidável. O Sistema reconhece seu vigor e determinação. Continue assim e o rank S deixará de ser um sonho."' },
+        B: { label: 'SINTONIA B', cls: 'rank-glow-b', gold: 60,  xp: 120, desc: '"Progresso sólido. Suas conquistas são constantes, mas a complacência é sua maior inimiga."' },
+        C: { label: 'SINTONIA C', cls: 'rank-glow-c', gold: 30,  xp: 60,  desc: '"Na média. Você está sobrevivendo, mas o Sistema exige mais empenho e volume."' },
+        D: { label: 'SINTONIA D', cls: 'rank-glow-d', gold: 10,  xp: 30,  desc: '"Desempenho fraco. Você está estagnando. O Sistema observa — e não tem paciência com a inércia."' },
+        E: { label: 'SINTONIA E', cls: 'rank-glow-e', gold: 0,   xp: 0,   desc: '"Praticamente inerte. O Sistema mal registrou sua presença esta semana. Desperte, ou seja esquecido."' },
     };
     const tierData = TIER_MAP[tier];
     const rankLabel = tierData.label;

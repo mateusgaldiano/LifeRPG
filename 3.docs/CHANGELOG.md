@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.14] — 2026-06-26
+- **Recompensas da SINTONIA dobradas:** S 160/300, A 100/200, B 60/120, C 30/60, D 10/30, E 0/0 (concedidas no fechamento semanal).
+
 ## [v2.1.13] — 2026-06-26
 
 ### Game design — Faixas da SINTONIA mais duras (estilo Solo Leveling)
