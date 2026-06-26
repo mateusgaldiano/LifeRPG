@@ -2351,6 +2351,10 @@ body::before {
     color: #f97316 !important;
     text-shadow: 0 0 10px rgba(249, 115, 22, 0.6), 0 0 20px rgba(251, 191, 36, 0.4);
 }
+.rank-glow-a {
+    color: #f43f5e !important;
+    text-shadow: 0 0 10px rgba(244, 63, 94, 0.6);
+}
 .rank-glow-b {
     color: #b76eff !important;
     text-shadow: 0 0 10px rgba(183, 110, 255, 0.6);

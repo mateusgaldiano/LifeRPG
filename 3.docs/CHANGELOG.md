@@ -9,6 +9,16 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.13] — 2026-06-26
+
+### Game design — Faixas da SINTONIA mais duras (estilo Solo Leveling)
+- Novas faixas de score: **S > 95** (raríssimo), **A ≥ 85**, **B ≥ 70**, **C ≥ 50**, **D ≥ 30**, **E < 30**.
+- Adicionado o rank **E** (abaixo de 30). Recompensas: S 80/150, A 50/100, B 30/60, C 15/30, **D 5/15**, **E 0/0**.
+- Adicionado o estilo `.rank-glow-a` (faltava — o rank A ficava sem cor).
+- Os gates de tempo seguem valendo (S ≥ 2h, A ≥ 1h).
+
+---
+
 ## [v2.1.12] — 2026-06-25
 
 ### Game design — Avaliação semanal (SINTONIA) mais justa
