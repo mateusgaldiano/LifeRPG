@@ -728,6 +728,10 @@ window.loadQuestsFromSupabase = async function() {
       .map(q => q.id)
   );
 
+  // Se o reset diário já ocorreu hoje, a nuvem NÃO deve reaplicar 'completed' antigo nas dailies.
+  const resetToday = typeof window.localDateStr === 'function'
+    && gameState._lastDailyResetDate === window.localDateStr();
+
   gameState.quests = data
     .filter(q => q.type === 'daily' || (typeof q.type === 'string' && q.type.startsWith('weekly-')))
     .map(q => {
@@ -748,7 +752,7 @@ window.loadQuestsFromSupabase = async function() {
         gold: q.gold,
         emoji: q.emoji,
         icon: q.emoji,
-        completed: completedToday.has(q.local_id) ? true : !!q.completed,
+        completed: completedToday.has(q.local_id) ? true : (resetToday && questType === 'daily' ? false : !!q.completed),
         fromLibrary: q.from_library,
         duration: (() => {
           const match = q.title?.match(/\((\d+)\s*min\)/i);

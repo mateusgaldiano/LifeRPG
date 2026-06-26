@@ -272,6 +272,17 @@ function loadSocialModule() {
 }
 window.loadSocialModule = loadSocialModule;
 
+// Reset diário ao vivo: se o dia virar com o app aberto (ou ao reabrir o app), recarrega
+// para disparar o reset de quests no loadGameData. Evita quests "presas" como concluídas.
+function checkDayRolloverLive() {
+    if (gameState && gameState.lastCheckedDate && gameState.lastCheckedDate !== localDateStr()) {
+        saveGameData();           // persiste no localStorage antes de recarregar
+        window.location.reload();
+    }
+}
+setInterval(checkDayRolloverLive, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDayRolloverLive(); });
+
 // Bind PWA
 window.registerServiceWorker = registerServiceWorker;
 window.setupInstallPrompt = setupInstallPrompt;

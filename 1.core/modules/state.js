@@ -586,7 +586,9 @@ function loadGameData() {
             // Reseta flags de perks diários
             parsed._firstQuestBonusGiven = false;
             parsed._momentumStack = 0;
-            
+
+            // Marca que o reset diário ocorreu hoje — impede a nuvem de reaplicar 'completed' antigo
+            parsed._lastDailyResetDate = todayStr;
             parsed.lastCheckedDate = todayStr;
         } else if (!parsed.lastCheckedDate) {
             parsed.lastCheckedDate = todayStr;

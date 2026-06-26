@@ -9,6 +9,15 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.10] — 2026-06-25
+
+### Corrigido — Reset diário (bug: quests de ontem continuavam "concluídas")
+Dois problemas combinados:
+- **Sem reset ao vivo:** o reset só rodava no `loadGameData` (carregamento). Com o PWA aberto cruzando a meia-noite, nada resetava. **Fix:** `checkDayRolloverLive()` em `app.js` — verifica a virada do dia a cada minuto e no `visibilitychange`; ao detectar, salva e recarrega para disparar o reset.
+- **Nuvem desfazia o reset:** `loadQuestsFromSupabase` reaplicava o `completed=true` antigo da nuvem após o reset local. **Fix:** marca `_lastDailyResetDate` quando o reset ocorre (`state.js`) e, na carga da nuvem, dailies não são remarcadas como concluídas se o reset já aconteceu hoje (`supabase-config.js`).
+
+---
+
 ## [v2.1.9] — 2026-06-24
 
 Lote de itens "S" (pequenos) de acessibilidade e game design.
