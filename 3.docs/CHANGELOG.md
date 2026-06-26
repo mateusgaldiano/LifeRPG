@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.15] — 2026-06-26
+- **SINTONIA S mais rara:** fator de volume `× 6.5 → × 2` (satura em ~50 conclusões/semana). Antes 5/10 perfis tiravam S; agora só os hiper-dedicados. Simulação: Iron Man/Personal/Concurseiro = S, Empreendedor = A, Executivo = C.
+
 ## [v2.1.14] — 2026-06-26
 - **Recompensas da SINTONIA dobradas:** S 160/300, A 100/200, B 60/120, C 30/60, D 10/30, E 0/0 (concedidas no fechamento semanal).
 
