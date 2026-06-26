@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.19] — 2026-06-26
+- **Títulos de rank renomeados:** A = "O Herói", S = "Soberano", Nacional = "Lendário".
+- **Sincronização na nuvem** de cosméticos: `unlockedTitles`, `unlockedBorders`, `activeTitle`, `activeBorder` e `rankEvaluationsClaimed` agora vão para o `settings` (save em `ensureUserProfile` + `saveToSupabase`) e voltam via `applyCloudCosmetics()` no `syncFromCloud`/`forceLoadFromCloud`. Resolve a lacuna multi-device de títulos/reavaliações.
+
 ## [v2.1.18] — 2026-06-26
 
 ### Economia — Reavaliação de Rank (ralo estrutural)

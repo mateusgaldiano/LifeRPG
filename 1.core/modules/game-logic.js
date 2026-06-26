@@ -32,9 +32,9 @@ const RANK_EVALUATIONS = {
     d:        { minLevel: 5,  cost: 250,   titleId: 'rank_d',        titleLabel: 'O Iniciado' },
     c:        { minLevel: 10, cost: 600,   titleId: 'rank_c',        titleLabel: 'O Caçador' },
     b:        { minLevel: 15, cost: 1200,  titleId: 'rank_b',        titleLabel: 'A Elite' },
-    a:        { minLevel: 20, cost: 2500,  titleId: 'rank_a',        titleLabel: 'Herói Lendário' },
-    s:        { minLevel: 25, cost: 4500,  titleId: 'rank_s',        titleLabel: 'O Soberano' },
-    nacional: { minLevel: 30, cost: 7000,  titleId: 'rank_nacional', titleLabel: 'Nível Nacional' },
+    a:        { minLevel: 20, cost: 2500,  titleId: 'rank_a',        titleLabel: 'O Herói' },
+    s:        { minLevel: 25, cost: 4500,  titleId: 'rank_s',        titleLabel: 'Soberano' },
+    nacional: { minLevel: 30, cost: 7000,  titleId: 'rank_nacional', titleLabel: 'Lendário' },
     monarca:  { minLevel: 35, cost: 12000, titleId: 'rank_monarca',  titleLabel: 'O Monarca' },
 };
 const RANK_EVAL_ORDER = ['d', 'c', 'b', 'a', 's', 'nacional', 'monarca'];

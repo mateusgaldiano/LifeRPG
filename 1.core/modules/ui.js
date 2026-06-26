@@ -955,8 +955,8 @@ function updateUI() {
         'title_implacavel': 'O Implacável',
         'title_mestre': 'Mestre do Tempo',
         'rank_d': 'O Iniciado', 'rank_c': 'O Caçador', 'rank_b': 'A Elite',
-        'rank_a': 'Herói Lendário', 'rank_s': 'O Soberano',
-        'rank_nacional': 'Nível Nacional', 'rank_monarca': 'O Monarca'
+        'rank_a': 'O Herói', 'rank_s': 'Soberano',
+        'rank_nacional': 'Lendário', 'rank_monarca': 'O Monarca'
     };
     const playerTitle = document.getElementById('lbl-player-title');
     if (playerTitle) {

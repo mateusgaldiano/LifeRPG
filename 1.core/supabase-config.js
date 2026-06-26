@@ -54,6 +54,17 @@ window.trackEvent = function(eventName, params = {}) {
 window._currentUserDbId = null; // id (uuid) da linha em 'users', preenchido após login
 window._isSupabaseAuthenticated = false; // flag síncrono — atualizado por onAuthStateChange
 
+// Aplica cosméticos (títulos/bordas) e reavaliações de rank vindos de settings da nuvem.
+function applyCloudCosmetics(settings) {
+  if (!settings) return;
+  if (settings.rankEvaluationsClaimed) gameState.rankEvaluationsClaimed = settings.rankEvaluationsClaimed;
+  if (!gameState.inventory) return;
+  if (settings.unlockedTitles)  gameState.inventory.unlockedTitles  = settings.unlockedTitles;
+  if (settings.unlockedBorders) gameState.inventory.unlockedBorders = settings.unlockedBorders;
+  if (settings.activeTitle !== undefined)  gameState.inventory.activeTitle  = settings.activeTitle;
+  if (settings.activeBorder !== undefined) gameState.inventory.activeBorder = settings.activeBorder;
+}
+
 // --------------------------------------------------------------------------
 // AUTH — login/logout com Google
 // --------------------------------------------------------------------------
@@ -353,6 +364,11 @@ async function ensureUserProfile(authUser) {
             unlockedSkins: gameState.inventory?.unlockedSkins || ['default'],
             tutorialCompleted: gameState.tutorialCompleted || false,
             tutorialStep: gameState.tutorialStep || null,
+            unlockedTitles: gameState.inventory?.unlockedTitles || [],
+            unlockedBorders: gameState.inventory?.unlockedBorders || [],
+            activeTitle: gameState.inventory?.activeTitle || null,
+            activeBorder: gameState.inventory?.activeBorder || null,
+            rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
           },
           last_active_at: new Date().toISOString(),
         }, { onConflict: 'person_id' })
@@ -437,6 +453,7 @@ window.syncFromCloud = async function() {
     gameState.achievements = cloudUser.settings?.achievements || [];
     gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
     gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
+    applyCloudCosmetics(cloudUser.settings);
 
     const { data: { user: authUserSync } } = await supabaseClient.auth.getUser();
     if (authUserSync) {
@@ -519,6 +536,7 @@ window.forceLoadFromCloud = async function() {
   gameState.achievements = cloudUser.settings?.achievements || [];
   gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
   gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
+  applyCloudCosmetics(cloudUser.settings);
 
   const { data: { user: authUserForce } } = await supabaseClient.auth.getUser();
   if (authUserForce) {
@@ -600,6 +618,11 @@ window.saveToSupabase = async function() {
       unlockedSkins: gameState.inventory?.unlockedSkins || ['default'],
       tutorialCompleted: gameState.tutorialCompleted || false,
       tutorialStep: gameState.tutorialStep || null,
+      unlockedTitles: gameState.inventory?.unlockedTitles || [],
+      unlockedBorders: gameState.inventory?.unlockedBorders || [],
+      activeTitle: gameState.inventory?.activeTitle || null,
+      activeBorder: gameState.inventory?.activeBorder || null,
+      rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
     }
   });
 
