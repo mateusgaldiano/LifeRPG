@@ -298,6 +298,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Carrega dados locais do jogo
     loadGameData();
 
+    // Ocultar overlay imediatamente se houver estado local em cache, garantindo o primeiro paint com 2x requestAnimationFrame
+    const hasLocalState = !!(localStorage.getItem('lifeRPG_gameState') || localStorage.getItem('lifeRPG_gameState_Mateus'));
+    if (hasLocalState) {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const overlay = document.getElementById('app-loading-overlay');
+                if (overlay) {
+                    overlay.style.transition = 'opacity 0.2s ease';
+                    overlay.style.opacity = '0';
+                    setTimeout(() => { overlay.style.display = 'none'; }, 200);
+                }
+            });
+        });
+    }
+
     // 2. Inicialização do Supabase e sincronização da Nuvem ANTES de renderizar a UI ou relatórios
     let isReturningUser = false;
     let tutorialCompleted = false;
@@ -327,13 +342,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // Oculta o overlay se ainda estiver visível (ex: usuário novo sem dados salvos)
             const overlay = document.getElementById('app-loading-overlay');
-            if (overlay) {
-                overlay.style.transition = 'opacity 0.5s ease';
-                overlay.style.opacity = '0';
-                setTimeout(() => {
-                    overlay.style.display = 'none';
-                }, 500);
+            if (overlay && overlay.style.display !== 'none') {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        overlay.style.transition = 'opacity 0.25s ease';
+                        overlay.style.opacity = '0';
+                        setTimeout(() => {
+                            overlay.style.display = 'none';
+                        }, 250);
+                    });
+                });
             }
         }).catch((e) => {
             console.error('[App Bootstrap] Erro ao inicializar Supabase:', e);

@@ -5,7 +5,13 @@
 const SUPABASE_URL = 'https://ppsqvppnunzagxqruoqf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_nu9f4NzPEemdC4zm2bg1kw_88j7xeAz';
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    detectSessionInUrl: true,
+    persistSession: true,
+    autoRefreshToken: true
+  }
+});
 
 // --------------------------------------------------------------------------
 // MAPA DE SKINS — local skin id → UUID da tabela items
@@ -152,6 +158,8 @@ window.logoutSupabase = async function() {
 // --------------------------------------------------------------------------
 // INIT — chamado no lugar de initFirebase()
 // --------------------------------------------------------------------------
+let authBootStarted = false;
+
 window.initSupabase = function() {
   return new Promise((resolve) => {
     let resolved = false;
@@ -163,17 +171,37 @@ window.initSupabase = function() {
     };
 
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      // Evitar processamento de boot duplicado
+      if (authBootStarted) {
+        // Se for um evento de mudança real de usuário pós-boot, podemos tratar
+        if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+          const currentUserId = session?.user?.id || null;
+          if (currentUserId !== window._currentAuthUserId) {
+            window._currentAuthUserId = currentUserId;
+            window.location.reload(); // Recarrega para limpar estado e sincronizar o novo usuário
+          }
+        }
+        return;
+      }
+      authBootStarted = true;
+      window._currentAuthUserId = session?.user?.id || null;
+
       if (session?.user) {
         updateCloudStatusUI(true);
-        const profile = await ensureUserProfile(session.user);
-        await syncFromCloud();
-        if (typeof window.subscribeUserToPush === 'function' && 'Notification' in window && Notification.permission === 'granted') {
-          window.subscribeUserToPush();
+        try {
+          const profile = await ensureUserProfile(session.user);
+          await syncFromCloud();
+          if (typeof window.subscribeUserToPush === 'function' && 'Notification' in window && Notification.permission === 'granted') {
+            window.subscribeUserToPush();
+          }
+          if (typeof window.refreshActiveSocialTab === 'function') {
+            window.refreshActiveSocialTab();
+          }
+          done(profile);
+        } catch (e) {
+          console.error('[Supabase auth change boot error]', e);
+          done({ isReturningUser: false, tutorialCompleted: false });
         }
-        if (typeof window.refreshActiveSocialTab === 'function') {
-          window.refreshActiveSocialTab();
-        }
-        done(profile);
       } else {
         updateCloudStatusUI(false);
         if (typeof window.refreshActiveSocialTab === 'function') {
@@ -181,29 +209,6 @@ window.initSupabase = function() {
         }
         done({ isReturningUser: false, tutorialCompleted: false });
       }
-    });
-
-    // Checar sessão existente ao carregar
-    supabaseClient.auth.getSession().then(async ({ data }) => {
-      if (data?.session?.user) {
-        updateCloudStatusUI(true);
-        try {
-          const profile = await ensureUserProfile(data.session.user);
-          await syncFromCloud();
-          if (typeof window.subscribeUserToPush === 'function' && 'Notification' in window && Notification.permission === 'granted') {
-            window.subscribeUserToPush();
-          }
-          done(profile);
-        } catch (e) {
-          console.error('[Supabase init session error]', e);
-          done({ isReturningUser: false, tutorialCompleted: false });
-        }
-      } else {
-        done({ isReturningUser: false, tutorialCompleted: false });
-      }
-    }).catch((err) => {
-      console.error('[Supabase getSession error]', err);
-      done({ isReturningUser: false, tutorialCompleted: false });
     });
   });
 };
@@ -422,92 +427,118 @@ async function ensureUserProfile(authUser) {
 // --------------------------------------------------------------------------
 // SYNC FROM CLOUD — chamado após login, resolve conflitos
 // --------------------------------------------------------------------------
+let syncStarted = false;
+
 window.syncFromCloud = async function() {
   if (!window._currentUserDbId) return;
+  if (syncStarted) return;
+  syncStarted = true;
 
-  const { data: cloudUser } = await supabaseClient
-    .from('users')
-    .select('*')
-    .eq('id', window._currentUserDbId)
-    .single();
+  const syncUserId = window._currentUserDbId;
 
-  if (!cloudUser) return;
+  try {
+    const { data: cloudUser } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('id', syncUserId)
+      .single();
 
-  const cloudIsNewer =
-    cloudUser.level > gameState.level ||
-    (cloudUser.level === gameState.level && cloudUser.streak > gameState.streak) ||
-    (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp > gameState.xp) ||
-    (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp === gameState.xp && cloudUser.gold > gameState.gold) ||
-    (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp === gameState.xp && cloudUser.gold === gameState.gold &&
-      cloudUser.last_active_at && new Date(cloudUser.last_active_at) > new Date(gameState._lastSyncedAt || 0));
+    if (window._currentUserDbId !== syncUserId) return; // Abort check
+    if (!cloudUser) return;
 
-  if (cloudIsNewer) {
-    // Nuvem ganha — sobrescrever estado local
-    gameState.level     = cloudUser.level;
-    gameState.xp        = cloudUser.xp;
-    gameState.gold      = cloudUser.gold;
-    gameState.streak    = cloudUser.streak;
-    gameState.archetype = cloudUser.archetype;
-    gameState.skills    = cloudUser.skills;
-    
-    gameState.achievements = cloudUser.settings?.achievements || [];
-    gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
-    gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
-    applyCloudCosmetics(cloudUser.settings);
+    const cloudIsNewer =
+      cloudUser.level > gameState.level ||
+      (cloudUser.level === gameState.level && cloudUser.streak > gameState.streak) ||
+      (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp > gameState.xp) ||
+      (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp === gameState.xp && cloudUser.gold > gameState.gold) ||
+      (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp === gameState.xp && cloudUser.gold === gameState.gold &&
+        cloudUser.last_active_at && new Date(cloudUser.last_active_at) > new Date(gameState._lastSyncedAt || 0));
 
-    const { data: { user: authUserSync } } = await supabaseClient.auth.getUser();
-    if (authUserSync) {
-      const { data: personData } = await supabaseClient
-        .from('persons').select('username').eq('id', authUserSync.id).maybeSingle();
+    if (cloudIsNewer) {
+      // Nuvem ganha — sobrescrever estado local
+      gameState.level     = cloudUser.level;
+      gameState.xp        = cloudUser.xp;
+      gameState.gold      = cloudUser.gold;
+      gameState.streak    = cloudUser.streak;
+      gameState.archetype = cloudUser.archetype;
+      gameState.skills    = cloudUser.skills;
+      
+      gameState.achievements = cloudUser.settings?.achievements || [];
+      gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
+      gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
+      applyCloudCosmetics(cloudUser.settings);
+
+      // Carregar dados adicionais em paralelo
+      const authUserPromise = supabaseClient.auth.getUser();
+      const personPromise = authUserPromise.then(({ data: { user } }) => {
+        if (!user) return null;
+        return supabaseClient.from('persons').select('username').eq('id', user.id).maybeSingle();
+      }).catch(() => null);
+
+      const [personResult] = await Promise.all([
+        personPromise,
+        loadQuestsFromSupabase(),
+        loadHistoryFromSupabase(),
+        loadInventoryFromSupabase(),
+        window.loadBuffsFromSupabase()
+      ]);
+
+      if (window._currentUserDbId !== syncUserId) return; // Abort check
+
+      const personData = personResult?.data;
       if (personData?.username && !personData.username.includes('@')) {
         gameState.playerName = personData.username;
         window._currentUsername = personData.username;
       }
+
+      saveGameData(); // persiste no localStorage também
+      updateUI();
+
+      // Re-renderiza todos os componentes de UI para refletir os dados carregados da nuvem imediatamente
+      if (typeof window.renderQuests === 'function') window.renderQuests();
+      if (typeof window.renderRewards === 'function') window.renderRewards();
+      if (typeof window.renderSkills === 'function') window.renderSkills();
+      if (typeof window.drawRadarChart === 'function') window.drawRadarChart();
+      if (typeof window.updateAvatarImage === 'function') window.updateAvatarImage();
+    } else {
+      // Local ganha — subir para a nuvem em paralelo
+      await Promise.all([
+        saveToSupabase(),
+        syncQuestsToSupabase(),
+        saveAllHistoryToSupabase(),
+        syncInventoryToSupabase()
+      ]);
+      if (window._currentUserDbId !== syncUserId) return; // Abort check
     }
 
-    await loadQuestsFromSupabase();
-    await loadHistoryFromSupabase();
-    await loadInventoryFromSupabase();
-    await window.loadBuffsFromSupabase();
-
-    saveGameData(); // persiste no localStorage também
-    updateUI();
-
-    // Re-renderiza todos os componentes de UI para refletir os dados carregados da nuvem imediatamente
-    if (typeof window.renderQuests === 'function') window.renderQuests();
-    if (typeof window.renderRewards === 'function') window.renderRewards();
-    if (typeof window.renderSkills === 'function') window.renderSkills();
-    if (typeof window.drawRadarChart === 'function') window.drawRadarChart();
-    if (typeof window.updateAvatarImage === 'function') window.updateAvatarImage();
-  } else {
-    // Local ganha — subir para a nuvem
-    await saveToSupabase();
-    await syncQuestsToSupabase();
-    await saveAllHistoryToSupabase();
-    await syncInventoryToSupabase();
-  }
-
-  // Sincronizar contagem de amigos aceitos para o multiplicador de grupo
-  try {
-    const { count, error: countError } = await supabaseClient
-      .from('friendships')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'accepted')
-      .or(`requester_id.eq.${window._currentUserDbId},target_id.eq.${window._currentUserDbId}`);
-    
-    if (!countError && gameState) {
-      gameState.friendsCount = count || 0;
-      localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+    // Sincronizar contagem de amigos aceitos para o multiplicador de grupo
+    try {
+      const { count, error: countError } = await supabaseClient
+        .from('friendships')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'accepted')
+        .or(`requester_id.eq.${syncUserId},target_id.eq.${syncUserId}`);
+      
+      if (window._currentUserDbId !== syncUserId) return; // Abort check
+      if (!countError && gameState) {
+        gameState.friendsCount = count || 0;
+        localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+      }
+    } catch (err) {
+      console.error('[Supabase] Erro ao contar amigos:', err);
     }
-  } catch (err) {
-    console.error('[Supabase] Erro ao contar amigos:', err);
-  }
 
-  // Finalizar duelos vencidos (lazy loading/finalizacao)
-  try {
-    await window.checkAndFinalizeDuels();
-  } catch (err) {
-    console.error('[Supabase] Erro ao finalizar duelos:', err);
+    // Finalizar duelos vencidos (lazy loading/finalizacao)
+    try {
+      await window.checkAndFinalizeDuels();
+    } catch (err) {
+      console.error('[Supabase] Erro ao finalizar duelos:', err);
+    }
+  } finally {
+    // Liberar lock apenas se o usuário atual do contexto for o mesmo do início do sync
+    if (window._currentUserDbId === syncUserId) {
+      syncStarted = false;
+    }
   }
 };
 
@@ -517,12 +548,15 @@ window.syncFromCloud = async function() {
 window.forceLoadFromCloud = async function() {
   if (!window._currentUserDbId) return;
 
+  const syncUserId = window._currentUserDbId;
+
   const { data: cloudUser } = await supabaseClient
     .from('users')
     .select('*')
-    .eq('id', window._currentUserDbId)
+    .eq('id', syncUserId)
     .single();
 
+  if (window._currentUserDbId !== syncUserId) return; // Abort check
   if (!cloudUser) return;
 
   // Sempre sobrescreve com dados da nuvem — sem comparação
@@ -538,20 +572,28 @@ window.forceLoadFromCloud = async function() {
   gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
   applyCloudCosmetics(cloudUser.settings);
 
-  const { data: { user: authUserForce } } = await supabaseClient.auth.getUser();
-  if (authUserForce) {
-    const { data: personData } = await supabaseClient
-      .from('persons').select('username').eq('id', authUserForce.id).maybeSingle();
-    if (personData?.username && !personData.username.includes('@')) {
-      gameState.playerName = personData.username;
-      window._currentUsername = personData.username;
-    }
-  }
+  // Carregar dados adicionais em paralelo
+  const authUserPromise = supabaseClient.auth.getUser();
+  const personPromise = authUserPromise.then(({ data: { user } }) => {
+    if (!user) return null;
+    return supabaseClient.from('persons').select('username').eq('id', user.id).maybeSingle();
+  }).catch(() => null);
 
-  await loadQuestsFromSupabase();
-  await loadHistoryFromSupabase();
-  await loadInventoryFromSupabase();
-  await window.loadBuffsFromSupabase();
+  const [personResult] = await Promise.all([
+    personPromise,
+    loadQuestsFromSupabase(),
+    loadHistoryFromSupabase(),
+    loadInventoryFromSupabase(),
+    window.loadBuffsFromSupabase()
+  ]);
+
+  if (window._currentUserDbId !== syncUserId) return; // Abort check
+
+  const personData = personResult?.data;
+  if (personData?.username && !personData.username.includes('@')) {
+    gameState.playerName = personData.username;
+    window._currentUsername = personData.username;
+  }
 
   saveGameData();
   updateUI();

@@ -26,7 +26,7 @@ function registerServiceWorker() {
 
         navigator.serviceWorker.addEventListener('message', event => {
             if (event.data?.type === 'SW_UPDATED') {
-                window.location.reload();
+                console.log('[App] Nova versão do SW pronta. Será aplicada na próxima inicialização.');
             }
         });
     }

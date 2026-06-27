@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.20] — 2026-06-26
+- **Otimização de Performance de Inicialização (Startup):**
+  - **Service Worker:** Estratégia *Stale-While-Revalidate* implementada para o `index.html`, removendo reloads automáticos intrusivos na detecção de `SW_UPDATED` (atualização aplicada no próximo boot frio).
+  - **Remoção de Duplo Boot:** Exclusão do `getSession` assíncrono redundante em paralelo com `onAuthStateChange` na inicialização do Supabase, com o acréscimo da trava de boot `authBootStarted`.
+  - **Paralelização de Sync (`Promise.all`):** Leituras (`quests`, `history`, `inventory`, `buffs` e profile) e escritas no Supabase unificadas em promessas paralelas no `syncFromCloud` e no `forceLoadFromCloud`.
+  - **Prevenção de Concorrência & Abort Check:** Adicionada a trava `syncStarted` para impedir sincronizações concorrentes e cancelamento imediato de sync caso o usuário mude de conta/logout no meio da operação.
+  - **Dismiss Instantâneo do Overlay:** Ocultação do loading overlay em ~150ms se houver dados em localStorage, usando duplo `requestAnimationFrame` para garantir pintura limpa (sem flash em branco).
+
 ## [v2.1.19] — 2026-06-26
 - **Títulos de rank renomeados:** A = "O Herói", S = "Soberano", Nacional = "Lendário".
 - **Sincronização na nuvem** de cosméticos: `unlockedTitles`, `unlockedBorders`, `activeTitle`, `activeBorder` e `rankEvaluationsClaimed` agora vão para o `settings` (save em `ensureUserProfile` + `saveToSupabase`) e voltam via `applyCloudCosmetics()` no `syncFromCloud`/`forceLoadFromCloud`. Resolve a lacuna multi-device de títulos/reavaliações.

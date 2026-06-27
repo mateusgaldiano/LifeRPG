@@ -83,14 +83,24 @@ self.addEventListener('fetch', (event) => {
 
     const url = new URL(event.request.url);
 
-    // index.html: SEMPRE da rede
+    // index.html: Stale-While-Revalidate (carrega instantâneo do cache, atualiza em background)
     if (url.pathname === '/' ||
         url.pathname.endsWith('/LifeRPG/') ||
         url.pathname.endsWith('/LifeRPG_Dev/') ||
         url.pathname.endsWith('index.html')) {
         event.respondWith(
-            fetch(event.request)
-                .catch(() => caches.match(event.request))
+            caches.match(event.request).then((cached) => {
+                const networkFetch = fetch(event.request).then((response) => {
+                    if (response.ok) {
+                        const clone = response.clone();
+                        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+                    }
+                    return response;
+                }).catch((err) => {
+                    console.warn('[SW] Falha ao atualizar index.html em background:', err);
+                });
+                return cached || networkFetch;
+            })
         );
         return;
     }
