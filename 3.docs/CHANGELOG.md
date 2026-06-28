@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.24] — 2026-06-27
+- **META-001 · 5 novos achievements** (catálogo expandido de 16 → 21):
+  - **Missões:** *Dia Lendário* (5 missões num dia, 30💰/raro), *Veterano* (50 no total, 80💰/raro), *Lenda* (100 no total, 200💰/lendário).
+  - **Social & PvP:** *Gladiador* (1ª vitória em duelo PvP, 100💰/raro), *Aliança* (3 amigos, 50💰/incomum).
+  - **Contadores novos** em `gameState`: `_totalQuestsCompleted` (incrementa ao concluir, decrementa ao desmarcar), `_maxDailyCompleted` (pico de conclusões num dia), `_pvpWins` (derivado do histórico de duelos, idempotente). Migração automática para usuários existentes.
+  - **2 categorias novas** na aba de Conquistas (`renderAchievements`): *MISSÕES* 📜 e *SOCIAL & PVP* 🤝.
+
 ## [v2.1.23] — 2026-06-27
 - **Outbox de operações de quest (sync confiável de adições E exclusões):**
   - **Fila de intenções (`gameState.questOps`):** cada adição/edição registra uma op `upsert` e cada exclusão registra uma op `delete` ([`state.js` → `queueQuestOp`](../1.core/modules/state.js)). Persiste no `localStorage` junto com o estado; migração automática para usuários existentes.

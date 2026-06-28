@@ -2379,6 +2379,14 @@ async function loadDuelsList() {
         const activeDuels = duels.filter(d => d.status === 'active');
         const historyDuels = duels.filter(d => d.status === 'finished' || d.status === 'rejected');
 
+        // META-001: rastreia vitórias PvP (winner_id === eu) p/ o achievement "Gladiador".
+        // Idempotente — recalcula da fonte (lista de duelos) e só persiste se mudou.
+        const _pvpWins = historyDuels.filter(d => d.winner_id === window._currentUserDbId).length;
+        if (_pvpWins !== (gameState._pvpWins || 0)) {
+            gameState._pvpWins = _pvpWins;
+            if (typeof window.saveGameData === 'function') window.saveGameData();
+        }
+
         // 1. Renderizar Desafios
         if (pendingDuels.length > 0) {
             pendingDuels.forEach(d => {

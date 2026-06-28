@@ -697,6 +697,9 @@ function loadGameData() {
         if (gameState.weeklyBoss === undefined) gameState.weeklyBoss = null;
         if (gameState.unlockedAchievements === undefined) gameState.unlockedAchievements = [];
         if (gameState._dungeonsCompleted === undefined) gameState._dungeonsCompleted = 0;
+        if (gameState._totalQuestsCompleted === undefined) gameState._totalQuestsCompleted = 0; // META-001
+        if (gameState._maxDailyCompleted === undefined) gameState._maxDailyCompleted = 0;       // META-001
+        if (gameState._pvpWins === undefined) gameState._pvpWins = 0;                           // META-001
 
         if (!gameState.notificationTimes) {
             gameState.notificationTimes = { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };

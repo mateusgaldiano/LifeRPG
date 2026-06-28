@@ -441,6 +441,43 @@ const ACHIEVEMENTS_DEFS = [
         check: (gs) => gs.weeklyBoss && gs.weeklyBoss.defeated,
         progress: (gs) => ({ cur: gs.weeklyBoss?.defeated ? 1 : 0, max: 1 })
     },
+    // MISSÕES (META-001)
+    {
+        id: 'quests_5_day', category: 'missões',
+        title: 'Dia Lendário', desc: 'Conclua 5 Missões em um único dia',
+        icon: '🔥', rewardGold: 30, rarity: 'raro',
+        check: (gs) => (gs._maxDailyCompleted || 0) >= 5,
+        progress: (gs) => ({ cur: Math.min(gs._maxDailyCompleted || 0, 5), max: 5 })
+    },
+    {
+        id: 'quests_50_total', category: 'missões',
+        title: 'Veterano', desc: 'Conclua 50 Missões no total',
+        icon: '⚔️', rewardGold: 80, rarity: 'raro',
+        check: (gs) => (gs._totalQuestsCompleted || 0) >= 50,
+        progress: (gs) => ({ cur: Math.min(gs._totalQuestsCompleted || 0, 50), max: 50 })
+    },
+    {
+        id: 'quests_100_total', category: 'missões',
+        title: 'Lenda', desc: 'Conclua 100 Missões no total',
+        icon: '👑', rewardGold: 200, rarity: 'lendário',
+        check: (gs) => (gs._totalQuestsCompleted || 0) >= 100,
+        progress: (gs) => ({ cur: Math.min(gs._totalQuestsCompleted || 0, 100), max: 100 })
+    },
+    // SOCIAL & PVP (META-001)
+    {
+        id: 'pvp_first_win', category: 'social',
+        title: 'Gladiador', desc: 'Vença seu primeiro Duelo PvP',
+        icon: '🏆', rewardGold: 100, rarity: 'raro',
+        check: (gs) => (gs._pvpWins || 0) >= 1,
+        progress: (gs) => ({ cur: Math.min(gs._pvpWins || 0, 1), max: 1 })
+    },
+    {
+        id: 'friends_3', category: 'social',
+        title: 'Aliança', desc: 'Tenha 3 amigos no Sistema',
+        icon: '🤝', rewardGold: 50, rarity: 'incomum',
+        check: (gs) => (gs.friendsCount || 0) >= 3,
+        progress: (gs) => ({ cur: Math.min(gs.friendsCount || 0, 3), max: 3 })
+    },
 ];
 
 function checkAchievements() {
@@ -572,9 +609,12 @@ function toggleQuest(id) {
             delete quest._legendaryFocusConsumed;
         }
         deductRewards(quest.xp, goldLost);
-        
+
         // Deduz pontos no atributo
         deductSkillXP(skillType);
+
+        // META-001: desfaz a contagem total ao desmarcar (nunca abaixo de 0).
+        gameState._totalQuestsCompleted = Math.max(0, (gameState._totalQuestsCompleted || 0) - 1);
     } else {
         // CONCLUIR QUEST
         if (quest.current !== undefined) {
@@ -599,6 +639,12 @@ function toggleQuest(id) {
         quest.completed = true;
         addRewards(xpGained, goldGained);
         addSkillXP(skillType);
+
+        // META-001: contadores p/ achievements de volume (total acumulado + pico diário).
+        gameState._totalQuestsCompleted = (gameState._totalQuestsCompleted || 0) + 1;
+        const _completedTodayCount = gameState.quests.filter(q => q.completed).length
+            + (gameState.sideQuests || []).filter(q => q.completed).length;
+        gameState._maxDailyCompleted = Math.max(gameState._maxDailyCompleted || 0, _completedTodayCount);
 
         // Impact Quote - Primeira do Dia
         const todayStr = new Date().toDateString();

@@ -21,7 +21,9 @@ function renderAchievements() {
         'consistência': { label: 'CONSISTÊNCIA', icon: '🔥' },
         'rank':         { label: 'RANK & NÍVEL', icon: '🌟' },
         'habilidades':  { label: 'HABILIDADES', icon: '✨' },
-        'masmorras':    { label: 'MASMORRAS & BOSS', icon: '⚔️' }
+        'masmorras':    { label: 'MASMORRAS & BOSS', icon: '⚔️' },
+        'missões':      { label: 'MISSÕES', icon: '📜' },
+        'social':       { label: 'SOCIAL & PVP', icon: '🤝' }
     };
 
     const rarityColors = {
