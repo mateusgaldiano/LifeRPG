@@ -205,9 +205,9 @@ function calcGroupMultiplier() {
 // Multiplicador de Ouro baseado no streak atual
 function calcStreakGoldMultiplier() {
     const streak = gameState.streak || 0;
-    if (streak >= 30) return 0.30; // +30%
-    if (streak >= 14) return 0.20; // +20%
-    if (streak >= 7)  return 0.10; // +10%
+    if (streak >= 30) return 0.50; // +50%
+    if (streak >= 14) return 0.30; // +30%
+    if (streak >= 7)  return 0.15; // +15%
     return 0.0;
 }
 

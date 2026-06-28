@@ -1648,9 +1648,9 @@ function setupEventListeners() {
         const difficulty = document.getElementById('sq-difficulty').value;
         const type = document.querySelector('input[name="sq-type"]:checked').value;
         
-        let xp = 25, gold = 15;
-        if (difficulty === 'easy') { xp = 10; gold = 5; }
-        else if (difficulty === 'hard') { xp = 50; gold = 30; }
+        let xp = 25, gold = 20;
+        if (difficulty === 'easy') { xp = 10; gold = 8; }
+        else if (difficulty === 'hard') { xp = 50; gold = 40; }
 
         if (type === 'side') {
             gameState.sideQuests.push({ id: 'sq-' + Date.now(), title, type: 'side', icon, difficulty, completed: false, xp, gold });

@@ -1110,7 +1110,7 @@ async function buyStoreItem(itemId) {
         'buff_megaXp': 5000,
         'buff_shield': 1000,
         'buff_immortality': 2500,
-        'buff_legendary_focus': 600,
+        'buff_legendary_focus': 400,
         'title_implacavel': 1500,
         'title_mestre': 1500,
         'border_neonred': 2500,

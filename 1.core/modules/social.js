@@ -175,9 +175,9 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
         return;
     }
 
-    let xp = 25, gold = 15;
-    if (h.difficulty === 'easy') { xp = 10; gold = 5; }
-    else if (h.difficulty === 'hard') { xp = 50; gold = 30; }
+    let xp = 25, gold = 20;
+    if (h.difficulty === 'easy') { xp = 10; gold = 8; }
+    else if (h.difficulty === 'hard') { xp = 50; gold = 40; }
 
     const prefix = isSq ? 'sq-lib-' : 'q-lib-';
 
@@ -280,11 +280,11 @@ function renderHabitLibrary(filter = 'all', search = '') {
 
     let html = '';
     filtered.forEach(habit => {
-        let diffLabel = 'MÉDIO', diffClass = 'diff-medium', xp = 25, gold = 15;
+        let diffLabel = 'MÉDIO', diffClass = 'diff-medium', xp = 25, gold = 20;
         if (habit.difficulty === 'easy') {
-            diffLabel = 'FÁCIL'; diffClass = 'diff-easy'; xp = 10; gold = 5;
+            diffLabel = 'FÁCIL'; diffClass = 'diff-easy'; xp = 10; gold = 8;
         } else if (habit.difficulty === 'hard') {
-            diffLabel = 'DIFÍCIL'; diffClass = 'diff-hard'; xp = 50; gold = 30;
+            diffLabel = 'DIFÍCIL'; diffClass = 'diff-hard'; xp = 50; gold = 40;
         }
 
         html += '<div class="library-item">' +
@@ -315,9 +315,9 @@ function renderHabitLibrary(filter = 'all', search = '') {
                 const modalConfirm = document.getElementById('modal-confirm-habit');
                 const confirmDesc = document.getElementById('confirm-habit-desc');
                 if (modalConfirm && confirmDesc) {
-                    let diffLabel = 'Médio', xp = 25, gold = 15;
-                    if (habit.difficulty === 'easy') { diffLabel = 'Fácil'; xp = 10; gold = 5; }
-                    else if (habit.difficulty === 'hard') { diffLabel = 'Difícil'; xp = 50; gold = 30; }
+                    let diffLabel = 'Médio', xp = 25, gold = 20;
+                    if (habit.difficulty === 'easy') { diffLabel = 'Fácil'; xp = 10; gold = 8; }
+                    else if (habit.difficulty === 'hard') { diffLabel = 'Difícil'; xp = 50; gold = 40; }
 
                     let msgExtra = '';
                     const limit = gameState.dailyCommitmentMins || 60;

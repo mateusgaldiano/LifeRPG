@@ -9,6 +9,19 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.29] — 2026-06-28
+- **Melhorias de Ouro Base e Escalabilidade de Streak (Rebalanceamento Econômico):**
+  - **Aumento no Ouro Base de Quests:** Elevado o retorno de ouro de todas as dificuldades de missões:
+    - **Fácil (Easy):** $5 \rightarrow \mathbf{8\text{ ouro}}$.
+    - **Médio (Medium):** $15 \rightarrow \mathbf{20\text{ ouro}}$.
+    - **Difícil (Hard):** $30 \rightarrow \mathbf{40\text{ ouro}}$.
+  - **Ampliação do Multiplicador de Streak (Consistência):**
+    - **Streak 7+ dias:** $+10\% \rightarrow \mathbf{+15\%}$ (0.15).
+    - **Streak 14+ dias:** $+20\% \rightarrow \mathbf{+30\%}$ (0.30).
+    - **Streak 30+ dias:** $+30\% \rightarrow \mathbf{+50\%}$ (0.50).
+  - **Ajuste Fino de Preço do Foco Lendário:**
+    - Reprecificado o **Pergaminho do Foco Lendário** (`buff_legendary_focus`) de $600 \rightarrow \mathbf{400\text{ ouro}}$ na Taverna e nas regras de venda. Isso viabiliza um ROI positivo e recompensador no mid-to-late game (lucro de até +480 ouro com setup otimizado) mantendo o prejuízo/bloqueio estratégico no early-game.
+
 ## [v2.1.28] — 2026-06-28
 - **Supressão de Toasts de Erro de Sync quando Offline:**
   - **Checagem de navigator.onLine nas APIs do Supabase:** Adicionada verificação de status de conexão ativa antes de realizar chamadas de rede no Supabase em `saveToSupabase`, `saveBuffsToSupabase`, `deleteBuffFromSupabase`, `syncQuestsToSupabase`, `saveAllHistoryToSupabase` e `syncInventoryToSupabase`.
