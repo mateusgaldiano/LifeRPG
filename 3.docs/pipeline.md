@@ -1,7 +1,7 @@
 # LifeRPG OS — Pipeline de Pendências
 
 > **Sincronizado automaticamente com `pipeline.html`.** Não editar à mão — editar o array `items` no HTML e ressincronizar.
-> **Total: 14 itens pendentes.**
+> **Total: 13 itens pendentes.**
 
 ---
 
@@ -135,7 +135,7 @@ Ver 1.core/modules/weekly-report.js, index.html.
 
 ---
 
-## 🔵 P3 — BAIXO (6)
+## 🔵 P3 — BAIXO (5)
 
 ### ENG-003 · styles.css: PurgeCSS e minificação para produção
 **Cluster:** Engenharia | **Esforço:** M | **Tipo:** Tech Debt | **Fase:** Futuro
@@ -151,23 +151,11 @@ Ver 1.core/modules/weekly-report.js, index.html.
 **Cluster:** Meta-Progressão | **Esforço:** L | **Tipo:** Feature | **Fase:** Futuro
 
 ```
-1. Definir mecânica: ao atingir nível 30, opção de "Ascender" — reseta XP para 0 mas mantém hábitos e conquistas
+1. Definir mecânica: ao atingir nível 30, option de "Ascender" — reseta XP para 0 mas mantém hábitos e conquistas
 2. Adicionar campo gameState.prestige_level (inicia em 0)
 3. Benefício do prestige: +5% multiplicador permanente de XP por nível de prestige (max 3)
 4. Avatar especial dourado para prestige 1+ com borda especial automática
 5. Commit: "feat: Prestige system — progressão além do Rank S"
-```
-
-### FEAT-001 · Aba MENTOR (Tio Iroh IA via Claude API) — desabilitar display:none
-**Cluster:** Meta-Progressão | **Esforço:** XL | **Tipo:** Feature | **Fase:** Futuro
-
-```
-1. Criar Supabase Edge Function `mentor-chat` que recebe { message, gameState_summary } e chama Claude API
-2. System prompt: persona do Tio Iroh com contexto do gameState do jogador (nível, streak, skills, missão atual)
-3. Em index.html: remover style="display:none" da <section id="tab-chat">
-4. Adicionar botão da aba Mentor na nav: <button class="tab-link" data-tab="chat">🎓 MENTOR</button>
-5. Em ui.js, criar função sendMentorMessage() que chama a Edge Function e renderiza resposta
-6. Commit: "feat: ativar aba Mentor — Tio Iroh IA contextualizado com gameState do jogador"
 ```
 
 ### FEAT-002 · Sistema de missões semanais
