@@ -1,6 +1,6 @@
 // state.js
 import { localDateStr, getXpToNextForLevel, hasSkillLV3, initSkillsState, isQuestActiveOnDay } from './utils.js';
-import { syncQuestsByLevel, checkDungeonExpiry, checkWeeklyBossExpiry, spawnDungeon, checkAchievements, saveToCloud } from './game-logic.js';
+import { syncQuestsByLevel, checkDungeonExpiry, checkWeeklyBossExpiry, spawnDungeon, checkAchievements, saveToCloud, checkWeeklyChallengeReset } from './game-logic.js';
 
 // Versão vem da fonte única (1.core/version.js, carregado antes dos módulos).
 export const APP_VERSION = (typeof self !== 'undefined' && self.APP_VERSION) ? self.APP_VERSION : 'v0.0.0';
@@ -738,6 +738,7 @@ function loadGameData() {
     // Dungeons e Boss: verifica expiração e gera se não houver ativa
     checkDungeonExpiry();
     checkWeeklyBossExpiry();
+    checkWeeklyChallengeReset();
     if (!gameState.activeDungeon && hasSkillLV3()) {
         setTimeout(() => spawnDungeon(), 3000);
     }

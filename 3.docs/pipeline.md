@@ -1,7 +1,7 @@
 # LifeRPG OS — Pipeline de Pendências
 
 > **Sincronizado automaticamente com `pipeline.html`.** Não editar à mão — editar o array `items` no HTML e ressincronizar.
-> **Total: 12 itens pendentes.**
+> **Total: 10 itens pendentes.**
 
 ---
 
@@ -9,7 +9,7 @@
 
 *Nenhum item P0 pendente.*
 
-## 🟡 P1 — ALTO (4)
+## 🟡 P1 — ALTO (3)
 
 ### PWA-001 · iOS Safari: virtual keyboard empurra chat UI
 **Cluster:** Mobile & PWA | **Esforço:** M | **Tipo:** Bug | **Fase:** Próximas semanas
@@ -66,18 +66,6 @@ Ver 1.core/modules/social.js.
 4. Commit: "feat: busca de amigos por prefixo (ILIKE) ao invés de username exato"
 ```
 
-### MKT-002 · "Streak em risco" push notification às 22h
-**Cluster:** Marketing | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
-
-```
-1. Criar Supabase Edge Function `send-streak-reminder` que:
-   - Busca todos os users com push_subscription ativo que NÃO completaram nenhuma daily hoje
-   - Envia push notification com payload: { title: '⚠️ LifeRPG — Streak em Risco', body: 'Seu streak de X dias não sobrevive à meia-noite sem uma missão.' }
-2. No pg_cron, agendar: SELECT cron.schedule('streak-reminder', '0 22 * * *', $SELECT net.http_post(url := current_setting('app.edge_functions_url') || '/send-streak-reminder', headers := '{\"Authorization\": \"Bearer \" || current_setting(\"app.service_role_key\")}')$);
-3. Em pwa.js, garantir que push_subscription do usuário é salvo em uma tabela `push_subscriptions` ao se inscrever
-4. Commit: "feat: push notification de streak em risco às 22h via Edge Function + pg_cron"
-```
-
 ---
 
 ## 🟢 P2 — MÉDIO (2)
@@ -90,7 +78,7 @@ Ver 1.core/modules/social.js.
 2. Se days_absent >= 7: ativar flag gameState._comebackMode = true por 3 dias
 3. Em game-logic.js, em addRewards(): se _comebackMode === true, multiplicar XP por 1.5
 4. Mensagem especial do Iroh ao detectar retorno longo
-5. Commit: "feat: Modo Retorno — 1.5x XP por 3 dias após ausência de 7+ dias"
+5. Commit: "feat: Modo Retorno — 1.5x XP por 3 dias após ausência of 7+ dias"
 ```
 
 ### MKT-003 · Weekly Report: botão de compartilhar
@@ -108,7 +96,7 @@ Ver 1.core/modules/weekly-report.js, index.html.
 
 ---
 
-## 🔵 P3 — BAIXO (6)
+## 🔵 P3 — BAIXO (5)
 
 ### ENG-003 · styles.css: PurgeCSS e minificação para produção
 **Cluster:** Engenharia | **Esforço:** M | **Tipo:** Tech Debt | **Fase:** Futuro
@@ -129,17 +117,6 @@ Ver 1.core/modules/weekly-report.js, index.html.
 3. Benefício do prestige: +5% multiplicador permanente de XP por nível de prestige (max 3)
 4. Avatar especial dourado para prestige 1+ com borda especial automática
 5. Commit: "feat: Prestige system — progressão além do Rank S"
-```
-
-### FEAT-002 · Sistema de missões semanais
-**Cluster:** Game Design | **Esforço:** L | **Tipo:** Feature | **Fase:** Futuro
-
-```
-1. Criar tabela weekly_challenges (id, title, description, target_count, skill, xp_reward, gold_reward, week_number, year)
-2. Implementar lógica de contagem semanal separada do streak diário
-3. UI: banner na aba Missões mostrando desafio semanal atual com barra de progresso
-4. Resetar contagem toda segunda-feira às 00h via pg_cron
-5. Commit: "feat: sistema de Desafios Semanais com recompensas de XP e Gold"
 ```
 
 ### FEAT-003 · Landing page pública com CTA de instalação

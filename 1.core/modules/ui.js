@@ -1288,6 +1288,38 @@ function renderQuests() {
         dungeonBanner.style.display = 'none';
     }
 
+    // Renderiza Desafio Semanal (se houver ativo)
+    const weeklyChallengeBanner = document.getElementById('weekly-challenge-banner');
+    if (gameState.weeklyChallenge && weeklyChallengeBanner) {
+        const wc = gameState.weeklyChallenge;
+        weeklyChallengeBanner.style.display = 'block';
+        
+        const percent = Math.min(100, Math.round((wc.current / wc.target) * 100));
+        
+        weeklyChallengeBanner.innerHTML = `
+            <div class="weekly-challenge-card" style="background: linear-gradient(135deg, rgba(59,130,246,0.03) 0%, rgba(59,130,246,0.1) 100%); border: 1px solid rgba(59,130,246,0.3); border-radius: 8px; padding: 15px; box-shadow: 0 0 10px rgba(59,130,246,0.1);">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 10px; color: #3b82f6; font-family: var(--font-hud); letter-spacing: 1px;">DESAFIO SEMANAL (SEMANA ${wc.week})</div>
+                            <div style="font-size: 15px; font-weight: bold; margin-top: 3px; color: white;">${wc.title}</div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 1px;">${wc.description}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="font-hud" style="font-size: 16px; font-weight: bold; color: #3b82f6;">${wc.current}/${wc.target}</div>
+                            <div style="font-size: 9px; color: var(--text-secondary); margin-top: 2px;">+${wc.xpReward} XP · +${wc.goldReward} 💰</div>
+                        </div>
+                    </div>
+                    <div class="progress-bar-track" style="width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-top: 4px;">
+                        <div class="progress-bar-fill" style="width: ${percent}%; background: #3b82f6; box-shadow: 0 0 8px rgba(59,130,246,0.6); height: 100%; transition: width 0.3s ease-in-out;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (weeklyChallengeBanner) {
+        weeklyChallengeBanner.style.display = 'none';
+    }
+
     // Helper para mapeamento de skills para atributos/colunas
     const skillToMainAttr = {
         mental: 'willpower', routine: 'willpower',

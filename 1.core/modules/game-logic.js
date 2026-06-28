@@ -185,7 +185,53 @@ function completeDungeon() {
         showSystemToast(`🏆 *DUNGEON CONCLUÍDA!* Você completou *"${d.title}"*!\n\n+${xpGain} XP · +${goldGain} 💰 concedidos. Iroh está orgulhoso.`);
     }, 800);
 
-    renderQuests();
+
+// ==========================================================================
+// SISTEMA DE DESAFIOS SEMANAIS (WEEKLY CHALLENGES)
+// ==========================================================================
+const WEEKLY_CHALLENGES_POOL = [
+    { title: 'Maratona Física', description: 'Conclua 4 missões de Força 💪 nesta semana', skill: 'physical', target: 4, xpReward: 150, goldReward: 75 },
+    { title: 'Templo Mental', description: 'Conclua 5 missões de Mente 🧠 nesta semana', skill: 'mental', target: 5, xpReward: 150, goldReward: 75 },
+    { title: 'Erudito do Sistema', description: 'Conclua 4 missões de Sabedoria 📚 nesta semana', skill: 'wisdom', target: 4, xpReward: 150, goldReward: 75 },
+    { title: 'Produtividade Extrema', description: 'Conclua 5 missões de Foco 🎯 nesta semana', skill: 'productivity', target: 5, xpReward: 150, goldReward: 75 },
+    { title: 'Mestre da Rotina', description: 'Conclua 6 missões de Rotina 🛏️ nesta semana', skill: 'routine', target: 6, xpReward: 180, goldReward: 90 },
+    { title: 'Carisma do Caçador', description: 'Conclua 3 missões de Social 🤝 nesta semana', skill: 'social', target: 3, xpReward: 120, goldReward: 60 }
+];
+
+function getWeekNumber(d) {
+    const date = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay()||7));
+    const yearStart = new Date(Date.UTC(date.getUTCFullYear(),0,1));
+    const weekNo = Math.ceil(( ( (date - yearStart) / 86400000) + 1)/7);
+    return { week: weekNo, year: date.getUTCFullYear() };
+}
+
+function checkWeeklyChallengeReset() {
+    const current = getWeekNumber(new Date());
+    const wc = gameState.weeklyChallenge;
+
+    if (!wc || wc.week !== current.week || wc.year !== current.year) {
+        if (wc && !wc.completed) {
+            setTimeout(() => {
+                showSystemToast(`📅 *SEMANA RESETADA.* O desafio semanal anterior *"${wc.title}"* expirou.`);
+            }, 1000);
+        }
+
+        const pick = WEEKLY_CHALLENGES_POOL[Math.floor(Math.random() * WEEKLY_CHALLENGES_POOL.length)];
+        gameState.weeklyChallenge = {
+            title: pick.title,
+            description: pick.description,
+            skill: pick.skill,
+            target: pick.target,
+            current: 0,
+            xpReward: pick.xpReward,
+            goldReward: pick.goldReward,
+            completed: false,
+            week: current.week,
+            year: current.year
+        };
+        saveGameData();
+    }
 }
 
 
@@ -634,6 +680,15 @@ function toggleQuest(id) {
         // Deduz pontos no atributo
         deductSkillXP(skillType);
 
+        // Atualiza progresso do Desafio Semanal (decrementa se compatível)
+        if (gameState.weeklyChallenge && skillType === gameState.weeklyChallenge.skill) {
+            if (gameState.weeklyChallenge.completed) {
+                gameState.weeklyChallenge.completed = false;
+                deductRewards(gameState.weeklyChallenge.xpReward, gameState.weeklyChallenge.goldReward);
+            }
+            gameState.weeklyChallenge.current = Math.max(0, (gameState.weeklyChallenge.current || 0) - 1);
+        }
+
         // META-001: desfaz a contagem total ao desmarcar (nunca abaixo de 0).
         gameState._totalQuestsCompleted = Math.max(0, (gameState._totalQuestsCompleted || 0) - 1);
     } else {
@@ -660,6 +715,19 @@ function toggleQuest(id) {
         quest.completed = true;
         addRewards(xpGained, goldGained);
         addSkillXP(skillType);
+
+        // Atualiza progresso do Desafio Semanal
+        if (gameState.weeklyChallenge && !gameState.weeklyChallenge.completed && skillType === gameState.weeklyChallenge.skill) {
+            gameState.weeklyChallenge.current = Math.min(gameState.weeklyChallenge.target, (gameState.weeklyChallenge.current || 0) + 1);
+            if (gameState.weeklyChallenge.current >= gameState.weeklyChallenge.target) {
+                gameState.weeklyChallenge.completed = true;
+                gameState.xp += gameState.weeklyChallenge.xpReward;
+                gameState.gold += gameState.weeklyChallenge.goldReward;
+                setTimeout(() => {
+                    showSystemToast(`🏆 *DESAFIO SEMANAL CONCLUÍDO!*\n\n*${gameState.weeklyChallenge.title}* foi completado!\n\n+${gameState.weeklyChallenge.xpReward} XP · +${gameState.weeklyChallenge.goldReward} 💰 concedidos.`);
+                }, 1500);
+            }
+        }
 
         // META-001: contadores p/ achievements de volume (total acumulado + pico diário).
         gameState._totalQuestsCompleted = (gameState._totalQuestsCompleted || 0) + 1;
@@ -1343,5 +1411,6 @@ export {
     showQuestCleared,
     syncQuestsByLevel,
     getPendingRankEvaluation,
-    buyRankEvaluation
+    buyRankEvaluation,
+    checkWeeklyChallengeReset
 };
