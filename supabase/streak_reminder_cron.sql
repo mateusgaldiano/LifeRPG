@@ -30,8 +30,8 @@ WITH CHECK (auth.uid() = user_id);
 -- 2. Habilita pg_cron e define o agendamento
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
--- Remove agendamento antigo se existir
-SELECT cron.unschedule('streak-reminder-daily');
+-- Remove agendamento antigo se existir (de forma segura, sem dar erro se não existir)
+SELECT cron.unschedule(jobid) FROM cron.job WHERE jobname = 'streak-reminder-daily';
 
 -- Agenda chamada diária às 22h00 (horário de Brasília se o servidor estiver em UTC/GMT-3, caso contrário ajuste o cron)
 -- Substitua apenas '<SERVICE_ROLE_KEY>' pela chave secreta do seu projeto (encontrada em Settings -> API -> service_role key no painel do Supabase).
