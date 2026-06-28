@@ -1,7 +1,7 @@
 # LifeRPG OS — Pipeline de Pendências
 
 > **Sincronizado automaticamente com `pipeline.html`.** Não editar à mão — editar o array `items` no HTML e ressincronizar.
-> **Total: 13 itens pendentes.**
+> **Total: 12 itens pendentes.**
 
 ---
 
@@ -9,7 +9,7 @@
 
 *Nenhum item P0 pendente.*
 
-## 🟡 P1 — ALTO (5)
+## 🟡 P1 — ALTO (4)
 
 ### PWA-001 · iOS Safari: virtual keyboard empurra chat UI
 **Cluster:** Mobile & PWA | **Esforço:** M | **Tipo:** Bug | **Fase:** Próximas semanas
@@ -52,20 +52,6 @@ Ver 1.core/styles.css.
 4. Em ui.js, adicionar listener nos tabs mobile para alternar qual .quest-attr-column tem a classe active-mobile
 5. Primeira coluna ativa por padrão no load mobile
 6. Commit: "feat: layout responsivo de quests em mobile (1 coluna com tabs)"
-```
-
-### UX-004 · Level Up overlay não mostra o que desbloqueou
-**Cluster:** UX/Visual | **Esforço:** M | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-Ver 1.core/modules/ui.js, index.html.
-1. Em ui.js, localizar a função triggerLevelUpOverlay
-2. Após calcular o novo nível, buscar em ALL_HABITS_DATABASE os hábitos com minLevel === novoNivel
-3. Buscar em BOSS_QUEST_BY_LEVEL se o novo nível ativa uma boss quest
-4. Adicionar no overlay HTML (index.html) uma div #levelup-unlocks logo abaixo do .levelup-new-level
-5. Injetar via JS: lista de novos hábitos + boss quest ativada (se houver) + próximo rank (se rank up)
-6. Estilizar: fundo rgba(124,58,237,0.1), border roxa, padding 10px, font-size 12px
-7. Commit: "feat: overlay de Level Up exibe hábitos desbloqueados e boss quest ativada"
 ```
 
 ### SOCIAL-001 · Friends: busca por prefixo ao invés de username exato
@@ -174,7 +160,7 @@ Ver 1.core/modules/weekly-report.js, index.html.
 1. Criar tabela invite_codes (code text PK, created_by uuid, used_by uuid, created_at, used_at)
 2. Gerar código único ao usuário se inscrever (8 chars alfanumérico)
 3. URL de convite: https://mateusgaldiano.github.io/LifeRPG/?invite=CODE
-4. Ao novo usuário completar onboarding with invite code: +50 Gold para quem convidou, +30 Gold para o novo
+4. Ao novo usuário completar onboarding com invite code: +50 Gold para quem convidou, +30 Gold para o novo
 5. Achievement \"Recrutador\" ao convidar 3 amigos
 6. Commit: \"feat: sistema de convite com link único e recompensas bilaterais\"
 ```

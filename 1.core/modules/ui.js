@@ -1,11 +1,11 @@
 // ui.js
-import { gameState, saveGameData, APP_VERSION } from './state.js';
+import { gameState, saveGameData, APP_VERSION, ALL_HABITS_DATABASE, BOSS_QUESTS } from './state.js';
 import {
     localDateStr, getRankForLevel, debounce, hasPerk, calcStreakMultiplier,
     calcStreakGoldMultiplier, calcGroupMultiplier, getSynergyXpBonus,
     getSynergyGoldBonus, getPerkXpBonus, initSkillsState, isQuestActiveOnDay
 } from './utils.js';
-import { toggleQuest, adjustWater, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation } from './game-logic.js';
+import { toggleQuest, adjustWater, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation, BOSS_QUEST_BY_LEVEL } from './game-logic.js';
 import { setupSettingsListeners } from './pwa.js';
 
 function renderAchievements() {
@@ -1499,6 +1499,47 @@ function triggerLevelUpOverlay() {
         rankUpEl.style.display = 'block';
     } else {
         rankUpEl.style.display = 'none';
+    }
+
+    // --- UX-004: Detectar e renderizar desbloqueios ---
+    const unlocksContainer = document.getElementById('levelup-unlocks');
+    const unlocksList = document.getElementById('levelup-unlocks-list');
+    
+    if (unlocksContainer && unlocksList) {
+        unlocksList.innerHTML = '';
+        const unlockedItems = [];
+
+        // 1. Procurar novos hábitos em ALL_HABITS_DATABASE
+        if (Array.isArray(ALL_HABITS_DATABASE)) {
+            const newHabits = ALL_HABITS_DATABASE.filter(h => h.minLevel === gameState.level);
+            newHabits.forEach(h => {
+                const icon = h.icon || '📜';
+                // Limpa o sufixo " (X min)" do título para exibição mais concisa
+                const cleanTitle = h.title.replace(/\s*\(\d+\s*min\)/gi, '');
+                unlockedItems.push(`${icon} Hábito: <strong>${cleanTitle}</strong>`);
+            });
+        }
+
+        // 2. Procurar se ativou Boss Quest
+        if (BOSS_QUEST_BY_LEVEL && BOSS_QUESTS) {
+            const bossId = BOSS_QUEST_BY_LEVEL[gameState.level];
+            if (bossId && BOSS_QUESTS[bossId]) {
+                const bq = BOSS_QUESTS[bossId];
+                unlockedItems.push(`⚔️ Chefe: <strong>${bq.title}</strong>`);
+            }
+        }
+
+        if (unlockedItems.length > 0) {
+            unlockedItems.forEach(itemText => {
+                const li = document.createElement('li');
+                li.style.marginBottom = '6px';
+                li.innerHTML = itemText;
+                unlocksList.appendChild(li);
+            });
+            unlocksContainer.style.display = 'block';
+        } else {
+            unlocksContainer.style.display = 'none';
+        }
     }
 
     document.getElementById('level-up-overlay').style.display = 'flex';

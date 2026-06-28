@@ -1154,6 +1154,15 @@
                     <span id="overlay-old-rank">RANK E</span> → <span id="overlay-new-rank">RANK D</span>
                 </div>
                 <p class="levelup-desc">O Sistema reconheceu sua evolução.</p>
+                
+                <!-- UX-004: Novos desbloqueios exibidos dinamicamente -->
+                <div id="levelup-unlocks" style="display:none; background: rgba(147, 51, 234, 0.08); border: 1px solid rgba(147, 51, 234, 0.25); padding: 12px; border-radius: 8px; margin: 15px auto; text-align: left; max-width: 280px; width: 100%; box-sizing: border-box;">
+                    <div style="font-family: var(--font-hud); font-size: 10px; color: var(--neon-purple); letter-spacing: 1px; margin-bottom: 6px; text-align: center;">🔓 DESBLOQUEADO</div>
+                    <ul id="levelup-unlocks-list" style="margin: 0; padding-left: 15px; font-size: 11px; color: var(--text-secondary); line-height: 1.4; list-style-type: square;">
+                        <!-- Injetado via JS -->
+                    </ul>
+                </div>
+
                 <button id="btn-close-levelup" class="btn-submit">CONTINUAR</button>
             </div>
         </div>
