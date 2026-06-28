@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.28] — 2026-06-28
+- **Supressão de Toasts de Erro de Sync quando Offline:**
+  - **Checagem de navigator.onLine nas APIs do Supabase:** Adicionada verificação de status de conexão ativa antes de realizar chamadas de rede no Supabase em `saveToSupabase`, `saveBuffsToSupabase`, `deleteBuffFromSupabase`, `syncQuestsToSupabase`, `saveAllHistoryToSupabase` e `syncInventoryToSupabase`.
+  - **Experiência Offline Silenciosa:** Evita a exibição redundante e alarmante de toasts como `TypeError: Failed to fetch` e `Erro de Sincronização` quando o jogador realiza ações normais offline. O banner vermelho já indica o status e a sincronização automática acontecerá transparentemente quando a conexão retornar.
+
 ## [v2.1.27] — 2026-06-28
 - **Banner de Status Offline & Sync Automático (PWA-003 - P1 Alto):**
   - **Banner Indicador Offline:** Adicionado elemento de banner vermelho no topo da tela (`#offline-banner`) com mensagem informativa visual quando o navegador perde a conexão com a internet.

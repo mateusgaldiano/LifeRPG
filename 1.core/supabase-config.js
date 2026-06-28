@@ -661,6 +661,7 @@ window.forceLoadFromCloud = async function() {
 // --------------------------------------------------------------------------
 window.saveToSupabase = async function() {
   if (!window._currentUserDbId) return;
+  if (!navigator.onLine) return;
 
   const isAbsolutelyEmpty = !gameState.playerName
       && gameState.level <= 1
@@ -769,6 +770,7 @@ function findLocalQuest(id) {
 
 async function syncQuestsToSupabase() {
   if (!window._currentUserDbId) return;
+  if (!navigator.onLine) return;
 
   const allQuests = [
     ...(gameState.quests || []).map(q => ({ ...q, type: q.type || 'daily' })),
@@ -985,6 +987,7 @@ window.loadQuestsFromSupabase = async function() {
 // --------------------------------------------------------------------------
 async function saveAllHistoryToSupabase() {
   if (!window._currentUserDbId) return;
+  if (!navigator.onLine) return;
 
   const historyEntries = Object.entries(gameState.history || {});
   if (historyEntries.length === 0) return;
@@ -1037,6 +1040,7 @@ window.loadHistoryFromSupabase = async function() {
 // --------------------------------------------------------------------------
 async function syncInventoryToSupabase() {
   if (!window._currentUserDbId) return;
+  if (!navigator.onLine) return;
 
   const unlockedSkins = gameState.inventory?.unlockedSkins || ['default'];
   const activeSkin = gameState.inventory?.activeSkin || 'default';
@@ -1064,6 +1068,7 @@ async function syncInventoryToSupabase() {
 
 window.saveBuffsToSupabase = async function() {
   if (!window._currentUserDbId) return;
+  if (!navigator.onLine) return;
 
   const buffs = gameState.buffs || {};
   const rows = [];
@@ -1153,6 +1158,7 @@ window.loadBuffsFromSupabase = async function() {
 
 window.deleteBuffFromSupabase = async function(buffType) {
   if (!window._currentUserDbId) return;
+  if (!navigator.onLine) return;
   await supabaseClient
     .from('user_buffs')
     .delete()
