@@ -1404,6 +1404,7 @@ async function openPlayerProfile(userId) {
     const activitiesList = document.getElementById('profile-activities-list');
     const actionBtn = document.getElementById('btn-profile-friend-action');
     const declineBtn = document.getElementById('btn-profile-friend-decline');
+    const pvpChallengeBtn = document.getElementById('btn-profile-pvp-challenge');
 
     if (!nameEl || !actionBtn || !declineBtn) return;
 
@@ -1417,6 +1418,7 @@ async function openPlayerProfile(userId) {
     if (activitiesList) activitiesList.innerHTML = '<div class="profile-activities-placeholder">Carregando atividades...</div>';
     actionBtn.style.display = 'none';
     declineBtn.style.display = 'none';
+    if (pvpChallengeBtn) pvpChallengeBtn.style.display = 'none';
 
     modal.style.display = 'block';
 
@@ -1521,6 +1523,7 @@ async function openPlayerProfile(userId) {
     // 2. Checar status da amizade com o usuário atual
     let relationship = null;
     let isSelf = userId === window._currentUserDbId;
+    window._profileViewTarget = userId;
 
     if (window._currentUserDbId && !isSelf) {
         const { data: rel, error: relError } = await supabaseClient
@@ -1540,6 +1543,10 @@ async function openPlayerProfile(userId) {
     actionBtn.style.background = '';
     actionBtn.style.border = '';
     actionBtn.style.color = '';
+
+    if (pvpChallengeBtn) {
+        pvpChallengeBtn.style.display = isSelf ? 'none' : 'block';
+    }
 
     // Remover antigos event listeners clonando os botões
     const newActionBtn = actionBtn.cloneNode(true);
@@ -1752,6 +1759,19 @@ function setupPlayerProfileListeners() {
         window.addEventListener('click', (e) => {
             if (e.target === modal) {
                 modal.style.display = 'none';
+            }
+        });
+    }
+
+    // Ouvinte para desafiar jogador direto do perfil
+    const pvpChallengeBtn = document.getElementById('btn-profile-pvp-challenge');
+    if (pvpChallengeBtn && modal) {
+        pvpChallengeBtn.addEventListener('click', () => {
+            if (window._profileViewTarget) {
+                modal.style.display = 'none';
+                if (typeof openPvpChallengeModal === 'function') {
+                    openPvpChallengeModal(window._profileViewTarget);
+                }
             }
         });
     }

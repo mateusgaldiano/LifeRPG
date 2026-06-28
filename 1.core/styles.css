@@ -3857,3 +3857,21 @@ body::before {
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     pointer-events: none;
 }
+
+/* --- NEXUS / Roadmap Styles --- */
+#btn-header-roadmap { color: var(--neon-purple); }
+#btn-header-roadmap:hover { color: #d8b4fe; background: rgba(147,51,234,0.12); box-shadow: 0 0 10px rgba(147,51,234,0.3); }
+
+/* --- Mobile / Responsiveness updates for Weekly Report (UX-006) --- */
+.weekly-report-modal-box .report-stat-card {
+    padding: 12px 4px !important;
+}
+
+@media (max-width: 480px) {
+    .weekly-report-modal-box .report-days-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+    #report-rate-val {
+        font-size: 34px !important;
+    }
+}

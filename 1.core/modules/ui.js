@@ -1632,6 +1632,8 @@ function setupEventListeners() {
         if (modalRw && e.target === modalRw) modalRw.style.display = 'none';
         const modalWr = document.getElementById('modal-weekly-report');
         if (modalWr && e.target === modalWr) modalWr.style.display = 'none';
+        const modalRoadmap = document.getElementById('modal-roadmap');
+        if (modalRoadmap && e.target === modalRoadmap) modalRoadmap.style.display = 'none';
     });
 
     // Form: Side Quest Toggle display for weekly selector
@@ -1754,6 +1756,20 @@ function setupEventListeners() {
             const weekStr = btn.dataset.week || '';
             claimWeeklyReport(rewards, weekStr);
         }
+    });
+
+    // Roadmap (NEXUS)
+    document.getElementById('btn-header-roadmap')?.addEventListener('click', () => {
+        const modalRoadmap = document.getElementById('modal-roadmap');
+        if (modalRoadmap) modalRoadmap.style.display = 'flex';
+    });
+    document.getElementById('btn-close-roadmap')?.addEventListener('click', () => {
+        const modalRoadmap = document.getElementById('modal-roadmap');
+        if (modalRoadmap) modalRoadmap.style.display = 'none';
+    });
+    document.getElementById('btn-close-roadmap-ok')?.addEventListener('click', () => {
+        const modalRoadmap = document.getElementById('modal-roadmap');
+        if (modalRoadmap) modalRoadmap.style.display = 'none';
     });
 
     if (typeof setupRadarToggle === 'function') {
