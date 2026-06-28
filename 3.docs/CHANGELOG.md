@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.26] — 2026-06-28
+- **Fix do Chat Global (BUG-002 - P0 Crítico):**
+  - **Exibição Otimista de Mensagens:** O envio de mensagens de chat agora usa `.insert().select()` e insere a mensagem na UI localmente de forma imediata e transparente caso a transação seja bem-sucedida, sem depender exclusivamente do Realtime.
+  - **Prevenção de Duplicados:** Implementado controle no `appendMessageUI` que verifica o ID do elemento no DOM para evitar renderização duplicada entre a postagem local e a subscription.
+  - **Robustecimento do Realtime:** Removido o filtro de coluna no Postgres Changes (`filter: 'channel=eq.global'`), que falhava silenciosamente em diversos cenários, e transferida a filtragem de canal (`global`) diretamente para o callback em JavaScript.
+
 ## [v2.1.25] — 2026-06-28
 - **Endurecimento e Rebalanceamento Geral da Economia:**
   - **Preços da Loja e Taverna Reajustados:** Aumento de $2\times$ a $6\times$ nos consumíveis e cosméticos (ex: Poção de Auto-Cura de 400 para 800, Escudo de 500 para 1000, e Borda Imperador Arise de 4000 para 6000).

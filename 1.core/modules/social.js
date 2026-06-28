@@ -655,18 +655,19 @@ function setupRealtimeChat() {
             {
                 event: 'INSERT',
                 schema: 'public',
-                table: 'chat_messages',
-                filter: 'channel=eq.global'
+                table: 'chat_messages'
             },
             (payload) => {
-                const chatContainer = document.getElementById('chat-messages-list');
-                if (chatContainer) {
-                    // Remover empty state se houver
-                    const emptyState = chatContainer.querySelector('.chat-empty-state');
-                    if (emptyState) emptyState.remove();
-                    
-                    appendMessageUI(payload.new);
-                    scrollChatToBottom();
+                if (payload.new && payload.new.channel === 'global') {
+                    const chatContainer = document.getElementById('chat-messages-list');
+                    if (chatContainer) {
+                        // Remover empty state se houver
+                        const emptyState = chatContainer.querySelector('.chat-empty-state');
+                        if (emptyState) emptyState.remove();
+                        
+                        appendMessageUI(payload.new);
+                        scrollChatToBottom();
+                    }
                 }
             }
         )
@@ -679,11 +680,19 @@ function appendMessageUI(msg) {
     const chatContainer = document.getElementById('chat-messages-list');
     if (!chatContainer) return;
 
+    // Evitar duplicados caso a inserção local e o evento de Realtime aconteçam quase juntos
+    if (msg.id && document.querySelector(`[data-msg-id="${msg.id}"]`)) {
+        return;
+    }
+
     const isSelf = msg.user_id === window._currentUserDbId;
     
     // Criar elementos de forma segura contra XSS
     const msgDiv = document.createElement('div');
     msgDiv.className = `chat-msg${isSelf ? ' self' : ''}`;
+    if (msg.id) {
+        msgDiv.setAttribute('data-msg-id', msg.id);
+    }
 
     const headerDiv = document.createElement('div');
     headerDiv.className = 'chat-msg-header';
@@ -788,7 +797,7 @@ async function handleSendMessage() {
     if (btn) btn.disabled = true;
 
     const userRankLetter = getRankForLevel(gameState.level).css.replace('rank-', '').toUpperCase();
-    const { error } = await supabaseClient
+    const { data, error } = await supabaseClient
         .from('chat_messages')
         .insert({
             user_id: window._currentUserDbId,
@@ -797,7 +806,8 @@ async function handleSendMessage() {
             rank: userRankLetter,
             channel: 'global',
             content: content
-        });
+        })
+        .select();
 
     input.disabled = false;
     if (btn) btn.disabled = false;
@@ -809,6 +819,16 @@ async function handleSendMessage() {
     } else {
         input.value = '';
         lastMessageTime = Date.now();
+        if (data && data.length > 0) {
+            // Remover empty state se houver
+            const chatContainer = document.getElementById('chat-messages-list');
+            if (chatContainer) {
+                const emptyState = chatContainer.querySelector('.chat-empty-state');
+                if (emptyState) emptyState.remove();
+            }
+            appendMessageUI(data[0]);
+            scrollChatToBottom();
+        }
     }
 }
 
