@@ -1667,9 +1667,6 @@ function setupEventListeners() {
         let xp = 25, gold = 20;
         if (difficulty === 'easy') { xp = 10; gold = 10; }
         else if (difficulty === 'hard') { xp = 50; gold = 40; }
-        else if (difficulty === 'rank_b') { xp = 75; gold = 60; }
-        else if (difficulty === 'rank_a') { xp = 100; gold = 80; }
-        else if (difficulty === 'rank_s') { xp = 150; gold = 120; }
 
         if (type === 'side') {
             gameState.sideQuests.push({ id: 'sq-' + Date.now(), title, type: 'side', icon, difficulty, completed: false, xp, gold });

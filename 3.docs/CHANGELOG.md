@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.31] — 2026-06-28
+- **Simplificação de Ranks na Criação (Três Níveis Clássicos):**
+  - **Reversão para Três Níveis de Dificuldade:** Removida a possibilidade de criar quests personalizadas com Ranks B, A e S no formulário de criação em `index.html` e `ui.js`. Isso preserva as grandes recompensas de ouro exclusivamente para Dungeons semanais e Boss Quests (subidas de Rank de avatar).
+  - **Renomeação Amigável:** As opções no modal de criação foram rebatizadas e alinhadas:
+    - **Fácil (Rank E):** +10 XP / +10 Ouro
+    - **Intermediário (Rank D):** +25 XP / +20 Ouro
+    - **Difícil (Rank C):** +50 XP / +40 Ouro
+
 ## [v2.1.30] — 2026-06-28
 - **Suporte Total de Ranks na Criação de Quests e Ouro Fácil (+10):**
   - **Ajuste de Ouro Fácil (Easy):** Elevado o retorno de ouro da dificuldade Fácil (Rank E) de $8 \rightarrow \mathbf{10\text{ ouro}}$ nas missões normais e da biblioteca.
