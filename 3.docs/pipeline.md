@@ -1,29 +1,15 @@
 # LifeRPG OS — Pipeline de Pendências
 
 > **Sincronizado automaticamente com `pipeline.html`.** Não editar à mão — editar o array `items` no HTML e ressincronizar.
-> **Total: 20 itens pendentes.**
+> **Total: 17 itens pendentes.**
 
 ---
 
-## 🔴 P0 — CRÍTICO (1)
+## 🔴 P0 — CRÍTICO (0)
 
-### BUG-002 · Mensagens do chat global não aparecem ao enviar
-**Cluster:** Bug Crítico | **Esforço:** S | **Tipo:** Bug | **Fase:** Agora
+*Nenhum item P0 pendente.*
 
-Usuário envia mensagem, ela não aparece no canal. Provável causa: falta de subscription ativa no canal Realtime ou RLS bloqueando SELECT na tabela de chat.
-
-```
-Ver 1.core/modules/social.js.
-1. Abrir `1.core/modules/social.js` e localizar a função de envio de mensagem do chat global
-2. Verificar se existe subscription ativa no canal Realtime de chat (procurar por `.channel(` ou `.on('postgres_changes'`)
-3. Se subscription não existir: criar `supabase.channel('global-chat').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'global_chat' }, callback).subscribe()`
-4. No Supabase Dashboard → Authentication → Policies: confirmar que a tabela `global_chat` tem RLS policy de SELECT para usuários autenticados
-5. Adicionar policy se ausente: `CREATE POLICY "Authenticated users can read chat" ON global_chat FOR SELECT TO authenticated USING (true);`
-6. Testar: enviar mensagem e confirmar que aparece sem refresh
-7. Commit: "fix: subscription Realtime no chat global + RLS policy de SELECT"
-```
-
-## 🟡 P1 — ALTO (9)
+## 🟡 P1 — ALTO (7)
 
 ### PWA-001 · iOS Safari: virtual keyboard empurra chat UI
 **Cluster:** Mobile & PWA | **Esforço:** M | **Tipo:** Bug | **Fase:** Próximas semanas
@@ -42,18 +28,6 @@ Ver 1.core/modules/social.js, 1.core/styles.css.
    }
 5. Testar no iPhone via BrowserStack ou dispositivo real: abrir chat, focar no input, confirmar que campo de input não é coberto pelo teclado
 6. Commit: "fix: ajustar height do chat modal para visualViewport no iOS Safari"
-```
-
-### PWA-003 · Sem feedback de estado offline
-**Cluster:** Mobile & PWA | **Esforço:** M | **Tipo:** Bug | **Fase:** Próximas semanas
-
-```
-1. Adicionar div no index.html logo após a abertura do body: <div id="offline-banner" class="offline-banner" style="display:none">⚡ MODO OFFLINE — dados serão sincronizados ao reconectar</div>
-2. Em styles.css, criar .offline-banner: position fixed, top 0, width 100%, background #ef4444, color #fff, text-align center, padding 6px, font-size 12px, z-index 9999, font-family var(--font-hud), letter-spacing 1px
-3. Em pwa.js, adicionar:
-   window.addEventListener('offline', () => document.getElementById('offline-banner').style.display = 'block');
-   window.addEventListener('online', () => { document.getElementById('offline-banner').style.display = 'none'; saveToCloud(); });
-4. Commit: "feat: banner de modo offline + trigger de sync ao reconectar"
 ```
 
 ### UX-002 · 3 colunas de quest muito estreitas em mobile
@@ -139,28 +113,14 @@ Ver 1.core/modules/social.js.
 1. Criar Supabase Edge Function `send-streak-reminder` que:
    - Busca todos os users com push_subscription ativo que NÃO completaram nenhuma daily hoje
    - Envia push notification com payload: { title: '⚠️ LifeRPG — Streak em Risco', body: 'Seu streak de X dias não sobrevive à meia-noite sem uma missão.' }
-2. No pg_cron, agendar: SELECT cron.schedule('streak-reminder', '0 22 * * *', $SELECT net.http_post(url := current_setting('app.edge_functions_url') || '/send-streak-reminder', headers := '{"Authorization": "Bearer " || current_setting("app.service_role_key")}')$);
+2. No pg_cron, agendar: SELECT cron.schedule('streak-reminder', '0 22 * * *', $SELECT net.http_post(url := current_setting('app.edge_functions_url') || '/send-streak-reminder', headers := '{\"Authorization\": \"Bearer \" || current_setting(\"app.service_role_key\")}')$);
 3. Em pwa.js, garantir que push_subscription do usuário é salvo em uma tabela `push_subscriptions` ao se inscrever
 4. Commit: "feat: push notification de streak em risco às 22h via Edge Function + pg_cron"
 ```
 
-### META-001 · Novos achievements — expandir catálogo
-**Cluster:** Meta-Progressão | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
+---
 
-```
-Ver 1.core/modules/game-logic.js.
-1. Em game-logic.js, localizar o array ACHIEVEMENTS_DEFS
-2. Adicionar os seguintes achievements ao array:
-   { id: 'quests_5_day', title: 'Dia Lendário', desc: 'Complete 5 missões em um único dia', icon: '🔥', rewardGold: 30, rarity: 'raro', check: (gs) => (gs._maxDailyCompleted || 0) >= 5, progress: (gs) => ({ cur: Math.min(gs._maxDailyCompleted || 0, 5), max: 5 }) },
-   { id: 'quests_50_total', title: 'Veterano', desc: 'Complete 50 missões no total', icon: '⚔️', rewardGold: 80, rarity: 'raro', check: (gs) => (gs._totalQuestsCompleted || 0) >= 50, progress: (gs) => ({ cur: Math.min(gs._totalQuestsCompleted || 0, 50), max: 50 }) },
-   { id: 'quests_100_total', title: 'Lenda', desc: 'Complete 100 missões no total', icon: '👑', rewardGold: 200, rarity: 'lendário', check: (gs) => (gs._totalQuestsCompleted || 0) >= 100, progress: (gs) => ({ cur: Math.min(gs._totalQuestsCompleted || 0, 100), max: 100 }) },
-   { id: 'pvp_first_win', title: 'Gladiador', desc: 'Vença seu primeiro duelo PvP', icon: '🏆', rewardGold: 100, rarity: 'raro', check: (gs) => (gs._pvpWins || 0) >= 1, progress: (gs) => ({ cur: Math.min(gs._pvpWins || 0, 1), max: 1 }) },
-   { id: 'friends_3', title: 'Aliança', desc: 'Tenha 3 amigos no sistema', icon: '🤝', rewardGold: 50, rarity: 'incomum', check: (gs) => (gs._friendsCount || 0) >= 3, progress: (gs) => ({ cur: Math.min(gs._friendsCount || 0, 3), max: 3 }) }
-3. Em toggleQuest, incrementar gs._totalQuestsCompleted++ ao completar qualquer quest
-4. Commit: "feat: 5 novos achievements — Dia Lendário, Veterano, Lenda, Gladiador, Aliança"
-```
-
-## 🟣 P2 — MÉDIO (3)
+## 🟢 P2 — MÉDIO (3)
 
 ### GAME-004 · Comeback mechanic para usuários que voltam após 7+ dias
 **Cluster:** Game Design | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
@@ -199,7 +159,9 @@ Ver 1.core/modules/weekly-report.js, index.html.
 3. Commit: "feat: botão de compartilhar relatório semanal como imagem"
 ```
 
-## ⚪ P3 — FUTURO (7)
+---
+
+## 🔵 P3 — BAIXO (7)
 
 ### ENG-003 · styles.css: PurgeCSS e minificação para produção
 **Cluster:** Engenharia | **Esforço:** M | **Tipo:** Tech Debt | **Fase:** Futuro
@@ -264,8 +226,8 @@ Ver 1.core/modules/weekly-report.js, index.html.
 2. Gerar código único ao usuário se inscrever (8 chars alfanumérico)
 3. URL de convite: https://mateusgaldiano.github.io/LifeRPG/?invite=CODE
 4. Ao novo usuário completar onboarding com invite code: +50 Gold para quem convidou, +30 Gold para o novo
-5. Achievement "Recrutador" ao convidar 3 amigos
-6. Commit: "feat: sistema de convite com link único e recompensas bilaterais"
+5. Achievement \"Recrutador\" ao convidar 3 amigos
+6. Commit: \"feat: sistema de convite com link único e recompensas bilaterais\"
 ```
 
 ### FEAT-005 · Roadmap gamificado dentro do app ("NEXUS")
