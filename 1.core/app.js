@@ -14,6 +14,7 @@ import {
     loadGameData,
     saveGameData,
     resetGameState,
+    queueQuestOp,
     updateSWQuestStatus
 } from './modules/state.js';
 
@@ -139,6 +140,7 @@ window.DUNGEON_DURATION_MS = DUNGEON_DURATION_MS;
 window.loadGameData = loadGameData;
 window.saveGameData = saveGameData;
 window.resetGameState = resetGameState;
+window.queueQuestOp = queueQuestOp;
 window.updateSWQuestStatus = updateSWQuestStatus;
 
 // Bind Utils

@@ -5,13 +5,22 @@
 const SUPABASE_URL = 'https://ppsqvppnunzagxqruoqf.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_nu9f4NzPEemdC4zm2bg1kw_88j7xeAz';
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: {
-    detectSessionInUrl: true,
-    persistSession: true,
-    autoRefreshToken: true
-  }
-});
+// Blindagem offline: se a lib do Supabase não carregou (ex.: 1º boot sem rede e
+// vendor ainda não cacheado), NÃO quebra o script. supabaseClient fica null e o
+// app segue 100% offline-first via localStorage. initSupabase resolve gracioso.
+const SUPABASE_AVAILABLE = (typeof supabase !== 'undefined' && supabase && typeof supabase.createClient === 'function');
+const supabaseClient = SUPABASE_AVAILABLE
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        detectSessionInUrl: true,
+        persistSession: true,
+        autoRefreshToken: true
+      }
+    })
+  : null;
+if (!SUPABASE_AVAILABLE) {
+  console.warn('[Supabase] Lib indisponível — rodando em modo offline (sem nuvem).');
+}
 
 // --------------------------------------------------------------------------
 // MAPA DE SKINS — local skin id → UUID da tabela items
@@ -169,6 +178,13 @@ window.initSupabase = function() {
         resolve(status);
       }
     };
+
+    // Sem lib do Supabase (offline / vendor não carregado): segue offline-first.
+    if (!supabaseClient) {
+      updateCloudStatusUI(false);
+      done();
+      return;
+    }
 
     supabaseClient.auth.onAuthStateChange(async (event, session) => {
       // Evitar processamento de boot duplicado
@@ -437,6 +453,11 @@ window.syncFromCloud = async function() {
   const syncUserId = window._currentUserDbId;
 
   try {
+    // Sobe a outbox ANTES de ler a nuvem: assim o que voltar já reflete as
+    // adições/exclusões locais e nada é perdido nem ressuscitado.
+    await window.flushQuestOps();
+    if (window._currentUserDbId !== syncUserId) return; // Abort check
+
     const { data: cloudUser } = await supabaseClient
       .from('users')
       .select('*')
@@ -548,7 +569,20 @@ window.syncFromCloud = async function() {
 window.forceLoadFromCloud = async function() {
   if (!window._currentUserDbId) return;
 
+  // Sem rede/lib: não tenta load (que seria no-op ou erro) e, principalmente,
+  // não arrisca tocar no estado local. Os dados locais permanecem salvos.
+  if (!supabaseClient || !navigator.onLine) {
+    if (typeof showSystemToast === 'function') {
+      showSystemToast('📴 Você está offline — sincronização adiada. Seus dados locais estão salvos.');
+    }
+    return;
+  }
+
   const syncUserId = window._currentUserDbId;
+
+  // Sobe a outbox ANTES de puxar, para a nuvem refletir as mutações locais.
+  await window.flushQuestOps();
+  if (window._currentUserDbId !== syncUserId) return; // Abort check
 
   const { data: cloudUser } = await supabaseClient
     .from('users')
@@ -701,6 +735,38 @@ window.saveToSupabase = async function() {
 // --------------------------------------------------------------------------
 // QUESTS — sync bidirecional usando local_id
 // --------------------------------------------------------------------------
+// Fonte única do mapeamento quest local → linha da tabela 'quests'.
+function questToRow(q) {
+  let serializedType = q.type || 'daily';
+  if (serializedType === 'weekly') {
+    serializedType = `weekly-${(q.daysOfWeek || []).join('-')}`;
+  }
+  return {
+    user_id: window._currentUserDbId,
+    local_id: q.id,
+    title: q.title,
+    skill: q.skill,
+    type: serializedType,
+    difficulty: q.difficulty || 'medium',
+    xp: q.xp,
+    gold: q.gold,
+    emoji: q.emoji || q.icon,
+    completed: !!q.completed,
+    completed_at: q.completed ? new Date().toISOString() : null,
+    from_library: !!q.fromLibrary,
+    recurring: q.type === 'daily' || q.type === 'weekly',
+    current: q.current ?? null,
+    target: q.target ?? null,
+  };
+}
+
+// Localiza uma quest no estado local (diárias/semanais ou side quests).
+function findLocalQuest(id) {
+  return (gameState.quests || []).find(q => q.id === id)
+      || (gameState.sideQuests || []).find(q => q.id === id)
+      || null;
+}
+
 async function syncQuestsToSupabase() {
   if (!window._currentUserDbId) return;
 
@@ -711,29 +777,7 @@ async function syncQuestsToSupabase() {
 
   const localIds = allQuests.map(q => q.id);
 
-  const rows = allQuests.map(q => {
-    let serializedType = q.type;
-    if (q.type === 'weekly') {
-      serializedType = `weekly-${(q.daysOfWeek || []).join('-')}`;
-    }
-    return {
-      user_id: window._currentUserDbId,
-      local_id: q.id,
-      title: q.title,
-      skill: q.skill,
-      type: serializedType,
-      difficulty: q.difficulty || 'medium',
-      xp: q.xp,
-      gold: q.gold,
-      emoji: q.emoji || q.icon,
-      completed: !!q.completed,
-      completed_at: q.completed ? new Date().toISOString() : null,
-      from_library: !!q.fromLibrary,
-      recurring: q.type === 'daily' || q.type === 'weekly',
-      current: q.current ?? null,
-      target: q.target ?? null,
-    };
-  });
+  const rows = allQuests.map(questToRow);
 
   if (rows.length > 0) {
     const { error } = await supabaseClient
@@ -772,6 +816,58 @@ window.deleteQuestFromCloud = async function(localId) {
   else console.log('[Supabase] Quest deletada da nuvem:', localId);
 };
 
+// --------------------------------------------------------------------------
+// FLUSH DA OUTBOX — replica gameState.questOps no Supabase (add/edit/delete)
+// Processa cada operação; remove da fila só em caso de sucesso. Falha (offline/
+// transitória) mantém a op na fila para o próximo flush. Idempotente e seguro
+// para chamar repetidamente (guard _flushingQuestOps evita sobreposição).
+// --------------------------------------------------------------------------
+let _flushingQuestOps = false;
+window.flushQuestOps = async function() {
+  if (!supabaseClient || !navigator.onLine || !window._currentUserDbId) return;
+  if (_flushingQuestOps) return;
+  if (!Array.isArray(gameState.questOps) || gameState.questOps.length === 0) return;
+
+  _flushingQuestOps = true;
+  try {
+    // Cópia para iterar; a fila viva é mutada conforme cada op sobe com sucesso.
+    const ops = [...gameState.questOps];
+    for (const op of ops) {
+      try {
+        const localQuest = op.op === 'upsert' ? findLocalQuest(op.id) : null;
+        if (op.op === 'delete' || !localQuest) {
+          // delete explícito, ou upsert de algo que já não existe local → deleta.
+          const { error } = await supabaseClient
+            .from('quests')
+            .delete()
+            .eq('user_id', window._currentUserDbId)
+            .eq('local_id', op.id);
+          if (error) throw error;
+        } else {
+          const { error } = await supabaseClient
+            .from('quests')
+            .upsert(questToRow(localQuest), { onConflict: 'user_id,local_id' });
+          if (error) throw error;
+        }
+        // Sucesso → remove esta op específica da fila viva.
+        const idx = gameState.questOps.findIndex(o => o.id === op.id && o.ts === op.ts);
+        if (idx !== -1) gameState.questOps.splice(idx, 1);
+      } catch (e) {
+        console.error('[Supabase] flushQuestOps: op falhou, mantida na fila:', op, e?.message || e);
+        break; // provavelmente offline/transitório — tenta tudo de novo depois.
+      }
+    }
+    localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+  } finally {
+    _flushingQuestOps = false;
+  }
+};
+
+// Reconexão: ao voltar a ficar online, sobe o que estiver pendente na fila.
+window.addEventListener('online', () => {
+  if (typeof window.flushQuestOps === 'function') window.flushQuestOps();
+});
+
 window.loadQuestsFromSupabase = async function() {
   if (!window._currentUserDbId) return;
 
@@ -797,7 +893,7 @@ window.loadQuestsFromSupabase = async function() {
   const resetToday = typeof window.localDateStr === 'function'
     && gameState._lastDailyResetDate === window.localDateStr();
 
-  gameState.quests = data
+  const cloudQuests = data
     .filter(q => q.type === 'daily' || (typeof q.type === 'string' && q.type.startsWith('weekly-')))
     .map(q => {
       let questType = q.type;
@@ -841,7 +937,7 @@ window.loadQuestsFromSupabase = async function() {
       };
     });
 
-  gameState.sideQuests = data
+  const cloudSideQuests = data
     .filter(q => q.type === 'side')
     .map(q => ({
       id: q.local_id,
@@ -856,6 +952,32 @@ window.loadQuestsFromSupabase = async function() {
       completed: completedTodaySide.has(q.local_id) ? true : !!q.completed,
       fromLibrary: q.from_library,
     }));
+
+  // MERGE GUIADO PELA OUTBOX: um load da nuvem só preserva quests locais que têm
+  // um upsert PENDENTE na fila (adição/edição que ainda não subiu). Assim:
+  //  • adição offline ainda não sincronizada → preservada;
+  //  • quest deletada em OUTRO aparelho (sumiu da nuvem, sem op pendente aqui)
+  //    → NÃO é ressuscitada. Some corretamente.
+  const cloudIds = new Set(cloudQuests.map(q => q.id));
+  const cloudSideIds = new Set(cloudSideQuests.map(q => q.id));
+  const pendingUpsertIds = new Set(
+    (gameState.questOps || []).filter(o => o.op === 'upsert').map(o => o.id)
+  );
+  const localOnly = (gameState.quests || [])
+    .filter(q => q && !cloudIds.has(q.id) && pendingUpsertIds.has(q.id));
+  const localOnlySide = (gameState.sideQuests || [])
+    .filter(q => q && !cloudSideIds.has(q.id) && pendingUpsertIds.has(q.id));
+
+  gameState.quests = [...cloudQuests, ...localOnly];
+  gameState.sideQuests = [...cloudSideQuests, ...localOnlySide];
+
+  // Adições preservadas ainda pendentes → garante o flush (online) p/ torná-las
+  // duráveis na nuvem. flushQuestOps faz upsert por id (não usa delete-orphans).
+  if ((localOnly.length || localOnlySide.length) && navigator.onLine) {
+    try { await window.flushQuestOps(); } catch (e) {
+      console.error('[Supabase] Falha ao subir quests locais preservadas:', e);
+    }
+  }
 };
 
 // --------------------------------------------------------------------------

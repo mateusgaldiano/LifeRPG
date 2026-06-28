@@ -508,14 +508,20 @@ function setupPullToRefresh() {
         if (dist > 70) {
             // Logado → sincronizar com a nuvem
             if (window._currentUserDbId && typeof window.forceLoadFromCloud === 'function') {
-                ind.innerHTML = '☁️ Sincronizando...';
-                ind.style.height = '44px';
-                try {
-                    await window.forceLoadFromCloud();
-                    ind.innerHTML = '✅ Sincronizado!';
-                    showSystemToast('☁️ Dados sincronizados com a nuvem.');
-                } catch (err) {
-                    ind.innerHTML = '❌ Erro ao sincronizar';
+                if (!navigator.onLine) {
+                    // Offline: não sincroniza, mas garante que os dados locais não se percam.
+                    ind.innerHTML = '📴 Offline — não sincronizado';
+                    showSystemToast('📴 Você está offline. Seus dados locais estão salvos e subirão quando reconectar.');
+                } else {
+                    ind.innerHTML = '☁️ Sincronizando...';
+                    ind.style.height = '44px';
+                    try {
+                        await window.forceLoadFromCloud();
+                        ind.innerHTML = '✅ Sincronizado!';
+                        showSystemToast('☁️ Dados sincronizados com a nuvem.');
+                    } catch (err) {
+                        ind.innerHTML = '❌ Erro ao sincronizar';
+                    }
                 }
             } else {
                 // Não logado → recarregar normalmente

@@ -9,6 +9,26 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.23] — 2026-06-27
+- **Outbox de operações de quest (sync confiável de adições E exclusões):**
+  - **Fila de intenções (`gameState.questOps`):** cada adição/edição registra uma op `upsert` e cada exclusão registra uma op `delete` ([`state.js` → `queueQuestOp`](../1.core/modules/state.js)). Persiste no `localStorage` junto com o estado; migração automática para usuários existentes.
+  - **`flushQuestOps()`** ([`supabase-config.js`](../1.core/supabase-config.js)) replica a fila no Supabase (upsert por id ou delete por id), removendo cada op só após sucesso — falha/offline mantém na fila. Disparado: ao adicionar/excluir (se online), no início de `syncFromCloud`/`forceLoadFromCloud` (**antes** de puxar) e no evento `online` (reconexão).
+  - **Exclusões agora são duráveis offline:** o `confirmRemoveQuest` deixou de chamar `deleteQuestFromCloud` na hora (que falhava silenciosamente sem rede) e passou a enfileirar a op — sobe no próximo flush.
+  - **Merge guiado pela fila:** o load da nuvem só preserva quests locais com `upsert` pendente. Resolve a ambiguidade do merge por diferença de conjuntos do v2.1.22 — uma quest deletada em **outro aparelho** não é mais ressuscitada.
+  - **Refactor:** mapeamento quest→linha extraído em `questToRow()` (fonte única, reusado por `syncQuestsToSupabase` e `flushQuestOps`); helper `findLocalQuest()`.
+
+## [v2.1.22] — 2026-06-27
+- **Fix crítico — perda de quests adicionadas offline (data loss):**
+  - **Causa raiz:** `loadQuestsFromSupabase` fazia overwrite destrutivo (`gameState.quests = data...`), apagando qualquer quest local ainda não sincronizada. Como adicionar uma quest não a sobe para a nuvem no dia a dia (só `saveToSupabase`/estado do jogador sobe), uma quest criada offline existia apenas no `localStorage` e era destruída no primeiro load da nuvem (pull-to-refresh ou boot com "nuvem ganha").
+  - **Merge não-destrutivo:** o load agora preserva as quests/side-quests locais cujo `id` não existe na nuvem (adições não sincronizadas) e, estando online, sobe o conjunto mesclado (superset da nuvem) para torná-las duráveis — o `delete-orphans` não remove nada por ser superset. Um refresh nunca mais apaga uma quest recém-criada.
+  - **Guard de offline no pull-to-refresh:** `forceLoadFromCloud` e o gesto de puxar-para-baixo agora abortam graciosamente quando `!navigator.onLine`, com aviso ao usuário, sem tocar no estado local.
+
+## [v2.1.21] — 2026-06-27
+- **Modo Offline Robusto (P0):**
+  - **Lib do Supabase vendorizada:** o SDK (`@supabase/supabase-js@2.108.2`) deixou de ser carregado via CDN jsdelivr e passou a ser servido localmente em [`1.core/vendor/supabase.min.js`](../1.core/vendor/supabase.min.js), eliminando a dependência de rede no boot e o risco de o CDN estar lento/fora do ar.
+  - **Cache do Service Worker:** o arquivo vendorizado foi adicionado ao `ASSETS_TO_CACHE` do `sw.js`, garantindo boot offline confiável após o primeiro acesso.
+  - **Blindagem do boot (`supabase-config.js`):** `createClient` agora é guardado por `SUPABASE_AVAILABLE`; se a lib não existir, `supabaseClient` fica `null` e `initSupabase` resolve graciosamente em modo offline-first (localStorage), sem lançar erro no console nem travar a UI.
+
 ## [v2.1.20] — 2026-06-26
 - **Otimização de Performance de Inicialização (Startup):**
   - **Service Worker:** Estratégia *Stale-While-Revalidate* implementada para o `index.html`, removendo reloads automáticos intrusivos na detecção de `SW_UPDATED` (atualização aplicada no próximo boot frio).

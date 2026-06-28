@@ -165,7 +165,8 @@ export let gameState = {
     tutorialStep: 1,
     tutorialCompleted: false,
     friendsCount: 0,
-    _lastSyncedAt: ""
+    _lastSyncedAt: "",
+    questOps: []   // outbox de operações de quest (add/edit/delete) p/ sync confiável
 };
 
 // Banco de Frases de Impacto
@@ -315,6 +316,26 @@ const DUNGEON_POOL = [
 
 const DUNGEON_DURATION_MS = 48 * 60 * 60 * 1000; // 48 horas em ms
 
+
+// ==========================================================================
+// OUTBOX DE OPERAÇÕES DE QUEST (add/edit/delete)
+// Registra a INTENÇÃO de cada mutação. flushQuestOps() (em supabase-config.js)
+// replica a fila no Supabase no próximo sync / reconexão. Garante que adições E
+// exclusões subam de forma confiável, online ou offline — sem inferir intenção
+// por diferença de conjuntos (que ambiguava "adicionei aqui" vs "deletei lá").
+// ==========================================================================
+function queueQuestOp(id, op) {
+    if (!id || (op !== 'upsert' && op !== 'delete')) return;
+    if (!Array.isArray(gameState.questOps)) gameState.questOps = [];
+    // Dedup por id — a intenção mais recente vence (last-write-wins).
+    gameState.questOps = gameState.questOps.filter(o => o.id !== id);
+    gameState.questOps.push({ id, op, ts: Date.now() });
+    localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+    // Online + logado: tenta subir na hora; offline fica na fila p/ próximo flush.
+    if (navigator.onLine && window._currentUserDbId && typeof window.flushQuestOps === 'function') {
+        window.flushQuestOps();
+    }
+}
 
 // ==========================================================================
 // PERSISTÊNCIA DE DADOS (LOCALSTORAGE)
@@ -595,6 +616,7 @@ function loadGameData() {
         }
 
         for (const key in gameState) delete gameState[key]; Object.assign(gameState, parsed);
+        if (!Array.isArray(gameState.questOps)) gameState.questOps = []; // migração: fila de ops
         
         // Sanitize legacy corrupted icons in saved quests
         const cleanQuestCounters = (q) => {
@@ -731,6 +753,7 @@ export {
     DUNGEON_DURATION_MS,
     saveGameData,
     loadGameData,
+    queueQuestOp,
     updateSWQuestStatus
 };
 

@@ -410,8 +410,8 @@ function confirmRemoveQuest(id, title) {
         saveGameData();
         renderQuests();
         showSystemToast(`✕ Missão removida.`);
-        // Deleta do Supabase imediatamente para não reaparecer em outros dispositivos
-        if (typeof window.deleteQuestFromCloud === 'function') window.deleteQuestFromCloud(id);
+        // Outbox: registra a exclusão (sobe no próximo flush; durável mesmo offline).
+        if (typeof window.queueQuestOp === 'function') window.queueQuestOp(id, 'delete');
         return;
     }
 
@@ -422,8 +422,8 @@ function confirmRemoveQuest(id, title) {
         saveGameData();
         renderQuests();
         showSystemToast(`✕ Side Quest removida.`);
-        // Deleta do Supabase imediatamente para não reaparecer em outros dispositivos
-        if (typeof window.deleteQuestFromCloud === 'function') window.deleteQuestFromCloud(id);
+        // Outbox: registra a exclusão (sobe no próximo flush; durável mesmo offline).
+        if (typeof window.queueQuestOp === 'function') window.queueQuestOp(id, 'delete');
     }
 };
 
@@ -1684,7 +1684,12 @@ function setupEventListeners() {
             });
         }
 
-        saveGameData(); 
+        // Outbox: registra a adição (pega o id da quest recém-inserida na lista).
+        const targetList = (type === 'side') ? gameState.sideQuests : gameState.quests;
+        const addedId = targetList.length ? targetList[targetList.length - 1].id : null;
+        if (addedId && typeof window.queueQuestOp === 'function') window.queueQuestOp(addedId, 'upsert');
+
+        saveGameData();
         renderQuests();
         updateUI();
         if (typeof checkAndProgressTutorialStep1 === 'function') {

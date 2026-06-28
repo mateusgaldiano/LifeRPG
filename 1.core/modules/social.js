@@ -222,6 +222,9 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
         }
     }
 
+    // Outbox: registra a adição p/ subir de forma confiável (online ou offline).
+    if (typeof window.queueQuestOp === 'function') window.queueQuestOp(newQuest.id, 'upsert');
+
     saveGameData();
     if (typeof checkAndProgressTutorialStep1 === 'function') {
         checkAndProgressTutorialStep1();
