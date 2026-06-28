@@ -1,7 +1,7 @@
 # LifeRPG OS — Pipeline de Pendências
 
 > **Sincronizado automaticamente com `pipeline.html`.** Não editar à mão — editar o array `items` no HTML e ressincronizar.
-> **Total: 17 itens pendentes.**
+> **Total: 14 itens pendentes.**
 
 ---
 
@@ -9,7 +9,7 @@
 
 *Nenhum item P0 pendente.*
 
-## 🟡 P1 — ALTO (7)
+## 🟡 P1 — ALTO (5)
 
 ### PWA-001 · iOS Safari: virtual keyboard empurra chat UI
 **Cluster:** Mobile & PWA | **Esforço:** M | **Tipo:** Bug | **Fase:** Próximas semanas
@@ -68,20 +68,6 @@ Ver 1.core/modules/ui.js, index.html.
 7. Commit: "feat: overlay de Level Up exibe hábitos desbloqueados e boss quest ativada"
 ```
 
-### UX-006 · Weekly Report com texto pequeno em mobile
-**Cluster:** UX/Visual | **Esforço:** S | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-Ver 1.core/styles.css.
-1. Abrir styles.css e localizar estilos do .weekly-report-modal-box
-2. Garantir font-size mínimo de 11px em todos os elementos internos do modal
-3. No grid de dias (Perfeitos/Bons/Falhados), alterar de 3 colunas para 2 colunas em mobile:
-   @media (max-width: 480px) { .weekly-report-modal-box .report-days-grid { grid-template-columns: 1fr 1fr; } }
-4. Aumentar padding interno de 8px para 12px nos .report-stat-card
-5. Taxa de Sobrevivência: aumentar font-size de 38px para 34px em mobile para caber melhor
-6. Commit: "fix: legibilidade do Weekly Report em mobile — font sizes e grid responsivo"
-```
-
 ### SOCIAL-001 · Friends: busca por prefixo ao invés de username exato
 **Cluster:** Social | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
 
@@ -92,18 +78,6 @@ Ver 1.core/modules/social.js.
    .from('persons').select('id, username, level, rank').ilike('username', `%${searchTerm}%`).limit(5)
 3. Exibir resultados como lista de 5 cards com: avatar placeholder, username, nível e botão "ADICIONAR"
 4. Commit: "feat: busca de amigos por prefixo (ILIKE) ao invés de username exato"
-```
-
-### SOCIAL-002 · Sem botão de desafio PvP no modal de perfil
-**Cluster:** Social | **Esforço:** S | **Tipo:** Feature | **Fase:** Próximas semanas
-
-```
-1. Em index.html, localizar o modal #modal-player-profile
-2. Adicionar antes do botão de amizade existente:
-   <button id="btn-profile-pvp-challenge" class="btn-submit" style="width:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);color:#000;margin-bottom:8px;">⚔️ DESAFIAR PARA DUELO</button>
-3. Em social.js, ao abrir o modal de perfil de outro jogador, salvar o ID do jogador em window._profileViewTarget
-4. Adicionar listener no btn-profile-pvp-challenge: ao clicar, pré-preencher o modal #modal-pvp-challenge com window._profileViewTarget e abrir
-5. Commit: "feat: botão de desafio PvP direto do modal de perfil do jogador"
 ```
 
 ### MKT-002 · "Streak em risco" push notification às 22h
@@ -161,7 +135,7 @@ Ver 1.core/modules/weekly-report.js, index.html.
 
 ---
 
-## 🔵 P3 — BAIXO (7)
+## 🔵 P3 — BAIXO (6)
 
 ### ENG-003 · styles.css: PurgeCSS e minificação para produção
 **Cluster:** Engenharia | **Esforço:** M | **Tipo:** Tech Debt | **Fase:** Futuro
@@ -228,15 +202,4 @@ Ver 1.core/modules/weekly-report.js, index.html.
 4. Ao novo usuário completar onboarding com invite code: +50 Gold para quem convidou, +30 Gold para o novo
 5. Achievement \"Recrutador\" ao convidar 3 amigos
 6. Commit: \"feat: sistema de convite com link único e recompensas bilaterais\"
-```
-
-### FEAT-005 · Roadmap gamificado dentro do app ("NEXUS")
-**Cluster:** Meta-Progressão | **Esforço:** S | **Tipo:** Feature | **Fase:** Futuro
-
-```
-1. Criar modal #modal-roadmap com título "NEXUS — Missões do Sistema"
-2. Listar features futuras como "missões bloqueadas": Clãs, Chat Privado, Mentor IA, Desafios Semanais
-3. Cada item com status: EM DESENVOLVIMENTO / EM TESTES / EM BREVE
-4. Adicionar botão de acesso no header ou sidebar
-5. Commit: "feat: modal de roadmap gamificado — 'NEXUS — Missões do Sistema'"
 ```
