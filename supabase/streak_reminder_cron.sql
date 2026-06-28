@@ -34,13 +34,13 @@ CREATE EXTENSION IF NOT EXISTS pg_cron;
 SELECT cron.unschedule('streak-reminder-daily');
 
 -- Agenda chamada diária às 22h00 (horário de Brasília se o servidor estiver em UTC/GMT-3, caso contrário ajuste o cron)
--- Substitua 'https://<PROJECT_ID>.supabase.co' e '<SERVICE_ROLE_KEY>' pelos valores corretos do seu projeto.
+-- Substitua apenas '<SERVICE_ROLE_KEY>' pela chave secreta do seu projeto (encontrada em Settings -> API -> service_role key no painel do Supabase).
 SELECT cron.schedule(
     'streak-reminder-daily',
     '0 22 * * *',
     $$
     SELECT net.http_post(
-        url := 'https://<PROJECT_ID>.supabase.co/functions/v1/send-push',
+        url := 'https://ppsqvppnunzagxqruoqf.supabase.co/functions/v1/send-push',
         headers := '{"Content-Type": "application/json", "Authorization": "Bearer <SERVICE_ROLE_KEY>"}'::jsonb,
         body := '{"action": "trigger_all_reminders"}'::jsonb
     );
