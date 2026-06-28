@@ -125,7 +125,8 @@ import {
     loadSettingsToUI,
     subscribeUserToPush,
     unsubscribeUserFromPush,
-    setupPullToRefresh
+    setupPullToRefresh,
+    setupOfflineBanner
 } from './modules/pwa.js';
 
 // Bind State
@@ -380,6 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSettingsListeners();
     setupInstallPrompt();
     setupPullToRefresh(); // arrastar = sincronizar quando logado
+    setupOfflineBanner(); // banner de status offline
 
     // ENG-002: carrega social.js (modal + biblioteca + tutorial) em idle, fora do 1º paint.
     // setupSocialModalListeners e setupHabitLibraryAndTabs rodam dentro de loadSocialModule().

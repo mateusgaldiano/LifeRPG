@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.27] — 2026-06-28
+- **Banner de Status Offline & Sync Automático (PWA-003 - P1 Alto):**
+  - **Banner Indicador Offline:** Adicionado elemento de banner vermelho no topo da tela (`#offline-banner`) com mensagem informativa visual quando o navegador perde a conexão com a internet.
+  - **Estilização Neon-Red Glass:** Criada classe `.offline-banner` no styles.css com posicionamento fixo, bloqueio de cliques (para não interferir com a UI do cabeçalho) e visual vibrante.
+  - **Eventos de Status de Rede:** Configurados listeners para os eventos `online` e `offline` no `pwa.js` (inicializados no boot do `app.js`).
+  - **Sincronização Automática na Reconexão:** Ao restabelecer a conexão com a rede, o banner desaparece e, caso o usuário esteja autenticado, uma sincronização automática com a nuvem (`saveToCloud()`) é disparada de forma silenciosa para enviar todas as alterações enfileiradas offline.
+
 ## [v2.1.26] — 2026-06-28
 - **Fix do Chat Global (BUG-002 - P0 Crítico):**
   - **Exibição Otimista de Mensagens:** O envio de mensagens de chat agora usa `.insert().select()` e insere a mensagem na UI localmente de forma imediata e transparente caso a transação seja bem-sucedida, sem depender exclusivamente do Realtime.

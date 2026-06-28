@@ -536,6 +536,27 @@ function setupPullToRefresh() {
     });
 }
 
+function setupOfflineBanner() {
+    const banner = document.getElementById('offline-banner');
+    if (!banner) return;
+
+    const updateOfflineStatus = () => {
+        if (navigator.onLine) {
+            banner.style.display = 'none';
+            if (window._currentUserDbId && typeof window.saveToCloud === 'function') {
+                window.saveToCloud();
+            }
+        } else {
+            banner.style.display = 'block';
+        }
+    };
+
+    window.addEventListener('offline', updateOfflineStatus);
+    window.addEventListener('online', updateOfflineStatus);
+
+    // Checagem inicial
+    updateOfflineStatus();
+}
 
 export {
     registerServiceWorker,
@@ -544,5 +565,6 @@ export {
     loadSettingsToUI,
     subscribeUserToPush,
     unsubscribeUserFromPush,
-    setupPullToRefresh
+    setupPullToRefresh,
+    setupOfflineBanner
 };
