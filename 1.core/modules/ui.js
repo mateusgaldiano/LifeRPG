@@ -1319,8 +1319,16 @@ function renderQuests() {
             card.className = `quest-card ${quest.completed ? 'completed' : ''}`;
             card.setAttribute('data-skill', quest.skill || 'routine');
 
-            const diffMap = { routine: 'RANK E', physical: 'RANK E', wisdom: 'RANK D', mental: 'RANK D', productivity: 'RANK C', social: 'RANK D' };
-            const diffLabel = diffMap[quest.skill] || 'RANK E';
+            const diffMap = {
+                easy: 'RANK E',
+                medium: 'RANK D',
+                hard: 'RANK C',
+                rank_b: 'RANK B',
+                rank_a: 'RANK A',
+                rank_s: 'RANK S'
+            };
+            const skillFallbackMap = { routine: 'RANK E', physical: 'RANK E', wisdom: 'RANK D', mental: 'RANK D', productivity: 'RANK C', social: 'RANK D' };
+            const diffLabel = diffMap[quest.difficulty] || skillFallbackMap[quest.skill] || 'RANK E';
 
             let extraHTML = '';
             const isWater = quest.id?.includes('agua') ||
@@ -1370,7 +1378,15 @@ function renderQuests() {
             const card = document.createElement('div');
             card.className = `quest-card ${quest.completed ? 'completed' : ''}`;
             card.setAttribute('data-skill', quest.skill || 'productivity');
-            const diffLabel = quest.difficulty === 'hard' ? 'RANK C' : quest.difficulty === 'medium' ? 'RANK D' : 'RANK E';
+            const diffMap = {
+                easy: 'RANK E',
+                medium: 'RANK D',
+                hard: 'RANK C',
+                rank_b: 'RANK B',
+                rank_a: 'RANK A',
+                rank_s: 'RANK S'
+            };
+            const diffLabel = diffMap[quest.difficulty] || quest.difficulty?.toUpperCase() || 'RANK E';
             card.innerHTML = `
                 <button class="quest-remove-btn"
                         data-id="${quest.id}"
@@ -1649,8 +1665,11 @@ function setupEventListeners() {
         const type = document.querySelector('input[name="sq-type"]:checked').value;
         
         let xp = 25, gold = 20;
-        if (difficulty === 'easy') { xp = 10; gold = 8; }
+        if (difficulty === 'easy') { xp = 10; gold = 10; }
         else if (difficulty === 'hard') { xp = 50; gold = 40; }
+        else if (difficulty === 'rank_b') { xp = 75; gold = 60; }
+        else if (difficulty === 'rank_a') { xp = 100; gold = 80; }
+        else if (difficulty === 'rank_s') { xp = 150; gold = 120; }
 
         if (type === 'side') {
             gameState.sideQuests.push({ id: 'sq-' + Date.now(), title, type: 'side', icon, difficulty, completed: false, xp, gold });

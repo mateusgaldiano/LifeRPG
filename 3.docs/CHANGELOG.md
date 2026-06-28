@@ -9,6 +9,15 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.30] — 2026-06-28
+- **Suporte Total de Ranks na Criação de Quests e Ouro Fácil (+10):**
+  - **Ajuste de Ouro Fácil (Easy):** Elevado o retorno de ouro da dificuldade Fácil (Rank E) de $8 \rightarrow \mathbf{10\text{ ouro}}$ nas missões normais e da biblioteca.
+  - **Novos Ranks na Criação de Quests (B, A, S):** Adicionado suporte para criação de missões com dificuldades/ranks mais altos no modal de criação em `index.html` e `ui.js`:
+    - **Rank B (Muito Difícil):** +75 XP / +60 Ouro
+    - **Rank A (Heroico):** +100 XP / +80 Ouro
+    - **Rank S (Lendário):** +150 XP / +120 Ouro
+  - **Renderização Dinâmica de Badges:** Atualizada a lógica de renderização de badges em `ui.js` para mapear dinamicamente e exibir corretamente os rótulos de Ranks superiores (RANK B, RANK A, RANK S) em Daily Quests e Side Quests.
+
 ## [v2.1.29] — 2026-06-28
 - **Melhorias de Ouro Base e Escalabilidade de Streak (Rebalanceamento Econômico):**
   - **Aumento no Ouro Base de Quests:** Elevado o retorno de ouro de todas as dificuldades de missões:
