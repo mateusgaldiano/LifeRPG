@@ -1813,7 +1813,7 @@ function renderTutorialBanner() {
             if (costEl) costEl.innerText = '50 OURO';
             if (descEl) descEl.innerHTML = `Moldura roxa com brilho sombrio de alta intensidade. <span style="color: var(--neon-gold); font-weight: bold;">(Promoção do Tutorial - Sem trava de nível!)</span>`;
         } else {
-            if (costEl) costEl.innerText = '250 OURO';
+            if (costEl) costEl.innerText = '2000 OURO';
             if (descEl) descEl.innerText = `Moldura roxa com brilho sombrio de alta intensidade. (Requer Rank C)`;
         }
     }

@@ -605,7 +605,7 @@ function toggleQuest(id) {
         
         let goldLost = quest.gold;
         if (quest._legendaryFocusConsumed) {
-            goldLost *= 3;
+            goldLost *= 5;
             delete quest._legendaryFocusConsumed;
         }
         deductRewards(quest.xp, goldLost);
@@ -624,13 +624,13 @@ function toggleQuest(id) {
         // Aplica Double XP Buff se ativo (dura até meia-noite — não consome na 1ª quest)
         let xpGained = quest.xp * getActiveXpMultiplier();
 
-        // Aplica Pergaminho do Foco Lendário se ativo (multiplica o ouro ganho por 3)
+        // Aplica Pergaminho do Foco Lendário se ativo (multiplica o ouro ganho por 5)
         let goldGained = quest.gold;
         if (gameState.buffs && gameState.buffs.legendaryFocus) {
-            // Nota explicativa de game design: o multiplicador de Foco Lendário (x3) e o multiplicador de grupo (+2% a +10%)
+            // Nota explicativa de game design: o multiplicador de Foco Lendário (x5) e o multiplicador de grupo (+2% a +10%)
             // se empilham de forma multiplicativa (em conjunto), pois multiplicamos o ouro base da quest aqui antes
             // de repassar à função addRewards(), que posteriormente aplicará o multiplicador de grupo e outras sinergias.
-            goldGained *= 3;
+            goldGained *= 5;
             gameState.buffs.legendaryFocus = false;
             if (window.deleteBuffFromSupabase) window.deleteBuffFromSupabase('legendaryFocus');
             quest._legendaryFocusConsumed = true;
@@ -700,7 +700,7 @@ function adjustWater(id, operation) {
         quest.current = targetVal - 1;
         let goldLost = quest.gold;
         if (quest._legendaryFocusConsumed) {
-            goldLost *= 3;
+            goldLost *= 5;
             delete quest._legendaryFocusConsumed;
         }
         deductRewards(quest.xp, goldLost);
@@ -711,9 +711,9 @@ function adjustWater(id, operation) {
             if (quest.current === targetVal) {
                 let goldGained = quest.gold;
                 if (gameState.buffs && gameState.buffs.legendaryFocus) {
-                    // Nota explicativa de game design: o multiplicador de Foco Lendário (x3) e o multiplicador de grupo (+2% a +10%)
+                    // Nota explicativa de game design: o multiplicador de Foco Lendário (x5) e o multiplicador de grupo (+2% a +10%)
                     // se empilham de forma multiplicativa (em conjunto).
-                    goldGained *= 3;
+                    goldGained *= 5;
                     gameState.buffs.legendaryFocus = false;
                     if (window.deleteBuffFromSupabase) window.deleteBuffFromSupabase('legendaryFocus');
                     quest._legendaryFocusConsumed = true;
@@ -1101,20 +1101,22 @@ function applyDailyPenalty(yesterdayStr) {
 // LOJA E TAVERNA (COMPRA DE BUFFS E COSMÉTICOS)
 // ==========================================================================
 async function buyStoreItem(itemId) {
+    // Economia dura: benefícios são escassos e caros. Preços rebalanceados p/ cima
+    // (~3-6×), com cosméticos de prestígio sofrendo mais. Promo de tutorial intacta.
     const prices = {
-        'buff_autoHeal': 100,
-        'buff_doubleXp': 80,
-        'buff_tripleXp': 360,
-        'buff_megaXp': 800,
-        'buff_shield': 150,
-        'buff_immortality': 800,
-        'buff_legendary_focus': 400,
-        'title_implacavel': 300,
-        'title_mestre': 300,
-        'border_neonred': 500,
-        'skin_shadow_master': 250,
-        'skin_mist_monarch': 400,
-        'skin_arise_emperor': 600
+        'buff_autoHeal': 800,
+        'buff_doubleXp': 500,
+        'buff_tripleXp': 1800,
+        'buff_megaXp': 5000,
+        'buff_shield': 1000,
+        'buff_immortality': 2500,
+        'buff_legendary_focus': 600,
+        'title_implacavel': 1500,
+        'title_mestre': 1500,
+        'border_neonred': 2500,
+        'skin_shadow_master': 2000,
+        'skin_mist_monarch': 3500,
+        'skin_arise_emperor': 6000
     };
 
     let cost = prices[itemId];
@@ -1136,6 +1138,13 @@ async function buyStoreItem(itemId) {
     if (itemId === 'buff_immortality' && gameState.level < 15) {
         trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
         showSystemToast("⚠️ *BLOQUEADO.* O Cálice da Imortalidade exige nível 15+ para ser adquirido.");
+        return;
+    }
+
+    // Validar restrição de nível do Grimório Lendário (poder máximo de XP — só elite)
+    if (itemId === 'buff_megaXp' && gameState.level < 20) {
+        trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
+        showSystemToast("⚠️ *BLOQUEADO.* O Grimório Lendário exige nível 20+ para ser adquirido.");
         return;
     }
 
@@ -1185,7 +1194,7 @@ async function buyStoreItem(itemId) {
                 return;
             }
             gameState.buffs.legendaryFocus = true;
-            showSystemToast("📜 *FOCO LENDÁRIO ATIVADO!* Sua próxima missão concluída dará o TRIPLO (x3) de Ouro.");
+            showSystemToast("📜 *FOCO LENDÁRIO ATIVADO!* Sua próxima missão concluída dará o QUÍNTUPLO (x5) de Ouro.");
             if (window.saveBuffsToSupabase) await window.saveBuffsToSupabase();
         }
         else if (itemId === 'buff_shield') {

@@ -1409,21 +1409,25 @@ function renderQuests() {
 
 // Renderiza a Taverna (Recompensas)
 
+/**
+ * @deprecated Esta função é legada e foi substituída pelos cards estáticos no index.html.
+ * Mantida apenas para compatibilidade de depuração ou inicialização secundária.
+ */
 function renderRewards() {
     const rewardsContainer = document.getElementById('rewards-list');
     if (!rewardsContainer) return;
     rewardsContainer.innerHTML = `
         <div class="store-item" onclick="buyStoreItem('buff_autoHeal')">
             <div class="store-info"><span>🧪 Poção de Cura</span><small>Protege o streak por 1 erro</small></div>
-            <button>100 🪙</button>
+            <button>800 🪙</button>
         </div>
         <div class="store-item" onclick="buyStoreItem('buff_doubleXp')">
             <div class="store-info"><span>📜 Pergaminho de Dobro XP</span><small>XP x2 por um dia</small></div>
-            <button>50 🪙</button>
+            <button>500 🪙</button>
         </div>
         <div class="store-item" onclick="buyStoreItem('buff_shield')">
             <div class="store-info"><span>🛡️ Carga de Escudo</span><small>Reforce sua defesa</small></div>
-            <button>150 🪙</button>
+            <button>1000 🪙</button>
         </div>
     `;
 }

@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.25] — 2026-06-28
+- **Endurecimento e Rebalanceamento Geral da Economia:**
+  - **Preços da Loja e Taverna Reajustados:** Aumento de $2\times$ a $6\times$ nos consumíveis e cosméticos (ex: Poção de Auto-Cura de 400 para 800, Escudo de 500 para 1000, e Borda Imperador Arise de 4000 para 6000).
+  - **Foco Lendário Viabilizado:** Aumento do multiplicador do Foco Lendário de $x3$ para **$x5$** (quíntuplo) de ouro na próxima quest, readequando o custo de 600 ouro como uma aposta viável e desafiadora de late-game.
+  - **Correção de Divergência HTML vs JS:** Todos os preços e travas de nível (como Grimório exigindo nível 20+) foram sincronizados com exatidão entre o frontend e a lógica JS.
+  - **Correção de Preço no Tutorial:** Resolvido bug sutil em `social.js` que redefinia o preço da skin *Mestre das Sombras* para 250 ouro (agora corrigido para o novo preço de 2000 ouro).
+  - **Depreciação de Código Legado:** Marcada a função `renderRewards()` em `ui.js` como `@deprecated`.
+
 ## [v2.1.24] — 2026-06-27
 - **META-001 · 5 novos achievements** (catálogo expandido de 16 → 21):
   - **Missões:** *Dia Lendário* (5 missões num dia, 30💰/raro), *Veterano* (50 no total, 80💰/raro), *Lenda* (100 no total, 200💰/lendário).
