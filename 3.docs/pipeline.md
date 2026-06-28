@@ -94,7 +94,7 @@ Ver 1.core/modules/social.js.
 
 ---
 
-## 🟢 P2 — MÉDIO (3)
+## 🟢 P2 — MÉDIO (2)
 
 ### GAME-004 · Comeback mechanic para usuários que voltam após 7+ dias
 **Cluster:** Game Design | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
@@ -105,19 +105,6 @@ Ver 1.core/modules/social.js.
 3. Em game-logic.js, em addRewards(): se _comebackMode === true, multiplicar XP por 1.5
 4. Mensagem especial do Iroh ao detectar retorno longo
 5. Commit: "feat: Modo Retorno — 1.5x XP por 3 dias após ausência de 7+ dias"
-```
-
-### GAME-005 · Dungeon pool: expandir para 20+ missões com raridade
-**Cluster:** Meta-Progressão | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
-
-```
-Ver 1.core/modules/state.js.
-1. Em state.js, localizar DUNGEON_POOL
-2. Expandir para pelo menos 20 entradas cobrindo todos os 6 skills
-3. Adicionar campo rarity: 'comum' | 'raro' | 'épico' com multiplicadores de recompensa 1x / 1.5x / 2.5x
-4. Épico: chance de 10%, Raro: 25%, Comum: 65%
-5. Em game-logic.js, spawnDungeon(): usar Math.random() para determinar raridade e aplicar multiplicador de recompensa
-6. Commit: "feat: expandir dungeon pool para 20+ missões com sistema de raridade"
 ```
 
 ### MKT-003 · Weekly Report: botão de compartilhar
@@ -135,7 +122,7 @@ Ver 1.core/modules/weekly-report.js, index.html.
 
 ---
 
-## 🔵 P3 — BAIXO (5)
+## 🔵 P3 — BAIXO (6)
 
 ### ENG-003 · styles.css: PurgeCSS e minificação para produção
 **Cluster:** Engenharia | **Esforço:** M | **Tipo:** Tech Debt | **Fase:** Futuro
@@ -151,7 +138,7 @@ Ver 1.core/modules/weekly-report.js, index.html.
 **Cluster:** Meta-Progressão | **Esforço:** L | **Tipo:** Feature | **Fase:** Futuro
 
 ```
-1. Definir mecânica: ao atingir nível 30, option de "Ascender" — reseta XP para 0 mas mantém hábitos e conquistas
+1. Definir mecânica: ao atingir nível 30, opção de "Ascender" — reseta XP para 0 mas mantém hábitos e conquistas
 2. Adicionar campo gameState.prestige_level (inicia em 0)
 3. Benefício do prestige: +5% multiplicador permanente de XP por nível de prestige (max 3)
 4. Avatar especial dourado para prestige 1+ com borda especial automática
@@ -187,7 +174,14 @@ Ver 1.core/modules/weekly-report.js, index.html.
 1. Criar tabela invite_codes (code text PK, created_by uuid, used_by uuid, created_at, used_at)
 2. Gerar código único ao usuário se inscrever (8 chars alfanumérico)
 3. URL de convite: https://mateusgaldiano.github.io/LifeRPG/?invite=CODE
-4. Ao novo usuário completar onboarding com invite code: +50 Gold para quem convidou, +30 Gold para o novo
+4. Ao novo usuário completar onboarding with invite code: +50 Gold para quem convidou, +30 Gold para o novo
 5. Achievement \"Recrutador\" ao convidar 3 amigos
 6. Commit: \"feat: sistema de convite com link único e recompensas bilaterais\"
+```
+
+### GAME-008 · Rever e sugerir dungeons e boss quest
+**Cluster:** Game Design | **Esforço:** M | **Tipo:** Enhancement | **Fase:** Futuro
+
+```
+No futuro, analisar com mais carinho as regras, gatilhos, balanceamento e variedade do pool de dungeons e boss quests.
 ```

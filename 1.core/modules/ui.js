@@ -1246,15 +1246,41 @@ function renderQuests() {
     // Renderiza Masmorras (se houver ativa)
     const dungeonBanner = document.getElementById('dungeon-active-banner');
     if (gameState.activeDungeon && dungeonBanner) {
+        const rarity = gameState.activeDungeon.rarity || 'comum';
+        const rarityStyles = {
+            comum: {
+                bg: 'linear-gradient(135deg, rgba(0,240,255,0.03) 0%, rgba(0,240,255,0.1) 100%)',
+                border: '1px solid var(--neon-cyan)',
+                color: 'var(--neon-cyan)',
+                shadow: '0 0 12px rgba(0,240,255,0.15)',
+                label: 'COMUM'
+            },
+            raro: {
+                bg: 'linear-gradient(135deg, rgba(59,130,246,0.05) 0%, rgba(59,130,246,0.15) 100%)',
+                border: '1px solid #3b82f6',
+                color: '#3b82f6',
+                shadow: '0 0 15px rgba(59,130,246,0.2)',
+                label: 'RARA'
+            },
+            epico: {
+                bg: 'linear-gradient(135deg, rgba(168,85,247,0.08) 0%, rgba(168,85,247,0.2) 100%)',
+                border: '1px solid var(--neon-purple)',
+                color: 'var(--neon-purple)',
+                shadow: '0 0 20px rgba(168,85,247,0.3)',
+                label: 'ÉPICA'
+            }
+        };
+        const rStyle = rarityStyles[rarity];
+
         dungeonBanner.style.display = 'block';
         dungeonBanner.innerHTML = `
-            <div class="dungeon-card" style="background: linear-gradient(135deg, rgba(147,51,234,0.1) 0%, rgba(147,51,234,0.3) 100%); border: 1px solid var(--neon-purple); border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+            <div class="dungeon-card" style="background: ${rStyle.bg}; border: ${rStyle.border}; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: ${rStyle.shadow};">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <div style="font-size: 10px; color: var(--neon-purple); font-family: var(--font-hud); letter-spacing: 1px;">MASMORRA ATIVA</div>
+                        <div style="font-size: 10px; color: ${rStyle.color}; font-family: var(--font-hud); letter-spacing: 1px;">MASMORRA ${rStyle.label} ATIVA</div>
                         <div style="font-size: 16px; font-weight: bold; margin-top: 5px; color: white;">${gameState.activeDungeon.title}</div>
                     </div>
-                    <button class="dungeon-banner-btn" style="background: rgba(147,51,234,0.2); border: 1px solid var(--neon-purple); color: var(--neon-purple); padding: 8px 15px; border-radius: 4px; cursor: pointer; font-family: var(--font-hud); letter-spacing: 1px;" data-dungeon="true">ATACAR BOSS</button>
+                    <button class="dungeon-banner-btn" style="background: rgba(255,255,255,0.02); border: 1px solid ${rStyle.color}; color: ${rStyle.color}; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-family: var(--font-hud); letter-spacing: 1px;" data-dungeon="true">ATACAR BOSS</button>
                 </div>
             </div>
         `;
@@ -1286,8 +1312,18 @@ function renderQuests() {
         const _timeLabel = _remMs <= 0 ? 'EXPIRADA' : `${_remH}h ${_remMin}min restantes`;
         const _urgent    = _remMs > 0 && _remMs < 6 * 3600000;
 
+        const rarity = _d.rarity || 'comum';
+        const rarityStyles = {
+            comum: { border: '1px solid var(--neon-cyan)', color: 'var(--neon-cyan)', shadow: '0 0 10px rgba(0,240,255,0.15)', label: 'COMUM' },
+            raro: { border: '1px solid #3b82f6', color: '#3b82f6', shadow: '0 0 12px rgba(59,130,246,0.2)', label: 'RARA' },
+            epico: { border: '1px solid var(--neon-purple)', color: 'var(--neon-purple)', shadow: '0 0 15px rgba(168,85,247,0.25)', label: 'ÉPICA' }
+        };
+        const rStyle = rarityStyles[rarity];
+
         const _dc = document.createElement('div');
         _dc.className = `quest-card dungeon-card${_urgent ? ' dungeon-urgent' : ''}`;
+        _dc.style.border = rStyle.border;
+        _dc.style.boxShadow = rStyle.shadow;
         _dc.setAttribute('data-skill', _d.skill || 'productivity');
         _dc.innerHTML = `
             <div class="quest-details">
@@ -1295,14 +1331,14 @@ function renderQuests() {
                 <div class="quest-title-wrap">
                     <span class="quest-title">${_d.title}</span>
                     <div class="quest-payouts">
-                        <span class="diff-badge dungeon-badge">DUNGEON</span>
+                        <span class="diff-badge dungeon-badge" style="background: ${rStyle.color}15; color: ${rStyle.color}; border: 1px solid ${rStyle.color}33;">${rStyle.label}</span>
                         <span class="payout-xp">+${_d.xp} XP</span>
                         <span class="payout-gold">+${_d.gold} 💰</span>
                     </div>
                     <div class="dungeon-timer${_urgent ? ' dungeon-timer-urgent' : ''}">⏳ ${_timeLabel}</div>
                 </div>
             </div>
-            <button class="quest-complete-btn dungeon-btn" data-dungeon="true">✓</button>
+            <button class="quest-complete-btn dungeon-btn" style="border: 1px solid ${rStyle.color}; color: ${rStyle.color};" data-dungeon="true">✓</button>
         `;
         const container = getContainer(_d.skill);
         if (container) container.appendChild(_dc);

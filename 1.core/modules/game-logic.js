@@ -98,18 +98,39 @@ function spawnDungeon() {
     if (gameState.activeDungeon && !gameState.activeDungeon.completed) return;
 
     const pick = DUNGEON_POOL[Math.floor(Math.random() * DUNGEON_POOL.length)];
+    
+    // Roleta de Raridade (Épico: 10%, Raro: 25%, Comum: 65%)
+    const roll = Math.random();
+    let rarity = 'comum';
+    let rarityLabel = '⚔️ COMUM';
+    let mult = 1.0;
+
+    if (roll < 0.10) {
+        rarity = 'epico';
+        rarityLabel = '✨ ÉPICA';
+        mult = 2.5;
+    } else if (roll < 0.35) {
+        rarity = 'raro';
+        rarityLabel = '🔵 RARA';
+        mult = 1.5;
+    }
+
+    const xpVal = Math.round(pick.xp * mult);
+    const goldVal = Math.round(pick.gold * mult);
+
     gameState.activeDungeon = {
         id: 'dungeon-' + Date.now(),
         title: pick.title,
         skill: pick.skill,
-        xp: pick.xp,
-        gold: pick.gold,
+        xp: xpVal,
+        gold: goldVal,
+        rarity: rarity,
         expiresAt: Date.now() + DUNGEON_DURATION_MS,
         completed: false
     };
     saveGameData();
     setTimeout(() => {
-        showSystemToast(`⚔️ *DUNGEON DISPONÍVEL!* Uma missão especial surgiu: *"${pick.title}"*\n\nRecompensa: +${pick.xp} XP · +${pick.gold} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
+        showSystemToast(`${rarityLabel} *DUNGEON DISPONÍVEL!* Uma missão especial surgiu: *"${pick.title}"*\n\nRecompensa: +${xpVal} XP · +${goldVal} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
 
     }, 1000);
 }
@@ -122,10 +143,10 @@ function checkDungeonExpiry() {
     if (Date.now() >= d.expiresAt) {
         const title = d.title;
         gameState.activeDungeon = null;
-        gameState.xp = Math.max(0, (gameState.xp || 0) - 5);
+        gameState.xp = Math.max(0, (gameState.xp || 0) - 100);
         saveGameData();
         setTimeout(() => {
-            showSystemToast(`💀 *DUNGEON EXPIRADA.* A missão *"${title}"* foi abandonada. O Sistema cobrou o preço: −5 XP.`);
+            showSystemToast(`💀 *DUNGEON EXPIRADA.* A missão *"${title}"* foi abandonada. O Sistema cobrou o preço: −100 XP.`);
 
         }, 500);
     }

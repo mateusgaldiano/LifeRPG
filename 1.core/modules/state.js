@@ -299,19 +299,41 @@ const BOSS_QUESTS = {
 
 // ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ Banco de Dungeons ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬ÃƒÂ¢Ã¢â‚¬Â Ã¢â€šÂ¬
 const DUNGEON_POOL = [
-    { title: 'Treino Solitário',   skill: 'physical',     xp: 80,  gold: 40 },
+    // mental
     { title: 'Hora do Silêncio',   skill: 'mental',       xp: 75,  gold: 35 },
-    { title: 'Projeto Expresso',   skill: 'productivity', xp: 90,  gold: 45 },
-    { title: 'Conexão Rara',       skill: 'social',       xp: 70,  gold: 35 },
-    { title: 'Leitura Profunda',   skill: 'wisdom',       xp: 80,  gold: 40 },
-    { title: 'Ritual Perfeito',    skill: 'routine',      xp: 75,  gold: 38 },
-    { title: 'Corrida do Dragão',  skill: 'physical',     xp: 100, gold: 50 },
     { title: 'Meditação Extrema',  skill: 'mental',       xp: 95,  gold: 48 },
-    { title: 'Sprint de Foco',     skill: 'productivity', xp: 110, gold: 55 },
-    { title: 'Aliança Inesperada', skill: 'social',       xp: 85,  gold: 42 },
-    { title: 'Tomo Proibido',      skill: 'wisdom',       xp: 95,  gold: 48 },
+    { title: 'Vazio Absoluto',     skill: 'mental',       xp: 120, gold: 60 },
+    { title: 'Caos Controlado',    skill: 'mental',       xp: 70,  gold: 30 },
 
+    // routine
+    { title: 'Ritual Perfeito',    skill: 'routine',      xp: 75,  gold: 38 },
     { title: 'Sequência Sagrada',  skill: 'routine',      xp: 90,  gold: 45 },
+    { title: 'Sincronia do Sono',  skill: 'routine',      xp: 110, gold: 55 },
+    { title: 'Reinício de Ciclo',  skill: 'routine',      xp: 70,  gold: 35 },
+
+    // wisdom
+    { title: 'Leitura Profunda',   skill: 'wisdom',       xp: 80,  gold: 40 },
+    { title: 'Tomo Proibido',      skill: 'wisdom',       xp: 95,  gold: 48 },
+    { title: 'Revelação Arquivada',skill: 'wisdom',       xp: 130, gold: 65 },
+    { title: 'Mente do Aprendiz',  skill: 'wisdom',       xp: 75,  gold: 35 },
+
+    // productivity
+    { title: 'Projeto Expresso',   skill: 'productivity', xp: 90,  gold: 45 },
+    { title: 'Sprint de Foco',     skill: 'productivity', xp: 110, gold: 55 },
+    { title: 'Hiperfoco Arise',    skill: 'productivity', xp: 140, gold: 70 },
+    { title: 'Monge Produtivo',    skill: 'productivity', xp: 80,  gold: 40 },
+
+    // physical
+    { title: 'Treino Solitário',   skill: 'physical',     xp: 80,  gold: 40 },
+    { title: 'Corrida do Dragão',  skill: 'physical',     xp: 100, gold: 50 },
+    { title: 'Superação de Limites',skill: 'physical',    xp: 125, gold: 60 },
+    { title: 'Templo de Ferro',    skill: 'physical',     xp: 75,  gold: 35 },
+
+    // social
+    { title: 'Conexão Rara',       skill: 'social',       xp: 70,  gold: 35 },
+    { title: 'Aliança Inesperada', skill: 'social',       xp: 85,  gold: 42 },
+    { title: 'Rede de Caçadores',  skill: 'social',       xp: 115, gold: 55 },
+    { title: 'Apoio da Guilda',    skill: 'social',       xp: 75,  gold: 35 }
 ];
 
 const DUNGEON_DURATION_MS = 48 * 60 * 60 * 1000; // 48 horas em ms
