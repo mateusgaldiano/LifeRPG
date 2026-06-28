@@ -9,6 +9,17 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.32] — 2026-06-28
+- **Substituição de Rótulos de Ranks por Dificuldades nas Quests:**
+  - **Exibição Limpa de Dificuldade:** Removido o termo "Rank X" (como RANK E, RANK D, etc.) dos cartões de missões e do modal de criação de novas quests.
+  - **Nomenclatura Visual Uniforme:** As badges de quests na UI exibem agora apenas os nomes de dificuldades amigáveis:
+    - `Fácil` (anteriormente *RANK E*)
+    - `Intermediário` (anteriormente *RANK D*)
+    - `Difícil` (anteriormente *RANK C*)
+    - `Muito Difícil` (anteriormente *RANK B*)
+    - `Heroico` (anteriormente *RANK A*)
+    - `Lendário` (anteriormente *RANK S*)
+
 ## [v2.1.31] — 2026-06-28
 - **Simplificação de Ranks na Criação (Três Níveis Clássicos):**
   - **Reversão para Três Níveis de Dificuldade:** Removida a possibilidade de criar quests personalizadas com Ranks B, A e S no formulário de criação em `index.html` e `ui.js`. Isso preserva as grandes recompensas de ouro exclusivamente para Dungeons semanais e Boss Quests (subidas de Rank de avatar).

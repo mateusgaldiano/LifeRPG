@@ -1320,15 +1320,15 @@ function renderQuests() {
             card.setAttribute('data-skill', quest.skill || 'routine');
 
             const diffMap = {
-                easy: 'RANK E',
-                medium: 'RANK D',
-                hard: 'RANK C',
-                rank_b: 'RANK B',
-                rank_a: 'RANK A',
-                rank_s: 'RANK S'
+                easy: 'Fácil',
+                medium: 'Intermediário',
+                hard: 'Difícil',
+                rank_b: 'Muito Difícil',
+                rank_a: 'Heroico',
+                rank_s: 'Lendário'
             };
-            const skillFallbackMap = { routine: 'RANK E', physical: 'RANK E', wisdom: 'RANK D', mental: 'RANK D', productivity: 'RANK C', social: 'RANK D' };
-            const diffLabel = diffMap[quest.difficulty] || skillFallbackMap[quest.skill] || 'RANK E';
+            const skillFallbackMap = { routine: 'Fácil', physical: 'Fácil', wisdom: 'Intermediário', mental: 'Intermediário', productivity: 'Difícil', social: 'Intermediário' };
+            const diffLabel = diffMap[quest.difficulty] || skillFallbackMap[quest.skill] || 'Fácil';
 
             let extraHTML = '';
             const isWater = quest.id?.includes('agua') ||
@@ -1379,14 +1379,14 @@ function renderQuests() {
             card.className = `quest-card ${quest.completed ? 'completed' : ''}`;
             card.setAttribute('data-skill', quest.skill || 'productivity');
             const diffMap = {
-                easy: 'RANK E',
-                medium: 'RANK D',
-                hard: 'RANK C',
-                rank_b: 'RANK B',
-                rank_a: 'RANK A',
-                rank_s: 'RANK S'
+                easy: 'Fácil',
+                medium: 'Intermediário',
+                hard: 'Difícil',
+                rank_b: 'Muito Difícil',
+                rank_a: 'Heroico',
+                rank_s: 'Lendário'
             };
-            const diffLabel = diffMap[quest.difficulty] || quest.difficulty?.toUpperCase() || 'RANK E';
+            const diffLabel = diffMap[quest.difficulty] || quest.difficulty?.toUpperCase() || 'Fácil';
             card.innerHTML = `
                 <button class="quest-remove-btn"
                         data-id="${quest.id}"
