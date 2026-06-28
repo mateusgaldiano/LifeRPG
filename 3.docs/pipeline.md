@@ -1,7 +1,7 @@
 # LifeRPG OS — Pipeline de Pendências
 
 > **Sincronizado automaticamente com `pipeline.html`.** Não editar à mão — editar o array `items` no HTML e ressincronizar.
-> **Total: 10 itens pendentes.**
+> **Total: 9 itens pendentes.**
 
 ---
 
@@ -9,7 +9,7 @@
 
 *Nenhum item P0 pendente.*
 
-## 🟡 P1 — ALTO (3)
+## 🟡 P1 — ALTO (2)
 
 ### PWA-001 · iOS Safari: virtual keyboard empurra chat UI
 **Cluster:** Mobile & PWA | **Esforço:** M | **Tipo:** Bug | **Fase:** Próximas semanas
@@ -28,30 +28,6 @@ Ver 1.core/modules/social.js, 1.core/styles.css.
    }
 5. Testar no iPhone via BrowserStack ou dispositivo real: abrir chat, focar no input, confirmar que campo de input não é coberto pelo teclado
 6. Commit: "fix: ajustar height do chat modal para visualViewport no iOS Safari"
-```
-
-### UX-002 · 3 colunas de quest muito estreitas em mobile
-**Cluster:** UX/Visual | **Esforço:** M | **Tipo:** Enhancement | **Fase:** Próximas semanas
-
-```
-Ver 1.core/styles.css.
-1. Abrir styles.css e localizar .quests-three-columns
-2. Modificar para ser responsivo:
-   @media (max-width: 640px) {
-     .quests-three-columns {
-       grid-template-columns: 1fr;
-     }
-     .quest-attr-column {
-       display: none;
-     }
-     .quest-attr-column.active-mobile {
-       display: block;
-     }
-   }
-3. Em index.html, adicionar tabs de seleção de coluna para mobile (Vontade / Intelecto / Vitalidade) que aparecem apenas em mobile (display none em desktop)
-4. Em ui.js, adicionar listener nos tabs mobile para alternar qual .quest-attr-column tem a classe active-mobile
-5. Primeira coluna ativa por padrão no load mobile
-6. Commit: "feat: layout responsivo de quests em mobile (1 coluna com tabs)"
 ```
 
 ### SOCIAL-001 · Friends: busca por prefixo ao invés de username exato
@@ -78,7 +54,7 @@ Ver 1.core/modules/social.js.
 2. Se days_absent >= 7: ativar flag gameState._comebackMode = true por 3 dias
 3. Em game-logic.js, em addRewards(): se _comebackMode === true, multiplicar XP por 1.5
 4. Mensagem especial do Iroh ao detectar retorno longo
-5. Commit: "feat: Modo Retorno — 1.5x XP por 3 dias após ausência of 7+ dias"
+5. Commit: "feat: Modo Retorno — 1.5x XP por 3 dias após ausência de 7+ dias"
 ```
 
 ### MKT-003 · Weekly Report: botão de compartilhar
