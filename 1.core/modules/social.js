@@ -1018,7 +1018,8 @@ async function handleFriendSearch() {
     const { data: users, error } = await supabaseClient
         .from('users')
         .select('id, username, level, rank, active_skin')
-        .eq('username', query);
+        .ilike('username', `%${query}%`)
+        .limit(5);
 
     if (error) {
         console.error('Erro na busca de amigo:', error.message);
@@ -1027,69 +1028,85 @@ async function handleFriendSearch() {
     }
 
     if (users.length === 0) {
-        resultsDiv.innerHTML = '<div class="friends-empty-state">Jogador não encontrado. Verifique se digitou o nome exato.</div>';
+        resultsDiv.innerHTML = '<div class="friends-empty-state">Nenhum jogador encontrado com este nome.</div>';
         return;
     }
 
-    const foundUser = users[0];
+    const filteredUsers = users.filter(u => u.id !== window._currentUserDbId);
     resultsDiv.innerHTML = '';
 
-    if (foundUser.id === window._currentUserDbId) {
+    if (users.length === 1 && users[0].id === window._currentUserDbId) {
         resultsDiv.innerHTML = '<div class="friends-empty-state">Você encontrou a si mesmo! 🌌</div>';
         return;
     }
 
-    // Criar item do buscador
-    const itemDiv = document.createElement('div');
-    itemDiv.className = 'online-user-item';
-    itemDiv.style.cursor = 'pointer';
-    itemDiv.style.margin = '10px 20px';
-    itemDiv.style.border = '1px solid rgba(255, 255, 255, 0.05)';
-    itemDiv.style.borderRadius = 'var(--radius-md)';
-    itemDiv.style.background = 'rgba(255, 255, 255, 0.01)';
-    itemDiv.style.padding = '12px 16px';
+    if (filteredUsers.length === 0) {
+        resultsDiv.innerHTML = '<div class="friends-empty-state">Nenhum jogador encontrado com este nome.</div>';
+        return;
+    }
 
-    itemDiv.addEventListener('click', () => {
-        openPlayerProfile(foundUser.id);
-        resultsDiv.style.display = 'none';
-        input.value = '';
+    filteredUsers.forEach(u => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'online-user-item';
+        itemDiv.style.cursor = 'pointer';
+        itemDiv.style.margin = '10px 20px';
+        itemDiv.style.border = '1px solid rgba(255, 255, 255, 0.05)';
+        itemDiv.style.borderRadius = 'var(--radius-md)';
+        itemDiv.style.background = 'rgba(255, 255, 255, 0.01)';
+        itemDiv.style.padding = '12px 16px';
+        itemDiv.style.display = 'flex';
+        itemDiv.style.alignItems = 'center';
+
+        itemDiv.addEventListener('click', () => {
+            openPlayerProfile(u.id);
+            resultsDiv.style.display = 'none';
+            input.value = '';
+        });
+
+        const avatar = document.createElement('img');
+        avatar.src = getPlayerAvatarSrc(u.active_skin, u.rank, u.username);
+        avatar.style.width = '36px';
+        avatar.style.height = '36px';
+        avatar.style.borderRadius = '50%';
+        avatar.style.border = '1px solid var(--neon-cyan)';
+        
+        const info = document.createElement('div');
+        info.className = 'online-user-info';
+        info.style.marginLeft = '12px';
+        info.style.flex = '1';
+
+        const top = document.createElement('div');
+        top.className = 'online-user-top';
+        top.style.display = 'flex';
+        top.style.alignItems = 'center';
+        top.style.gap = '8px';
+
+        const name = document.createElement('span');
+        name.className = 'online-user-name';
+        name.style.fontWeight = 'bold';
+        name.style.color = 'white';
+        name.textContent = u.username;
+
+        const rank = document.createElement('span');
+        const rLetter = u.rank ? u.rank.toLowerCase() : 'e';
+        rank.className = `rank-badge rank-${rLetter} online-user-rank`;
+        rank.textContent = `RANK ${u.rank || 'E'}`;
+
+        const lvl = document.createElement('div');
+        lvl.className = 'online-user-level';
+        lvl.style.fontSize = '11px';
+        lvl.style.color = 'var(--text-secondary)';
+        lvl.textContent = `Nível ${u.level || 1}`;
+
+        top.appendChild(name);
+        top.appendChild(rank);
+        info.appendChild(top);
+        info.appendChild(lvl);
+        itemDiv.appendChild(avatar);
+        itemDiv.appendChild(info);
+        
+        resultsDiv.appendChild(itemDiv);
     });
-
-    const avatar = document.createElement('img');
-    avatar.src = getPlayerAvatarSrc(foundUser.active_skin, foundUser.rank, foundUser.username);
-    avatar.style.width = '36px';
-    avatar.style.height = '36px';
-    avatar.style.borderRadius = '50%';
-    avatar.style.border = '1px solid var(--neon-cyan)';
-    
-    const info = document.createElement('div');
-    info.className = 'online-user-info';
-    info.style.marginLeft = '12px';
-
-    const top = document.createElement('div');
-    top.className = 'online-user-top';
-
-    const name = document.createElement('span');
-    name.className = 'online-user-name';
-    name.textContent = foundUser.username;
-
-    const rank = document.createElement('span');
-    const rLetter = foundUser.rank ? foundUser.rank.toLowerCase() : 'e';
-    rank.className = `rank-badge rank-${rLetter} online-user-rank`;
-    rank.textContent = `RANK ${foundUser.rank || 'E'}`;
-
-    const lvl = document.createElement('div');
-    lvl.className = 'online-user-level';
-    lvl.textContent = `Nível ${foundUser.level || 1}`;
-
-    top.appendChild(name);
-    top.appendChild(rank);
-    info.appendChild(top);
-    info.appendChild(lvl);
-    itemDiv.appendChild(avatar);
-    itemDiv.appendChild(info);
-    
-    resultsDiv.appendChild(itemDiv);
 }
 
 // Carrega amigos e solicitações de amizade do Supabase
@@ -1837,6 +1854,14 @@ function setupSocialModalListeners() {
                 }
             }
         });
+
+        // PWA-001: Resize do visualViewport para contornar teclado virtual no iOS Safari
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                const chatBox = document.querySelector('.social-modal-body');
+                if (chatBox) chatBox.style.height = window.visualViewport.height * 0.75 + 'px';
+            });
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 # LifeRPG OS — Pipeline de Pendências
 
 > **Sincronizado automaticamente com `pipeline.html`.** Não editar à mão — editar o array `items` no HTML e ressincronizar.
-> **Total: 9 itens pendentes.**
+> **Total: 7 itens pendentes.**
 
 ---
 
@@ -9,40 +9,9 @@
 
 *Nenhum item P0 pendente.*
 
-## 🟡 P1 — ALTO (2)
+## 🟡 P1 — ALTO (0)
 
-### PWA-001 · iOS Safari: virtual keyboard empurra chat UI
-**Cluster:** Mobile & PWA | **Esforço:** M | **Tipo:** Bug | **Fase:** Próximas semanas
-
-```
-Ver 1.core/modules/social.js, 1.core/styles.css.
-1. Abrir styles.css e localizar .modal-box-social ou o container do chat global
-2. Substituir height: 90dvh por height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom))
-3. No input do chat (.chat-input-row), adicionar padding-bottom: env(safe-area-inset-bottom)
-4. Em social.js, adicionar listener para visualViewport resize:
-   if (window.visualViewport) {
-     window.visualViewport.addEventListener('resize', () => {
-       const chatBox = document.querySelector('.social-modal-body');
-       if (chatBox) chatBox.style.height = window.visualViewport.height * 0.75 + 'px';
-     });
-   }
-5. Testar no iPhone via BrowserStack ou dispositivo real: abrir chat, focar no input, confirmar que campo de input não é coberto pelo teclado
-6. Commit: "fix: ajustar height do chat modal para visualViewport no iOS Safari"
-```
-
-### SOCIAL-001 · Friends: busca por prefixo ao invés de username exato
-**Cluster:** Social | **Esforço:** M | **Tipo:** Feature | **Fase:** Próximas semanas
-
-```
-Ver 1.core/modules/social.js.
-1. Em social.js, localizar a função de busca de amigos (provavelmente triggerFriendSearch ou similar)
-2. Substituir query de busca exata por ILIKE:
-   .from('persons').select('id, username, level, rank').ilike('username', `%${searchTerm}%`).limit(5)
-3. Exibir resultados como lista de 5 cards com: avatar placeholder, username, nível e botão "ADICIONAR"
-4. Commit: "feat: busca de amigos por prefixo (ILIKE) ao invés de username exato"
-```
-
----
+*Nenhum item P1 pendente.*
 
 ## 🟢 P2 — MÉDIO (2)
 
@@ -79,7 +48,7 @@ Ver 1.core/modules/weekly-report.js, index.html.
 
 ```
 1. Configurar build script com PurgeCSS: npx purgecss --css 1.core/styles.css --content index.html 1.core/**/*.js --output 1.core/styles.min.css
-2. Atualizar link no index.html para styles.min.css em produção
+2. Update link no index.html para styles.min.css em produção
 3. Target: reduzir de 110KB para < 40KB gzipped
 4. Commit: "perf: PurgeCSS no pipeline de produção — remover CSS não utilizado"
 ```

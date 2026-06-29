@@ -2942,6 +2942,7 @@ body::before {
 
 .chat-input-row {
     padding: 14px 18px;
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
     border-top: 1px solid var(--border-color);
     display: flex;
     gap: 10px;
@@ -3504,7 +3505,7 @@ body::before {
     }
     
     .modal-box-social {
-        height: 90dvh !important;
+        height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
         padding: 16px !important;
     }
 }
