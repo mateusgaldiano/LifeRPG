@@ -2221,10 +2221,8 @@ async function submitPvpChallenge() {
             showSystemToast('⚔️ Desafio enviado com sucesso!');
             closePvpChallengeModal();
             
-            // Subtrai ouro localmente para atualizar UI imediatamente antes da proxima sincronizacao
-            gameState.gold -= bet;
-            localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
-            updateUI();
+            // Saldo autoritativo: a RPC já debitou server-side; re-busca o ouro real.
+            await window.refreshGoldFromCloud();
             
             // Recarregar aba/dados
             const activeSubtab = document.querySelector('.sub-tab-btn.active');
@@ -2336,10 +2334,8 @@ async function loadDuelsList() {
                         if (!rejectError) {
                             showSystemToast('Desafio cancelado e ouro devolvido!');
                             
-                            // Reembolsa ouro localmente antes do proximo sync
-                            gameState.gold += d.gold_bet;
-                            localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
-                            updateUI();
+                            // Saldo autoritativo: o reembolso ocorreu server-side; re-busca o ouro real.
+                            await window.refreshGoldFromCloud();
                             
                             loadDuelsList();
                         } else {
@@ -2383,10 +2379,8 @@ async function loadDuelsList() {
                         if (!acceptError) {
                             showSystemToast('⚔️ Duelo aceito! Que vença o mais consistente.');
                             
-                            // Deduz ouro localmente antes do proximo sync
-                            gameState.gold -= d.gold_bet;
-                            localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
-                            updateUI();
+                            // Saldo autoritativo: a RPC já debitou server-side; re-busca o ouro real.
+                            await window.refreshGoldFromCloud();
                             
                             loadDuelsList();
                         } else {

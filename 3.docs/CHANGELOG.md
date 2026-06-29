@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.33] — 2026-06-28
+- **FIX #3 · PvP usa saldo de ouro autoritativo do servidor:**
+  - Novo helper `window.refreshGoldFromCloud()` ([`supabase-config.js`](../1.core/supabase-config.js)) re-busca o `gold` real da tabela `users` após mutações de duelo (a RPC já debita/reembolsa server-side).
+  - `submitPvpChallenge`, e os handlers de **aceitar** e **cancelar** desafio (`loadDuelsList`) deixaram de fazer dedução/reembolso local "às cegas" (`gameState.gold ±= aposta`) e passaram a chamar `refreshGoldFromCloud()`. Elimina divergência entre o HUD e o banco.
+  - `btnReject` intacto (o rejeitante não apostou; reembolso do desafiante vem no próximo sync dele).
+
 ## [v2.1.32] — 2026-06-28
 - **Substituição de Rótulos de Ranks por Dificuldades nas Quests:**
   - **Exibição Limpa de Dificuldade:** Removido o termo "Rank X" (como RANK E, RANK D, etc.) dos cartões de missões e do modal de criação de novas quests.

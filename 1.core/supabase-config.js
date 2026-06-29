@@ -1201,6 +1201,24 @@ window.getLocalDateString = function() {
   return `${year}-${month}-${day}`;
 };
 
+// Re-busca o ouro autoritativo do servidor após mutações PvP (a RPC já debitou
+// server-side). Evita divergência por dedução/reembolso local "às cegas".
+window.refreshGoldFromCloud = async function() {
+  if (!window._currentUserDbId || !supabaseClient || !navigator.onLine) return;
+  const { data, error } = await supabaseClient
+    .from('users')
+    .select('gold')
+    .eq('id', window._currentUserDbId)
+    .single();
+  if (error || !data) {
+    console.error('[PvP] Falha ao re-buscar ouro autoritativo:', error?.message);
+    return;
+  }
+  gameState.gold = data.gold;
+  localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+  if (typeof updateUI === 'function') updateUI();
+};
+
 window.createPvpChallenge = async (opponentId, goldBet) => {
   return await supabaseClient.rpc('create_pvp_challenge', { p_opponent_id: opponentId, p_gold_bet: goldBet });
 };
