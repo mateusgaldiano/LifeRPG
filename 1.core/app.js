@@ -266,6 +266,11 @@ function loadSocialModule() {
         // Wire-up que antes rodava no boot
         if (typeof m.setupSocialModalListeners === 'function') m.setupSocialModalListeners();
         if (typeof m.setupHabitLibraryAndTabs === 'function') m.setupHabitLibraryAndTabs();
+        // Liga a troca das sub-abas (Amigos/Duelos/Clã) e a busca de amigos. Antes
+        // eram chamadas em ui.js (initTabs) como refs nuas — sempre undefined lá, pois
+        // social.js é lazy e não é importado por ui.js. Por isso as sub-abas não trocavam.
+        if (typeof m.initSocialSubTabs === 'function') m.initSocialSubTabs();
+        if (typeof m.initFriendsSearchListeners === 'function') m.initFriendsSearchListeners();
         // Re-render para refletir o banner de tutorial agora que o módulo existe
         if (typeof window.updateUI === 'function') window.updateUI();
         return m;

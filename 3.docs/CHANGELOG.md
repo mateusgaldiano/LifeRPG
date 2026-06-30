@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.35] — 2026-06-29
+- **Fix · Sub-abas sociais (Amigos / Duelos / Clã) não trocavam de conteúdo:**
+  - **Causa:** `initSocialSubTabs()` (liga os listeners de troca de sub-aba) era chamado em `ui.js` (`initTabs`) como referência **nua** a uma função do `social.js`, que é lazy e não é importado por `ui.js` — logo `typeof initSocialSubTabs` era sempre `'undefined'` e a chamada nunca executava. Os botões pegavam o destaque visual, mas o conteúdo ficava preso no CHAT. (O chat funcionava porque é wirado separadamente pelo `enterCommunityTab`.)
+  - **Correção:** o wire-up de `initSocialSubTabs()` e `initFriendsSearchListeners()` passou a rodar dentro do `loadSocialModule()` (`app.js`), no momento em que o `social.js` é carregado e suas funções existem.
+  - Verificado no preview: após o load natural do social, as 4 sub-abas trocam corretamente (botão ativo + conteúdo ativo), sem init manual.
+
 ## [v2.1.34] — 2026-06-29
 - **Fix CRÍTICO · `game-logic.js` com erro de sintaxe quebrava o app inteiro:**
   - **Causa raiz:** a inclusão do Sistema de Desafios Semanais (commit `841d862`) inseriu o bloco *dentro* de `completeDungeon()`, e a chave `}` de fechamento da função acabou fechando a `checkWeeklyChallengeReset`. Resultado: `completeDungeon` nunca fechava → todo o resto do arquivo ficava aninhado nela → `export {}` no fim virava "dentro de função" → `SyntaxError: Unexpected token 'export'`.
