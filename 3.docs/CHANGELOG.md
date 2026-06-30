@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.37] — 2026-06-30
+- **Curadoria da Biblioteca de Hábitos** (`HABIT_LIBRARY` em `state.js`, 62 → 63 itens):
+  - **Removidos 6 redundantes:** `lib-idioma-easy` (Duolingo duplicado), `lib-diario-med` (diário sobreposto), `lib-caminhada2-med` (caminhada redundante), `lib-niver-easy` e `lib-bilhete-easy` (excesso de contatos rápidos), `lib-deepwork2-hard` (Deep Work duplicado).
+  - **Adicionados 7:** *Leitura filosófica/religiosa* (Mental·F·10), *Planejar a própria carreira* (Prod·M·30), *Provocação para o time* (Prod·M·15), *Planejar reunião importante* (Prod·M·20), *Planejar carreira (contatos)* (Social·M·30), *Mensagem de networking* (Social·F·5), *Doar 1 objeto* (Rotina·F·5).
+  - Não afeta quests já criadas (a biblioteca é só o catálogo de "adicionar").
+
 ## [v2.1.36] — 2026-06-29
 - **Fix · Conclusões de missão agora sincronizam entre dispositivos:**
   - **Causa:** concluir uma quest subia só o estado do jogador (XP/Ouro/streak via `saveToSupabase`), mas **não** o flag `completed` de cada missão. Os checks do dia só iam à nuvem em syncs de boot específicos — então o outro dispositivo mostrava tudo como "não concluído".
