@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.36] — 2026-06-29
+- **Fix · Conclusões de missão agora sincronizam entre dispositivos:**
+  - **Causa:** concluir uma quest subia só o estado do jogador (XP/Ouro/streak via `saveToSupabase`), mas **não** o flag `completed` de cada missão. Os checks do dia só iam à nuvem em syncs de boot específicos — então o outro dispositivo mostrava tudo como "não concluído".
+  - **Correção (push):** `toggleQuest` e `adjustWater` agora enfileiram um `upsert` da quest no outbox (`queueQuestOp`), subindo `completed`/`completed_at`/contador junto. Sobe na hora se online, ou no próximo flush/reconexão.
+  - **Correção (load):** `loadQuestsFromSupabase` troca o guard binário `resetToday` por checagem **por data do `completed_at`** (`cloudDoneToday`): uma daily concluída na nuvem só vale se foi feita **hoje**. Isso reflete os checks do dia entre dispositivos **e** mantém a proteção contra reaplicar conclusão de ontem após o reset diário.
+  - Nota: XP/Ouro nunca se perderam (já subiam); o que faltava eram os ✓ visuais.
+
 ## [v2.1.35] — 2026-06-29
 - **Fix · Sub-abas sociais (Amigos / Duelos / Clã) não trocavam de conteúdo:**
   - **Causa:** `initSocialSubTabs()` (liga os listeners de troca de sub-aba) era chamado em `ui.js` (`initTabs`) como referência **nua** a uma função do `social.js`, que é lazy e não é importado por `ui.js` — logo `typeof initSocialSubTabs` era sempre `'undefined'` e a chamada nunca executava. Os botões pegavam o destaque visual, mas o conteúdo ficava preso no CHAT. (O chat funcionava porque é wirado separadamente pelo `enterCommunityTab`.)

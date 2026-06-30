@@ -891,9 +891,12 @@ window.loadQuestsFromSupabase = async function() {
       .map(q => q.id)
   );
 
-  // Se o reset diário já ocorreu hoje, a nuvem NÃO deve reaplicar 'completed' antigo nas dailies.
-  const resetToday = typeof window.localDateStr === 'function'
-    && gameState._lastDailyResetDate === window.localDateStr();
+  // Conclusão de daily vinda da nuvem só vale se foi feita HOJE (completed_at de hoje).
+  // Reflete os checks do dia entre dispositivos E impede reaplicar conclusão de ontem após
+  // o reset diário local — substitui o antigo guard binário resetToday por checagem por data.
+  const todayStr = typeof window.localDateStr === 'function' ? window.localDateStr() : null;
+  const cloudDoneToday = (qq) => !!(qq.completed && qq.completed_at && todayStr
+    && window.localDateStr(new Date(qq.completed_at)) === todayStr);
 
   const cloudQuests = data
     .filter(q => q.type === 'daily' || (typeof q.type === 'string' && q.type.startsWith('weekly-')))
@@ -915,7 +918,8 @@ window.loadQuestsFromSupabase = async function() {
         gold: q.gold,
         emoji: q.emoji,
         icon: q.emoji,
-        completed: completedToday.has(q.local_id) ? true : (resetToday && questType === 'daily' ? false : !!q.completed),
+        completed: completedToday.has(q.local_id) ? true
+          : (questType === 'daily' ? cloudDoneToday(q) : !!q.completed),
         fromLibrary: q.from_library,
         duration: (() => {
           const match = q.title?.match(/\((\d+)\s*min\)/i);

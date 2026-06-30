@@ -773,6 +773,10 @@ function toggleQuest(id) {
         }
     }
 
+    // Sincroniza o estado desta quest (completed/contador) para a nuvem via outbox,
+    // p/ os checks do dia refletirem em outros dispositivos. Antes só XP/Ouro subiam.
+    if (typeof window.queueQuestOp === 'function') window.queueQuestOp(quest.id, 'upsert');
+
     saveGameData();
     renderQuests();
     updateUI();
@@ -821,6 +825,9 @@ function adjustWater(id, operation) {
             quest.current--;
         }
     }
+
+    // Sincroniza o estado desta quest (contador de água/completed) para a nuvem.
+    if (typeof window.queueQuestOp === 'function') window.queueQuestOp(quest.id, 'upsert');
 
     saveGameData();
     renderQuests();
