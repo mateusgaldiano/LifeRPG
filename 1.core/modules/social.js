@@ -145,8 +145,10 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
         const keywords = [
             ['água', 'agua', 'copo', 'copos', '💧'],
             ['treinar', 'malhar', 'corrida', 'força', 'força / corrida', 'forca', 'exercício', 'academia', 'calistenia'],
-            ['alongamento', 'alongar', 'flexibilidade', 'yoga', 'pilates', '🧘‍♂️'],
-            ['meditar', 'meditação', 'meditacao', '🧘'],
+            // Sem ícones 🧘 aqui: eles eram compartilhados entre meditação e yoga/alongamento
+            // e faziam as duas colidirem. Conflito agora é por texto (são atividades distintas).
+            ['alongamento', 'alongar', 'flexibilidade', 'yoga', 'pilates'],
+            ['meditar', 'meditação', 'meditacao'],
             ['leitura', 'ler', 'livro', '📚'],
             ['acordar', '🌅'],
             ['cama', '🛏️'],

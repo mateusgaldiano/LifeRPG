@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.38] — 2026-06-30
+- **Fix · Meditação e Yoga/Alongamento deixam de colidir na Biblioteca:**
+  - A detecção de conflito (`addHabitFromLibrary`, `social.js`) compartilhava os ícones 🧘 / 🧘‍♂️ entre os grupos de *meditação* e *yoga/alongamento*; como vários itens cruzavam ícones, bloqueava adicionar uma quando já existia a outra. Removidos os ícones 🧘 dessas duas regras — o conflito passa a ser só por texto (são atividades distintas). Verificado: yoga coexiste com meditação; duplicata de meditação ainda é bloqueada.
+
 ## [v2.1.37] — 2026-06-30
 - **Curadoria da Biblioteca de Hábitos** (`HABIT_LIBRARY` em `state.js`, 62 → 63 itens):
   - **Removidos 6 redundantes:** `lib-idioma-easy` (Duolingo duplicado), `lib-diario-med` (diário sobreposto), `lib-caminhada2-med` (caminhada redundante), `lib-niver-easy` e `lib-bilhete-easy` (excesso de contatos rápidos), `lib-deepwork2-hard` (Deep Work duplicado).
