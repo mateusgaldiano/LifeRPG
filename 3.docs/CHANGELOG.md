@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.39] — 2026-06-30
+- **Remoção da detecção de colisão entre atividades** (`addHabitFromLibrary`, `social.js`):
+  - A regra por palavras-chave/ícones gerava muitos **falsos positivos** (ex.: "água" pegava banho gelado; "ler" pegava "ace**ler**ado"; "acordar" travava todo hábito matinal; "higienização" misturava bucal e skincare) e impedia o usuário de montar a rotina que quisesse.
+  - Removida por inteiro — inclusive o bloqueio de título idêntico. Agora qualquer atividade pode ser adicionada livremente (inclusive duplicada). Verificado no preview: água + banho gelado, 2 meditações e item duplicado entram sem bloqueio.
+
 ## [v2.1.38] — 2026-06-30
 - **Fix · Meditação e Yoga/Alongamento deixam de colidir na Biblioteca:**
   - A detecção de conflito (`addHabitFromLibrary`, `social.js`) compartilhava os ícones 🧘 / 🧘‍♂️ entre os grupos de *meditação* e *yoga/alongamento*; como vários itens cruzavam ícones, bloqueava adicionar uma quando já existia a outra. Removidos os ícones 🧘 dessas duas regras — o conflito passa a ser só por texto (são atividades distintas). Verificado: yoga coexiste com meditação; duplicata de meditação ainda é bloqueada.

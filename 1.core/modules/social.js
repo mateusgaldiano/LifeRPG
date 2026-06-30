@@ -132,50 +132,9 @@ function setupHabitLibraryAndTabs() {
 }
 
 function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
-    // Evita duplicados ou hábitos com colisão direta na lista ativa correspondente
+    // Colisão removida: o usuário pode adicionar qualquer atividade livremente.
+    // (A antiga regra por palavras-chave gerava falsos positivos e agregava pouco.)
     const isSq = (type === 'side');
-    const activeList = isSq ? (gameState.sideQuests || []) : (gameState.quests || []);
-    
-    const conflicting = activeList.find(q => {
-        const t1 = q.title.toLowerCase();
-        const t2 = h.title.toLowerCase();
-        if (t1 === t2) return true;
-        
-        // Verifica palavras-chave de colisão
-        const keywords = [
-            ['água', 'agua', 'copo', 'copos', '💧'],
-            ['treinar', 'malhar', 'corrida', 'força', 'força / corrida', 'forca', 'exercício', 'academia', 'calistenia'],
-            // Sem ícones 🧘 aqui: eles eram compartilhados entre meditação e yoga/alongamento
-            // e faziam as duas colidirem. Conflito agora é por texto (são atividades distintas).
-            ['alongamento', 'alongar', 'flexibilidade', 'yoga', 'pilates'],
-            ['meditar', 'meditação', 'meditacao'],
-            ['leitura', 'ler', 'livro', '📚'],
-            ['acordar', '🌅'],
-            ['cama', '🛏️'],
-            ['família', 'familia', 'amigo', 'social', 'conectar', '❤️', '📞'],
-            ['higienização', 'higienizacao', 'bucal', 'dente', 'dental', 'fio dental', '🪥']
-        ];
-        
-        for (const group of keywords) {
-            const q1Matches = group.some(kw => t1.includes(kw) || q.icon === kw || q.emoji === kw || q.id?.includes(kw));
-            const q2Matches = group.some(kw => t2.includes(kw) || h.icon === kw || h.emoji === kw || h.id?.includes(kw));
-            if (q1Matches && q2Matches) return true;
-        }
-        return false;
-
-    });
-
-    if (conflicting) {
-        showSystemToast(`⚠️ Você já tem "${conflicting.title}" que é semelhante a "${h.title}".`);
-        // Fecha modais para não travar a UI
-        const modalConfirm = document.getElementById('modal-confirm-habit');
-        if (modalConfirm) modalConfirm.style.display = 'none';
-        const modalSq = document.getElementById('modal-sidequest');
-        if (modalSq) modalSq.style.display = 'none';
-        selectedLibraryHabit = null;
-
-        return;
-    }
 
     let xp = 25, gold = 20;
     if (h.difficulty === 'easy') { xp = 10; gold = 10; }
