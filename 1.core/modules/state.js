@@ -120,7 +120,7 @@ const HABIT_LIBRARY = [
     { id: 'lib-video-med', title: 'Conversa por telefone ou videochamada com parente próximo', icon: '📞', difficulty: 'medium', duration: 20, skill: 'social' },
     { id: 'lib-pet-med', title: 'Passear com animal de estimação ou acompanhar parceiro em caminhada', icon: '🐕', difficulty: 'medium', duration: 30, skill: 'social' },
     { id: 'lib-qualidade-hard', title: 'Dedicar tempo de qualidade e conversa profunda com familiares', icon: '👥', difficulty: 'hard', duration: 60, skill: 'social' },
-    { id: 'lib-carreira-soc-med', title: 'Planejar carreira (contatos)', icon: '🤝', difficulty: 'medium', duration: 30, skill: 'social' },
+    { id: 'lib-carreira-soc-med', title: 'Planejar carreira dos liderados', icon: '🤝', difficulty: 'medium', duration: 30, skill: 'social' },
     { id: 'lib-networking-easy', title: 'Mensagem de networking', icon: '🔗', difficulty: 'easy', duration: 5, skill: 'social' }
 ];
 
