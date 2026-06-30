@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.34] — 2026-06-29
+- **Fix CRÍTICO · `game-logic.js` com erro de sintaxe quebrava o app inteiro:**
+  - **Causa raiz:** a inclusão do Sistema de Desafios Semanais (commit `841d862`) inseriu o bloco *dentro* de `completeDungeon()`, e a chave `}` de fechamento da função acabou fechando a `checkWeeklyChallengeReset`. Resultado: `completeDungeon` nunca fechava → todo o resto do arquivo ficava aninhado nela → `export {}` no fim virava "dentro de função" → `SyntaxError: Unexpected token 'export'`.
+  - **Impacto:** como `app.js` (e `social.js`) importam `game-logic.js`, o **grafo de módulos ES inteiro falhava ao linkar** — o app não bootava e o `social.js` (lazy) nunca carregava, deixando os botões **Amigos / Duelos / Clã** sem listener (sintoma reportado).
+  - **Correção:** restaurado `renderQuests();` + a chave de fechamento da `completeDungeon` logo após o `setTimeout`, deixando `WEEKLY_CHALLENGES_POOL`, `getWeekNumber` e `checkWeeklyChallengeReset` (esta é exportada) corretamente em escopo de módulo.
+  - Verificado: `node --check` OK, grafo ESM linka, e no preview o `social.js` carrega e as 3 sub-abas trocam normalmente.
+
 ## [v2.1.33] — 2026-06-28
 - **FIX #3 · PvP usa saldo de ouro autoritativo do servidor:**
   - Novo helper `window.refreshGoldFromCloud()` ([`supabase-config.js`](../1.core/supabase-config.js)) re-busca o `gold` real da tabela `users` após mutações de duelo (a RPC já debita/reembolsa server-side).

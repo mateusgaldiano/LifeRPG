@@ -185,6 +185,9 @@ function completeDungeon() {
         showSystemToast(`🏆 *DUNGEON CONCLUÍDA!* Você completou *"${d.title}"*!\n\n+${xpGain} XP · +${goldGain} 💰 concedidos. Iroh está orgulhoso.`);
     }, 800);
 
+    renderQuests();
+}
+
 
 // ==========================================================================
 // SISTEMA DE DESAFIOS SEMANAIS (WEEKLY CHALLENGES)
