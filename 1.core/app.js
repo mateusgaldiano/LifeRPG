@@ -82,6 +82,7 @@ import {
 import {
     spawnDungeon,
     checkDungeonExpiry,
+    checkDungeonSchedule,
     completeDungeon,
     spawnWeeklyBoss,
     checkWeeklyBossExpiry,
@@ -375,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Inicializa abas e renderiza a UI (com dados locais preliminares)
     initTabs();
+    checkDungeonSchedule(); // masmorras nascem por agendamento (sábado + 30% meio de semana)
     renderQuests();
     renderRewards();
 

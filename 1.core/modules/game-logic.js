@@ -93,6 +93,8 @@ function getRankIncomeMultiplier() {
 }
 
 // Gera uma nova dungeon aleatória
+const SKILL_LABELS = { physical: 'Físico', mental: 'Mental', productivity: 'Foco', wisdom: 'Sabedoria', social: 'Conexão', routine: 'Rotina' };
+
 function spawnDungeon() {
     if (!hasSkillLV3()) return;
     if (gameState.activeDungeon && !gameState.activeDungeon.completed) return;
@@ -103,20 +105,27 @@ function spawnDungeon() {
     const roll = Math.random();
     let rarity = 'comum';
     let rarityLabel = '⚔️ COMUM';
-    let mult = 1.0;
+    let mult = 1.0, targetAdd = 0;
 
     if (roll < 0.10) {
         rarity = 'epico';
         rarityLabel = '✨ ÉPICA';
         mult = 2.5;
+        targetAdd = 2;
     } else if (roll < 0.35) {
         rarity = 'raro';
         rarityLabel = '🔵 RARA';
         mult = 1.5;
+        targetAdd = 1;
     }
+
+    const lvl = gameState.level || 1;
+    const base = lvl >= 30 ? 5 : lvl >= 20 ? 4 : lvl >= 10 ? 3 : 2; // escala por nível (E/D..Monarca)
+    const target = base + targetAdd;
 
     const xpVal = Math.round(pick.xp * mult);
     const goldVal = Math.round(pick.gold * mult);
+    const skillName = SKILL_LABELS[pick.skill] || pick.skill;
 
     gameState.activeDungeon = {
         id: 'dungeon-' + Date.now(),
@@ -125,12 +134,14 @@ function spawnDungeon() {
         xp: xpVal,
         gold: goldVal,
         rarity: rarity,
+        target: target,
+        progress: 0,
         expiresAt: Date.now() + DUNGEON_DURATION_MS,
         completed: false
     };
     saveGameData();
     setTimeout(() => {
-        showSystemToast(`${rarityLabel} *DUNGEON DISPONÍVEL!* Uma missão especial surgiu: *"${pick.title}"*\n\nRecompensa: +${xpVal} XP · +${goldVal} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
+        showSystemToast(`${rarityLabel} *MASMORRA ABERTA!* *"${pick.title}"* — objetivo: conclua *${target} hábitos de ${skillName}*\n\nRecompensa: +${xpVal} XP · +${goldVal} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
 
     }, 1000);
 }
@@ -186,6 +197,56 @@ function completeDungeon() {
     }, 800);
 
     renderQuests();
+}
+
+
+// -- MASMORRAS: progresso por skill + agendamento (sabado + 30% no meio da semana) --
+// Incrementa/decrementa o progresso da masmorra ativa quando um habito da MESMA skill
+// e concluido/desmarcado. Ao atingir o alvo, a masmorra e concluida automaticamente.
+function bumpDungeonProgress(skill, delta) {
+    const d = gameState.activeDungeon;
+    if (!d || d.completed || d.skill !== skill) return;
+    d.progress = Math.max(0, (d.progress || 0) + delta);
+    if (delta > 0 && d.progress >= (d.target || 1)) {
+        completeDungeon();
+    }
+}
+
+// Agenda o spawn das masmorras: 1 garantida no sabado + 30%/semana de uma extra num
+// dia entre segunda e quinta (com perdao: se voce nao abrir no dia, nasce no proximo
+// acesso da semana). Chamada no boot e na virada de dia.
+function checkDungeonSchedule() {
+    if (!hasSkillLV3()) return;
+
+    const now = new Date();
+    const dow = now.getDay(); // 0=Dom, 1=Seg ... 6=Sab
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + (dow === 0 ? -6 : 1 - dow)); // segunda desta semana ISO
+    const weekKey = localDateStr(monday);
+
+    // Nova semana: reseta marcadores e rola a chance (30%) da masmorra do meio de semana.
+    if (gameState._dungeonWeek !== weekKey) {
+        gameState._dungeonWeek = weekKey;
+        gameState._dungeonSatDone = false;
+        gameState._dungeonMidDone = false;
+        gameState._dungeonMidDay = (Math.random() < 0.30) ? (1 + Math.floor(Math.random() * 4)) : 0; // Seg(1)-Qui(4)
+        saveGameData();
+    }
+
+    if (gameState.activeDungeon && !gameState.activeDungeon.completed) return; // uma por vez
+
+    // Masmorra do meio de semana (janela seg-sex, a partir do dia agendado).
+    if (gameState._dungeonMidDay && !gameState._dungeonMidDone && dow >= gameState._dungeonMidDay && dow <= 5) {
+        gameState._dungeonMidDone = true;
+        spawnDungeon();
+        return;
+    }
+
+    // Masmorra de sabado garantida (janela sab-dom).
+    if (!gameState._dungeonSatDone && (dow === 6 || dow === 0)) {
+        gameState._dungeonSatDone = true;
+        spawnDungeon();
+    }
 }
 
 
@@ -682,6 +743,7 @@ function toggleQuest(id) {
 
         // Deduz pontos no atributo
         deductSkillXP(skillType);
+        bumpDungeonProgress(skillType, -1);
 
         // Atualiza progresso do Desafio Semanal (decrementa se compatível)
         if (gameState.weeklyChallenge && skillType === gameState.weeklyChallenge.skill) {
@@ -718,6 +780,7 @@ function toggleQuest(id) {
         quest.completed = true;
         addRewards(xpGained, goldGained);
         addSkillXP(skillType);
+        bumpDungeonProgress(skillType, 1);
 
         // Atualiza progresso do Desafio Semanal
         if (gameState.weeklyChallenge && !gameState.weeklyChallenge.completed && skillType === gameState.weeklyChallenge.skill) {
@@ -801,6 +864,7 @@ function adjustWater(id, operation) {
         }
         deductRewards(quest.xp, goldLost);
         deductSkillXP(skillType);
+        bumpDungeonProgress(skillType, -1);
     } else if (!quest.completed) {
         if (operation === 'plus' && quest.current < targetVal) {
             quest.current++;
@@ -818,6 +882,7 @@ function adjustWater(id, operation) {
                 let xpGained = quest.xp * getActiveXpMultiplier();
                 addRewards(xpGained, goldGained);
                 addSkillXP(skillType);
+                bumpDungeonProgress(skillType, 1);
                 
                 checkAllDailies();
             }
@@ -1018,8 +1083,7 @@ function checkAllDailies() {
         saveGameData();
         updateUI();
 
-        // Tenta gerar dungeon ao completar todas as dailies
-        if (!gameState.activeDungeon) spawnDungeon();
+        // (Masmorras agora nascem por agendamento - ver checkDungeonSchedule.)
 
         setTimeout(() => {
             const todayStr = new Date().toDateString();
@@ -1397,6 +1461,7 @@ async function saveToCloud() {
 export {
     spawnDungeon,
     checkDungeonExpiry,
+    checkDungeonSchedule,
     completeDungeon,
     spawnWeeklyBoss,
     checkWeeklyBossExpiry,

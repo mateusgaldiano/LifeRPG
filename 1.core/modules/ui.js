@@ -1280,7 +1280,7 @@ function renderQuests() {
                         <div style="font-size: 10px; color: ${rStyle.color}; font-family: var(--font-hud); letter-spacing: 1px;">MASMORRA ${rStyle.label} ATIVA</div>
                         <div style="font-size: 16px; font-weight: bold; margin-top: 5px; color: white;">${gameState.activeDungeon.title}</div>
                     </div>
-                    <button class="dungeon-banner-btn" style="background: rgba(255,255,255,0.02); border: 1px solid ${rStyle.color}; color: ${rStyle.color}; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-family: var(--font-hud); letter-spacing: 1px;" data-dungeon="true">ATACAR BOSS</button>
+                    <div style="text-align:right; color:${rStyle.color}; font-family:var(--font-hud); line-height:1.1;"><div style="font-size:20px; font-weight:bold;">${gameState.activeDungeon.progress||0}/${gameState.activeDungeon.target||'?'}</div><div style="font-size:8px; letter-spacing:1px; opacity:0.8;">${({physical:'FÍSICO',mental:'MENTAL',productivity:'FOCO',wisdom:'SABEDORIA',social:'CONEXÃO',routine:'ROTINA'})[gameState.activeDungeon.skill]||''}</div></div>
                 </div>
             </div>
         `;
@@ -1367,10 +1367,11 @@ function renderQuests() {
                         <span class="payout-xp">+${_d.xp} XP</span>
                         <span class="payout-gold">+${_d.gold} 💰</span>
                     </div>
+                    <div style="font-size:11px; color:${rStyle.color}; margin-top:3px;">🎯 ${(_d.progress||0)}/${(_d.target||'?')} hábitos de ${({physical:'Físico',mental:'Mental',productivity:'Foco',wisdom:'Sabedoria',social:'Conexão',routine:'Rotina'})[_d.skill]||_d.skill||''}</div>
                     <div class="dungeon-timer${_urgent ? ' dungeon-timer-urgent' : ''}">⏳ ${_timeLabel}</div>
                 </div>
             </div>
-            <button class="quest-complete-btn dungeon-btn" style="border: 1px solid ${rStyle.color}; color: ${rStyle.color};" data-dungeon="true">✓</button>
+            <div style="align-self:center; padding-right:8px; color:${rStyle.color}; font-family:var(--font-hud); font-size:15px; font-weight:bold;">${(_d.progress||0)}/${(_d.target||'?')}</div>
         `;
         const container = getContainer(_d.skill);
         if (container) container.appendChild(_dc);
@@ -1917,16 +1918,7 @@ function openAvatarZoom() {
 function handleQuestAction(e) {
     const target = e.target;
     
-    // Dungeon: clique no botão ou no card
-    if (target.classList.contains('dungeon-btn') || target.closest('.dungeon-card')) {
-        const btn = target.classList.contains('dungeon-btn')
-            ? target
-            : target.closest('.dungeon-card')?.querySelector('.dungeon-btn');
-        if (btn?.dataset.dungeon) {
-            completeDungeon();
-            return;
-        }
-    }
+    // (Masmorra conclui sozinha ao bater o alvo de habitos - sem clique manual.)
 
     // Se for clique nos botões de ajustar água
     if (target.classList.contains('water-btn')) {

@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.40] — 2026-07-01
+- **Masmorras reformuladas (estilo SAO) — mini-boss por skill:**
+  - **Objetivo real:** cada masmorra agora pede *"conclua N hábitos de [Skill] em 48h"*, com barra de progresso `X/N`. Conclui **automaticamente** ao bater o alvo (concluindo hábitos da skill dela) — acabou a conclusão manual por clique (que causava conclusão acidental).
+  - **Alvo escala por nível + raridade:** base por nível (1–9→2, 10–19→3, 20–29→4, 30+→5) **+** raridade sorteada (Comum +0 / Rara +1 / Épica +2). Recompensa continua × raridade (×1/×1.5/×2.5).
+  - **Spawn agendado:** 1 masmorra garantida **todo sábado** + **30%/semana** de uma extra num dia entre seg–qui (com perdão: nasce no próximo acesso da semana se você não abrir no dia). Removido o spawn antigo (ao completar todas as dailies).
+  - Mantém: gate de "1 skill em LV3+", prazo 48h e −100 XP se expirar. Boss de Rank segue sendo o ápice de cada tier.
+
 ## [v2.1.39] — 2026-06-30
 - **Remoção da detecção de colisão entre atividades** (`addHabitFromLibrary`, `social.js`):
   - A regra por palavras-chave/ícones gerava muitos **falsos positivos** (ex.: "água" pegava banho gelado; "ler" pegava "ace**ler**ado"; "acordar" travava todo hábito matinal; "higienização" misturava bucal e skincare) e impedia o usuário de montar a rotina que quisesse.
