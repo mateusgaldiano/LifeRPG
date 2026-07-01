@@ -1290,7 +1290,7 @@ function renderQuests() {
 
     // Renderiza Desafio Semanal (se houver ativo)
     const weeklyChallengeBanner = document.getElementById('weekly-challenge-banner');
-    if (gameState.weeklyChallenge && weeklyChallengeBanner) {
+    if (gameState.weeklyChallenge && !gameState.weeklyChallenge.completed && weeklyChallengeBanner) {
         const wc = gameState.weeklyChallenge;
         weeklyChallengeBanner.style.display = 'block';
         

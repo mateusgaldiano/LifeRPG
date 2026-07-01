@@ -723,6 +723,12 @@ function loadGameData() {
         if (gameState.weeklyBoss === undefined) gameState.weeklyBoss = null;
         if (gameState.unlockedAchievements === undefined) gameState.unlockedAchievements = [];
         if (gameState._dungeonsCompleted === undefined) gameState._dungeonsCompleted = 0;
+        // Backfill de masmorra antiga (pré-v2.1.40, sem objetivo): dá alvo/progresso.
+        if (gameState.activeDungeon && typeof gameState.activeDungeon.target !== 'number') {
+            const _l = gameState.level || 1;
+            gameState.activeDungeon.target = _l >= 30 ? 5 : _l >= 20 ? 4 : _l >= 10 ? 3 : 2;
+            gameState.activeDungeon.progress = gameState.activeDungeon.progress || 0;
+        }
         if (gameState._totalQuestsCompleted === undefined) gameState._totalQuestsCompleted = 0; // META-001
         if (gameState._maxDailyCompleted === undefined) gameState._maxDailyCompleted = 0;       // META-001
         if (gameState._pvpWins === undefined) gameState._pvpWins = 0;                           // META-001

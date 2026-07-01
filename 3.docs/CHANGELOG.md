@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.41] — 2026-07-01
+- **Fix · Desafio Semanal concluído continuava aparecendo:** o banner ficava visível (mostrando `6/6`) até a virada da semana. Agora **some assim que é concluído** (reaparece na segunda com o novo desafio). Enquanto em andamento, segue visível normalmente.
+- **Fix · Masmorras antigas (pré-v2.1.40) mostravam "0/?":** as masmorras que já estavam ativas antes da reforma não tinham objetivo (`target`). Adicionado backfill no load — recebem alvo por nível e progresso 0, então concluem normalmente com hábitos da skill (sem o antigo botão "ATACAR BOSS", que não existe mais).
+
 ## [v2.1.40] — 2026-07-01
 - **Masmorras reformuladas (estilo SAO) — mini-boss por skill:**
   - **Objetivo real:** cada masmorra agora pede *"conclua N hábitos de [Skill] em 48h"*, com barra de progresso `X/N`. Conclui **automaticamente** ao bater o alvo (concluindo hábitos da skill dela) — acabou a conclusão manual por clique (que causava conclusão acidental).
