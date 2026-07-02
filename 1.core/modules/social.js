@@ -217,12 +217,19 @@ function renderHabitLibrary(filter = 'all', search = '') {
     if (!listContainer) return;
 
     const query = search.toLowerCase().trim();
-    
+
+    // Títulos que o usuário já possui como quest ativa (não repetir na biblioteca)
+    const ownedTitles = new Set(
+        [...(gameState.quests || []), ...(gameState.sideQuests || [])]
+            .map(q => (q.title || '').toLowerCase().trim())
+    );
+
     // Filter habits
     const filtered = HABIT_LIBRARY.filter(habit => {
         const matchesFilter = filter === 'all' || habit.skill === filter;
         const matchesSearch = habit.title.toLowerCase().includes(query);
-        return matchesFilter && matchesSearch;
+        const notOwned = !ownedTitles.has(habit.title.toLowerCase().trim());
+        return matchesFilter && matchesSearch && notOwned;
     });
 
     if (filtered.length === 0) {

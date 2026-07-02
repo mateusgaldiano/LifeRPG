@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.44] — 2026-07-02
+- **Biblioteca de Hábitos oculta o que o usuário já tem:** ao abrir "Nova Quest", hábitos que já existem como missão ativa (diária, semanal ou side quest) somem da lista da Biblioteca, evitando duplicidade. Comparação por título (case-insensitive).
+
 ## [v2.1.43] — 2026-07-01
 - **Removido o conceito de "hábitos por nível" (auto-unlock):** `ALL_HABITS_DATABASE` esvaziado e `syncQuestsByLevel()` vira no-op. A **Biblioteca passa a ser o catálogo único** — nada mais é adicionado automaticamente ao subir de nível. Seguro: não remove quests existentes; a notificação de level-up já era guardada por `length > 0`.
 - **Biblioteca reordenada:** dentro de cada atributo, itens similares ficam adjacentes (ex.: os 3 treinos juntos; leitura/estudo juntos; carreira/networking juntos).
