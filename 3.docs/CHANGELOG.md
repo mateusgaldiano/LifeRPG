@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.43] — 2026-07-01
+- **Removido o conceito de "hábitos por nível" (auto-unlock):** `ALL_HABITS_DATABASE` esvaziado e `syncQuestsByLevel()` vira no-op. A **Biblioteca passa a ser o catálogo único** — nada mais é adicionado automaticamente ao subir de nível. Seguro: não remove quests existentes; a notificação de level-up já era guardada por `length > 0`.
+- **Biblioteca reordenada:** dentro de cada atributo, itens similares ficam adjacentes (ex.: os 3 treinos juntos; leitura/estudo juntos; carreira/networking juntos).
+
 ## [v2.1.42] — 2026-07-01
 - **Enxugamento das atividades (menos clutter):**
   - **Biblioteca 63 → 50:** todos os títulos encurtados; removidos 13 itens redundantes/de nicho (Descompressão, Definir MIT, Planejar blocos, Pomodoro, Deep Work, Captura de ideias, Limpeza digital, Estudar conceito, Estudo aprofundado, Meal Prep, Provocação p/ time, e 2 das 3 meditações). Sobrou **1 meditação** ("Meditar").

@@ -901,6 +901,8 @@ function adjustWater(id, operation) {
 
 // Sincroniza a lista de hábitos ativos de acordo com o nível do jogador (Skill Tree)
 function syncQuestsByLevel() {
+    return; // Auto-unlock por nível removido (v2.1.43) — a biblioteca é o catálogo único.
+    // eslint-disable-next-line no-unreachable
     let level = gameState.level;
     
     // Filtra todos os hábitos desbloqueados até o nível atual

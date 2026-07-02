@@ -10,101 +10,71 @@ export const APP_VERSION = (typeof self !== 'undefined' && self.APP_VERSION) ? s
    ========================================================================== */
 
 // Banco de dados mestre de hábitos por nível do LifeRPG
-const ALL_HABITS_DATABASE = [
-    // Bracket 1: Fáceis (Nível 1 ao 4)
-    { id: 'q-db-cama', baseId: 'q-cama', title: 'Arrumar a cama', type: 'daily', icon: '🛏️', completed: false, xp: 10, gold: 5, duration: 2, minLevel: 1, skill: 'routine' },
-    { id: 'q-db-agua', baseId: 'q-agua', title: '1 copo de água ao acordar', type: 'daily', icon: '💧', completed: false, xp: 10, gold: 5, duration: 2, minLevel: 1, skill: 'physical' },
-    { id: 'q-db-acordar', baseId: 'q-acordar', title: 'Acordar cedo', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, duration: 5, minLevel: 1, skill: 'routine' },
-    { id: 'q-db-checkin', baseId: 'q-checkin', title: 'Check-in emocional', type: 'daily', icon: '📝', completed: false, xp: 15, gold: 8, duration: 5, minLevel: 1, skill: 'mental' },
-    { id: 'q-db-alongamento', baseId: 'q-alongamento', title: 'Alongamento', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, duration: 10, minLevel: 1, skill: 'physical' },
-    { id: 'q-db-planejar', baseId: 'q-planejar', title: 'Planejar o dia seguinte', type: 'daily', icon: '📅', completed: false, xp: 15, gold: 8, duration: 10, minLevel: 1, skill: 'productivity' },
-    { id: 'q-db-ler', baseId: 'q-ler', title: 'Leitura', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 1, skill: 'wisdom' },
-    { id: 'q-db-faxina', baseId: 'q-faxina', title: 'Faxina rápida', type: 'daily', icon: '🧹', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 1, skill: 'productivity' },
-    { id: 'q-db-conversa', baseId: 'q-conversa', title: 'Conversa com amigo', type: 'daily', icon: '📞', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 1, skill: 'social' },
-    { id: 'q-db-caminhada-easy', baseId: 'q-caminhada-easy', title: 'Caminhada', type: 'daily', icon: '🚶', completed: false, xp: 25, gold: 12, duration: 30, minLevel: 1, skill: 'physical' },
-    { id: 'q-db-podcast-easy', baseId: 'q-podcast-easy', title: 'Podcast / aula', type: 'daily', icon: '🎧', completed: false, xp: 25, gold: 12, duration: 30, minLevel: 1, skill: 'wisdom' },
-    
-    // Bracket 2: Médios (Nível 5 ao 9)
-    { id: 'q-db-ligar', baseId: 'q-ligar', title: 'Ligar para amigo', type: 'daily', icon: '📞', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 5, skill: 'social' },
-    { id: 'q-db-estudomed', baseId: 'q-estudomed', title: 'Estudo técnico', type: 'daily', icon: '🧠', completed: false, xp: 20, gold: 10, duration: 20, minLevel: 5, skill: 'wisdom' },
-    { id: 'q-db-semcelular', baseId: 'q-semcelular', title: 'Sem celular ao acordar', type: 'daily', icon: '🚫', completed: false, xp: 20, gold: 10, duration: 30, minLevel: 5, skill: 'routine' },
-    { id: 'q-db-caminhada-med', baseId: 'q-caminhada-med', title: 'Caminhada acelerada', type: 'daily', icon: '🚶', completed: false, xp: 25, gold: 12, duration: 30, minLevel: 5, skill: 'physical' },
-    { id: 'q-db-deepwork', baseId: 'q-deepwork', title: 'Foco em projeto', type: 'daily', icon: '💻', completed: false, xp: 25, gold: 12, duration: 30, minLevel: 5, skill: 'productivity' },
-    
-    // Bracket 3: Difíceis (Nível 10+)
-    { id: 'q-db-detox', baseId: 'q-detox', title: 'Rotina noturna (sem telas)', type: 'daily', icon: '📵', completed: false, xp: 25, gold: 12, duration: 15, minLevel: 10, skill: 'routine' },
-    { id: 'q-db-malhar', baseId: 'q-malhar', title: 'Força / corrida', type: 'daily', icon: '🏋️‍♂️', completed: false, xp: 30, gold: 15, duration: 45, minLevel: 10, skill: 'physical' },
-    { id: 'q-db-estudolong', baseId: 'q-estudolong', title: 'Estudo com resumo', type: 'daily', icon: '🧠', completed: false, xp: 30, gold: 15, duration: 45, minLevel: 10, skill: 'wisdom' },
-    { id: 'q-db-focolong', baseId: 'q-focolong', title: 'Trabalho concentrado', type: 'daily', icon: '💻', completed: false, xp: 40, gold: 20, duration: 60, minLevel: 10, skill: 'productivity' },
-    { id: 'q-db-encontro', baseId: 'q-encontro', title: 'Encontro presencial', type: 'daily', icon: '👥', completed: false, xp: 40, gold: 20, duration: 60, minLevel: 10, skill: 'social' }
-];
+const ALL_HABITS_DATABASE = []; // conceito de auto-unlock por nível removido (v2.1.43)
 
 // Biblioteca mestre de 60 hábitos curados para a aba Biblioteca do modal
 const HABIT_LIBRARY = [
     // Físico (physical)
     { id: 'lib-agua', title: 'Beber 2L de água', icon: '💧', difficulty: 'easy', duration: 5, skill: 'physical' },
     { id: 'lib-along-easy', title: 'Alongar ao acordar', icon: '🧘', difficulty: 'easy', duration: 10, skill: 'physical' },
-    { id: 'lib-hiit-med', title: 'Treino HIIT', icon: '🔥', difficulty: 'medium', duration: 20, skill: 'physical' },
-    { id: 'lib-caminhada-med', title: 'Caminhada / corrida', icon: '🚶', difficulty: 'medium', duration: 30, skill: 'physical' },
-    { id: 'lib-forca-hard', title: 'Treino de força', icon: '🏋️‍♂️', difficulty: 'hard', duration: 45, skill: 'physical' },
-    { id: 'lib-ciclo-hard', title: 'Ciclismo / esporte', icon: '🚴', difficulty: 'hard', duration: 60, skill: 'physical' },
-    { id: 'lib-musc-hard', title: 'Musculação / natação', icon: '🏊', difficulty: 'hard', duration: 60, skill: 'physical' },
     { id: 'lib-respirar2-easy', title: 'Respiração profunda', icon: '🫁', difficulty: 'easy', duration: 5, skill: 'physical' },
+    { id: 'lib-caminhada-med', title: 'Caminhada / corrida', icon: '🚶', difficulty: 'medium', duration: 30, skill: 'physical' },
+    { id: 'lib-ciclo-hard', title: 'Ciclismo / esporte', icon: '🚴', difficulty: 'hard', duration: 60, skill: 'physical' },
+    { id: 'lib-hiit-med', title: 'Treino HIIT', icon: '🔥', difficulty: 'medium', duration: 20, skill: 'physical' },
+    { id: 'lib-forca-hard', title: 'Treino de força', icon: '🏋️‍♂️', difficulty: 'hard', duration: 45, skill: 'physical' },
+    { id: 'lib-musc-hard', title: 'Musculação / natação', icon: '🏊', difficulty: 'hard', duration: 60, skill: 'physical' },
     { id: 'lib-exerc-easy', title: 'Agachamentos e flexões', icon: '💪', difficulty: 'easy', duration: 5, skill: 'physical' },
 
     // Mental (mental)
-    { id: 'lib-bd-easy', title: 'Brain Dump', icon: '🧠', difficulty: 'easy', duration: 5, skill: 'mental' },
-    { id: 'lib-nature-easy', title: 'Sons da natureza', icon: '🎵', difficulty: 'easy', duration: 10, skill: 'mental' },
     { id: 'lib-medplena-med', title: 'Meditar', icon: '🧘', difficulty: 'medium', duration: 15, skill: 'mental' },
-    { id: 'lib-afirm-easy', title: '3 afirmações positivas', icon: '🗣️', difficulty: 'easy', duration: 3, skill: 'mental' },
+    { id: 'lib-nature-easy', title: 'Sons da natureza', icon: '🎵', difficulty: 'easy', duration: 10, skill: 'mental' },
     { id: 'lib-visual-easy', title: 'Visualizar metas', icon: '🔮', difficulty: 'easy', duration: 10, skill: 'mental' },
+    { id: 'lib-afirm-easy', title: '3 afirmações positivas', icon: '🗣️', difficulty: 'easy', duration: 3, skill: 'mental' },
+    { id: 'lib-bd-easy', title: 'Brain Dump', icon: '🧠', difficulty: 'easy', duration: 5, skill: 'mental' },
     { id: 'lib-express-med', title: 'Diário de reflexões', icon: '✍️', difficulty: 'medium', duration: 15, skill: 'mental' },
-
     { id: 'lib-filosofia-easy', title: 'Leitura filosófica', icon: '📖', difficulty: 'easy', duration: 10, skill: 'mental' },
 
     // Foco / Produtividade (productivity)
+    { id: 'lib-estrat-med', title: 'Tarefa estratégica', icon: '💻', difficulty: 'medium', duration: 30, skill: 'productivity' },
     { id: 'lib-dist-easy', title: 'Bloquear distrações', icon: '🚫', difficulty: 'easy', duration: 5, skill: 'productivity' },
     { id: 'lib-poeira-easy', title: 'Organizar a mesa', icon: '🧹', difficulty: 'easy', duration: 10, skill: 'productivity' },
-    { id: 'lib-estrat-med', title: 'Tarefa estratégica', icon: '💻', difficulty: 'medium', duration: 30, skill: 'productivity' },
-
-    { id: 'lib-carreira-prop-med', title: 'Planejar minha carreira', icon: '🧭', difficulty: 'medium', duration: 30, skill: 'productivity' },
     { id: 'lib-reuniao-med', title: 'Planejar reunião', icon: '🗓️', difficulty: 'medium', duration: 20, skill: 'productivity' },
+    { id: 'lib-carreira-prop-med', title: 'Planejar minha carreira', icon: '🧭', difficulty: 'medium', duration: 30, skill: 'productivity' },
+    { id: 'lib-carreira-soc-med', title: 'Carreira dos liderados', icon: '🤝', difficulty: 'medium', duration: 30, skill: 'productivity' },
+    { id: 'lib-networking-easy', title: 'Mensagem de networking', icon: '🔗', difficulty: 'easy', duration: 5, skill: 'productivity' },
 
     // Saber / Sabedoria (wisdom)
-    { id: 'lib-aprend-easy', title: 'Anotar aprendizados', icon: '✍️', difficulty: 'easy', duration: 5, skill: 'wisdom' },
-    { id: 'lib-financas-easy', title: 'Lançar finanças', icon: '💰', difficulty: 'easy', duration: 5, skill: 'wisdom' },
-    { id: 'lib-duolingo-easy', title: 'Estude um idioma', icon: '🗣️', difficulty: 'easy', duration: 15, skill: 'wisdom' },
     { id: 'lib-livro-med', title: 'Ler livro', icon: '📚', difficulty: 'medium', duration: 30, skill: 'wisdom' },
+    { id: 'lib-leitura2-med', title: 'Leitura técnica', icon: '📚', difficulty: 'medium', duration: 30, skill: 'wisdom' },
     { id: 'lib-curso-hard', title: 'Curso online', icon: '🧠', difficulty: 'hard', duration: 45, skill: 'wisdom' },
     { id: 'lib-ted-easy', title: 'Vídeo / TED Talk', icon: '📺', difficulty: 'easy', duration: 15, skill: 'wisdom' },
-    { id: 'lib-leitura2-med', title: 'Leitura técnica', icon: '📚', difficulty: 'medium', duration: 30, skill: 'wisdom' },
+    { id: 'lib-duolingo-easy', title: 'Estude um idioma', icon: '🗣️', difficulty: 'easy', duration: 15, skill: 'wisdom' },
+    { id: 'lib-aprend-easy', title: 'Anotar aprendizados', icon: '✍️', difficulty: 'easy', duration: 5, skill: 'wisdom' },
+    { id: 'lib-financas-easy', title: 'Lançar finanças', icon: '💰', difficulty: 'easy', duration: 5, skill: 'wisdom' },
 
     // Rotina (routine)
     { id: 'lib-dente-easy', title: 'Higiene bucal', icon: '🪥', difficulty: 'easy', duration: 5, skill: 'routine', current: 0, target: 2 },
+    { id: 'lib-skincare-easy', title: 'Skincare', icon: '🧴', difficulty: 'easy', duration: 5, skill: 'routine' },
     { id: 'lib-roupa-easy', title: 'Preparar roupas do dia', icon: '💼', difficulty: 'easy', duration: 5, skill: 'routine' },
     { id: 'lib-casa-easy', title: 'Organizar a casa', icon: '🍽️', difficulty: 'easy', duration: 15, skill: 'routine' },
-    { id: 'lib-cozinhar-med', title: 'Cozinhar refeição saudável', icon: '🥦', difficulty: 'medium', duration: 30, skill: 'routine' },
-    { id: 'lib-faxina-hard', title: 'Faxina diária', icon: '🧼', difficulty: 'hard', duration: 45, skill: 'routine' },
-    { id: 'lib-skincare-easy', title: 'Skincare', icon: '🧴', difficulty: 'easy', duration: 5, skill: 'routine' },
-    { id: 'lib-plantas-easy', title: 'Regar as plantas', icon: '🪴', difficulty: 'easy', duration: 10, skill: 'routine' },
     { id: 'lib-louca-easy', title: 'Lavar a louça', icon: '🍽️', difficulty: 'easy', duration: 15, skill: 'routine' },
+    { id: 'lib-faxina-hard', title: 'Faxina diária', icon: '🧼', difficulty: 'hard', duration: 45, skill: 'routine' },
+    { id: 'lib-plantas-easy', title: 'Regar as plantas', icon: '🪴', difficulty: 'easy', duration: 10, skill: 'routine' },
+    { id: 'lib-cozinhar-med', title: 'Cozinhar refeição saudável', icon: '🥦', difficulty: 'medium', duration: 30, skill: 'routine' },
     { id: 'lib-rotnoite-med', title: 'Rotina noturna', icon: '📵', difficulty: 'medium', duration: 30, skill: 'routine' },
     { id: 'lib-banho-frio-easy', title: '30s de banho frio', icon: '🚿', difficulty: 'easy', duration: 2, skill: 'routine' },
     { id: 'lib-banho-gelado-hard', title: 'Banho frio completo', icon: '🧊', difficulty: 'hard', duration: 10, skill: 'routine' },
-
     { id: 'lib-doar-easy', title: 'Doar 1 objeto', icon: '🎁', difficulty: 'easy', duration: 5, skill: 'routine' },
 
     // Social (social)
     { id: 'lib-elogio-easy', title: 'Elogiar alguém', icon: '💬', difficulty: 'easy', duration: 2, skill: 'social' },
-    { id: 'lib-ligar-med', title: 'Ligar para um amigo', icon: '📞', difficulty: 'medium', duration: 15, skill: 'social' },
-    { id: 'lib-jantar-med', title: 'Refeição em família', icon: '👥', difficulty: 'medium', duration: 30, skill: 'social' },
-    { id: 'lib-familia-hard', title: 'Escuta ativa', icon: '❤️', difficulty: 'hard', duration: 45, skill: 'social' },
     { id: 'lib-amigo-easy', title: 'Mensagem para um amigo', icon: '💬', difficulty: 'easy', duration: 3, skill: 'social' },
+    { id: 'lib-ligar-med', title: 'Ligar para um amigo', icon: '📞', difficulty: 'medium', duration: 15, skill: 'social' },
     { id: 'lib-video-med', title: 'Ligar/vídeo com parente', icon: '📞', difficulty: 'medium', duration: 20, skill: 'social' },
-    { id: 'lib-pet-med', title: 'Passear com pet', icon: '🐕', difficulty: 'medium', duration: 30, skill: 'social' },
+    { id: 'lib-jantar-med', title: 'Refeição em família', icon: '👥', difficulty: 'medium', duration: 30, skill: 'social' },
     { id: 'lib-qualidade-hard', title: 'Tempo com a família', icon: '👥', difficulty: 'hard', duration: 60, skill: 'social' },
-    { id: 'lib-carreira-soc-med', title: 'Carreira dos liderados', icon: '🤝', difficulty: 'medium', duration: 30, skill: 'productivity' },
-    { id: 'lib-networking-easy', title: 'Mensagem de networking', icon: '🔗', difficulty: 'easy', duration: 5, skill: 'productivity' }
+    { id: 'lib-familia-hard', title: 'Escuta ativa', icon: '❤️', difficulty: 'hard', duration: 45, skill: 'social' },
+    { id: 'lib-pet-med', title: 'Passear com pet', icon: '🐕', difficulty: 'medium', duration: 30, skill: 'social' },
 ];
 
 // 📆 Utilitário de Data Local (timezone-safe) 📆
