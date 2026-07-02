@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.42] — 2026-07-01
+- **Enxugamento das atividades (menos clutter):**
+  - **Biblioteca 63 → 50:** todos os títulos encurtados; removidos 13 itens redundantes/de nicho (Descompressão, Definir MIT, Planejar blocos, Pomodoro, Deep Work, Captura de ideias, Limpeza digital, Estudar conceito, Estudo aprofundado, Meal Prep, Provocação p/ time, e 2 das 3 meditações). Sobrou **1 meditação** ("Meditar").
+  - **Movidos para Produtividade:** "Carreira dos liderados" e "Mensagem de networking" (antes em Social).
+  - **Hábitos por nível 25 → 21:** títulos encurtados (sem o "(X min)"); removidas as 3 meditações e "Mensagem à família". (Apagar dessa lista é seguro — `syncQuestsByLevel` só preserva/adiciona, nunca remove quests já existentes.)
+
 ## [v2.1.41] — 2026-07-01
 - **Fix · Desafio Semanal concluído continuava aparecendo:** o banner ficava visível (mostrando `6/6`) até a virada da semana. Agora **some assim que é concluído** (reaparece na segunda com o novo desafio). Enquanto em andamento, segue visível normalmente.
 - **Fix · Masmorras antigas (pré-v2.1.40) mostravam "0/?":** as masmorras que já estavam ativas antes da reforma não tinham objetivo (`target`). Adicionado backfill no load — recebem alvo por nível e progresso 0, então concluem normalmente com hábitos da skill (sem o antigo botão "ATACAR BOSS", que não existe mais).
