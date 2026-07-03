@@ -17,13 +17,16 @@ const HABIT_LIBRARY = [
     // Físico (physical)
     { id: 'lib-agua', title: 'Beber 2L de água', icon: '💧', difficulty: 'easy', duration: 5, skill: 'physical' },
     { id: 'lib-along-easy', title: 'Alongar ao acordar', icon: '🧘', difficulty: 'easy', duration: 10, skill: 'physical' },
-    { id: 'lib-respirar2-easy', title: 'Respiração profunda', icon: '🫁', difficulty: 'easy', duration: 5, skill: 'physical' },
-    { id: 'lib-caminhada-med', title: 'Caminhada / corrida', icon: '🚶', difficulty: 'medium', duration: 30, skill: 'physical' },
-    { id: 'lib-ciclo-hard', title: 'Ciclismo / esporte', icon: '🚴', difficulty: 'hard', duration: 60, skill: 'physical' },
+    { id: 'lib-exerc15-easy', title: '15 min de exercício', icon: '💪', difficulty: 'easy', duration: 15, skill: 'physical' },
+    { id: 'lib-caminhada-med', title: 'Caminhada', icon: '🚶', difficulty: 'medium', duration: 30, skill: 'physical' },
     { id: 'lib-hiit-med', title: 'Treino HIIT', icon: '🔥', difficulty: 'medium', duration: 20, skill: 'physical' },
+    { id: 'lib-mobilidade-med', title: 'Treino de mobilidade', icon: '🤸', difficulty: 'medium', duration: 20, skill: 'physical' },
+    { id: 'lib-ciclo-hard', title: 'Ciclismo', icon: '🚴', difficulty: 'hard', duration: 60, skill: 'physical' },
     { id: 'lib-forca-hard', title: 'Treino de força', icon: '🏋️‍♂️', difficulty: 'hard', duration: 45, skill: 'physical' },
-    { id: 'lib-musc-hard', title: 'Musculação / natação', icon: '🏊', difficulty: 'hard', duration: 60, skill: 'physical' },
-    { id: 'lib-exerc-easy', title: 'Agachamentos e flexões', icon: '💪', difficulty: 'easy', duration: 5, skill: 'physical' },
+    { id: 'lib-musc-hard', title: 'Natação', icon: '🏊', difficulty: 'hard', duration: 60, skill: 'physical' },
+    { id: 'lib-corridalonga-hard', title: 'Corrida longa', icon: '🏃', difficulty: 'hard', duration: 45, skill: 'physical' },
+    { id: 'lib-hiking-hard', title: 'Trilha / hiking', icon: '🥾', difficulty: 'hard', duration: 60, skill: 'physical' },
+    { id: 'lib-marciais-hard', title: 'Artes marciais', icon: '🥋', difficulty: 'hard', duration: 60, skill: 'physical' },
 
     // Mental (mental)
     { id: 'lib-medplena-med', title: 'Meditar', icon: '🧘', difficulty: 'medium', duration: 15, skill: 'mental' },

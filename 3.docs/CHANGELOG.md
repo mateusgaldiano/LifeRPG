@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.2.4] — 2026-07-03
+- **Biblioteca de Hábitos — reorganização da categoria Físico.**
+  - *Fácil:* removidos "Respiração profunda" e "Agachamentos e flexões"; adicionado "15 min de exercício" (guarda-chuva pros exercícios leves).
+  - *Intermediário:* "Caminhada / corrida" renomeado para "Caminhada"; adicionado "Treino de mobilidade" (HIIT mantido).
+  - *Difícil:* "Ciclismo / esporte" → "Ciclismo"; "Musculação / natação" → "Natação"; adicionados "Corrida longa", "Trilha / hiking" e "Artes marciais" (Treino de força mantido).
+
 ## [v2.2.3] — 2026-07-03
 - **Fix crítico: missões sumiam após a atualização das 6 colunas (bug de cache do Service Worker).** O `sw.js` servia o `index.html` com estratégia *stale-while-revalidate* (gravava o HTML novo no cache) mas os JS/CSS com *cache-first* (nunca revalidavam). Resultado: o SW antigo acabava com o `index.html` novo (6 colunas) + o `ui.js` antigo (que procurava os 3 ids de coluna que não existem mais) no mesmo cache → as 6 colunas apareciam vazias. Correções:
   - **`sw.js`:** app shell (HTML + módulos JS + CSS) passa a usar *network-first* com fallback pro cache — HTML e JS ficam sempre da mesma geração. Cache-first fica só para assets estáticos (imagens/ícones).
