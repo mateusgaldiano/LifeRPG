@@ -14,6 +14,7 @@ import {
     loadGameData,
     saveGameData,
     resetGameState,
+    queueQuestOp,
     updateSWQuestStatus
 } from './modules/state.js';
 
@@ -21,7 +22,6 @@ import {
     localDateStr,
     hasSkillLV3,
     getRankForLevel,
-    computeAttributes,
     computePlayerTitle,
     SYNERGY_DEFS,
     computeSynergies,
@@ -81,6 +81,7 @@ import {
 import {
     spawnDungeon,
     checkDungeonExpiry,
+    checkDungeonSchedule,
     completeDungeon,
     spawnWeeklyBoss,
     checkWeeklyBossExpiry,
@@ -103,7 +104,8 @@ import {
     saveToCloud,
     ACHIEVEMENTS_DEFS,
     showQuestCleared,
-    syncQuestsByLevel
+    syncQuestsByLevel,
+    buyRankEvaluation
 } from './modules/game-logic.js';
 
 import {
@@ -113,28 +115,8 @@ import {
     claimWeeklyReport
 } from './modules/weekly-report.js';
 
-import {
-    setupHabitLibraryAndTabs,
-    addHabitFromLibrary,
-    receiveMessage,
-    showChatBadge,
-    enterCommunityTab,
-    exitCommunityTab,
-    loadChatMessages,
-    initSocialSubTabs,
-    loadFriendsList,
-    loadFriendsRanking,
-    loadGlobalRanking,
-    openPlayerProfile,
-    setupSocialModalListeners,
-    initFriendsSearchListeners,
-    handleFriendSearch,
-    updateOnlinePlayersUI,
-    switchRankingMode,
-    renderTutorialBanner,
-    checkAndProgressTutorialStep1,
-    completeTutorialQuestline
-} from './modules/social.js';
+// ENG-002: social.js (modal social + biblioteca de hábitos + tutorial, ~110KB) é
+// carregado dinamicamente em idle (ver loadSocialModule), fora do caminho do 1º paint.
 
 import {
     registerServiceWorker,
@@ -142,7 +124,9 @@ import {
     setupSettingsListeners,
     loadSettingsToUI,
     subscribeUserToPush,
-    unsubscribeUserFromPush
+    unsubscribeUserFromPush,
+    setupPullToRefresh,
+    setupOfflineBanner
 } from './modules/pwa.js';
 
 // Bind State
@@ -157,13 +141,13 @@ window.DUNGEON_DURATION_MS = DUNGEON_DURATION_MS;
 window.loadGameData = loadGameData;
 window.saveGameData = saveGameData;
 window.resetGameState = resetGameState;
+window.queueQuestOp = queueQuestOp;
 window.updateSWQuestStatus = updateSWQuestStatus;
 
 // Bind Utils
 window.localDateStr = localDateStr;
 window.hasSkillLV3 = hasSkillLV3;
 window.getRankForLevel = getRankForLevel;
-window.computeAttributes = computeAttributes;
 window.computePlayerTitle = computePlayerTitle;
 window.SYNERGY_DEFS = SYNERGY_DEFS;
 window.computeSynergies = computeSynergies;
@@ -240,6 +224,7 @@ window.deductRewards = deductRewards;
 window.applyDailyPenalty = applyDailyPenalty;
 window.checkAllDailies = checkAllDailies;
 window.buyStoreItem = buyStoreItem;
+window.buyRankEvaluation = buyRankEvaluation;
 window.saveToCloud = saveToCloud;
 window.ACHIEVEMENTS_DEFS = ACHIEVEMENTS_DEFS;
 window.showQuestCleared = showQuestCleared;
@@ -251,27 +236,61 @@ window.getPreviousWeekDates = getPreviousWeekDates;
 window.checkAndShowWeeklyReport = checkAndShowWeeklyReport;
 window.claimWeeklyReport = claimWeeklyReport;
 
-// Bind Social
-window.setupHabitLibraryAndTabs = setupHabitLibraryAndTabs;
-window.addHabitFromLibrary = addHabitFromLibrary;
-window.receiveMessage = receiveMessage;
-window.showChatBadge = showChatBadge;
-window.enterCommunityTab = enterCommunityTab;
-window.exitCommunityTab = exitCommunityTab;
-window.loadChatMessages = loadChatMessages;
-window.initSocialSubTabs = initSocialSubTabs;
-window.loadFriendsList = loadFriendsList;
-window.loadFriendsRanking = loadFriendsRanking;
-window.loadGlobalRanking = loadGlobalRanking;
-window.openPlayerProfile = openPlayerProfile;
-window.setupSocialModalListeners = setupSocialModalListeners;
-window.initFriendsSearchListeners = initFriendsSearchListeners;
-window.handleFriendSearch = handleFriendSearch;
-window.updateOnlinePlayersUI = updateOnlinePlayersUI;
-window.switchRankingMode = switchRankingMode;
-window.renderTutorialBanner = renderTutorialBanner;
-window.checkAndProgressTutorialStep1 = checkAndProgressTutorialStep1;
-window.completeTutorialQuestline = completeTutorialQuestline;
+// ENG-002: carrega social.js sob demanda (idle) e hidrata os globais usados por
+// HTML/onclick e outros módulos. Memoizado — só carrega uma vez.
+let _socialModulePromise = null;
+function loadSocialModule() {
+    if (_socialModulePromise) return _socialModulePromise;
+    _socialModulePromise = import('./modules/social.js').then(m => {
+        window.setupHabitLibraryAndTabs = m.setupHabitLibraryAndTabs;
+        window.addHabitFromLibrary = m.addHabitFromLibrary;
+        window.receiveMessage = m.receiveMessage;
+        window.showChatBadge = m.showChatBadge;
+        window.enterCommunityTab = m.enterCommunityTab;
+        window.exitCommunityTab = m.exitCommunityTab;
+        window.loadChatMessages = m.loadChatMessages;
+        window.initSocialSubTabs = m.initSocialSubTabs;
+        window.loadFriendsList = m.loadFriendsList;
+        window.loadFriendsRanking = m.loadFriendsRanking;
+        window.loadGlobalRanking = m.loadGlobalRanking;
+        window.openPlayerProfile = m.openPlayerProfile;
+        window.setupSocialModalListeners = m.setupSocialModalListeners;
+        window.initFriendsSearchListeners = m.initFriendsSearchListeners;
+        window.handleFriendSearch = m.handleFriendSearch;
+        window.updateOnlinePlayersUI = m.updateOnlinePlayersUI;
+        window.switchRankingMode = m.switchRankingMode;
+        window.renderTutorialBanner = m.renderTutorialBanner;
+        window.checkAndProgressTutorialStep1 = m.checkAndProgressTutorialStep1;
+        window.completeTutorialQuestline = m.completeTutorialQuestline;
+        // Wire-up que antes rodava no boot
+        if (typeof m.setupSocialModalListeners === 'function') m.setupSocialModalListeners();
+        if (typeof m.setupHabitLibraryAndTabs === 'function') m.setupHabitLibraryAndTabs();
+        // Liga a troca das sub-abas (Amigos/Duelos/Clã) e a busca de amigos. Antes
+        // eram chamadas em ui.js (initTabs) como refs nuas — sempre undefined lá, pois
+        // social.js é lazy e não é importado por ui.js. Por isso as sub-abas não trocavam.
+        if (typeof m.initSocialSubTabs === 'function') m.initSocialSubTabs();
+        if (typeof m.initFriendsSearchListeners === 'function') m.initFriendsSearchListeners();
+        // Re-render para refletir o banner de tutorial agora que o módulo existe
+        if (typeof window.updateUI === 'function') window.updateUI();
+        return m;
+    }).catch(err => {
+        console.error('[ENG-002] Falha ao carregar social.js:', err);
+        _socialModulePromise = null; // permite nova tentativa
+    });
+    return _socialModulePromise;
+}
+window.loadSocialModule = loadSocialModule;
+
+// Reset diário ao vivo: se o dia virar com o app aberto (ou ao reabrir o app), recarrega
+// para disparar o reset de quests no loadGameData. Evita quests "presas" como concluídas.
+function checkDayRolloverLive() {
+    if (gameState && gameState.lastCheckedDate && gameState.lastCheckedDate !== localDateStr()) {
+        saveGameData();           // persiste no localStorage antes de recarregar
+        window.location.reload();
+    }
+}
+setInterval(checkDayRolloverLive, 60000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDayRolloverLive(); });
 
 // Bind PWA
 window.registerServiceWorker = registerServiceWorker;
@@ -282,9 +301,80 @@ window.subscribeUserToPush = subscribeUserToPush;
 window.unsubscribeUserFromPush = unsubscribeUserFromPush;
 
 // bootstrapping
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Carrega dados locais do jogo
     loadGameData();
+
+    // Ocultar overlay imediatamente se houver estado local em cache, garantindo o primeiro paint com 2x requestAnimationFrame
+    const hasLocalState = !!(localStorage.getItem('lifeRPG_gameState') || localStorage.getItem('lifeRPG_gameState_Mateus'));
+    if (hasLocalState) {
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const overlay = document.getElementById('app-loading-overlay');
+                if (overlay) {
+                    overlay.style.transition = 'opacity 0.2s ease';
+                    overlay.style.opacity = '0';
+                    setTimeout(() => { overlay.style.display = 'none'; }, 200);
+                }
+            });
+        });
+    }
+
+    // 2. Inicialização do Supabase e sincronização da Nuvem ANTES de renderizar a UI ou relatórios
+    let isReturningUser = false;
+    let tutorialCompleted = false;
+    if (typeof window.initSupabase === 'function') {
+        window.initSupabase().then((status) => {
+            isReturningUser = status?.isReturningUser || false;
+            tutorialCompleted = status?.tutorialCompleted || false;
+
+            // Decisão do Onboarding Wizard com base no status do usuário após carregar Supabase
+            const wizardModal = document.getElementById('onboarding-wizard');
+            if (window._currentUserDbId) {
+                // Usuário logado
+                if (isReturningUser) {
+                    // Se já tiver conta (isReturningUser === true), pule o onboarding
+                    gameState.tutorialCompleted = true;
+                    gameState.tutorialStep = null;
+                    saveGameData();
+                    if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
+                    checkFeatureUnlocks();
+                } else {
+                    if (gameState.tutorialCompleted) {
+                        if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
+                        checkFeatureUnlocks();
+                    } else {
+                        initOnboardingWizard();
+                    }
+                }
+            }
+
+            // Oculta o overlay se ainda estiver visível (ex: usuário novo sem dados salvos)
+            const overlay = document.getElementById('app-loading-overlay');
+            if (overlay && overlay.style.display !== 'none') {
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        overlay.style.transition = 'opacity 0.25s ease';
+                        overlay.style.opacity = '0';
+                        setTimeout(() => {
+                            overlay.style.display = 'none';
+                        }, 250);
+                    });
+                });
+            }
+        }).catch((e) => {
+            console.error('[App Bootstrap] Erro ao inicializar Supabase:', e);
+            const overlay = document.getElementById('app-loading-overlay');
+            if (overlay) overlay.style.display = 'none';
+        });
+    } else {
+        const overlay = document.getElementById('app-loading-overlay');
+        if (overlay) overlay.style.display = 'none';
+    }
+
+    // 3. Inicializa abas e renderiza a UI (com dados locais preliminares)
     initTabs();
+    checkDungeonSchedule(); // masmorras nascem por agendamento (sábado + 30% meio de semana)
     renderQuests();
     renderRewards();
 
@@ -294,9 +384,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Inicializa motor PWA e Configurações
     registerServiceWorker();
     setupSettingsListeners();
-    if (typeof setupSocialModalListeners === 'function') setupSocialModalListeners();
     setupInstallPrompt();
-    setupHabitLibraryAndTabs();
+    setupPullToRefresh(); // arrastar = sincronizar quando logado
+    setupOfflineBanner(); // banner de status offline
+
+    // ENG-002: carrega social.js (modal + biblioteca + tutorial) em idle, fora do 1º paint.
+    // setupSocialModalListeners e setupHabitLibraryAndTabs rodam dentro de loadSocialModule().
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => loadSocialModule(), { timeout: 2000 });
+    } else {
+        setTimeout(loadSocialModule, 200);
+    }
 
     // Listeners do Ranking (BUG-005) e das sub-abas de Sala de Troféus/Ranking
     const btnRankGlobal = document.getElementById('btn-ranking-global');
@@ -321,81 +419,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Verifica e exibe o Relatório Semanal
     setTimeout(() => { checkAndShowWeeklyReport(); }, 800);
 
-    // Mensagem de boas-vindas na primeira vez
-    if ((!gameState.messages || gameState.messages.length === 0) && gameState.playerName) {
-        if (!gameState.messages) gameState.messages = [];
-        setTimeout(() => {
-            showSystemToast(`Bem-vindo ao LifeRPG, ${gameState.playerName}. O Sistema está ativo. Complete suas missões.`);
-        }, 1000);
-    }
-
-    // Loop de Retenção D1 -> D2
-    const welcomeD2Shown = localStorage.getItem('lifeRPG_d2_welcome_shown') === 'true';
-    if (!welcomeD2Shown && gameState.playerName && gameState.history) {
-        const yesterdayStr = localDateStr(new Date(Date.now() - 86400000));
-        const yesterdayStats = gameState.history[yesterdayStr];
-        
-        if (yesterdayStats && (yesterdayStats.status === 'perfect' || yesterdayStats.status === 'good')) {
-            localStorage.setItem('lifeRPG_d2_welcome_shown', 'true');
+    // Mensagem de boas-vindas — apenas no primeiro acesso do dia
+    if (gameState.playerName) {
+        const todayForWelcome = localDateStr();
+        if (gameState.lastWelcomeDateShown !== todayForWelcome) {
+            gameState.lastWelcomeDateShown = todayForWelcome;
+            saveGameData();
             setTimeout(() => {
-                showSystemToast(`🌅 *BOM RETORNO, ${gameState.playerName.toUpperCase()}!*\n\nO Sistema identificou sua consistência ontem (${yesterdayStats.count}/${yesterdayStats.total} tarefas). Continue focado hoje!`);
-            }, 3000);
-        }
-    }
-    
-    // Inicialização assíncrona do Supabase
-    let isReturningUser = false;
-    let tutorialCompleted = false;
-    if (typeof window.initSupabase === 'function') {
-        try {
-            const status = await window.initSupabase();
-            isReturningUser = status.isReturningUser;
-            tutorialCompleted = status.tutorialCompleted;
-        } catch (e) {
-            console.error('[App Bootstrap] Erro ao inicializar Supabase:', e);
+                showSystemToast(`Bem-vindo ao LifeRPG, ${gameState.playerName}. O Sistema está ativo. Complete suas missões.`);
+            }, 1000);
         }
     }
 
-    // Decisão do Onboarding Wizard com base no status do usuário
+    // Decisão inicial do Onboarding Wizard (Convidado/Guest)
     const wizardModal = document.getElementById('onboarding-wizard');
-    
-    if (window._currentUserDbId) {
-        // Usuário logado
-        if (isReturningUser) {
-            if (tutorialCompleted) {
-                // Usuário antigo que já completou o onboarding -> fechar/ocultar wizard
-                if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
-                checkFeatureUnlocks();
-            } else {
-                // Usuário antigo que ainda não completou -> retomar wizard de onde parou
-                initOnboardingWizard();
-            }
-        } else {
-            // Primeiro login de um novo usuário -> iniciar/retomar wizard
-            if (gameState.tutorialCompleted) {
-                if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
-                checkFeatureUnlocks();
-            } else {
-                initOnboardingWizard();
-            }
-        }
-    } else {
-        // Usuário não logado (Convidado/Guest)
+    if (!window._currentUserDbId) {
         if (gameState.tutorialCompleted) {
             if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
             checkFeatureUnlocks();
         } else {
             initOnboardingWizard();
         }
-    }
-
-    // Esconder Loading Overlay suavemente
-    const overlay = document.getElementById('app-loading-overlay');
-    if (overlay) {
-        overlay.style.transition = 'opacity 0.5s ease';
-        overlay.style.opacity = '0';
-        setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 500);
     }
 });

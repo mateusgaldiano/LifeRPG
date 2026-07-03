@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.2.1] — 2026-07-03
+- **Fix: cards de Foco sem acento colorido.** O seletor CSS usava `data-skill="focus"`, mas a skill se chama `productivity` — a regra nunca casava, então cards de Foco (e a masmorra com fallback) ficavam sem a borda verde. Bug pré-existente encontrado na auditoria pós-v2.2.0.
+- **Docs:** README atualizado (remoção da menção aos 3 atributos) e espelho `6.dev/app.txt` re-sincronizado com o `app.js` atual (regra do CLAUDE.md).
+
 ## [v2.2.0] — 2026-07-03
 - **Removida a camada de "3 atributos" (Força de Vontade/Intelecto/Saúde) — o hexágono de 6 skills passa a ser a única fonte de progressão.** Os 3 atributos eram só a média de pares das mesmas 6 skills já mostradas no radar, e essa duplicação foi a causa da confusão do item anterior (Meditar contava como Intelecto no cálculo mas aparecia como Força de Vontade na tela). Mudanças:
   - **Título do personagem** agora é baseado na skill mais alta, com nome temático: Físico → Guerreiro(a), Rotina → Estoico(a), Mental → Monge/Monja, Sabedoria → Sábio(a), Foco → Estrategista, Social → Conector(a). Sem skill dominante clara, mantém "Desperto(a)"; todas baixas, "Novato(a)".

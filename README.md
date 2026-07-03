@@ -119,9 +119,8 @@ let gameState = {
 ### Evolução de personagem
 - **Nível geral (Overall Level):** sobe com XP de qualquer quest. XP escala x1.3 por nível.
 - **Ranks (Solo Leveling):** E (LV1-4) → D (LV5-9) → C (LV10-14) → B (LV15-19) → A (LV20-29) → S (LV30+). Cada rank muda o avatar.
-- **Skills (6 atributos):** physical, mental, productivity, social, wisdom, routine.
-- **3 Atributos Arise:** Willpower, Intellect, Health (calculados em `computeAttributes()`).
-- **Títulos Dinâmicos:** baseados na dominância das skills (ex: Monge, Guerreiro, Estrategista).
+- **Skills (6 atributos):** physical, mental, productivity, social, wisdom, routine — exibidas no hexágono/radar, fonte única de progressão (v2.2.0 removeu a antiga camada derivada de 3 atributos).
+- **Títulos Dinâmicos:** baseados na skill dominante (Guerreiro, Monge, Sábio, Estrategista, Estoico, Conector; "Desperto" para progresso equilibrado).
 
 ### Sistema de Penalidade (Escalonado)
 - 1 dia: -5% XP, sem zerar streak
