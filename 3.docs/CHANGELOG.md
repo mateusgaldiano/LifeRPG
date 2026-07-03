@@ -9,6 +9,15 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.3.0] — 2026-07-03
+- **Biblioteca de Hábitos — revisão completa das 5 categorias restantes** (Mental, Foco, Sabedoria, Rotina, Conexão), fechando a reorganização iniciada na v2.2.4 (Físico).
+  - **Mental:** *Fácil* — removidos "Sons da natureza", "Visualizar metas" e "3 afirmações positivas"; adicionados "Diário de gratidão" e "Meditação guiada" (Brain Dump e Leitura filosófica mantidos). *Intermediário* — "Diário de reflexões" renomeado para "Escrever diário"; adicionados "Escrever sobre ideias futuras" e "Escrever sobre preocupações"; "Meditar" renomeado para "Meditação profunda". *Difícil* — adicionados "Meio dia de silêncio", "Dia sem redes" e "Sessão de terapia".
+  - **Foco:** *Fácil* — removidos "Organizar a mesa" e "Bloquear distrações"; adicionados "Inbox zero" e "Celular no modo avião". *Intermediário* — removido "Tarefa estratégica"; adicionado "Automatizar uma tarefa". *Difícil* — adicionados "Planejar o trimestre" e "Estruturar Feedback/Meritocracia".
+  - **Sabedoria:** *Fácil* — removido "Anotar aprendizados"; "Vídeo / TED Talk" e "Estude um idioma" encurtados para "TED Talk" e "Estudar idioma"; adicionado "Podcast educativo". *Intermediário* — removido "Leitura técnica"; adicionado "Documentário" (Ler livro mantido). *Difícil* — adicionado "Estudar para certificação" (Curso online mantido).
+  - **Rotina:** "30s de banho frio" migrado para Físico/Fácil (skill trocada de `routine` para `physical`). Adicionados "Tomar vitaminas/remédio" (Fácil), "Organizar um cômodo" (Intermediário) e "Revisar orçamento do mês" (Difícil).
+  - **Conexão:** "Mensagem para um amigo" renomeado para "Mensagem para família/amigo". Intermediário reduzido a um único item, "Ligar família/amigos" (substitui "Ligar para um amigo", "Ligar/vídeo com parente" e "Refeição em família", removidos). Adicionado "Voluntariado" no Difícil (Passear com pet removido).
+  - Verificado no preview: 61 itens na Biblioteca, sem ids duplicados, sem skill inválida, console limpo, zero referências órfãs aos ids removidos.
+
 ## [v2.2.4] — 2026-07-03
 - **Biblioteca de Hábitos — reorganização da categoria Físico.**
   - *Fácil:* removidos "Respiração profunda" e "Agachamentos e flexões"; adicionado "15 min de exercício" (guarda-chuva pros exercícios leves).
