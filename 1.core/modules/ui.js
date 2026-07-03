@@ -1885,6 +1885,10 @@ function setupEventListeners() {
     if (typeof setupRadarToggle === 'function') {
         setupRadarToggle();
     }
+
+    if (typeof setupAttrsToggle === 'function') {
+        setupAttrsToggle();
+    }
 }
 
 // Abre o modal de zoom do avatar com o título correto e imagem ampliada
@@ -2137,6 +2141,39 @@ function setupRadarToggle() {
     });
 }
 
+const ICON_EYE = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const ICON_EYE_OFF = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a20.3 20.3 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 11 8 11 8a20.3 20.3 0 0 1-3.22 4.44M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></svg>';
+
+// Oculta/exibe o bloco de Atributos (radar+barras, sinergias e rank perks) de uma vez
+function setupAttrsToggle() {
+    const btnToggleAttrs = document.getElementById('btn-toggle-attrs');
+    const attrsWrapper = document.getElementById('attrs-collapsible-wrapper');
+    if (!btnToggleAttrs || !attrsWrapper) return;
+
+    const setAttrsState = (collapsed) => {
+        if (collapsed) {
+            attrsWrapper.style.display = 'none';
+            btnToggleAttrs.innerHTML = ICON_EYE_OFF;
+            btnToggleAttrs.title = 'Exibir atributos';
+            btnToggleAttrs.setAttribute('aria-label', 'Exibir atributos');
+        } else {
+            attrsWrapper.style.display = '';
+            btnToggleAttrs.innerHTML = ICON_EYE;
+            btnToggleAttrs.title = 'Ocultar atributos';
+            btnToggleAttrs.setAttribute('aria-label', 'Ocultar atributos');
+        }
+    };
+
+    const isCollapsed = localStorage.getItem('lifeRPG_attrsCollapsed') === 'true';
+    setAttrsState(isCollapsed);
+
+    btnToggleAttrs.addEventListener('click', () => {
+        const nowCollapsed = attrsWrapper.style.display !== 'none';
+        localStorage.setItem('lifeRPG_attrsCollapsed', nowCollapsed ? 'true' : 'false');
+        setAttrsState(nowCollapsed);
+    });
+}
+
 function switchTrophiesTab(tabName) {
     const btnTrophies = document.getElementById('subtab-btn-trophies');
     const btnRanking = document.getElementById('subtab-btn-trophies-ranking');
@@ -2196,5 +2233,6 @@ export {
     renderGlobalDashboard,
     debouncedDrawRadarChart,
     setupRadarToggle,
+    setupAttrsToggle,
     checkFeatureUnlocks
 };

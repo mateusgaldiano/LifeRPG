@@ -159,54 +159,61 @@
             <div class="attributes-section">
                 <div class="section-header-row">
                     <div class="section-header-label">ATRIBUTOS</div>
-                    <button id="btn-toggle-radar" class="btn-toggle-radar">OCULTAR GRÁFICO</button>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <button id="btn-toggle-attrs" class="btn-icon-toggle" title="Ocultar atributos" aria-label="Ocultar atributos">
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                        <button id="btn-toggle-radar" class="btn-toggle-radar">OCULTAR GRÁFICO</button>
+                    </div>
                 </div>
 
-                <!-- Radar hexagonal (6 skills) -->
-                <div class="radar-chart-wrapper" id="radar-wrapper">
-                    <canvas id="skills-radar-chart" width="260" height="260" role="img" aria-describedby="radar-description"></canvas>
-                    <div id="radar-description" class="sr-only" aria-live="polite"></div>
-                </div>
+                <div id="attrs-collapsible-wrapper">
+                    <!-- Radar hexagonal (6 skills) -->
+                    <div class="radar-chart-wrapper" id="radar-wrapper">
+                        <canvas id="skills-radar-chart" width="260" height="260" role="img" aria-describedby="radar-description"></canvas>
+                        <div id="radar-description" class="sr-only" aria-live="polite"></div>
+                    </div>
 
-                <!-- 3 Barras resumo (estilo Arise) -->
-                <div class="attr-bars">
-                    <div class="attr-bar-item willpower">
-                        <div class="attr-bar-header">
-                            <span class="attr-bar-icon">⚡</span>
-                            <span class="attr-bar-name">FORÇA DE VONTADE</span>
-                            <span class="attr-bar-lvl" id="attr-lvl-willpower">1</span>
+                    <!-- 3 Barras resumo (estilo Arise) -->
+                    <div class="attr-bars">
+                        <div class="attr-bar-item willpower">
+                            <div class="attr-bar-header">
+                                <span class="attr-bar-icon">⚡</span>
+                                <span class="attr-bar-name">FORÇA DE VONTADE</span>
+                                <span class="attr-bar-lvl" id="attr-lvl-willpower">1</span>
+                            </div>
+                            <div class="attr-bar-track">
+                                <div class="attr-bar-fill willpower-fill" id="attr-fill-willpower" style="width:0%"></div>
+                            </div>
                         </div>
-                        <div class="attr-bar-track">
-                            <div class="attr-bar-fill willpower-fill" id="attr-fill-willpower" style="width:0%"></div>
+                        <div class="attr-bar-item intellect">
+                            <div class="attr-bar-header">
+                                <span class="attr-bar-icon">📖</span>
+                                <span class="attr-bar-name">INTELECTO</span>
+                                <span class="attr-bar-lvl" id="attr-lvl-intellect">1</span>
+                            </div>
+                            <div class="attr-bar-track">
+                                <div class="attr-bar-fill intellect-fill" id="attr-fill-intellect" style="width:0%"></div>
+                            </div>
+                        </div>
+                        <div class="attr-bar-item health">
+                            <div class="attr-bar-header">
+                                <span class="attr-bar-icon">❤️</span>
+                                <span class="attr-bar-name">VITALIDADE</span>
+                                <span class="attr-bar-lvl" id="attr-lvl-health">1</span>
+                            </div>
+                            <div class="attr-bar-track">
+                                <div class="attr-bar-fill health-fill" id="attr-fill-health" style="width:0%"></div>
+                            </div>
                         </div>
                     </div>
-                    <div class="attr-bar-item intellect">
-                        <div class="attr-bar-header">
-                            <span class="attr-bar-icon">📖</span>
-                            <span class="attr-bar-name">INTELECTO</span>
-                            <span class="attr-bar-lvl" id="attr-lvl-intellect">1</span>
-                        </div>
-                        <div class="attr-bar-track">
-                            <div class="attr-bar-fill intellect-fill" id="attr-fill-intellect" style="width:0%"></div>
-                        </div>
-                    </div>
-                    <div class="attr-bar-item health">
-                        <div class="attr-bar-header">
-                            <span class="attr-bar-icon">❤️</span>
-                            <span class="attr-bar-name">VITALIDADE</span>
-                            <span class="attr-bar-lvl" id="attr-lvl-health">1</span>
-                        </div>
-                        <div class="attr-bar-track">
-                            <div class="attr-bar-fill health-fill" id="attr-fill-health" style="width:0%"></div>
-                        </div>
-                    </div>
+
+                    <!-- Sinergias ativas -->
+                    <div id="synergies-container" style="display:none; flex-wrap:wrap; gap:4px; margin-top:8px;"></div>
+
+                    <!-- Rank Perks ativos -->
+                    <div id="rank-perks-container" style="display:none; flex-wrap:wrap; gap:4px; margin-top:6px;"></div>
                 </div>
-                
-                <!-- Sinergias ativas -->
-                <div id="synergies-container" style="display:none; flex-wrap:wrap; gap:4px; margin-top:8px;"></div>
-                
-                <!-- Rank Perks ativos -->
-                <div id="rank-perks-container" style="display:none; flex-wrap:wrap; gap:4px; margin-top:6px;"></div>
             </div>
 
             <!-- Botão de Instalação do PWA na Sidebar -->

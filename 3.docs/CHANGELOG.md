@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.46] — 2026-07-02
+- **Novo ícone "Ocultar Atributos":** botão de olho ao lado de "VER GRÁFICO" que esconde/mostra de uma vez o hexágono, as 3 barras de atributo, as Sinergias Ativas e os Rank Perks. Estado persiste em `localStorage` (`lifeRPG_attrsCollapsed`), igual ao toggle do gráfico.
+
 ## [v2.1.45] — 2026-07-02
 - **Fix: banner de Masmorra concluída não sumia.** `completeDungeon()` marcava `activeDungeon.completed = true` mas nunca zerava `gameState.activeDungeon`, e o `renderQuests()` só escondia o banner quando o campo era `null`/`undefined` — não checava `.completed`. Resultado: masmorra ficava "presa" na tela mesmo com progresso 100% até o próximo spawn sobrescrever o objeto. Agora `completeDungeon()` zera `gameState.activeDungeon` ao concluir, igual já acontecia na expiração.
 
