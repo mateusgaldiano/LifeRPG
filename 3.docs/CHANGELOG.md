@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.47] — 2026-07-03
+- **Simplifica o toggle de Atributos:** removido o ícone de olho separado (não estava funcionando/confundia). Agora o próprio botão "VER/OCULTAR ATRIBUTOS" (antigo "VER/OCULTAR GRÁFICO") esconde e mostra tudo junto — radar, as 3 barras, Sinergias Ativas e Rank Perks — em um clique só. Botão visível em desktop e mobile (antes só aparecia no mobile).
+
 ## [v2.1.46] — 2026-07-02
 - **Novo ícone "Ocultar Atributos":** botão de olho ao lado de "VER GRÁFICO" que esconde/mostra de uma vez o hexágono, as 3 barras de atributo, as Sinergias Ativas e os Rank Perks. Estado persiste em `localStorage` (`lifeRPG_attrsCollapsed`), igual ao toggle do gráfico.
 

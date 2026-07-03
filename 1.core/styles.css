@@ -506,7 +506,7 @@ body::before {
     letter-spacing: 2px; color: var(--text-muted);
 }
 .btn-toggle-radar {
-    display: none;
+    display: inline-block;
     font-family: var(--font-hud);
     font-size: 8px;
     background: transparent;
@@ -520,31 +520,6 @@ body::before {
     line-height: 1;
 }
 .btn-toggle-radar:hover {
-    border-color: var(--neon-purple);
-    color: var(--text-primary);
-}
-@media (max-width: 768px) {
-    .btn-toggle-radar {
-        display: inline-block !important;
-    }
-}
-
-.btn-icon-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: 1px solid var(--border-glass);
-    color: var(--text-muted);
-    border-radius: 4px;
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    cursor: pointer;
-    transition: all 0.2s;
-    flex-shrink: 0;
-}
-.btn-icon-toggle:hover {
     border-color: var(--neon-purple);
     color: var(--text-primary);
 }
