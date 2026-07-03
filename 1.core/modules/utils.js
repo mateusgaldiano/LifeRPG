@@ -25,51 +25,36 @@ function getRankForLevel(level) {
 }
 
 
-function computeAttributes() {
-    const s = gameState.skills || {};
+function computePlayerTitle(skills, gender = 'male') {
+    const isFemale = gender === 'female';
+    const s = skills || {};
     const get = (k) => s[k] ? (s[k].level - 1) + (s[k].xp / (s[k].xpToNext || 5)) : 0;
 
-    const willpower = (get('physical') + get('routine')) / 2;
-    const intellect = (get('mental') + get('wisdom')) / 2;
-    const health    = (get('productivity') + get('social')) / 2;
-
-    const maxVal = 5;
-    return {
-        willpower: { val: willpower, level: Math.max(1, Math.round(willpower)), pct: Math.min(willpower / maxVal, 1) },
-        intellect: { val: intellect, level: Math.max(1, Math.round(intellect)), pct: Math.min(intellect / maxVal, 1) },
-        health:    { val: health,    level: Math.max(1, Math.round(health)),    pct: Math.min(health    / maxVal, 1) }
+    const THEMATIC = {
+        physical:     { m: 'Guerreiro',    f: 'Guerreira' },
+        routine:      { m: 'Estoico',      f: 'Estoica' },
+        mental:       { m: 'Monge',        f: 'Monja' },
+        wisdom:       { m: 'Sábio',        f: 'Sábia' },
+        productivity: { m: 'Estrategista', f: 'Estrategista' },
+        social:       { m: 'Conector',     f: 'Conectora' }
     };
-}
+    const keys = Object.keys(THEMATIC);
+    const vals = {};
+    keys.forEach(k => { vals[k] = get(k); });
 
+    const max = Math.max(...keys.map(k => vals[k]));
+    if (max < 0.2) return isFemale ? "Novata" : "Novato";
 
-function computePlayerTitle(attrs, gender = 'male') {
-    const w = attrs.willpower.val;
-    const i = attrs.intellect.val;
-    const h = attrs.health.val;
-
-    const isFemale = gender === 'female';
-
-    if (w < 0.2 && i < 0.2 && h < 0.2) return isFemale ? "Novata" : "Novato";
-
-    const max = Math.max(w, i, h);
     const epsilon = 0.05;
-    const isW = Math.abs(w - max) < epsilon;
-    const isI = Math.abs(i - max) < epsilon;
-    const isH = Math.abs(h - max) < epsilon;
+    const leaders = keys.filter(k => Math.abs(vals[k] - max) < epsilon);
 
-    if (isW && isI && isH) return isFemale ? "Desperta" : "Desperto";
-    if (isW && isH) return isFemale ? "Guerreira-Atleta" : "Monge-Atleta";
-    if (isI && isH) return isFemale ? "Sábia Guerreira" : "Sábio Guerreiro";
-    if (isW && isI) return isFemale ? "Mestra da Mente" : "Mestre da Mente";
+    if (leaders.length !== 1) return isFemale ? "Desperta" : "Desperto";
 
-    if (isH) return isFemale ? "Guerreira" : "Guerreiro";
-    if (isI) return "Estrategista";
-    if (isW) return isFemale ? "Estoica" : "Estoico";
-
-    return isFemale ? "Desperta" : "Desperto";
+    const t = THEMATIC[leaders[0]];
+    return isFemale ? t.f : t.m;
 }
 
-// ── Definições de Sinergias de Atributos ──────────────────────────────────
+// ── Definições de Sinergias de Skills ──────────────────────────────────
 
 const SYNERGY_DEFS = [
     {
@@ -77,7 +62,7 @@ const SYNERGY_DEFS = [
         name: 'Vontade de Ferro',
         icon: '⚡',
         description: '+10% XP em todas as quests',
-        check: (attrs) => attrs.willpower.level >= 3,
+        check: (skills) => skills.physical.level >= 3 && skills.routine.level >= 3,
         bonusXpPct: 0.10,
         bonusSkillXp: 0,
         bonusGoldPct: 0
@@ -87,7 +72,7 @@ const SYNERGY_DEFS = [
         name: 'Mente Afiada',
         icon: '🧠',
         description: '+1 Skill XP em cada quest',
-        check: (attrs) => attrs.intellect.level >= 3,
+        check: (skills) => skills.mental.level >= 3 && skills.wisdom.level >= 3,
         bonusXpPct: 0,
         bonusSkillXp: 1,
         bonusGoldPct: 0
@@ -97,7 +82,8 @@ const SYNERGY_DEFS = [
         name: 'Corpo e Mente',
         icon: '⚖️',
         description: '+5% Ouro em todas as quests',
-        check: (attrs) => attrs.willpower.level >= 3 && attrs.health.level >= 3,
+        check: (skills) => skills.physical.level >= 3 && skills.routine.level >= 3
+                         && skills.productivity.level >= 3 && skills.social.level >= 3,
         bonusXpPct: 0,
         bonusSkillXp: 0,
         bonusGoldPct: 0.05
@@ -107,7 +93,8 @@ const SYNERGY_DEFS = [
         name: 'O Sistema',
         icon: '⚡',
         description: '+15% XP, +1 Skill XP, +5% Ouro',
-        check: (attrs) => attrs.willpower.level >= 3 && attrs.intellect.level >= 3 && attrs.health.level >= 3,
+        check: (skills) => ['physical','routine','mental','wisdom','productivity','social']
+            .every(k => skills[k].level >= 3),
         bonusXpPct: 0.15,
         bonusSkillXp: 1,
         bonusGoldPct: 0.05
@@ -117,7 +104,8 @@ const SYNERGY_DEFS = [
         name: 'Lenda Imortal',
         icon: '👑',
         description: '+25% XP + Escudo bônus a cada 7-streak',
-        check: (attrs) => attrs.willpower.level >= 5 && attrs.intellect.level >= 5 && attrs.health.level >= 5,
+        check: (skills) => ['physical','routine','mental','wisdom','productivity','social']
+            .every(k => skills[k].level >= 5),
         bonusXpPct: 0.25,
         bonusSkillXp: 0,
         bonusGoldPct: 0,
@@ -126,10 +114,16 @@ const SYNERGY_DEFS = [
 ];
 
 
-// Retorna array de sinergias ativas com base nos atributos atuais
+// Retorna array de sinergias ativas com base nas skills atuais
 function computeSynergies() {
-    const attrs = computeAttributes();
-    return SYNERGY_DEFS.filter(s => s.check(attrs));
+    const raw = gameState.skills || {};
+    const safe = (k) => raw[k] || { level: 1, xp: 0, xpToNext: 5 };
+    const skills = {
+        physical: safe('physical'), routine: safe('routine'),
+        mental: safe('mental'), wisdom: safe('wisdom'),
+        productivity: safe('productivity'), social: safe('social')
+    };
+    return SYNERGY_DEFS.filter(s => s.check(skills));
 }
 
 // Calcula o bônus total de XP de sinergias (somativo, ex: 0.10 + 0.15 = 0.25)
@@ -328,7 +322,6 @@ export {
     localDateStr,
     hasSkillLV3,
     getRankForLevel,
-    computeAttributes,
     computePlayerTitle,
     SYNERGY_DEFS,
     computeSynergies,

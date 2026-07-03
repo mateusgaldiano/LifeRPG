@@ -3,7 +3,8 @@ import { gameState, saveGameData, APP_VERSION, ALL_HABITS_DATABASE, BOSS_QUESTS 
 import {
     localDateStr, getRankForLevel, debounce, hasPerk, calcStreakMultiplier,
     calcStreakGoldMultiplier, calcGroupMultiplier, getSynergyXpBonus,
-    getSynergyGoldBonus, getPerkXpBonus, initSkillsState, isQuestActiveOnDay
+    getSynergyGoldBonus, getPerkXpBonus, initSkillsState, isQuestActiveOnDay,
+    computePlayerTitle, computeSynergies
 } from './utils.js';
 import { toggleQuest, adjustWater, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation, BOSS_QUEST_BY_LEVEL } from './game-logic.js';
 import { setupSettingsListeners } from './pwa.js';
@@ -928,22 +929,6 @@ function updateUI() {
         if (playerNameEl) playerNameEl.innerText = gameState.playerName.toUpperCase();
     }
     
-    // Update Atributos Secundários (Barras)
-    if (gameState.skills) {
-        const setBar = (idSuffix, skillType) => {
-            const lvlEl = document.getElementById(`attr-lvl-${idSuffix}`);
-            const fillEl = document.getElementById(`attr-fill-${idSuffix}`);
-            if (lvlEl && fillEl && gameState.skills[skillType]) {
-                const s = gameState.skills[skillType];
-                lvlEl.innerText = s.level;
-                const pct = Math.min((s.xp / (s.xpToNext || 5)) * 100, 100);
-                fillEl.style.width = `${pct}%`;
-            }
-        };
-        setBar('willpower', 'routine');
-        setBar('intellect', 'wisdom');
-        setBar('vitality', 'physical');
-    }
     // RANK badge
     const rankInfo = getRankForLevel(gameState.level);
     const rankBadge = document.getElementById('lbl-rank');
@@ -1082,20 +1067,10 @@ function updateUI() {
 
     // RANK badge
 
-    // 3 Barras de atributos (Willpower / Intellect / Health)
-    const attrs = computeAttributes();
-    const minPct = 0; // Preenchimento diretamente proporcional ao nível/progresso
-    ['willpower', 'intellect', 'health'].forEach(key => {
-        const lvlEl  = document.getElementById(`attr-lvl-${key}`);
-        const fillEl = document.getElementById(`attr-fill-${key}`);
-        if (lvlEl)  lvlEl.innerText  = attrs[key].level;
-        if (fillEl) fillEl.style.width = `${minPct + (attrs[key].pct * (100 - minPct))}%`;
-    });
-
     // Player Title Dinâmico
     const titleLabel = document.getElementById('lbl-player-title');
     if (titleLabel) {
-        titleLabel.innerText = computePlayerTitle(attrs, gameState.gender);
+        titleLabel.innerText = computePlayerTitle(gameState.skills, gameState.gender);
     }
 
     // Avatar e radar chart
@@ -1235,13 +1210,16 @@ function renderSkills() {
 // Inicializa a árvore de skills caso não esteja presente no estado (retrocompatibilidade robusta)
 
 function renderQuests() {
-    const colWillpower = document.getElementById('quests-list-willpower');
-    const colIntellect = document.getElementById('quests-list-intellect');
-    const colHealth    = document.getElementById('quests-list-health');
-    
-    if (colWillpower) colWillpower.innerHTML = '';
-    if (colIntellect) colIntellect.innerHTML = '';
-    if (colHealth) colHealth.innerHTML = '';
+    const colPhysical     = document.getElementById('quests-list-physical');
+    const colWisdom       = document.getElementById('quests-list-wisdom');
+    const colProductivity = document.getElementById('quests-list-productivity');
+    const colSocial       = document.getElementById('quests-list-social');
+    const colMental       = document.getElementById('quests-list-mental');
+    const colRoutine      = document.getElementById('quests-list-routine');
+
+    [colPhysical, colWisdom, colProductivity, colSocial, colMental, colRoutine].forEach(c => {
+        if (c) c.innerHTML = '';
+    });
 
     // Renderiza Masmorras (se houver ativa)
     const dungeonBanner = document.getElementById('dungeon-active-banner');
@@ -1320,17 +1298,13 @@ function renderQuests() {
         weeklyChallengeBanner.style.display = 'none';
     }
 
-    // Helper para mapeamento de skills para atributos/colunas
-    const skillToMainAttr = {
-        physical: 'willpower', routine: 'willpower',
-        mental: 'intellect', wisdom: 'intellect',
-        productivity: 'health', social: 'health'
+    // Helper para mapeamento direto de skill para coluna
+    const SKILL_COLUMN_MAP = {
+        physical: colPhysical, wisdom: colWisdom, productivity: colProductivity,
+        social: colSocial, mental: colMental, routine: colRoutine
     };
     function getContainer(skill) {
-        const attr = skillToMainAttr[skill || 'productivity'] || 'intellect';
-        if (attr === 'willpower') return colWillpower;
-        if (attr === 'health') return colHealth;
-        return colIntellect;
+        return SKILL_COLUMN_MAP[skill] || colRoutine;
     }
 
     // Dungeon ativa
@@ -1482,9 +1456,12 @@ function renderQuests() {
 
     // Mensagem de placeholder se coluna estiver vazia
     [
-        { el: colWillpower, label: 'NENHUMA MISSÃO ATIVA' },
-        { el: colIntellect, label: 'NENHUMA MISSÃO ATIVA' },
-        { el: colHealth, label: 'NENHUMA MISSÃO ATIVA' }
+        { el: colPhysical,     label: 'NENHUMA MISSÃO ATIVA' },
+        { el: colWisdom,       label: 'NENHUMA MISSÃO ATIVA' },
+        { el: colProductivity, label: 'NENHUMA MISSÃO ATIVA' },
+        { el: colSocial,       label: 'NENHUMA MISSÃO ATIVA' },
+        { el: colMental,       label: 'NENHUMA MISSÃO ATIVA' },
+        { el: colRoutine,      label: 'NENHUMA MISSÃO ATIVA' }
     ].forEach(colObj => {
         if (colObj.el && colObj.el.children.length === 0) {
             colObj.el.innerHTML = `<div style="text-align:center;color:rgba(15,31,53,0.35);font-size:11px;padding:20px;font-family:var(--font-hud);letter-spacing:1px">${colObj.label}</div>`;
@@ -1688,9 +1665,12 @@ document.getElementById('close-quote-modal')?.addEventListener('click', () => {
 // ==========================================================================
 function setupEventListeners() {
     // Quests
-    document.getElementById('quests-list-willpower')?.addEventListener('click', handleQuestAction);
-    document.getElementById('quests-list-intellect')?.addEventListener('click', handleQuestAction);
-    document.getElementById('quests-list-health')?.addEventListener('click', handleQuestAction);
+    document.getElementById('quests-list-physical')?.addEventListener('click', handleQuestAction);
+    document.getElementById('quests-list-wisdom')?.addEventListener('click', handleQuestAction);
+    document.getElementById('quests-list-productivity')?.addEventListener('click', handleQuestAction);
+    document.getElementById('quests-list-social')?.addEventListener('click', handleQuestAction);
+    document.getElementById('quests-list-mental')?.addEventListener('click', handleQuestAction);
+    document.getElementById('quests-list-routine')?.addEventListener('click', handleQuestAction);
 
     // Inject App Version + Persons data on settings open
     document.getElementById('btn-open-settings')?.addEventListener('click', async () => {

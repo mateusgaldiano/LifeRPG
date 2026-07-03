@@ -538,47 +538,6 @@ body::before {
     max-width: 100%;
 }
 
-/* 3 Barras de Atributo */
-.attr-bars { display: flex; flex-direction: column; gap: 6px; }
-.attr-bar-item { display: flex; flex-direction: column; gap: 2px; }
-.attr-bar-header {
-    display: flex; align-items: center; gap: 6px;
-    font-family: var(--font-hud); font-size: 8px;
-    color: var(--text-secondary); letter-spacing: 1px;
-}
-.attr-bar-icon { font-size: 11px; }
-.attr-bar-name { flex: 1; font-size: 12px; }
-.attr-bar-lvl {
-    font-family: var(--font-hud); font-size: 10px; font-weight: 700;
-    color: var(--text-primary);
-}
-.willpower .attr-bar-lvl { color: var(--neon-purple); }
-.intellect .attr-bar-lvl { color: var(--neon-purple); }
-.health    .attr-bar-lvl { color: var(--neon-orange); }
-
-.attr-bar-track {
-    height: 5px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 10px;
-    overflow: hidden;
-}
-.attr-bar-fill {
-    height: 100%; border-radius: 10px;
-    transition: width 0.8s var(--ease-out);
-}
-.willpower-fill, .willpower-bar-fill, [class*="willpower"] .attr-bar-fill {
-    background: #f97316 !important;
-    box-shadow: 0 0 8px rgba(249,115,22,0.5);
-}
-.intellect-fill, .intellect-bar-fill, [class*="intellect"] .attr-bar-fill {
-    background: #1e3a8a !important;
-    box-shadow: 0 0 8px rgba(30,58,138,0.5);
-}
-.health-fill, .health-bar-fill, [class*="health"] .attr-bar-fill, [class*="vitalidade"] .attr-bar-fill {
-    background: #15803d !important;
-    box-shadow: 0 0 8px rgba(21,128,61,0.5);
-}
-
 /* â”€â”€ MAIN PANEL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 #main-content-panel { display: flex; flex-direction: column; overflow: hidden; flex: 1; min-width: 0; }
 
@@ -629,15 +588,15 @@ body::before {
 .tab-content.active { display: block; }
 @keyframes tabFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-/* Quests Three Columns Layout (Desktop) */
-.quests-three-columns {
-    display: flex;
+/* Quests Skill Columns Layout (Desktop) - 3 cols x 2 rows, uma por skill do hexágono */
+.quests-skill-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    align-items: flex-start;
+    align-items: start;
     margin-bottom: 24px;
 }
 .quest-attr-column {
-    flex: 1;
     min-width: 0;
 }
 .quest-column-header {
@@ -651,9 +610,12 @@ body::before {
     letter-spacing: 1.5px;
     margin: 0;
 }
-.willpower-col .quest-column-header h3 { color: var(--text-purple); }
-.intellect-col .quest-column-header h3 { color: var(--text-cyan); }
-.health-col .quest-column-header h3 { color: var(--text-orange); }
+.physical-col     .quest-column-header h3 { color: #f97316; }
+.wisdom-col       .quest-column-header h3 { color: #38bdf8; }
+.productivity-col .quest-column-header h3 { color: #15803d; }
+.social-col       .quest-column-header h3 { color: #4ade80; }
+.mental-col       .quest-column-header h3 { color: #1e3a8a; }
+.routine-col      .quest-column-header h3 { color: #fb923c; }
 
 .quests-actions-footer {
     display: flex;
@@ -2441,7 +2403,7 @@ body::before {
    ========================================================================== */
 @media (max-width: 1023px) {
 
-  .quests-three-columns {
+  .quests-skill-columns {
     display: block !important;
   }
   .quest-attr-column {

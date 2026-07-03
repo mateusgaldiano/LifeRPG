@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.2.0] — 2026-07-03
+- **Removida a camada de "3 atributos" (Força de Vontade/Intelecto/Saúde) — o hexágono de 6 skills passa a ser a única fonte de progressão.** Os 3 atributos eram só a média de pares das mesmas 6 skills já mostradas no radar, e essa duplicação foi a causa da confusão do item anterior (Meditar contava como Intelecto no cálculo mas aparecia como Força de Vontade na tela). Mudanças:
+  - **Título do personagem** agora é baseado na skill mais alta, com nome temático: Físico → Guerreiro(a), Rotina → Estoico(a), Mental → Monge/Monja, Sabedoria → Sábio(a), Foco → Estrategista, Social → Conector(a). Sem skill dominante clara, mantém "Desperto(a)"; todas baixas, "Novato(a)".
+  - **Missões**: as 3 colunas (Força de Vontade/Intelecto/Saúde) viram 6, uma por skill (Físico, Sabedoria, Foco, Conexão, Mental, Rotina), reaproveitando a mesma ordem e cores do hexágono.
+  - **Sinergias**: as mesmas 5 de sempre (Vontade de Ferro, Mente Afiada, Corpo e Mente, O Sistema, Lenda Imortal), com os mesmos bônus e a mesma dificuldade — só que agora checam skills específicas em vez do atributo removido.
+  - Texto flutuante ao concluir quest e o flash de penalidade por falha agora referenciam a skill específica (ex.: "FOCO ↑") em vez do atributo agrupado.
+
 ## [v2.1.50] — 2026-07-03
 - **"Lançar finanças" sai do Intelecto, vira Rotina.** Destoava da categoria (era o único item administrativo entre hábitos de leitura/reflexão); agora conta pra Força de Vontade junto com o resto de Rotina.
 

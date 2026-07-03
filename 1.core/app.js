@@ -22,7 +22,6 @@ import {
     localDateStr,
     hasSkillLV3,
     getRankForLevel,
-    computeAttributes,
     computePlayerTitle,
     SYNERGY_DEFS,
     computeSynergies,
@@ -149,7 +148,6 @@ window.updateSWQuestStatus = updateSWQuestStatus;
 window.localDateStr = localDateStr;
 window.hasSkillLV3 = hasSkillLV3;
 window.getRankForLevel = getRankForLevel;
-window.computeAttributes = computeAttributes;
 window.computePlayerTitle = computePlayerTitle;
 window.SYNERGY_DEFS = SYNERGY_DEFS;
 window.computeSynergies = computeSynergies;

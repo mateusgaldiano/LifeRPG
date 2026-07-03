@@ -1100,14 +1100,10 @@ function checkAllDailies() {
 
 //  QUEST CLEARED Animation 
 function showQuestCleared(quest) {
-    const skillToAttr = {
-        physical: 'FORÇA DE VONTADE ↑', routine: 'FORÇA DE VONTADE ↑',
-        mental: 'INTELECTO ↑', wisdom: 'INTELECTO ↑',
-        productivity: 'SAÚDE ↑', social: 'SAÚDE ↑'
-    };
+    const skillLabel = (SKILL_LABELS[quest.skill] || quest.skill || 'ATRIBUTO').toUpperCase();
     const overlay = document.getElementById('quest-cleared-overlay');
     document.getElementById('quest-cleared-rewards').innerText = `+${quest.xp} XP · +${quest.gold} OURO`;
-    document.getElementById('quest-cleared-attr').innerText = skillToAttr[quest.skill] || 'ATRIBUTO ↑';
+    document.getElementById('quest-cleared-attr').innerText = `${skillLabel} ↑`;
     overlay.classList.add('show');
     setTimeout(() => overlay.classList.remove('show'), 1800);
 }
@@ -1209,27 +1205,18 @@ function applyDailyPenalty(yesterdayStr) {
         (gameState.quests || []).forEach(q => {
             if (isQuestActiveOnDay(q, yesterdayDay) && !q.completed && q.skill) failedSkills.add(q.skill);
         });
-        const skillToMainAttr = {
-            physical: 'willpower', routine: 'willpower',
-            mental: 'intellect', wisdom: 'intellect',
-            productivity: 'health', social: 'health'
-        };
-
         failedSkills.forEach(skillType => {
             const sk = gameState.skills[skillType];
             if (sk && sk.xp > 0) {
                 sk.xp = Math.max(0, sk.xp - 1);
 
-                // Animação de piscada na barra principal correspondente
-                const mainAttr = skillToMainAttr[skillType];
-                if (mainAttr) {
-                    const el = document.querySelector(`.attr-bar-item.${mainAttr}`);
-                    if (el) {
-                        el.classList.add('flash-red-penalty');
-                        setTimeout(() => {
-                            if (el) el.classList.remove('flash-red-penalty');
-                        }, 1500);
-                    }
+                // Animação de piscada no cabeçalho da coluna de quest correspondente
+                const colEl = document.querySelector(`.quest-attr-column.${skillType}-col`);
+                if (colEl) {
+                    colEl.classList.add('flash-red-penalty');
+                    setTimeout(() => {
+                        if (colEl) colEl.classList.remove('flash-red-penalty');
+                    }, 1500);
                 }
             }
         });

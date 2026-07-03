@@ -169,40 +169,6 @@
                         <div id="radar-description" class="sr-only" aria-live="polite"></div>
                     </div>
 
-                    <!-- 3 Barras resumo (estilo Arise) -->
-                    <div class="attr-bars">
-                        <div class="attr-bar-item willpower">
-                            <div class="attr-bar-header">
-                                <span class="attr-bar-icon">⚡</span>
-                                <span class="attr-bar-name">FORÇA DE VONTADE</span>
-                                <span class="attr-bar-lvl" id="attr-lvl-willpower">1</span>
-                            </div>
-                            <div class="attr-bar-track">
-                                <div class="attr-bar-fill willpower-fill" id="attr-fill-willpower" style="width:0%"></div>
-                            </div>
-                        </div>
-                        <div class="attr-bar-item intellect">
-                            <div class="attr-bar-header">
-                                <span class="attr-bar-icon">📖</span>
-                                <span class="attr-bar-name">INTELECTO</span>
-                                <span class="attr-bar-lvl" id="attr-lvl-intellect">1</span>
-                            </div>
-                            <div class="attr-bar-track">
-                                <div class="attr-bar-fill intellect-fill" id="attr-fill-intellect" style="width:0%"></div>
-                            </div>
-                        </div>
-                        <div class="attr-bar-item health">
-                            <div class="attr-bar-header">
-                                <span class="attr-bar-icon">❤️</span>
-                                <span class="attr-bar-name">VITALIDADE</span>
-                                <span class="attr-bar-lvl" id="attr-lvl-health">1</span>
-                            </div>
-                            <div class="attr-bar-track">
-                                <div class="attr-bar-fill health-fill" id="attr-fill-health" style="width:0%"></div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Sinergias ativas -->
                     <div id="synergies-container" style="display:none; flex-wrap:wrap; gap:4px; margin-top:8px;"></div>
 
@@ -257,33 +223,63 @@
                     <!-- Tutorial Questline -->
                     <div id="tutorial-questline-banner" style="display:none; margin-bottom: 20px;"></div>
                     
-                    <div class="quests-three-columns">
-                        <!-- Coluna: Força de Vontade -->
-                        <div class="quest-attr-column willpower-col">
+                    <div class="quests-skill-columns">
+                        <!-- Coluna: Físico -->
+                        <div class="quest-attr-column physical-col">
                             <div class="quest-column-header">
-                                <h3>FORÇA DE VONTADE</h3>
+                                <h3>FÍSICO</h3>
                             </div>
-                            <div class="quest-list" id="quests-list-willpower">
+                            <div class="quest-list" id="quests-list-physical">
                                 <!-- Rendered via JS -->
                             </div>
                         </div>
 
-                        <!-- Coluna: Intelecto -->
-                        <div class="quest-attr-column intellect-col">
+                        <!-- Coluna: Sabedoria -->
+                        <div class="quest-attr-column wisdom-col">
                             <div class="quest-column-header">
-                                <h3>INTELECTO</h3>
+                                <h3>SABEDORIA</h3>
                             </div>
-                            <div class="quest-list" id="quests-list-intellect">
+                            <div class="quest-list" id="quests-list-wisdom">
                                 <!-- Rendered via JS -->
                             </div>
                         </div>
 
-                        <!-- Coluna: Vitalidade -->
-                        <div class="quest-attr-column health-col">
+                        <!-- Coluna: Foco -->
+                        <div class="quest-attr-column productivity-col">
                             <div class="quest-column-header">
-                                <h3>VITALIDADE</h3>
+                                <h3>FOCO</h3>
                             </div>
-                            <div class="quest-list" id="quests-list-health">
+                            <div class="quest-list" id="quests-list-productivity">
+                                <!-- Rendered via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Coluna: Conexão -->
+                        <div class="quest-attr-column social-col">
+                            <div class="quest-column-header">
+                                <h3>CONEXÃO</h3>
+                            </div>
+                            <div class="quest-list" id="quests-list-social">
+                                <!-- Rendered via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Coluna: Mental -->
+                        <div class="quest-attr-column mental-col">
+                            <div class="quest-column-header">
+                                <h3>MENTAL</h3>
+                            </div>
+                            <div class="quest-list" id="quests-list-mental">
+                                <!-- Rendered via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Coluna: Rotina -->
+                        <div class="quest-attr-column routine-col">
+                            <div class="quest-column-header">
+                                <h3>ROTINA</h3>
+                            </div>
+                            <div class="quest-list" id="quests-list-routine">
                                 <!-- Rendered via JS -->
                             </div>
                         </div>
