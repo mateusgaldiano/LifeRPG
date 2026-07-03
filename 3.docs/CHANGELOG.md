@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.45] — 2026-07-02
+- **Fix: banner de Masmorra concluída não sumia.** `completeDungeon()` marcava `activeDungeon.completed = true` mas nunca zerava `gameState.activeDungeon`, e o `renderQuests()` só escondia o banner quando o campo era `null`/`undefined` — não checava `.completed`. Resultado: masmorra ficava "presa" na tela mesmo com progresso 100% até o próximo spawn sobrescrever o objeto. Agora `completeDungeon()` zera `gameState.activeDungeon` ao concluir, igual já acontecia na expiração.
+
 ## [v2.1.44] — 2026-07-02
 - **Biblioteca de Hábitos oculta o que o usuário já tem:** ao abrir "Nova Quest", hábitos que já existem como missão ativa (diária, semanal ou side quest) somem da lista da Biblioteca, evitando duplicidade. Comparação por título (case-insensitive).
 

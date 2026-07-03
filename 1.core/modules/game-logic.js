@@ -189,6 +189,7 @@ function completeDungeon() {
 
     addSkillXP(d.skill);
     checkAndActivateBossQuest();
+    gameState.activeDungeon = null;
     saveGameData();
     updateUI();
 
