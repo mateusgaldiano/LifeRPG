@@ -682,6 +682,11 @@ function loadGameData() {
             gameState.activeDungeon.target = _l >= 30 ? 5 : _l >= 20 ? 4 : _l >= 10 ? 3 : 2;
             gameState.activeDungeon.progress = gameState.activeDungeon.progress || 0;
         }
+        // Migração v2.1.48: masmorra presa em completed:true (bug pré-v2.1.45 nunca
+        // zerava activeDungeon ao concluir). Limpa o resíduo — XP/ouro já foram creditados.
+        if (gameState.activeDungeon && gameState.activeDungeon.completed) {
+            gameState.activeDungeon = null;
+        }
         if (gameState._totalQuestsCompleted === undefined) gameState._totalQuestsCompleted = 0; // META-001
         if (gameState._maxDailyCompleted === undefined) gameState._maxDailyCompleted = 0;       // META-001
         if (gameState._pvpWins === undefined) gameState._pvpWins = 0;                           // META-001

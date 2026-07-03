@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.48] — 2026-07-03
+- **Fix: migração para masmorras já presas em `completed:true`.** O fix da v2.1.45 impedia o problema em masmorras futuras, mas não limpava as que já tinham concluído (2/2) *antes* do deploy — como essas já estavam `completed`, `bumpDungeonProgress` nunca chamava `completeDungeon()` de novo, então o banner ficava preso pra sempre. Agora, ao carregar o save, qualquer `activeDungeon` já `completed` é zerado automaticamente (XP/ouro já haviam sido creditados, nada é perdido).
+
 ## [v2.1.47] — 2026-07-03
 - **Simplifica o toggle de Atributos:** removido o ícone de olho separado (não estava funcionando/confundia). Agora o próprio botão "VER/OCULTAR ATRIBUTOS" (antigo "VER/OCULTAR GRÁFICO") esconde e mostra tudo junto — radar, as 3 barras, Sinergias Ativas e Rank Perks — em um clique só. Botão visível em desktop e mobile (antes só aparecia no mobile).
 
