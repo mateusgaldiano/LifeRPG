@@ -69,13 +69,19 @@ self.addEventListener('activate', (event) => {
             .then(() => self.clients.matchAll({ type: 'window' }))
             .then(clients => {
                 clients.forEach(client =>
-                    client.postMessage({ type: 'SW_UPDATED' })
+                    client.postMessage({ type: 'SW_UPDATED', version: CACHE_VERSION })
                 );
             })
     );
 });
 
-// ── FETCH: Network-first for index.html, Cache-first for assets ───────────────
+// ── FETCH: Network-first para o app shell, Cache-first para assets estáticos ──
+// O app shell (index.html + módulos JS + CSS + version.js) usa NETWORK-FIRST para
+// garantir que HTML e JS sejam SEMPRE da mesma geração. A estratégia antiga
+// (SWR no index.html + cache-first nos JS) permitia que o SW ficasse com um
+// index.html novo e um ui.js antigo no mesmo cache — quebrando a tela (ex.: as
+// 6 colunas de missões ficavam vazias porque o JS antigo procurava ids que não
+// existiam mais no HTML novo). Offline continua funcionando via fallback no cache.
 self.addEventListener('fetch', (event) => {
     // Only handle GET requests
     if (event.request.method !== 'GET') return;
@@ -84,29 +90,30 @@ self.addEventListener('fetch', (event) => {
 
     const url = new URL(event.request.url);
 
-    // index.html: Stale-While-Revalidate (carrega instantâneo do cache, atualiza em background)
-    if (url.pathname === '/' ||
+    const isAppShell =
+        url.pathname === '/' ||
         url.pathname.endsWith('/LifeRPG/') ||
         url.pathname.endsWith('/LifeRPG_Dev/') ||
-        url.pathname.endsWith('index.html')) {
+        url.pathname.endsWith('index.html') ||
+        url.pathname.endsWith('.js') ||
+        url.pathname.endsWith('.css');
+
+    if (isAppShell) {
+        // Network-first: online recebe sempre o conjunto fresco e consistente;
+        // se a rede falhar, cai no cache (conjunto já cacheado, também consistente).
         event.respondWith(
-            caches.match(event.request).then((cached) => {
-                const networkFetch = fetch(event.request).then((response) => {
-                    if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-                    }
-                    return response;
-                }).catch((err) => {
-                    console.warn('[SW] Falha ao atualizar index.html em background:', err);
-                });
-                return cached || networkFetch;
-            })
+            fetch(event.request).then((response) => {
+                if (response.ok) {
+                    const clone = response.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+                }
+                return response;
+            }).catch(() => caches.match(event.request))
         );
         return;
     }
 
-    // Outros assets (JS, CSS, imagens): cache-first com fallback para rede
+    // Assets estáticos (imagens, ícones, fontes): cache-first com fallback para rede
     event.respondWith(
         caches.match(event.request).then((cached) => {
             return cached || fetch(event.request).then((response) => {

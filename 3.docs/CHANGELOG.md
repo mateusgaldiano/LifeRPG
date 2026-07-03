@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.2.3] — 2026-07-03
+- **Fix crítico: missões sumiam após a atualização das 6 colunas (bug de cache do Service Worker).** O `sw.js` servia o `index.html` com estratégia *stale-while-revalidate* (gravava o HTML novo no cache) mas os JS/CSS com *cache-first* (nunca revalidavam). Resultado: o SW antigo acabava com o `index.html` novo (6 colunas) + o `ui.js` antigo (que procurava os 3 ids de coluna que não existem mais) no mesmo cache → as 6 colunas apareciam vazias. Correções:
+  - **`sw.js`:** app shell (HTML + módulos JS + CSS) passa a usar *network-first* com fallback pro cache — HTML e JS ficam sempre da mesma geração. Cache-first fica só para assets estáticos (imagens/ícones).
+  - **`pwa.js`:** registro do SW agora usa `updateViaCache: 'none'` e dispara `reg.update()` a cada boot (garante que um bump de versão seja detectado, sem ficar preso no cache HTTP); quando uma versão nova ativa, a página recarrega uma vez (com guarda anti-loop) para aplicar o bundle novo e consistente.
+  - **Recuperação automática:** como o próprio `sw.js` mudou, navegadores presos no estado quebrado pegam o novo SW na próxima verificação; o `activate` já apaga o cache antigo poluído. Recuperação imediata manual: um *hard refresh* (Ctrl+Shift+R) força os arquivos novos.
+
 ## [v2.2.2] — 2026-07-03
 - **Fix: título cosmético da Taverna nunca aparecia.** O título dinâmico (por skill dominante) sobrescrevia incondicionalmente o título comprado/equipado (ex.: "O Implacável", títulos de reavaliação de rank) logo em seguida no `updateUI()`. Agora o dinâmico só se aplica quando não há título cosmético equipado; desequipar volta ao dinâmico normalmente. Bug pré-existente encontrado na auditoria da v2.2.0.
 

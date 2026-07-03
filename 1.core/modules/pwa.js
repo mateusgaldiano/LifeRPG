@@ -10,11 +10,21 @@ let deferredPrompt = null;
 
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('sw.js')
+        // Havia um SW controlando a página ANTES deste boot? Se sim, um SW_UPDATED
+        // significa uma atualização real (não a 1ª instalação) e vale recarregar.
+        const hadController = !!navigator.serviceWorker.controller;
+
+        // updateViaCache:'none' força o navegador a revalidar sw.js E o version.js
+        // importado a cada checagem de update — sem isso, um bump de versão podia
+        // ficar preso no cache HTTP e o SW antigo (com bundle desatualizado) persistia.
+        navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' })
             .then(reg => {
                 serviceWorkerRegistration = reg;
                 console.log('[App] SW Registrado:', reg.scope);
-                
+
+                // Dispara uma checagem de update imediata a cada boot.
+                reg.update().catch(() => {});
+
                 // Configura notificações iniciais assim que o SW estiver pronto
                 navigator.serviceWorker.ready.then(() => {
                     updateSWNotifications();
@@ -26,7 +36,17 @@ function registerServiceWorker() {
 
         navigator.serviceWorker.addEventListener('message', event => {
             if (event.data?.type === 'SW_UPDATED') {
-                console.log('[App] Nova versão do SW pronta. Será aplicada na próxima inicialização.');
+                const version = event.data.version || '';
+                // Quando uma versão nova ativa, o cache antigo (possivelmente com
+                // HTML novo + JS antigo) já foi apagado pelo activate do SW. Recarrega
+                // UMA vez para servir o bundle novo e consistente. Guarda por versão
+                // no sessionStorage evita loop de reload.
+                const key = 'swReloadedFor';
+                if (hadController && sessionStorage.getItem(key) !== version) {
+                    sessionStorage.setItem(key, version);
+                    console.log('[App] Nova versão do SW ativa — recarregando para aplicar.');
+                    window.location.reload();
+                }
             }
         });
     }
