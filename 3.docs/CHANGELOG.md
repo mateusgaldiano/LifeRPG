@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.2.2] — 2026-07-03
+- **Fix: título cosmético da Taverna nunca aparecia.** O título dinâmico (por skill dominante) sobrescrevia incondicionalmente o título comprado/equipado (ex.: "O Implacável", títulos de reavaliação de rank) logo em seguida no `updateUI()`. Agora o dinâmico só se aplica quando não há título cosmético equipado; desequipar volta ao dinâmico normalmente. Bug pré-existente encontrado na auditoria da v2.2.0.
+
 ## [v2.2.1] — 2026-07-03
 - **Fix: cards de Foco sem acento colorido.** O seletor CSS usava `data-skill="focus"`, mas a skill se chama `productivity` — a regra nunca casava, então cards de Foco (e a masmorra com fallback) ficavam sem a borda verde. Bug pré-existente encontrado na auditoria pós-v2.2.0.
 - **Docs:** README atualizado (remoção da menção aos 3 atributos) e espelho `6.dev/app.txt` re-sincronizado com o `app.js` atual (regra do CLAUDE.md).

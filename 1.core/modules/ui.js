@@ -1067,9 +1067,10 @@ function updateUI() {
 
     // RANK badge
 
-    // Player Title Dinâmico
+    // Player Title Dinâmico — só quando não há título cosmético da Taverna equipado
+    // (o bloco COSMÉTICOS acima já preencheu texto e cor nesse caso)
     const titleLabel = document.getElementById('lbl-player-title');
-    if (titleLabel) {
+    if (titleLabel && !gameState.inventory?.activeTitle) {
         titleLabel.innerText = computePlayerTitle(gameState.skills, gameState.gender);
     }
 
