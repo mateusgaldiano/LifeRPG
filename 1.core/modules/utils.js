@@ -31,7 +31,7 @@ function computeAttributes() {
 
     const willpower = (get('physical') + get('routine')) / 2;
     const intellect = (get('mental') + get('wisdom')) / 2;
-    const health    = (get('focus') + get('social')) / 2;
+    const health    = (get('productivity') + get('social')) / 2;
 
     const maxVal = 5;
     return {

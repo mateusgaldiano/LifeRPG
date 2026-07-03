@@ -1322,9 +1322,9 @@ function renderQuests() {
 
     // Helper para mapeamento de skills para atributos/colunas
     const skillToMainAttr = {
-        mental: 'willpower', routine: 'willpower',
-        wisdom: 'intellect', productivity: 'intellect',
-        physical: 'health', social: 'health'
+        physical: 'willpower', routine: 'willpower',
+        mental: 'intellect', wisdom: 'intellect',
+        productivity: 'health', social: 'health'
     };
     function getContainer(skill) {
         const attr = skillToMainAttr[skill || 'productivity'] || 'intellect';

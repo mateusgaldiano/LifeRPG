@@ -1101,9 +1101,9 @@ function checkAllDailies() {
 //  QUEST CLEARED Animation 
 function showQuestCleared(quest) {
     const skillToAttr = {
-        mental: 'FORÇA DE VONTADE ↑', routine: 'FORÇA DE VONTADE ↑',
-        wisdom: 'INTELECTO ↑', productivity: 'INTELECTO ↑',
-        physical: 'SAÚDE ↑', social: 'SAÚDE ↑'
+        physical: 'FORÇA DE VONTADE ↑', routine: 'FORÇA DE VONTADE ↑',
+        mental: 'INTELECTO ↑', wisdom: 'INTELECTO ↑',
+        productivity: 'SAÚDE ↑', social: 'SAÚDE ↑'
     };
     const overlay = document.getElementById('quest-cleared-overlay');
     document.getElementById('quest-cleared-rewards').innerText = `+${quest.xp} XP · +${quest.gold} OURO`;
@@ -1210,9 +1210,9 @@ function applyDailyPenalty(yesterdayStr) {
             if (isQuestActiveOnDay(q, yesterdayDay) && !q.completed && q.skill) failedSkills.add(q.skill);
         });
         const skillToMainAttr = {
-            mental: 'willpower', routine: 'willpower',
-            wisdom: 'intellect', productivity: 'intellect',
-            physical: 'health', social: 'health'
+            physical: 'willpower', routine: 'willpower',
+            mental: 'intellect', wisdom: 'intellect',
+            productivity: 'health', social: 'health'
         };
 
         failedSkills.forEach(skillType => {
