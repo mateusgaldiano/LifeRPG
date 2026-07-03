@@ -50,7 +50,7 @@ const HABIT_LIBRARY = [
     { id: 'lib-ted-easy', title: 'Vídeo / TED Talk', icon: '📺', difficulty: 'easy', duration: 15, skill: 'wisdom' },
     { id: 'lib-duolingo-easy', title: 'Estude um idioma', icon: '🗣️', difficulty: 'easy', duration: 15, skill: 'wisdom' },
     { id: 'lib-aprend-easy', title: 'Anotar aprendizados', icon: '✍️', difficulty: 'easy', duration: 5, skill: 'wisdom' },
-    { id: 'lib-financas-easy', title: 'Lançar finanças', icon: '💰', difficulty: 'easy', duration: 5, skill: 'wisdom' },
+    { id: 'lib-financas-easy', title: 'Lançar finanças', icon: '💰', difficulty: 'easy', duration: 5, skill: 'routine' },
 
     // Rotina (routine)
     { id: 'lib-dente-easy', title: 'Higiene bucal', icon: '🪥', difficulty: 'easy', duration: 5, skill: 'routine', current: 0, target: 2 },

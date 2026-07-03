@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.1.50] — 2026-07-03
+- **"Lançar finanças" sai do Intelecto, vira Rotina.** Destoava da categoria (era o único item administrativo entre hábitos de leitura/reflexão); agora conta pra Força de Vontade junto com o resto de Rotina.
+
 ## [v2.1.49] — 2026-07-03
 - **Fix: hábitos "Mental" contavam para Força de Vontade em vez de Intelecto.** Meditar, Leitura filosófica e o resto da categoria Mental (Brain Dump, Diário de reflexões, Visualizar metas, Afirmações, Sons da natureza) apareciam na coluna Força de Vontade e disparavam "+1 FORÇA DE VONTADE" ao concluir, mas o cálculo real do atributo (`computeAttributes`) já somava Mental em Intelecto — uma inconsistência entre o que a tela mostrava e o que era calculado. Rebalanceado para 2x2x2: Físico + Rotina → Força de Vontade; Mental + Sabedoria → Intelecto; Foco/Produtividade + Social → Saúde. De quebra, corrige um bug em que o XP de Foco/Produtividade nunca contava de fato para a barra de Saúde (a fórmula usava uma chave `focus` que não existe nos skills salvos).
 
