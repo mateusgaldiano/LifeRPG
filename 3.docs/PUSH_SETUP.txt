@@ -1,0 +1,72 @@
+========================================================================
+GUIA — LIGAR AS NOTIFICAÇÕES PUSH (LifeRPG)  v2.3.1
+========================================================================
+Tudo é feito no painel do Supabase (browser) — não precisa de CLI.
+A chave PRIVADA VAPID NÃO está neste arquivo (é segredo). O Claude
+passou ela no chat; use aquele valor onde estiver escrito
+<VAPID_PRIVATE_KEY>.
+
+Chave PÚBLICA (não é segredo, já está no pwa.js e na Edge Function):
+  BNzkAwPWHVgwr-EvHrliAwhleRc_Z7ArYuxJpAgy_2rMSkMbEQXNIMTpoex1SZWKol7ZgrzE2Iyt9Io9rXXTFU0
+
+------------------------------------------------------------------------
+PASSO 1 — Secrets (Edge Functions → Secrets)
+------------------------------------------------------------------------
+Crie estes dois secrets:
+  VAPID_PRIVATE_KEY = <VAPID_PRIVATE_KEY>   (valor que o Claude deu no chat)
+  VAPID_PUBLIC_KEY  = BNzkAwPWHVgwr-EvHrliAwhleRc_Z7ArYuxJpAgy_2rMSkMbEQXNIMTpoex1SZWKol7ZgrzE2Iyt9Io9rXXTFU0
+(SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY já são injetados automaticamente.)
+
+------------------------------------------------------------------------
+PASSO 2 — Deploy da Edge Function send-push
+------------------------------------------------------------------------
+Edge Functions → (a função "send-push" provavelmente já existe) →
+substitua o código pelo conteúdo de:
+    supabase/functions/send-push/index.ts
+→ Deploy.
+(Se não existir, crie uma nova função chamada exatamente "send-push" e
+cole o código.)
+
+------------------------------------------------------------------------
+PASSO 3 — SQL (tabela + agendador)
+------------------------------------------------------------------------
+SQL Editor → cole o conteúdo de 3.docs/setup_push_notifications.sql,
+troque <SERVICE_ROLE_KEY> pela sua service_role key
+(Settings → API → service_role), e RUN.
+
+------------------------------------------------------------------------
+PASSO 4 — Cliente (já feito pelo Claude)
+------------------------------------------------------------------------
+O pwa.js já foi atualizado com a chave pública nova e deployado (v2.3.1).
+Nos celulares: dar hard refresh, permitir notificações, e (importante)
+NO iPHONE: "Adicionar à Tela de Início" e abrir por lá — o iOS só
+entrega push em PWA instalado (iOS 16.4+).
+
+------------------------------------------------------------------------
+PASSO 5 — TESTE MANUAL (prova o encanamento inteiro)
+------------------------------------------------------------------------
+a) No celular já logado + com permissão concedida, confirme que existe
+   uma inscrição:  SQL Editor → select user_id, endpoint from push_subscriptions;
+b) Pegue o user_id (é o id da tabela users, não o person_id).
+c) Dispare um push individual pra esse user_id. No terminal:
+
+   curl -i -X POST \
+     "https://ppsqvppnunzagxqruoqf.supabase.co/functions/v1/send-push" \
+     -H "Authorization: Bearer <SERVICE_ROLE_KEY>" \
+     -H "Content-Type: application/json" \
+     -d '{"user_id":"<USER_ID>","title":"⚡ Teste","body":"Funcionou! 🎉","tag":"test"}'
+
+   Resposta {"success":true} + o celular recebe a notificação = OK.
+
+------------------------------------------------------------------------
+COMO FUNCIONA O AGENDAMENTO
+------------------------------------------------------------------------
+O pg_cron chama a Edge Function todo dia às 22:00 UTC (= 19:00 Brasília)
+com {"action":"trigger_all_reminders"}. A função busca quem tem missões
+pendentes (quests.completed = false) e manda o lembrete só pra essas
+pessoas. Para mudar o horário, edite o schedule no SQL (em UTC).
+
+OBS: os horários personalizados do app (slider Manhã/Noite) ainda NÃO
+são usados pelo servidor — isso é fase 2 (precisa sincronizar o fuso de
+cada usuário pro banco). Hoje o lembrete é em horário fixo pra todos.
+========================================================================

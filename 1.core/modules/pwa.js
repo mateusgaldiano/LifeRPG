@@ -392,7 +392,7 @@ window.promptInstallAfterOnboarding = function() {
 };
 
 
-const VAPID_PUBLIC_KEY = 'BFcQZ5Z7RIi0rv9EjL9vwQK6Hj9EhaFRKke0nLuD22nwzl8NhEirmyEGWYmYP5toC3-OfycWS8jaep9JKn0wYfg';
+const VAPID_PUBLIC_KEY = 'BNzkAwPWHVgwr-EvHrliAwhleRc_Z7ArYuxJpAgy_2rMSkMbEQXNIMTpoex1SZWKol7ZgrzE2Iyt9Io9rXXTFU0';
 
 function urlBase64ToUint8Array(base64String) {
     const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -416,9 +416,25 @@ async function subscribeUserToPush() {
     }
     try {
         const reg = await navigator.serviceWorker.ready;
+        const appServerKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
+
+        // Se já existe uma inscrição com uma applicationServerKey DIFERENTE (ex.:
+        // chave VAPID antiga), remove antes — o navegador recusa subscribe() com
+        // uma chave diferente da inscrição existente (InvalidStateError).
+        const existing = await reg.pushManager.getSubscription();
+        if (existing) {
+            const cur = existing.options && existing.options.applicationServerKey
+                ? new Uint8Array(existing.options.applicationServerKey) : null;
+            const sameKey = cur && cur.length === appServerKey.length
+                && cur.every((b, i) => b === appServerKey[i]);
+            if (!sameKey) {
+                await existing.unsubscribe();
+            }
+        }
+
         const subscription = await reg.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            applicationServerKey: appServerKey
         });
         console.log('[Push] Inscrito com sucesso no push manager:', subscription);
 

@@ -17,7 +17,10 @@ serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY');
-    const vapidPublicKey = 'BH7TgtovtrYn69kmU8SF6FEpUAETTGLZbiFCu23vDzIOANA1LPM5gwVXX71aqg6X6somwGLtH0Cy-uZXq2ROVJI';
+    // Fonte única: o público vem do env (bate com o secret e com o pwa.js).
+    // Fallback = chave pública nova (mesma do pwa.js) caso o secret não seja setado.
+    const vapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY')
+      ?? 'BNzkAwPWHVgwr-EvHrliAwhleRc_Z7ArYuxJpAgy_2rMSkMbEQXNIMTpoex1SZWKol7ZgrzE2Iyt9Io9rXXTFU0';
 
     if (!vapidPrivateKey) {
       throw new Error('Chave secreta VAPID_PRIVATE_KEY não está configurada nos Secrets do Supabase.');
@@ -25,7 +28,7 @@ serve(async (req) => {
 
     // Configura os detalhes do servidor VAPID
     webpush.setVapidDetails(
-      'mailto:mateus@example.com',
+      'mailto:mateusgaldiano@gmail.com',
       vapidPublicKey,
       vapidPrivateKey
     );

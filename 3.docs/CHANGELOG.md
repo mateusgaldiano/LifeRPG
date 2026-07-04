@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.3.1] — 2026-07-03
+- **Notificações push reais (parte cliente).** Corrigido o motivo de nunca terem funcionado: havia **três chaves VAPID públicas diferentes** no projeto (pwa.js, Edge Function e uma terceira), então o serviço de push rejeitava tudo por mismatch. Agora tudo usa **um único par de chaves** novo.
+  - `pwa.js`: chave pública VAPID atualizada; `subscribeUserToPush` passa a remover uma inscrição antiga quando a chave difere (evita `InvalidStateError` na rotação de chave).
+  - Edge Function `send-push`: passa a ler a chave pública do env (fonte única), com fallback na chave nova.
+  - **Backend (você aplica no Supabase):** `3.docs/setup_push_notifications.sql` (tabela `push_subscriptions` no schema correto + RLS + agendador pg_cron às 19h BRT) e o guia `3.docs/PUSH_SETUP.txt`. Descoberto e resolvido um conflito: havia duas definições incompatíveis de `push_subscriptions` (`users(id)` vs `auth.users(id)`).
+  - iOS: só recebe push como PWA instalado (Adicionar à Tela de Início), iOS 16.4+.
+
 ## [v2.3.0] — 2026-07-03
 - **Biblioteca de Hábitos — revisão completa das 5 categorias restantes** (Mental, Foco, Sabedoria, Rotina, Conexão), fechando a reorganização iniciada na v2.2.4 (Físico).
   - **Mental:** *Fácil* — removidos "Sons da natureza", "Visualizar metas" e "3 afirmações positivas"; adicionados "Diário de gratidão" e "Meditação guiada" (Brain Dump e Leitura filosófica mantidos). *Intermediário* — "Diário de reflexões" renomeado para "Escrever diário"; adicionados "Escrever sobre ideias futuras" e "Escrever sobre preocupações"; "Meditar" renomeado para "Meditação profunda". *Difícil* — adicionados "Meio dia de silêncio", "Dia sem redes" e "Sessão de terapia".
