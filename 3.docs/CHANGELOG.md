@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.3.2] — 2026-07-03
+- **Notificações push respeitam o horário configurado no app (fase 2).** O slider Manhã/Noite agora controla de verdade o push do servidor.
+  - `pwa.js`: nova `syncNotifPrefsToCloud()` grava os horários na tabela `user_notif_prefs`, já convertidos pra UTC usando o fuso do próprio dispositivo (`getTimezoneOffset`) — o servidor não precisa saber timezone de ninguém. Chamada ao salvar horários e no login/concessão de permissão.
+  - Edge Function `send-push`: nova ação `trigger_scheduled` — roda a cada 15 min e dispara pra quem tem horário (manhã ou noite) caindo no bloco de 15 min atual (precisão ~15 min; cada horário dispara 1x/dia).
+  - **Backend (você aplica):** `3.docs/setup_push_phase2_horarios.sql` cria `user_notif_prefs` + RLS e troca o cron fixo por um a cada 15 min (`trigger_scheduled`).
+
 ## [v2.3.1] — 2026-07-03
 - **Notificações push reais (parte cliente).** Corrigido o motivo de nunca terem funcionado: havia **três chaves VAPID públicas diferentes** no projeto (pwa.js, Edge Function e uma terceira), então o serviço de push rejeitava tudo por mismatch. Agora tudo usa **um único par de chaves** novo.
   - `pwa.js`: chave pública VAPID atualizada; `subscribeUserToPush` passa a remover uma inscrição antiga quando a chave difere (evita `InvalidStateError` na rotação de chave).

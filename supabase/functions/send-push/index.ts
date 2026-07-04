@@ -86,6 +86,42 @@ serve(async (req) => {
       });
     }
 
+    // AÇÃO 1b: Disparo por HORÁRIO (pg_cron a cada 15 min).
+    // Dispara pra quem tem morning/evening_utc_min caindo no bucket de 15 min atual.
+    if (action === 'trigger_scheduled') {
+      const now = new Date();
+      const nowMin = now.getUTCHours() * 60 + now.getUTCMinutes();
+      const bucket = Math.floor(nowMin / 15);
+
+      const { data: prefs, error: prefsErr } = await supabase
+        .from('user_notif_prefs')
+        .select('user_id, morning_utc_min, evening_utc_min')
+        .eq('enabled', true);
+
+      if (prefsErr) throw new Error('Falha ao buscar prefs: ' + prefsErr.message);
+
+      const MSG = {
+        morning: { title: '⚔️ GET UP! O Sistema chama.', body: 'Suas missões diárias estão esperando. Comece o dia no controle.', tag: 'morning-reminder' },
+        evening: { title: '🔥 Não quebre seu streak!',    body: 'Ainda dá tempo de concluir suas missões de hoje. O Sistema está de olho.', tag: 'evening-reminder' },
+      };
+
+      let sent = 0;
+      for (const p of (prefs ?? [])) {
+        let period: 'morning' | 'evening' | null = null;
+        if (p.morning_utc_min != null && Math.floor(p.morning_utc_min / 15) === bucket) period = 'morning';
+        else if (p.evening_utc_min != null && Math.floor(p.evening_utc_min / 15) === bucket) period = 'evening';
+        if (!period) continue;
+        const m = MSG[period];
+        const ok = await sendPushToUser(supabase, p.user_id, m.title, m.body, m.tag);
+        if (ok) sent++;
+      }
+
+      return new Response(JSON.stringify({ bucket, checked: prefs?.length ?? 0, sent }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200
+      });
+    }
+
     // AÇÃO 2: Disparo individual de notificação push
     const { user_id, title, body: bodyText, tag } = body;
     if (!user_id || !title || !bodyText) {

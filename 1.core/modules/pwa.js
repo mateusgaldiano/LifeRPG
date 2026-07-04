@@ -183,7 +183,8 @@ function setupSettingsListeners() {
             gameState.notificationTimes = { morningHour, morningMin, eveningHour, eveningMin };
             saveGameData();
             updateSWNotifications();
-            
+            syncNotifPrefsToCloud(); // sincroniza os horários (convertidos p/ UTC) p/ o push do servidor
+
             // UI feedback
             const originalText = btnSaveNotif.innerText;
             btnSaveNotif.innerText = '✓ SALVO';
@@ -283,6 +284,39 @@ function updateSWNotifications() {
         });
     }
 }
+
+// Sincroniza os horários de notificação (convertidos p/ UTC) na tabela
+// user_notif_prefs, pra a Edge Function agendada disparar no horário certo de
+// cada usuário. O fuso vem do próprio dispositivo (getTimezoneOffset), então o
+// servidor não precisa saber o timezone de ninguém.
+async function syncNotifPrefsToCloud() {
+    if (!window._currentUserDbId || typeof supabaseClient === 'undefined') return;
+    if (!navigator.onLine) return;
+
+    const t = gameState.notificationTimes || { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };
+    // getTimezoneOffset(): minutos que o horário LOCAL está atrás do UTC (BRT = +180).
+    // UTC = (local + offset) mod 1440.
+    const offset = new Date().getTimezoneOffset();
+    const toUtcMin = (h, m) => ((((h * 60 + m) + offset) % 1440) + 1440) % 1440;
+    const enabled = ('Notification' in window) && Notification.permission === 'granted';
+
+    try {
+        const { error } = await supabaseClient
+            .from('user_notif_prefs')
+            .upsert({
+                user_id: window._currentUserDbId,
+                enabled: enabled,
+                morning_utc_min: toUtcMin(t.morningHour, t.morningMin),
+                evening_utc_min: toUtcMin(t.eveningHour, t.eveningMin),
+                updated_at: new Date().toISOString(),
+            }, { onConflict: 'user_id' });
+        if (error) console.error('[Notif] Erro ao sincronizar prefs:', error.message);
+        else console.log('[Notif] Horários sincronizados na nuvem.');
+    } catch (err) {
+        console.error('[Notif] Exceção ao sincronizar prefs:', err);
+    }
+}
+window.syncNotifPrefsToCloud = syncNotifPrefsToCloud;
 
 // Envia status de missões pendentes para o Service Worker
 
@@ -459,6 +493,9 @@ async function subscribeUserToPush() {
             } else {
                 console.log('[Push] Inscrição de push salva no Supabase.');
             }
+
+            // Também sincroniza os horários de notificação (login / concessão de permissão).
+            await syncNotifPrefsToCloud();
         }
     } catch (err) {
         console.error('[Push] Erro ao inscrever para push:', err);
