@@ -232,6 +232,16 @@ function renderHabitLibrary(filter = 'all', search = '') {
         return matchesFilter && matchesSearch && notOwned;
     });
 
+    // Ordena: tipos na MESMA ordem da tela inicial (hexágono) e, dentro de cada
+    // tipo, por dificuldade (Fácil → Intermediário → Difícil).
+    const SKILL_ORDER = { physical: 0, wisdom: 1, productivity: 2, social: 3, mental: 4, routine: 5 };
+    const DIFF_ORDER = { easy: 0, medium: 1, hard: 2 };
+    filtered.sort((a, b) => {
+        const s = (SKILL_ORDER[a.skill] ?? 99) - (SKILL_ORDER[b.skill] ?? 99);
+        if (s !== 0) return s;
+        return (DIFF_ORDER[a.difficulty] ?? 99) - (DIFF_ORDER[b.difficulty] ?? 99);
+    });
+
     if (filtered.length === 0) {
         listContainer.innerHTML = '<div style="text-align:center; padding:20px; font-size:11px; color:var(--text-muted);">Nenhum hábito encontrado.</div>';
         return;

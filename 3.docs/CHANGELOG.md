@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.3.6] — 2026-07-05
+- **Biblioteca de Hábitos (modal "Nova Quest") ordenada.** A lista agora vem com os 6 tipos na **mesma ordem da tela inicial** (Físico → Sabedoria → Foco → Conexão → Mental → Rotina) e, dentro de cada tipo, por dificuldade (**Fácil → Intermediário → Difícil**). Os botões de filtro também foram reordenados pra bater com a tela inicial.
+
 ## [v2.3.5] — 2026-07-05
 - **Fix: linha de recursos (Ouro / Streak / Grupo) vazava da tela no celular.** Os chips tinham `flex: 1` mas `min-width: auto`, então não encolhiam e a linha estourava a largura — o chip de Grupo saía pra fora. Agora usam `flex: 1 1 auto` + `min-width: 0` (cada um pega o espaço que precisa) e há um ajuste de tamanho para telas ≤430px. Verificado em 360/375px e desktop, sem overflow nem corte, inclusive com Ouro de 4 dígitos.
 
