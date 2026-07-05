@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.3.4] — 2026-07-03
+- **Fix: modal de perfil do jogador (3 bugs).**
+  - **Botão X não fechava:** `setupPlayerProfileListeners` (que liga o X e o botão de duelo) nunca rodava — era chamado em `ui.js` com um guard `typeof`, mas a função não é exportada, então o guard sempre falhava. Agora é chamado dentro de `setupSocialModalListeners` (mesmo módulo).
+  - **Atributos apareciam "Lvl NaN":** o código lia as skills como número (`val/100`), mas hoje elas são objetos `{level, xp, xpToNext}`; e usava a chave `focus` em vez de `productivity` (por isso só Foco mostrava algo). Corrigido para ler o objeto e usar a chave certa (com fallback pro formato numérico antigo).
+  - **Modal cortado / sem rolagem no mobile:** `.modal-box-profile` não tinha limite de altura; agora usa `max-height: calc(100dvh - 56px)` + `overflow-y: auto`.
+
 ## [v2.3.3] — 2026-07-03
 - **Fix: botão de notificações agora liga E desliga (era só "Ativar" e travava).** Quando a permissão estava concedida, o botão virava "ATIVADO" e ficava `disabled` — impossível desativar. Agora é um toggle real:
   - Como o navegador não permite revogar a permissão via JS, "desativar" remove a inscrição de push e marca `enabled=false` (flag local `gameState.notificationsEnabled` + `user_notif_prefs`), então o servidor para de enviar.

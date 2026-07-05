@@ -3215,6 +3215,8 @@ body::before {
 /* Modal de Perfil */
 .modal-box-profile {
     max-width: 440px !important;
+    max-height: calc(100dvh - 56px); /* não passar da tela (desconta o padding do .modal) */
+    overflow-y: auto;                /* rola quando o conteúdo é maior que a tela */
     border: 1px solid rgba(0, 242, 254, 0.3) !important;
     box-shadow: 0 0 40px rgba(0, 242, 254, 0.15) !important;
 }

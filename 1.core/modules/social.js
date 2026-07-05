@@ -1291,27 +1291,37 @@ async function openPlayerProfile(userId) {
     if (skillsList) {
         skillsList.innerHTML = '';
         const skillNamesMap = {
-            physical: 'Força 💪',
-            routine:  'Rotina 🛏️',
-            mental:   'Mente 🧠',
-            wisdom:   'Sabedoria 📚',
-            focus:    'Foco 🎯',
-            social:   'Social 🤝'
+            physical:     'Força 💪',
+            routine:      'Rotina 🛏️',
+            mental:       'Mente 🧠',
+            wisdom:       'Sabedoria 📚',
+            productivity: 'Foco 🎯',
+            social:       'Social 🤝'
         };
         const skillColorsMap = {
-            physical: '#ef4444',
-            routine:  '#3b82f6',
-            mental:   '#a855f7',
-            wisdom:   '#eab308',
-            focus:    '#06b6d4',
-            social:   '#10b981'
+            physical:     '#ef4444',
+            routine:      '#3b82f6',
+            mental:       '#a855f7',
+            wisdom:       '#eab308',
+            productivity: '#06b6d4',
+            social:       '#10b981'
         };
 
         const userSkills = user.skills || {};
         Object.entries(skillNamesMap).forEach(([key, label]) => {
-            const val = userSkills[key] || 0;
-            const lvl = Math.floor(val / 100) + 1;
-            const percent = val % 100;
+            // Skills são objetos { level, xp, xpToNext }. Formato antigo (número
+            // de XP acumulado) é tratado no fallback por retrocompatibilidade.
+            const raw = userSkills[key];
+            let lvl, percent;
+            if (raw && typeof raw === 'object') {
+                lvl = raw.level || 1;
+                const xpToNext = raw.xpToNext || 5;
+                percent = Math.min(100, Math.round(((raw.xp || 0) / xpToNext) * 100));
+            } else {
+                const val = Number(raw) || 0;
+                lvl = Math.floor(val / 100) + 1;
+                percent = val % 100;
+            }
 
             const row = document.createElement('div');
             row.className = 'profile-skill-row';
@@ -1601,6 +1611,11 @@ function setupPlayerProfileListeners() {
 
 // Ouvintes do Modal Social (Chat, Amigos, Clã)
 function setupSocialModalListeners() {
+    // Liga o X (fechar) e o botão de duelo do modal de perfil. Antes isso
+    // dependia de ui.js chamar setupPlayerProfileListeners, mas a função não é
+    // exportada — o guard typeof falhava e o X nunca funcionava.
+    setupPlayerProfileListeners();
+
     const modalSocial = document.getElementById('modal-social');
     const btnOpenSocial = document.getElementById('btn-header-social');
     const btnCloseSocial = document.getElementById('close-social-modal');
