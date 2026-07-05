@@ -155,19 +155,39 @@ function setupSettingsListeners() {
 
 
 
-    // Solicitar permissão de notificação
+    // Ativar / Desativar notificações (toggle)
     const btnRequestNotif = document.getElementById('btn-request-notif');
     if (btnRequestNotif) {
-        btnRequestNotif.addEventListener('click', () => {
-            if ('Notification' in window) {
-                Notification.requestPermission().then((permission) => {
-                    updateNotificationPermissionUI();
-                    updateSWNotifications();
-                    if (permission === 'granted' && typeof window.subscribeUserToPush === 'function') {
-                        window.subscribeUserToPush();
-                    }
-                });
+        btnRequestNotif.addEventListener('click', async () => {
+            if (!('Notification' in window)) return;
+
+            const currentlyOn = Notification.permission === 'granted'
+                && gameState.notificationsEnabled !== false;
+
+            if (currentlyOn) {
+                // DESLIGAR. O navegador não deixa revogar a permissão via JS, então
+                // removemos a inscrição de push e marcamos enabled=false (flag local
+                // + user_notif_prefs) — o servidor para de enviar.
+                gameState.notificationsEnabled = false;
+                saveGameData();
+                await unsubscribeUserFromPush();
+                await syncNotifPrefsToCloud(); // grava enabled=false
+                updateNotificationPermissionUI();
+                return;
             }
+
+            // LIGAR: pede permissão se preciso e inscreve.
+            let perm = Notification.permission;
+            if (perm !== 'granted') perm = await Notification.requestPermission();
+            if (perm === 'granted') {
+                gameState.notificationsEnabled = true;
+                saveGameData();
+                if (typeof window.subscribeUserToPush === 'function') {
+                    await window.subscribeUserToPush(); // já sincroniza prefs (enabled=true)
+                }
+                updateSWNotifications();
+            }
+            updateNotificationPermissionUI();
         });
     }
 
@@ -256,20 +276,24 @@ function updateNotificationPermissionUI() {
     }
     
     const perm = Notification.permission;
-    if (perm === 'granted') {
-        btnRequest.innerText = 'ATIVADO';
-        btnRequest.disabled = true;
-        btnRequest.classList.add('active');
-        btnRequest.style.opacity = '1';
-    } else if (perm === 'denied') {
+    if (perm === 'denied') {
+        // Bloqueado no navegador: só o próprio usuário reverte nas configs do site.
         btnRequest.innerText = 'BLOQUEADO';
         btnRequest.disabled = true;
         btnRequest.style.opacity = '0.5';
         btnRequest.classList.remove('active');
+        return;
+    }
+
+    // 'granted' ou 'default': o botão é um TOGGLE clicável.
+    const on = perm === 'granted' && gameState.notificationsEnabled !== false;
+    btnRequest.disabled = false;
+    btnRequest.style.opacity = '1';
+    if (on) {
+        btnRequest.innerText = 'ATIVADO';
+        btnRequest.classList.add('active');
     } else {
         btnRequest.innerText = 'ATIVAR';
-        btnRequest.disabled = false;
-        btnRequest.style.opacity = '1';
         btnRequest.classList.remove('active');
     }
 }
@@ -298,7 +322,8 @@ async function syncNotifPrefsToCloud() {
     // UTC = (local + offset) mod 1440.
     const offset = new Date().getTimezoneOffset();
     const toUtcMin = (h, m) => ((((h * 60 + m) + offset) % 1440) + 1440) % 1440;
-    const enabled = ('Notification' in window) && Notification.permission === 'granted';
+    const enabled = ('Notification' in window) && Notification.permission === 'granted'
+        && gameState.notificationsEnabled !== false;
 
     try {
         const { error } = await supabaseClient

@@ -207,7 +207,9 @@ window.initSupabase = function() {
         try {
           const profile = await ensureUserProfile(session.user);
           await syncFromCloud();
-          if (typeof window.subscribeUserToPush === 'function' && 'Notification' in window && Notification.permission === 'granted') {
+          if (typeof window.subscribeUserToPush === 'function' && 'Notification' in window
+              && Notification.permission === 'granted'
+              && gameState.notificationsEnabled !== false) {
             window.subscribeUserToPush();
           }
           if (typeof window.refreshActiveSocialTab === 'function') {

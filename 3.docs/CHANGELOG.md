@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.3.3] — 2026-07-03
+- **Fix: botão de notificações agora liga E desliga (era só "Ativar" e travava).** Quando a permissão estava concedida, o botão virava "ATIVADO" e ficava `disabled` — impossível desativar. Agora é um toggle real:
+  - Como o navegador não permite revogar a permissão via JS, "desativar" remove a inscrição de push e marca `enabled=false` (flag local `gameState.notificationsEnabled` + `user_notif_prefs`), então o servidor para de enviar.
+  - "ativar" pede permissão (se preciso), re-inscreve e marca `enabled=true`.
+  - No login, não re-inscreve se o usuário tinha desativado.
+
 ## [v2.3.2] — 2026-07-03
 - **Notificações push respeitam o horário configurado no app (fase 2).** O slider Manhã/Noite agora controla de verdade o push do servidor.
   - `pwa.js`: nova `syncNotifPrefsToCloud()` grava os horários na tabela `user_notif_prefs`, já convertidos pra UTC usando o fuso do próprio dispositivo (`getTimezoneOffset`) — o servidor não precisa saber timezone de ninguém. Chamada ao salvar horários e no login/concessão de permissão.

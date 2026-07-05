@@ -5,4 +5,4 @@
 //   2. O CACHE_VERSION do Service Worker (invalida o cache offline).
 // `self` funciona tanto na janela (app) quanto no Service Worker.
 // ==========================================================================
-self.APP_VERSION = 'v2.3.2';
+self.APP_VERSION = 'v2.3.3';
