@@ -1755,14 +1755,15 @@ function setupEventListeners() {
         const title = document.getElementById('sq-title').value;
         const icon = document.getElementById('sq-icon').value || '⚔️';
         const difficulty = document.getElementById('sq-difficulty').value;
+        const skill = document.getElementById('sq-skill')?.value || 'routine';
         const type = document.querySelector('input[name="sq-type"]:checked').value;
-        
+
         let xp = 25, gold = 20;
         if (difficulty === 'easy') { xp = 10; gold = 10; }
         else if (difficulty === 'hard') { xp = 50; gold = 40; }
 
         if (type === 'side') {
-            gameState.sideQuests.push({ id: 'sq-' + Date.now(), title, type: 'side', icon, difficulty, completed: false, xp, gold });
+            gameState.sideQuests.push({ id: 'sq-' + Date.now(), title, type: 'side', icon, difficulty, skill, completed: false, xp, gold });
         } else if (type === 'weekly') {
             const activeButtons = document.querySelectorAll('#weekly-day-selector .weekday-btn.active');
             if (activeButtons.length === 0) {
@@ -1777,6 +1778,7 @@ function setupEventListeners() {
                 daysOfWeek,
                 icon,
                 difficulty,
+                skill,
                 completed: false,
                 xp,
                 gold,
@@ -1791,6 +1793,7 @@ function setupEventListeners() {
                 type: 'daily',
                 icon,
                 difficulty,
+                skill,
                 completed: false,
                 xp,
                 gold,

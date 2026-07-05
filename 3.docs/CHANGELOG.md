@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.3.7] — 2026-07-05
+- **Quest personalizada agora tem seletor de CATEGORIA.** Antes, toda quest criada em "Criar Personalizada" não tinha `skill` e caía sempre em Rotina (fallback). Adicionado um dropdown com os 6 tipos na ordem da tela inicial (Físico, Sabedoria, Foco, Conexão, Mental, Rotina); o valor é gravado em `skill` nas quests diária/semanal/avulsa, então a atividade vai pra coluna certa (ex.: leitura "deepstash" → Sabedoria).
+
 ## [v2.3.6] — 2026-07-05
 - **Biblioteca de Hábitos (modal "Nova Quest") ordenada.** A lista agora vem com os 6 tipos na **mesma ordem da tela inicial** (Físico → Sabedoria → Foco → Conexão → Mental → Rotina) e, dentro de cada tipo, por dificuldade (**Fácil → Intermediário → Difícil**). Os botões de filtro também foram reordenados pra bater com a tela inicial.
 
