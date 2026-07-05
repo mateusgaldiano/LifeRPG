@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.3.5] — 2026-07-05
+- **Fix: linha de recursos (Ouro / Streak / Grupo) vazava da tela no celular.** Os chips tinham `flex: 1` mas `min-width: auto`, então não encolhiam e a linha estourava a largura — o chip de Grupo saía pra fora. Agora usam `flex: 1 1 auto` + `min-width: 0` (cada um pega o espaço que precisa) e há um ajuste de tamanho para telas ≤430px. Verificado em 360/375px e desktop, sem overflow nem corte, inclusive com Ouro de 4 dígitos.
+
 ## [v2.3.4] — 2026-07-03
 - **Fix: modal de perfil do jogador (3 bugs).**
   - **Botão X não fechava:** `setupPlayerProfileListeners` (que liga o X e o botão de duelo) nunca rodava — era chamado em `ui.js` com um guard `typeof`, mas a função não é exportada, então o guard sempre falhava. Agora é chamado dentro de `setupSocialModalListeners` (mesmo módulo).

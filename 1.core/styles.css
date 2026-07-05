@@ -403,9 +403,11 @@ body::before {
 }
 
 /* Recursos */
-.player-resources { display: flex; gap: 8px; }
+.player-resources { display: flex; gap: 8px; width: 100%; }
 .resource-chip {
-    flex: 1;
+    flex: 1 1 auto; /* basis por conteúdo: cada chip pega o que precisa e cresce p/ preencher */
+    min-width: 0;   /* permite encolher abaixo do conteúdo (senão a linha estoura a tela) */
+    overflow: hidden;
     display: flex; align-items: center; gap: 6px;
     background: rgba(255,255,255,0.03);
     border: 1px solid var(--border-glass);
@@ -414,10 +416,19 @@ body::before {
     transition: all 0.2s;
 }
 .resource-chip:hover { border-color: var(--text-muted); }
-.resource-icon { font-size: 14px; }
-.resource-val { font-family: var(--font-hud); font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.resource-icon { font-size: 14px; flex-shrink: 0; }
+.resource-val { font-family: var(--font-hud); font-size: 15px; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
 .resource-unit { font-family: var(--font-body); font-size: 7.5px; font-weight: 600; color: var(--text-muted); letter-spacing: 1.5px; align-self: flex-end; margin-bottom: 1.5px; }
 .gold-chip .resource-val { color: var(--neon-gold); text-shadow: 0 0 8px var(--glow-gold); }
+
+/* Telas estreitas: encolhe os chips de recurso p/ caber Ouro/Streak/Grupo sem estourar */
+@media (max-width: 430px) {
+    .player-resources { gap: 4px; }
+    .resource-chip { padding: 4px 5px; gap: 3px; }
+    .resource-icon { font-size: 11px; }
+    .resource-val { font-size: 12px; }
+    .resource-unit { font-size: 6.5px; letter-spacing: 0.5px; }
+}
 /* Active Buffs */
 .active-buffs-list { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; width: 100%; justify-content: flex-start; }
 .buff-chip {
