@@ -1753,9 +1753,11 @@ function setupEventListeners() {
     document.getElementById('form-sidequest')?.addEventListener('submit', (e) => {
         e.preventDefault();
         const title = document.getElementById('sq-title').value;
-        const icon = document.getElementById('sq-icon').value || '⚔️';
         const difficulty = document.getElementById('sq-difficulty').value;
         const skill = document.getElementById('sq-skill')?.value || 'routine';
+        // Ícone derivado da categoria (o campo de ícone foi removido — redundante).
+        const SKILL_ICONS = { physical: '💪', wisdom: '📚', productivity: '🎯', social: '🤝', mental: '🧠', routine: '🛏️' };
+        const icon = SKILL_ICONS[skill] || '⚔️';
         const type = document.querySelector('input[name="sq-type"]:checked').value;
 
         let xp = 25, gold = 20;
