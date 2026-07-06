@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.4.0] — 2026-07-06
+- **Ajuste na regra de penalidades:** A partir de agora, a penalidade diária por falha de quests só é aplicada se a taxa de conclusão das missões ativas do dia for **menor que 70%**. Se o usuário concluir 70% ou mais das quests, ele não será punido, e o contador de falhas consecutivas (`consecutiveMisses`) será zerado.
+
 ## [v2.3.9] — 2026-07-06
 - **Fix: inicialização das listas de quests e side quests.** Corrigido um bug onde `gameState.quests` ou `gameState.sideQuests` ficavam `undefined` se estivessem ausentes no estado carregado do `localStorage` (ex.: de versões antigas do app ou saves antigos), o que causava um erro silencioso de `TypeError: Cannot read properties of undefined (reading 'push')` ao tentar adicionar uma quest personalizada/avulsa (fazendo com que o botão "LANÇAR QUEST" não funcionasse).
 

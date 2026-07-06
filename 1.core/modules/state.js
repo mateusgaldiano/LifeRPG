@@ -539,7 +539,8 @@ function loadGameData() {
 
             const completedCount = activeYesterday.filter(q => q.completed).length;
             const totalCount = activeYesterday.length;
-            const allWereDone = totalCount > 0 ? (completedCount >= totalCount) : true;
+            const completionRate = totalCount > 0 ? (completedCount / totalCount) : 1.0;
+            const shouldPenalize = completionRate < 0.70;
             
             // Grava o Histórico do dia anterior
             let dailyStatus = 'skipped';
@@ -564,11 +565,13 @@ function loadGameData() {
                 completedIds: activeYesterday.filter(q => q.completed).map(q => q.title) // salva nomes
             };
 
-            // Verifica penalidade
-            if (totalCount > 0 && !allWereDone && (parsed.streak || 0) > 0 && !isRestDay) {
+            // Verifica penalidade (apenas se concluiu menos de 70% das missões ativas)
+            if (totalCount > 0 && shouldPenalize && (parsed.streak || 0) > 0 && !isRestDay) {
                 // Penalidade adiada para depois do DOM estar pronto
                 const yesterdayStr = parsed.lastCheckedDate;
                 setTimeout(() => window.applyDailyPenalty(yesterdayStr), 2000);
+            } else if (completionRate >= 0.70) {
+                parsed.consecutiveMisses = 0; // Reseta falhas consecutivas se completou 70%+ das quests
             }
             // Reseta hábitos diários para um novo dia
             parsed.quests.forEach(q => {
