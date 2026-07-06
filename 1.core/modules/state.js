@@ -96,6 +96,7 @@ const HABIT_LIBRARY = [
     { id: 'lib-vicio-aposta', title: 'Não apostar', icon: '🎰', skill: 'addiction' },
     { id: 'lib-vicio-refri', title: 'Sem refrigerante', icon: '🥤', skill: 'addiction' },
     { id: 'lib-vicio-procrastinar', title: 'Não procrastinar', icon: '⏳', skill: 'addiction' },
+    { id: 'lib-vicio-jogar', title: 'Não jogar videogame', icon: '🎮', skill: 'addiction' },
 ];
 
 // 📆 Utilitário de Data Local (timezone-safe) 📆

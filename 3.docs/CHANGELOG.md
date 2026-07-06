@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.1] — 2026-07-06
+- **Novo vício na Biblioteca:** adicionado **"Não jogar videogame"** 🎮 à curadoria de vícios do filtro VÍCIOS.
+
 ## [v2.5.0] — 2026-07-06
 - **Sistema de Vícios:** Novo tipo de quest `addiction` para rastrear abstinência. Vícios **nascem completos** (limpo por padrão) a cada novo dia; desmarcar registra uma **recaída**, que aplica um debuff de **-30% de XP por 24h** e zera a `addictionStreak` (sequência de dias sem recaída). Remarcar no mesmo dia = arrependimento, que **remove o debuff** (se nenhum outro vício estiver desmarcado). Nova seção **VÍCIOS** na aba de Missões (com contador 🔥 de dias limpos), tipo **🔥 VÍCIO** no criador de quest personalizada (sem skill/XP/gold), e filtro **VÍCIOS** na Biblioteca de Hábitos com uma curadoria de vícios comuns. O debuff persiste na nuvem via `user_buffs` (`addictionPenalty`).
 
