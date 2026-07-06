@@ -99,10 +99,9 @@ function calculateWeeklyReportSync(history, quests, sideQuests, dates, prevWeekS
     };
     const topSkillName = skillNames[topSkill] || 'Rotina';
     
-    // ── SINTONIA: 70% Volume + 30% Consistência, com gates de tempo ──────────
-    // Volume satura em 100 por volta de ~50 conclusões na semana (~7/dia) — mantém o S raro.
-    const volumeScore = Math.min(100, completedQuests * 2);
-    const score = Math.round(0.7 * volumeScore + 0.3 * survivalRate);
+    // ── SINTONIA: 100% baseada no Volume (Quantidade de Quests Concluídas) ──
+    // Satura em 100 com 50 ou mais conclusões na semana.
+    const score = Math.min(100, completedQuests * 2);
 
     // Tempo total de atividade concluída na semana (minutos), pela duração de cada conclusão.
     const totalMinutes = completedTitles.reduce((sum, title) => {

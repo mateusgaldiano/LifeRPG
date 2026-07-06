@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.4.1] — 2026-07-06
+- **Sintonia Semanal baseada 100% em volume absoluto:** A Sintonia Semanal foi alterada para depender puramente da quantidade absoluta de quests concluídas na semana, eliminando a penalização por taxa de conclusão (% de sobrevivência). Além disso, sincronizei a lógica de cálculo entre a Main Thread (`weekly-report.js`) e o Web Worker (`report-worker.js`), corrigindo um bug que reportava o tempo total de atividades semanal como `0min`.
+
 ## [v2.4.0] — 2026-07-06
 - **Ajuste na regra de penalidades:** A partir de agora, a penalidade diária por falha de quests só é aplicada se a taxa de conclusão das missões ativas do dia for **menor que 70%**. Se o usuário concluir 70% ou mais das quests, ele não será punido, e o contador de falhas consecutivas (`consecutiveMisses`) será zerado.
 
