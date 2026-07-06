@@ -111,6 +111,7 @@ import {
 import {
     getISOWeekString,
     getPreviousWeekDates,
+    computeSintoniaTier,
     checkAndShowWeeklyReport,
     claimWeeklyReport
 } from './modules/weekly-report.js';
@@ -233,6 +234,7 @@ window.syncQuestsByLevel = syncQuestsByLevel;
 // Bind Weekly Report
 window.getISOWeekString = getISOWeekString;
 window.getPreviousWeekDates = getPreviousWeekDates;
+window.computeSintoniaTier = computeSintoniaTier;
 window.checkAndShowWeeklyReport = checkAndShowWeeklyReport;
 window.claimWeeklyReport = claimWeeklyReport;
 

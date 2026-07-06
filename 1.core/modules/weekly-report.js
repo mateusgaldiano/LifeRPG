@@ -39,6 +39,73 @@ function getPreviousWeekDates(todayDate) {
     return { dates, mondayDate, sundayDate };
 }
 
+// ── FONTE ÚNICA DA FÓRMULA DE SINTONIA SEMANAL ─────────────────────────────
+// Toda decisão de tier + recompensa vive AQUI. O worker é só agregador; tanto o
+// caminho síncrono quanto o do Worker chamam esta função — sem duplicação.
+const SINTONIA_TIER_MAP = {
+    S: { label: 'SINTONIA S', cls: 'rank-glow-s', gold: 160, xp: 300, desc: '"Desempenho lendário. Pouquíssimos alcançam este nível. Suas habilidades crescem em ritmo avassalador — o topo do mundo está ao seu alcance."' },
+    A: { label: 'SINTONIA A', cls: 'rank-glow-a', gold: 100, xp: 200, desc: '"Desempenho formidável. O Sistema reconhece seu vigor e determinação. Continue assim e o rank S deixará de ser um sonho."' },
+    B: { label: 'SINTONIA B', cls: 'rank-glow-b', gold: 60,  xp: 120, desc: '"Progresso sólido. Suas conquistas são constantes, mas a complacência é sua maior inimiga."' },
+    C: { label: 'SINTONIA C', cls: 'rank-glow-c', gold: 30,  xp: 60,  desc: '"Na média. Você está sobrevivendo, mas o Sistema exige mais empenho e volume."' },
+    D: { label: 'SINTONIA D', cls: 'rank-glow-d', gold: 10,  xp: 30,  desc: '"Desempenho fraco. Você está estagnando. O Sistema observa — e não tem paciência com a inércia."' },
+    E: { label: 'SINTONIA E', cls: 'rank-glow-e', gold: 0,   xp: 0,   desc: '"Praticamente inerte. O Sistema mal registrou sua presença esta semana. Desperte, ou seja esquecido."' },
+};
+
+function computeSintoniaTier({ completedQuests = 0, survivalRate = 0, totalMinutes = 0 } = {}) {
+    // Score 100% baseado no VOLUME: satura em 100 com 50+ conclusões na semana.
+    const score = Math.min(100, completedQuests * 2);
+
+    let tier;
+    if (score > 95) tier = 'S';
+    else if (score >= 85) tier = 'A';
+    else if (score >= 70) tier = 'B';
+    else if (score >= 50) tier = 'C';
+    else if (score >= 30) tier = 'D';
+    else tier = 'E';
+
+    // Gates de tempo: S exige >= 2h de atividade; A exige >= 1h.
+    if (tier === 'S' && totalMinutes < 120) tier = 'A';
+    if (tier === 'A' && totalMinutes < 60) tier = 'B';
+
+    const t = SINTONIA_TIER_MAP[tier];
+    return { tier, score, label: t.label, cls: t.cls, gold: t.gold, xp: t.xp, desc: t.desc };
+}
+
+// Recebe os agregados brutos (do worker ou do caminho síncrono) + a lista de
+// quests para resolver a duração; calcula totalMinutes e monta o objeto de dados
+// completo que renderWeeklyReportUI espera.
+function assembleReportData(agg, allQuests) {
+    const totalMinutes = (agg.completedTitles || []).reduce((sum, title) => {
+        const q = allQuests.find(x => x.title === title);
+        return sum + (q && q.duration ? q.duration : 5);
+    }, 0);
+
+    const t = computeSintoniaTier({
+        completedQuests: agg.completedQuests,
+        survivalRate: agg.survivalRate,
+        totalMinutes
+    });
+
+    return {
+        survivalRate: agg.survivalRate,
+        score: t.score,
+        totalMinutes,
+        completedQuests: agg.completedQuests,
+        totalQuests: agg.totalQuests,
+        perfectDays: agg.perfectDays,
+        goodDays: agg.goodDays,
+        missedDays: agg.missedDays,
+        topSkillName: agg.topSkillName,
+        maxCount: agg.maxCount,
+        rankLabel: t.label,
+        rankClass: t.cls,
+        goldReward: t.gold,
+        xpReward: t.xp,
+        verdictDesc: t.desc,
+        periodText: agg.periodText
+    };
+}
+
 function calculateWeeklyReportSync(history, quests, sideQuests, dates, prevWeekStr, mondayDate, sundayDate) {
     let completedQuests = 0;
     let totalQuests = 0;
@@ -98,67 +165,17 @@ function calculateWeeklyReportSync(history, quests, sideQuests, dates, prevWeekS
         social: 'Social/Conexões'
     };
     const topSkillName = skillNames[topSkill] || 'Rotina';
-    
-    // ── SINTONIA: 100% baseada no Volume (Quantidade de Quests Concluídas) ──
-    // Satura em 100 com 50 ou mais conclusões na semana.
-    const score = Math.min(100, completedQuests * 2);
 
-    // Tempo total de atividade concluída na semana (minutos), pela duração de cada conclusão.
-    const totalMinutes = completedTitles.reduce((sum, title) => {
-        const q = allQuests.find(x => x.title === title);
-        return sum + (q && q.duration ? q.duration : 5);
-    }, 0);
-
-    // Faixas estilo Solo Leveling — S é raríssimo.
-    let tier;
-    if (score > 95) tier = 'S';
-    else if (score >= 85) tier = 'A';
-    else if (score >= 70) tier = 'B';
-    else if (score >= 50) tier = 'C';
-    else if (score >= 30) tier = 'D';
-    else tier = 'E';
-
-    // Gates de tempo: S exige >= 2h de atividade; A exige >= 1h.
-    if (tier === 'S' && totalMinutes < 120) tier = 'A';
-    if (tier === 'A' && totalMinutes < 60) tier = 'B';
-
-    const TIER_MAP = {
-        S: { label: 'SINTONIA S', cls: 'rank-glow-s', gold: 160, xp: 300, desc: '"Desempenho lendário. Pouquíssimos alcançam este nível. Suas habilidades crescem em ritmo avassalador — o topo do mundo está ao seu alcance."' },
-        A: { label: 'SINTONIA A', cls: 'rank-glow-a', gold: 100, xp: 200, desc: '"Desempenho formidável. O Sistema reconhece seu vigor e determinação. Continue assim e o rank S deixará de ser um sonho."' },
-        B: { label: 'SINTONIA B', cls: 'rank-glow-b', gold: 60,  xp: 120, desc: '"Progresso sólido. Suas conquistas são constantes, mas a complacência é sua maior inimiga."' },
-        C: { label: 'SINTONIA C', cls: 'rank-glow-c', gold: 30,  xp: 60,  desc: '"Na média. Você está sobrevivendo, mas o Sistema exige mais empenho e volume."' },
-        D: { label: 'SINTONIA D', cls: 'rank-glow-d', gold: 10,  xp: 30,  desc: '"Desempenho fraco. Você está estagnando. O Sistema observa — e não tem paciência com a inércia."' },
-        E: { label: 'SINTONIA E', cls: 'rank-glow-e', gold: 0,   xp: 0,   desc: '"Praticamente inerte. O Sistema mal registrou sua presença esta semana. Desperte, ou seja esquecido."' },
-    };
-    const tierData = TIER_MAP[tier];
-    const rankLabel = tierData.label;
-    const rankClass = tierData.cls;
-    const goldReward = tierData.gold;
-    const xpReward = tierData.xp;
-    const verdictDesc = tierData.desc;
-    
     const formatDate = (d) => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
     const periodText = `PERÍODO DE AVALIAÇÃO: ${formatDate(mondayDate)} a ${formatDate(sundayDate)}`;
-    
-    return {
-        status: 'success',
-        survivalRate,
-        score,
-        totalMinutes,
-        completedQuests,
-        totalQuests,
-        perfectDays,
-        goodDays,
-        missedDays,
-        topSkillName,
-        maxCount,
-        rankLabel,
-        rankClass,
-        goldReward,
-        xpReward,
-        verdictDesc,
-        periodText
+
+    // Mesma fórmula do caminho do Worker — via assembleReportData/computeSintoniaTier.
+    const agg = {
+        survivalRate, completedQuests, totalQuests,
+        perfectDays, goodDays, missedDays,
+        topSkillName, maxCount, completedTitles, periodText
     };
+    return { status: 'success', ...assembleReportData(agg, allQuests) };
 }
 
 function renderWeeklyReportUI(data, prevWeekStr) {
@@ -266,7 +283,10 @@ function checkAndShowWeeklyReport() {
                 return;
             }
             if (msg.type === 'done') {
-                renderWeeklyReportUI(msg.data, prevWeekStr);
+                // Worker devolve só agregados brutos; a fórmula de tier roda aqui.
+                const allQuests = [...(gameState.quests || []), ...(gameState.sideQuests || [])];
+                const fullData = assembleReportData(msg.data, allQuests);
+                renderWeeklyReportUI(fullData, prevWeekStr);
             }
         };
         
@@ -354,6 +374,7 @@ function claimWeeklyReport(rewards, weekStr) {
 export {
     getISOWeekString,
     getPreviousWeekDates,
+    computeSintoniaTier,
     checkAndShowWeeklyReport,
     claimWeeklyReport
 };

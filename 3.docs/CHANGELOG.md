@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.2] — 2026-07-06
+- **Fórmula da Sintonia Semanal unificada:** eliminada a duplicação da fórmula de tier/recompensa entre `weekly-report.js` e `report-worker.js`, que podia gerar relatórios inconsistentes conforme o caminho de execução (Worker vs. síncrono). Agora o `report-worker.js` é **apenas agregador** (devolve os agregados brutos + `completedTitles`) e a decisão de tier vive numa **única função pura exportada**, `computeSintoniaTier({ completedQuests, survivalRate, totalMinutes })`. O `totalMinutes` passa a ser calculado na Main Thread; ambos os caminhos (Worker e fallback síncrono) usam exatamente a mesma fórmula.
+
 ## [v2.5.1] — 2026-07-06
 - **Novo vício na Biblioteca:** adicionado **"Não jogar"** 🎮 à curadoria de vícios do filtro VÍCIOS.
 
