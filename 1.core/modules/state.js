@@ -606,6 +606,15 @@ function loadGameData() {
 
         for (const key in gameState) delete gameState[key]; Object.assign(gameState, parsed);
         if (!Array.isArray(gameState.questOps)) gameState.questOps = []; // migração: fila de ops
+        if (!Array.isArray(gameState.quests)) gameState.quests = [];
+        if (!Array.isArray(gameState.sideQuests)) gameState.sideQuests = [];
+        if (!Array.isArray(gameState.rewards) || gameState.rewards.length === 0) {
+            gameState.rewards = [
+                { id: 'r-serie', title: 'Assistir 1 Hora de Série', cost: 35, icon: '📺' },
+                { id: 'r-cheat', title: 'Refeição Livre / Doce', cost: 80, icon: '🍔' },
+                { id: 'r-game', title: 'Jogar Videogame por 1h', cost: 45, icon: '🎮' }
+            ];
+        }
         
         // Sanitize legacy corrupted icons in saved quests
         const cleanQuestCounters = (q) => {

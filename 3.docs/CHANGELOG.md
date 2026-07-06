@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.3.9] — 2026-07-06
+- **Fix: inicialização das listas de quests e side quests.** Corrigido um bug onde `gameState.quests` ou `gameState.sideQuests` ficavam `undefined` se estivessem ausentes no estado carregado do `localStorage` (ex.: de versões antigas do app ou saves antigos), o que causava um erro silencioso de `TypeError: Cannot read properties of undefined (reading 'push')` ao tentar adicionar uma quest personalizada/avulsa (fazendo com que o botão "LANÇAR QUEST" não funcionasse).
+
 ## [v2.3.8] — 2026-07-05
 - **Quest personalizada: removido o campo de Ícone** (redundante com a Categoria). O ícone agora é derivado automaticamente da categoria escolhida (Físico 💪, Sabedoria 📚, Foco 🎯, Conexão 🤝, Mental 🧠, Rotina 🛏️).
 
