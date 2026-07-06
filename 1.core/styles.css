@@ -810,6 +810,57 @@ body::before {
 .water-btn:hover { background: rgba(139,92,246,0.2); }
 .water-val { font-size: 10px; font-family: var(--font-mono); color: var(--text-secondary); }
 
+/* ── SEÇÃO VÍCIOS (lógica invertida: abstinência por padrão) ─────────────── */
+.addiction-header {
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(153,27,27,0.35);
+    padding-bottom: 8px; margin-bottom: 12px;
+}
+.addiction-header h3 {
+    font-family: var(--font-hud); font-size: 14px; letter-spacing: 2px;
+    color: #991b1b; margin: 0;
+}
+.addiction-streak {
+    font-family: var(--font-hud); font-size: 12px; font-weight: 700;
+    color: #ef4444;
+    background: rgba(153,27,27,0.1);
+    border: 1px solid rgba(153,27,27,0.3);
+    border-radius: 999px; padding: 3px 12px;
+}
+.addiction-debuff-banner {
+    font-family: var(--font-hud); font-size: 10px; letter-spacing: 0.5px;
+    color: #ef4444;
+    background: rgba(153,27,27,0.08);
+    border: 1px solid rgba(153,27,27,0.3);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px; margin-bottom: 12px; text-align: center;
+}
+.addiction-list { display: flex; flex-direction: column; gap: 10px; }
+
+.addiction-card { border-left: 4px solid #991b1b; }
+.addiction-card.abstinent {
+    background: linear-gradient(135deg, rgba(153,27,27,0.05) 0%, var(--bg-card) 60%);
+}
+.addiction-card.abstinent .quest-complete-btn {
+    background: var(--neon-green); color: #000; border-color: transparent;
+    box-shadow: 0 0 12px rgba(16,185,129,0.4);
+}
+.addiction-card.abstinent .addiction-status { color: var(--neon-green); }
+/* Recaída: card em alerta vermelho, botão de "arrependimento" (↩) */
+.addiction-card.relapsed {
+    border-left-color: #ef4444;
+    background: linear-gradient(135deg, rgba(239,68,68,0.09) 0%, var(--bg-card) 60%);
+}
+.addiction-card.relapsed .quest-complete-btn {
+    background: rgba(239,68,68,0.12); color: #ef4444; border-color: rgba(239,68,68,0.4);
+}
+.addiction-card.relapsed .quest-complete-btn:hover {
+    background: #ef4444; color: #000; box-shadow: 0 0 15px rgba(239,68,68,0.5);
+}
+.addiction-card.relapsed .quest-title { color: #ef4444; }
+.addiction-status { font-family: var(--font-hud); font-size: 10px; letter-spacing: 0.5px; }
+.filter-btn-addiction.active { background: rgba(153,27,27,0.15); border-color: #991b1b; color: #ef4444; }
+
 /* Botões de ação */
 .btn-new-quest, .btn-add-reward {
     font-family: var(--font-hud);

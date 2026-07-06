@@ -285,6 +285,11 @@
                         </div>
                     </div>
 
+                    <!-- Seção: Vícios (lógica invertida — abstinência por padrão) -->
+                    <div id="addictions-section" style="display:none; margin-top: 22px;">
+                        <!-- Rendered via JS -->
+                    </div>
+
                     <!-- Caixa de adicionar atividades centralizada -->
                     <div class="quests-actions-footer">
                         <button class="btn-submit" id="btn-add-sidequest" style="width: 100%; max-width: 400px;">+ NOVA QUEST</button>
@@ -871,6 +876,7 @@
                         <button type="button" class="filter-btn" data-filter="social">SOCIAL</button>
                         <button type="button" class="filter-btn" data-filter="mental">MENTAL</button>
                         <button type="button" class="filter-btn" data-filter="routine">ROTINA</button>
+                        <button type="button" class="filter-btn filter-btn-addiction" data-filter="addiction">🔥 VÍCIOS</button>
                     </div>
                     <div class="library-list" id="library-habits-list" style="max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:8px; width:100%;">
                         <!-- Lista gerada via JS -->
@@ -896,6 +902,9 @@
                                 <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; font-family:var(--font-hud);">
                                     <input type="radio" name="sq-type" value="side" style="accent-color:var(--neon-purple);"> AVULSA
                                 </label>
+                                <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; font-family:var(--font-hud);">
+                                    <input type="radio" name="sq-type" value="addiction" style="accent-color:#991b1b;"> 🔥 VÍCIO
+                                </label>
                             </div>
                         </div>
                         <div class="form-field" id="weekly-day-selector" style="display:none;">
@@ -910,7 +919,7 @@
                                 <button type="button" class="weekday-btn" data-day="0">DOM</button>
                             </div>
                         </div>
-                        <div class="form-field">
+                        <div class="form-field" id="sq-field-skill">
                             <label for="sq-skill">CATEGORIA</label>
                             <select id="sq-skill">
                                 <option value="physical">💪 Físico</option>
@@ -921,7 +930,7 @@
                                 <option value="routine" selected>🛏️ Rotina</option>
                             </select>
                         </div>
-                        <div class="form-field">
+                        <div class="form-field" id="sq-field-difficulty">
                             <label for="sq-difficulty">DIFICULDADE</label>
                             <select id="sq-difficulty">
                                 <option value="easy">Fácil (+10 XP / +10 Ouro)</option>

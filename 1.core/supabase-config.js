@@ -1104,6 +1104,14 @@ window.saveBuffsToSupabase = async function() {
     });
   }
 
+  if (buffs.addictionPenalty && buffs.addictionPenaltyExpiresAt && Date.now() < buffs.addictionPenaltyExpiresAt) {
+    rows.push({
+      user_id:    window._currentUserDbId,
+      buff_type:  'addictionPenalty',
+      expires_at: new Date(buffs.addictionPenaltyExpiresAt).toISOString(),
+    });
+  }
+
   const activeTypes = rows.map(r => r.buff_type);
   if (activeTypes.length > 0) {
     await supabaseClient
@@ -1145,6 +1153,8 @@ window.loadBuffsFromSupabase = async function() {
   gameState.buffs.doubleXp          = false;
   gameState.buffs.doubleXpExpiresAt = null;
   gameState.buffs.xpMult            = null;
+  gameState.buffs.addictionPenalty          = false;
+  gameState.buffs.addictionPenaltyExpiresAt = null;
 
   const now = Date.now();
   data.forEach(row => {
@@ -1158,6 +1168,12 @@ window.loadBuffsFromSupabase = async function() {
       gameState.buffs.autoHeal = true;
     } else if (row.buff_type === 'legendaryFocus') {
       gameState.buffs.legendaryFocus = true;
+    } else if (row.buff_type === 'addictionPenalty') {
+      const expiresMs = row.expires_at ? new Date(row.expires_at).getTime() : 0;
+      if (expiresMs > now) {
+        gameState.buffs.addictionPenalty = true;
+        gameState.buffs.addictionPenaltyExpiresAt = expiresMs;
+      }
     }
   });
 };

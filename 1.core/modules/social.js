@@ -132,6 +132,33 @@ function setupHabitLibraryAndTabs() {
 }
 
 function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
+    // Vício: sem skill, sem XP/gold. Nasce completo (abstinência por padrão).
+    if (type === 'addiction') {
+        const addictionQuest = {
+            id: 'q-addiction-' + Date.now(),
+            title: h.title,
+            type: 'addiction',
+            skill: null,
+            icon: h.icon || '🚫',
+            emoji: h.icon || '🚫',
+            completed: true,
+            xp: 0,
+            gold: 0,
+            fromLibrary: true
+        };
+        gameState.quests.push(addictionQuest);
+        if (typeof window.queueQuestOp === 'function') window.queueQuestOp(addictionQuest.id, 'upsert');
+        saveGameData();
+        renderQuests();
+        showSystemToast(`🔥 Vício "${h.title}" adicionado! Ele nasce limpo todo dia — desmarque só se tiver uma recaída.`);
+        const modalConfirmEl = document.getElementById('modal-confirm-habit');
+        if (modalConfirmEl) modalConfirmEl.style.display = 'none';
+        const modalSqEl = document.getElementById('modal-sidequest');
+        if (modalSqEl) modalSqEl.style.display = 'none';
+        selectedLibraryHabit = null;
+        return;
+    }
+
     // Colisão removida: o usuário pode adicionar qualquer atividade livremente.
     // (A antiga regra por palavras-chave gerava falsos positivos e agregava pouco.)
     const isSq = (type === 'side');
@@ -253,11 +280,29 @@ function renderHabitLibrary(filter = 'all', search = '') {
         productivity: 'Foco',
         wisdom: 'Saber',
         routine: 'Rotina',
-        social: 'Social'
+        social: 'Social',
+        addiction: 'Vício'
     };
 
     let html = '';
     filtered.forEach(habit => {
+        // Vícios: sem dificuldade/XP. Item com badge própria e botão de adicionar direto.
+        if (habit.skill === 'addiction') {
+            html += '<div class="library-item">' +
+                '<div class="library-item-main">' +
+                    '<div class="library-item-icon">' + habit.icon + '</div>' +
+                    '<div class="library-item-info">' +
+                        '<span class="library-item-title">' + habit.title + '</span>' +
+                        '<div class="library-item-meta">' +
+                            '<span class="library-badge category" style="background:#991b1b22; color:#ef4444; border-color:#991b1b55;">🔥 Vício</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<button type="button" class="btn-library-add" data-id="' + habit.id + '">ADICIONAR</button>' +
+            '</div>';
+            return;
+        }
+
         let diffLabel = 'MÉDIO', diffClass = 'diff-medium', xp = 25, gold = 20;
         if (habit.difficulty === 'easy') {
             diffLabel = 'FÁCIL'; diffClass = 'diff-easy'; xp = 10; gold = 10;
@@ -288,8 +333,14 @@ function renderHabitLibrary(filter = 'all', search = '') {
             const habitId = btn.getAttribute('data-id');
             const habit = HABIT_LIBRARY.find(h => h.id === habitId);
             if (habit) {
+                // Vício: sem escolha de tipo (diária/semanal/avulsa) — adiciona direto.
+                if (habit.skill === 'addiction') {
+                    addHabitFromLibrary(habit, 'addiction');
+                    return;
+                }
+
                 selectedLibraryHabit = habit;
-                
+
                 const modalConfirm = document.getElementById('modal-confirm-habit');
                 const confirmDesc = document.getElementById('confirm-habit-desc');
                 if (modalConfirm && confirmDesc) {

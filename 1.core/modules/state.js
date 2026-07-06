@@ -85,6 +85,17 @@ const HABIT_LIBRARY = [
     { id: 'lib-qualidade-hard', title: 'Tempo com a família', icon: '👥', difficulty: 'hard', duration: 60, skill: 'social' },
     { id: 'lib-familia-hard', title: 'Escuta ativa', icon: '❤️', difficulty: 'hard', duration: 45, skill: 'social' },
     { id: 'lib-voluntariado-hard', title: 'Voluntariado', icon: '🤲', difficulty: 'hard', duration: 60, skill: 'social' },
+
+    // Vícios (addiction) — nascem completos (abstinência). Desmarcar = recaída.
+    { id: 'lib-vicio-cigarro', title: 'Não fumar', icon: '🚬', skill: 'addiction' },
+    { id: 'lib-vicio-alcool', title: 'Não beber álcool', icon: '🍺', skill: 'addiction' },
+    { id: 'lib-vicio-acucar', title: 'Evitar açúcar', icon: '🍬', skill: 'addiction' },
+    { id: 'lib-vicio-fastfood', title: 'Evitar fast food', icon: '🍔', skill: 'addiction' },
+    { id: 'lib-vicio-porn', title: 'Sem pornografia', icon: '🔞', skill: 'addiction' },
+    { id: 'lib-vicio-redes', title: 'Sem redes sociais em excesso', icon: '📱', skill: 'addiction' },
+    { id: 'lib-vicio-aposta', title: 'Não apostar', icon: '🎰', skill: 'addiction' },
+    { id: 'lib-vicio-refri', title: 'Sem refrigerante', icon: '🥤', skill: 'addiction' },
+    { id: 'lib-vicio-procrastinar', title: 'Não procrastinar', icon: '⏳', skill: 'addiction' },
 ];
 
 // 📆 Utilitário de Data Local (timezone-safe) 📆
@@ -99,6 +110,7 @@ export let gameState = {
     gold: 0,
     streak: 0,
     history: {},
+    addictionStreak: 0,      // dias consecutivos sem nenhuma recaída em vícios
     shields: 0,              // escudos ativos (0-3)
     consecutiveStreak7Days: 0, // dias acumulados rumo ao próximo escudo
     consecutiveMisses: 0,       // contador de dias não concluídos
@@ -124,7 +136,7 @@ export let gameState = {
     },
     messages: [],
     history: {},
-    buffs: { autoHeal: false, doubleXp: false, legendaryFocus: false, shieldDays: 0 },
+    buffs: { autoHeal: false, doubleXp: false, legendaryFocus: false, shieldDays: 0, addictionPenalty: false, addictionPenaltyExpiresAt: null },
     inventory: { unlockedTitles: [], unlockedBorders: [], unlockedSkins: ['default'], activeTitle: null, activeBorder: null, activeSkin: 'default' },
     notificationTimes: { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 },
     lastWeeklyReportYearWeek: "",
@@ -489,10 +501,13 @@ function loadGameData() {
 
         // Migration: Ensure buffs and inventory exist
         if (!parsed.buffs) {
-            parsed.buffs = { autoHeal: false, doubleXp: false, doubleXpExpiresAt: null, legendaryFocus: false, shieldDays: 0 };
+            parsed.buffs = { autoHeal: false, doubleXp: false, doubleXpExpiresAt: null, legendaryFocus: false, shieldDays: 0, addictionPenalty: false, addictionPenaltyExpiresAt: null };
         } else if (parsed.buffs.legendaryFocus === undefined) {
             parsed.buffs.legendaryFocus = false;
         }
+        // Migração: debuff de recaída de vícios
+        if (parsed.buffs.addictionPenalty === undefined) parsed.buffs.addictionPenalty = false;
+        if (parsed.buffs.addictionPenaltyExpiresAt === undefined) parsed.buffs.addictionPenaltyExpiresAt = null;
         if (!parsed.messages) {
             parsed.messages = [];
         }
@@ -573,12 +588,24 @@ function loadGameData() {
             } else if (completionRate >= 0.70) {
                 parsed.consecutiveMisses = 0; // Reseta falhas consecutivas se completou 70%+ das quests
             }
+            // Vícios: incrementa a streak de abstinência se nenhuma recaída ocorreu
+            // ontem (o flag é setado em toggleQuest ao desmarcar um vício). Só conta
+            // se o jogador de fato tem algum vício cadastrado.
+            const hasAddictions = (parsed.quests || []).some(q => q.type === 'addiction');
+            if (hasAddictions && !parsed._addictionRelapsedToday) {
+                parsed.addictionStreak = (parsed.addictionStreak || 0) + 1;
+            }
+            parsed._addictionRelapsedToday = false;
+
             // Reseta hábitos diários para um novo dia
             parsed.quests.forEach(q => {
                 const type = q.type || 'daily';
                 if (type === 'daily') {
                     q.completed = false;
                     if (q.current !== undefined) q.current = 0;
+                } else if (type === 'addiction') {
+                    // Vícios nascem COMPLETOS a cada novo dia (abstinência por padrão).
+                    q.completed = true;
                 } else if (type === 'weekly') {
                     if ((q.daysOfWeek || []).includes(yesterdayDayOfWeek)) {
                         q.completed = false;
@@ -691,6 +718,7 @@ function loadGameData() {
         
         // Inicializa campos novos caso seja um save antigo
         if (gameState.shields === undefined) gameState.shields = 0;
+        if (gameState.addictionStreak === undefined) gameState.addictionStreak = 0;
         if (gameState.consecutiveStreak7Days === undefined) gameState.consecutiveStreak7Days = 0;
         if (gameState.consecutiveMisses === undefined) gameState.consecutiveMisses = 0;
         if (gameState.bossQuest === undefined) gameState.bossQuest = null;

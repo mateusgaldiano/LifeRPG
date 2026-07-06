@@ -25,6 +25,12 @@ function getActiveXpMultiplier() {
     return isDoubleXpActive() ? (gameState.buffs?.xpMult || 2) : 1;
 }
 
+// Debuff de recaída de vício: -30% de XP enquanto ativo (24h após uma recaída).
+function isAddictionPenaltyActive() {
+    const b = gameState.buffs;
+    return !!(b && b.addictionPenalty && b.addictionPenaltyExpiresAt && Date.now() < b.addictionPenaltyExpiresAt);
+}
+
 // ── REAVALIAÇÃO DE RANK ────────────────────────────────────────────────────
 // O rank sobe por nível (mérito). A reavaliação é uma compra OPCIONAL (custo
 // escalonado) que entrega o título de prestígio do rank — o ouro vira status.
@@ -656,8 +662,10 @@ function addSkillXP(skillType) {
     if (!skillObj) return;
 
     // XP ganho escala com o level geral
-    skillObj.xp += calcSkillXpGain() + getSynergySkillXpBonus(); // +bonus de sinergias
-    
+    let skillGain = calcSkillXpGain() + getSynergySkillXpBonus(); // +bonus de sinergias
+    if (isAddictionPenaltyActive()) skillGain = Math.floor(skillGain * 0.7); // debuff de recaída
+    skillObj.xp += skillGain;
+
     if (skillObj.xp >= skillObj.xpToNext) {
         skillObj.level++;
         skillObj.xp = 0;
@@ -706,6 +714,41 @@ function deductSkillXP(skillType) {
 // SISTEMA DE REGRAS DO JOGO E GAMIFICAÇÃO
 // ==========================================================================
 
+// Alterna um vício (quest type: 'addiction'). Lógica invertida:
+//   completed:true  = abstinência (padrão do dia)
+//   completed:false = recaída → aplica debuff de -30% XP por 24h + zera a streak
+// Remarcar no mesmo dia = arrependimento → remove o debuff (se nenhum outro vício
+// estiver desmarcado). A streak permanece zerada — a recaída já aconteceu.
+function handleAddictionToggle(quest) {
+    if (!gameState.buffs) gameState.buffs = {};
+
+    if (quest.completed) {
+        // RECAÍDA
+        quest.completed = false;
+        gameState.addictionStreak = 0;
+        gameState._addictionRelapsedToday = true;
+        gameState.buffs.addictionPenalty = true;
+        gameState.buffs.addictionPenaltyExpiresAt = Date.now() + 86400000; // 24h
+        if (window.saveBuffsToSupabase) window.saveBuffsToSupabase();
+        setTimeout(() => {
+            showSystemToast(`🔥 *RECAÍDA.* Você cedeu ao vício "${quest.title}". Um debuff de *-30% de XP por 24h* foi aplicado e sua sequência de abstinência voltou a zero. Remarque hoje se conseguir se recuperar.`, 'toast-alert');
+        }, 300);
+    } else {
+        // ARREPENDIMENTO
+        quest.completed = true;
+        const anyStillRelapsed = gameState.quests.some(q => q.type === 'addiction' && !q.completed);
+        if (!anyStillRelapsed) {
+            gameState.buffs.addictionPenalty = false;
+            gameState.buffs.addictionPenaltyExpiresAt = null;
+            if (window.deleteBuffFromSupabase) window.deleteBuffFromSupabase('addictionPenalty');
+            if (window.saveBuffsToSupabase) window.saveBuffsToSupabase();
+            setTimeout(() => {
+                showSystemToast(`💪 *ARREPENDIMENTO.* Você resistiu de novo a "${quest.title}" e removeu o debuff de recaída. A disciplina vence. Mantenha o foco.`);
+            }, 300);
+        }
+    }
+}
+
 // Finaliza ou altera status de uma Quest (Suporta desmarcar / cancelar)
 function toggleQuest(id) {
     // Se for dungeon, roteia para completeDungeon
@@ -725,6 +768,16 @@ function toggleQuest(id) {
     }
 
     if (!quest) return;
+
+    // Vícios têm lógica invertida (nascem completos = abstinência). Desmarcar = recaída.
+    if (quest.type === 'addiction') {
+        handleAddictionToggle(quest);
+        if (typeof window.queueQuestOp === 'function') window.queueQuestOp(quest.id, 'upsert');
+        saveGameData();
+        renderQuests();
+        updateUI();
+        return;
+    }
 
     const skillType = quest.skill || 'productivity';
 
@@ -972,6 +1025,11 @@ function syncQuestsByLevel() {
 
 // Soma XP e Gold, gerencia Level Up
 function addRewards(xpGained, goldGained) {
+    // Debuff de recaída de vício: -30% de XP enquanto ativo.
+    if (isAddictionPenaltyActive()) {
+        xpGained = Math.floor(xpGained * 0.7);
+    }
+
     // Aplica multiplicador de streak e bônus de sinergias
     const multiplier = calcStreakMultiplier();
     const synergyXp   = getSynergyXpBonus();

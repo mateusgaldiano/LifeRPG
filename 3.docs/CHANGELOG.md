@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.0] — 2026-07-06
+- **Sistema de Vícios:** Novo tipo de quest `addiction` para rastrear abstinência. Vícios **nascem completos** (limpo por padrão) a cada novo dia; desmarcar registra uma **recaída**, que aplica um debuff de **-30% de XP por 24h** e zera a `addictionStreak` (sequência de dias sem recaída). Remarcar no mesmo dia = arrependimento, que **remove o debuff** (se nenhum outro vício estiver desmarcado). Nova seção **VÍCIOS** na aba de Missões (com contador 🔥 de dias limpos), tipo **🔥 VÍCIO** no criador de quest personalizada (sem skill/XP/gold), e filtro **VÍCIOS** na Biblioteca de Hábitos com uma curadoria de vícios comuns. O debuff persiste na nuvem via `user_buffs` (`addictionPenalty`).
+
 ## [v2.4.1] — 2026-07-06
 - **Sintonia Semanal baseada 100% em volume absoluto:** A Sintonia Semanal foi alterada para depender puramente da quantidade absoluta de quests concluídas na semana, eliminando a penalização por taxa de conclusão (% de sobrevivência). Além disso, sincronizei a lógica de cálculo entre a Main Thread (`weekly-report.js`) e o Web Worker (`report-worker.js`), corrigindo um bug que reportava o tempo total de atividades semanal como `0min`.
 

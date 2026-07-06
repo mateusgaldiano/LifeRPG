@@ -1468,6 +1468,58 @@ function renderQuests() {
             colObj.el.innerHTML = `<div style="text-align:center;color:rgba(15,31,53,0.35);font-size:11px;padding:20px;font-family:var(--font-hud);letter-spacing:1px">${colObj.label}</div>`;
         }
     });
+
+    renderAddictions();
+}
+
+// ── SEÇÃO VÍCIOS ───────────────────────────────────────────────────────────
+// Vícios têm lógica invertida: nascem completos (abstinência) todo dia. O check
+// verde significa "não cedi hoje". Desmarcar = recaída (aplica debuff).
+function renderAddictions() {
+    const section = document.getElementById('addictions-section');
+    if (!section) return;
+
+    const addictions = (gameState.quests || []).filter(q => q.type === 'addiction');
+    if (addictions.length === 0) {
+        section.style.display = 'none';
+        section.innerHTML = '';
+        return;
+    }
+
+    section.style.display = 'block';
+    const streak = gameState.addictionStreak || 0;
+    const b = gameState.buffs;
+    const debuffActive = !!(b && b.addictionPenalty && b.addictionPenaltyExpiresAt && Date.now() < b.addictionPenaltyExpiresAt);
+
+    let cards = '';
+    addictions.forEach(quest => {
+        const abstinent = !!quest.completed; // true = não cedeu hoje
+        const safeTitle = (quest.title || '').replace(/'/g, "\\'");
+        cards += `
+            <div class="quest-card addiction-card ${abstinent ? 'abstinent' : 'relapsed'}">
+                <button class="quest-remove-btn" data-id="${quest.id}"
+                        onclick="confirmRemoveQuest('${quest.id}', '${safeTitle}')">✕</button>
+                <div class="quest-details">
+                    <div class="quest-icon">${quest.icon || '🚫'}</div>
+                    <div class="quest-title-wrap">
+                        <span class="quest-title">${quest.title}</span>
+                        <div class="quest-payouts">
+                            <span class="addiction-status">${abstinent ? '✅ Limpo hoje' : '⚠️ Recaída — remarque para se recuperar'}</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="quest-complete-btn addiction-toggle" data-id="${quest.id}" title="${abstinent ? 'Desmarcar = registrar recaída' : 'Remarcar = arrependimento'}">${abstinent ? '✓' : '↩'}</button>
+            </div>`;
+    });
+
+    const streakLabel = `${streak} ${streak === 1 ? 'dia' : 'dias'}`;
+    section.innerHTML = `
+        <div class="addiction-header">
+            <h3>VÍCIOS</h3>
+            <span class="addiction-streak">🔥 ${streakLabel}</span>
+        </div>
+        ${debuffActive ? '<div class="addiction-debuff-banner">⚠️ Debuff de recaída ativo — XP reduzido em 30%</div>' : ''}
+        <div class="addiction-list">${cards}</div>`;
 }
 
 // Renderiza a Taverna (Recompensas)
@@ -1672,6 +1724,7 @@ function setupEventListeners() {
     document.getElementById('quests-list-social')?.addEventListener('click', handleQuestAction);
     document.getElementById('quests-list-mental')?.addEventListener('click', handleQuestAction);
     document.getElementById('quests-list-routine')?.addEventListener('click', handleQuestAction);
+    document.getElementById('addictions-section')?.addEventListener('click', handleQuestAction);
 
     // Inject App Version + Persons data on settings open
     document.getElementById('btn-open-settings')?.addEventListener('click', async () => {
@@ -1708,6 +1761,11 @@ function setupEventListeners() {
             const weeklySelector = document.getElementById('weekly-day-selector');
             if (weeklySelector) weeklySelector.style.display = 'none';
             document.querySelectorAll('#weekly-day-selector .weekday-btn').forEach(btn => btn.classList.remove('active'));
+            // Restaura campos que o modo Vício oculta (reset() não dispara 'change').
+            const fSkill = document.getElementById('sq-field-skill');
+            const fDiff = document.getElementById('sq-field-difficulty');
+            if (fSkill) fSkill.style.display = '';
+            if (fDiff) fDiff.style.display = '';
         }
     });
     document.getElementById('close-sq-modal')?.addEventListener('click', () => { if (modalSq) modalSq.style.display = 'none'; });
@@ -1730,13 +1788,16 @@ function setupEventListeners() {
     // Form: Side Quest Toggle display for weekly selector
     const typeRadios = document.querySelectorAll('input[name="sq-type"]');
     const weeklySelector = document.getElementById('weekly-day-selector');
+    const fieldSkill = document.getElementById('sq-field-skill');
+    const fieldDifficulty = document.getElementById('sq-field-difficulty');
     typeRadios.forEach(radio => {
         radio.addEventListener('change', () => {
-            if (radio.value === 'weekly') {
-                if (weeklySelector) weeklySelector.style.display = 'block';
-            } else {
-                if (weeklySelector) weeklySelector.style.display = 'none';
-            }
+            if (!radio.checked) return;
+            const isAddiction = radio.value === 'addiction';
+            // Vício não tem skill nem XP/gold (derivados de dificuldade) — oculta ambos.
+            if (fieldSkill) fieldSkill.style.display = isAddiction ? 'none' : '';
+            if (fieldDifficulty) fieldDifficulty.style.display = isAddiction ? 'none' : '';
+            if (weeklySelector) weeklySelector.style.display = (radio.value === 'weekly') ? 'block' : 'none';
         });
     });
 
@@ -1764,7 +1825,19 @@ function setupEventListeners() {
         if (difficulty === 'easy') { xp = 10; gold = 10; }
         else if (difficulty === 'hard') { xp = 50; gold = 40; }
 
-        if (type === 'side') {
+        if (type === 'addiction') {
+            // Vício: sem skill, sem XP/gold. Nasce completo (abstinência por padrão).
+            gameState.quests.push({
+                id: 'q-addiction-' + Date.now(),
+                title,
+                type: 'addiction',
+                icon: '🚫',
+                skill: null,
+                completed: true,
+                xp: 0,
+                gold: 0
+            });
+        } else if (type === 'side') {
             gameState.sideQuests.push({ id: 'sq-' + Date.now(), title, type: 'side', icon, difficulty, skill, completed: false, xp, gold });
         } else if (type === 'weekly') {
             const activeButtons = document.querySelectorAll('#weekly-day-selector .weekday-btn.active');
