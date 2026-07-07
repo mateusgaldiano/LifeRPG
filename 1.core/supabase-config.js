@@ -991,6 +991,27 @@ window.loadQuestsFromSupabase = async function() {
 // --------------------------------------------------------------------------
 // HISTORY — sync em lote
 // --------------------------------------------------------------------------
+// Normaliza um registro de histórico para o formato CANÔNICO consumido por
+// heatmap (ui.js) e relatório semanal: { status, count, total, completedIds, … }.
+// Tolera o formato antigo (questsDone/questsTotal) que loads bugados da nuvem
+// gravaram no localStorage no passado — então também AUTO-CURA saves corrompidos.
+// `??` só cai no fallback em null/undefined, preservando um 0 legítimo.
+function normalizeHistoryEntry(entry) {
+  if (!entry || typeof entry !== 'object') {
+    return { status: 'skipped', count: 0, total: 0, completedIds: [], xpEarned: 0, goldEarned: 0, penaltyApplied: false, skillsXp: {} };
+  }
+  return {
+    status:        entry.status || 'partial',
+    count:         entry.count ?? entry.questsDone ?? 0,
+    total:         entry.total ?? entry.questsTotal ?? 0,
+    completedIds:  Array.isArray(entry.completedIds) ? entry.completedIds : [],
+    xpEarned:      entry.xpEarned ?? entry.xp_earned ?? 0,
+    goldEarned:    entry.goldEarned ?? entry.gold_earned ?? 0,
+    penaltyApplied: !!(entry.penaltyApplied ?? entry.penalty_applied),
+    skillsXp:      entry.skillsXp || entry.skills_xp || {},
+  };
+}
+
 async function saveAllHistoryToSupabase() {
   if (!window._currentUserDbId) return;
   if (!navigator.onLine) return;
@@ -998,17 +1019,22 @@ async function saveAllHistoryToSupabase() {
   const historyEntries = Object.entries(gameState.history || {});
   if (historyEntries.length === 0) return;
 
-  const rows = historyEntries.map(([date, entry]) => ({
-    user_id: window._currentUserDbId,
-    date: date,
-    xp_earned: entry.xpEarned || 0,
-    gold_earned: entry.goldEarned || 0,
-    quests_done: entry.questsDone || 0,
-    quests_total: entry.questsTotal || 0,
-    status: entry.status || 'partial',
-    penalty_applied: !!entry.penaltyApplied,
-    skills_xp: entry.skillsXp || {},
-  }));
+  // Lê os campos CANÔNICOS (count/total) — antes lia questsDone/questsTotal, que
+  // não existem no registro local, subindo sempre 0/0 para a nuvem.
+  const rows = historyEntries.map(([date, entry]) => {
+    const e = normalizeHistoryEntry(entry);
+    return {
+      user_id: window._currentUserDbId,
+      date: date,
+      xp_earned: e.xpEarned,
+      gold_earned: e.goldEarned,
+      quests_done: e.count,
+      quests_total: e.total,
+      status: e.status,
+      penalty_applied: e.penaltyApplied,
+      skills_xp: e.skillsXp,
+    };
+  });
 
   const { error } = await supabaseClient
     .from('history')
@@ -1027,18 +1053,38 @@ window.loadHistoryFromSupabase = async function() {
 
   if (error || !data) return;
 
-  gameState.history = {};
+  // MERGE NÃO-DESTRUTIVO (antes era `gameState.history = {}`, que apagava dias
+  // que só existiam localmente — ex.: progresso acumulado offline antes de outro
+  // aparelho sincronizar). Estratégia:
+  //  1. Parte do histórico local, já normalizado (auto-cura shapes antigos).
+  //  2. Sobrepõe a nuvem por data; em datas nos dois lados, mantém o registro com
+  //     MAIS conclusões (não deixa um registro pobre apagar um mais completo).
+  //  3. completedIds não é persistido na tabela `history` — preserva o do lado
+  //     local para o relatório semanal não perder a atribuição de skill.
+  const merged = {};
+  for (const [date, entry] of Object.entries(gameState.history || {})) {
+    merged[date] = normalizeHistoryEntry(entry);
+  }
   data.forEach(row => {
-    gameState.history[row.date] = {
+    const cloudEntry = normalizeHistoryEntry({
+      status: row.status,
+      count: row.quests_done,
+      total: row.quests_total,
       xpEarned: row.xp_earned,
       goldEarned: row.gold_earned,
-      questsDone: row.quests_done,
-      questsTotal: row.quests_total,
-      status: row.status,
       penaltyApplied: row.penalty_applied,
       skillsXp: row.skills_xp,
-    };
+    });
+    const local = merged[row.date];
+    if (!local) {
+      merged[row.date] = cloudEntry;
+    } else if ((cloudEntry.count || 0) > (local.count || 0)) {
+      merged[row.date] = { ...cloudEntry, completedIds: local.completedIds || [] };
+    }
+    // senão: mantém o registro local (igual ou mais completo).
   });
+
+  gameState.history = merged;
 };
 
 // --------------------------------------------------------------------------
