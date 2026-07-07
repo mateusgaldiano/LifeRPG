@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.9] — 2026-07-07
+- **Fix (perda de dados): vícios sumiam ao sincronizar com a nuvem.** `loadQuestsFromSupabase` só reconstruía quests dos tipos `daily`/`weekly`/`side` — o tipo `addiction` não batia com nenhum filtro, então todo vício era descartado num sync "nuvem vence" (ou no botão de sincronizar) assim que sua op de outbox flushava. Adicionado o mapeamento de `addiction` no load (preservando `completed`/abstinência e incluindo os ids no merge). Bug existia desde a v2.5.0.
+- **Fix: vício "abstinente" contava como quest concluída.** Como vícios nascem `completed: true`, três lugares os contavam como missão concluída: a conquista *"Conclua sua primeira Missão"* auto-desbloqueava ao só adicionar um vício; o pico diário (`_maxDailyCompleted`) inflava; e a "frase de impacto da primeira quest do dia" disparava na quest errada. Os três agora excluem `type === 'addiction'`.
+
 ## [v2.5.8] — 2026-07-06
 - **Fix: atribuição de skill/tempo no relatório deixou de depender de "join por título".** O histórico salvava só o *título* de cada quest concluída (`completedIds`) e o relatório/heatmap re-cruzavam por `title` para achar skill e duração — o que falhava silenciosamente (caía em Rotina/5min) se houvesse títulos repetidos, uma quest renomeada ou excluída. Agora cada conclusão é **denormalizada** no momento em que acontece: `{ id, title, skill, duration }`. Os leitores (worker do relatório, caminho síncrono e heatmap "Top Hábitos") usam skill/duração direto, sem lookup, e continuam aceitando entradas antigas (string) via fallback. Imune a rename/duplicação de título.
 - **Removido MOCK DATA de produção.** O `loadGameData` gerava **90 dias de histórico falso** quando o save tinha nível > 1 e histórico vazio — artefato de dev que poluía heatmap e estatísticas de usuários reais. Removido.

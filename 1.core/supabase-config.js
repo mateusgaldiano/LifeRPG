@@ -961,12 +961,32 @@ window.loadQuestsFromSupabase = async function() {
       fromLibrary: q.from_library,
     }));
 
+  // Vícios (type 'addiction') vivem em gameState.quests, mas NÃO batem com os
+  // filtros de daily/weekly/side acima — sem este mapa, sumiam a cada load da
+  // nuvem (bug do sistema de vícios). completed = abstinência do dia; preserva o
+  // estado local abstinente e, senão, usa o da nuvem (a recaída sobe via outbox
+  // antes do read, então o flush-antes-de-ler já reflete recaídas).
+  const cloudAddictions = data
+    .filter(q => q.type === 'addiction')
+    .map(q => ({
+      id: q.local_id,
+      title: q.title,
+      type: 'addiction',
+      skill: null,
+      xp: 0,
+      gold: 0,
+      emoji: q.emoji,
+      icon: q.emoji,
+      completed: completedToday.has(q.local_id) ? true : !!q.completed,
+      fromLibrary: q.from_library,
+    }));
+
   // MERGE GUIADO PELA OUTBOX: um load da nuvem só preserva quests locais que têm
   // um upsert PENDENTE na fila (adição/edição que ainda não subiu). Assim:
   //  • adição offline ainda não sincronizada → preservada;
   //  • quest deletada em OUTRO aparelho (sumiu da nuvem, sem op pendente aqui)
   //    → NÃO é ressuscitada. Some corretamente.
-  const cloudIds = new Set(cloudQuests.map(q => q.id));
+  const cloudIds = new Set([...cloudQuests, ...cloudAddictions].map(q => q.id));
   const cloudSideIds = new Set(cloudSideQuests.map(q => q.id));
   const pendingUpsertIds = new Set(
     (gameState.questOps || []).filter(o => o.op === 'upsert').map(o => o.id)
@@ -976,7 +996,7 @@ window.loadQuestsFromSupabase = async function() {
   const localOnlySide = (gameState.sideQuests || [])
     .filter(q => q && !cloudSideIds.has(q.id) && pendingUpsertIds.has(q.id));
 
-  gameState.quests = [...cloudQuests, ...localOnly];
+  gameState.quests = [...cloudQuests, ...cloudAddictions, ...localOnly];
   gameState.sideQuests = [...cloudSideQuests, ...localOnlySide];
 
   // Adições preservadas ainda pendentes → garante o flush (online) p/ torná-las

@@ -476,8 +476,8 @@ const ACHIEVEMENTS_DEFS = [
         id: 'first_quest', category: 'consistência',
         title: 'O Início da Jornada', desc: 'Conclua sua primeira Missão',
         icon: '⚔️', rewardGold: 10, rarity: 'comum',
-        check: (gs) => gs.quests.some(q => q.completed) || (gs.sideQuests && gs.sideQuests.some(q => q.completed)),
-        progress: (gs) => ({ cur: Math.min(gs.quests.filter(q => q.completed).length + (gs.sideQuests || []).filter(q => q.completed).length, 1), max: 1 })
+        check: (gs) => gs.quests.some(q => q.completed && q.type !== 'addiction') || (gs.sideQuests && gs.sideQuests.some(q => q.completed)),
+        progress: (gs) => ({ cur: Math.min(gs.quests.filter(q => q.completed && q.type !== 'addiction').length + (gs.sideQuests || []).filter(q => q.completed).length, 1), max: 1 })
     },
     {
         id: 'streak_3', category: 'consistência',
@@ -850,14 +850,15 @@ function toggleQuest(id) {
         }
 
         // META-001: contadores p/ achievements de volume (total acumulado + pico diário).
+        // Vícios nascem completos (abstinência) — não contam como "quest concluída".
         gameState._totalQuestsCompleted = (gameState._totalQuestsCompleted || 0) + 1;
-        const _completedTodayCount = gameState.quests.filter(q => q.completed).length
+        const _completedTodayCount = gameState.quests.filter(q => q.completed && q.type !== 'addiction').length
             + (gameState.sideQuests || []).filter(q => q.completed).length;
         gameState._maxDailyCompleted = Math.max(gameState._maxDailyCompleted || 0, _completedTodayCount);
 
         // Impact Quote - Primeira do Dia
         const todayStr = new Date().toDateString();
-        const completedDailies = gameState.quests.filter(q => q.completed).length;
+        const completedDailies = gameState.quests.filter(q => q.completed && q.type !== 'addiction').length;
         if (completedDailies === 1 && gameState.lastQuoteDate !== todayStr + '_first') {
             setTimeout(showImpactQuote, 1500);
             gameState.lastQuoteDate = todayStr + '_first';
