@@ -2,6 +2,8 @@
 import { gameState, saveGameData } from './state.js';
 import { getRankForLevel, localDateStr } from './utils.js';
 import { showSystemToast, updateUI } from './ui.js';
+// Fórmula de tier da Sintonia vive no núcleo puro (testável). Re-exportada abaixo.
+import { computeSintoniaTier } from './game-math.js';
 
 // ==========================================================================
 // SISTEMA DE AVALIAÇÃO SEMANAL (WEEKLY REPORT)
@@ -39,37 +41,8 @@ function getPreviousWeekDates(todayDate) {
     return { dates, mondayDate, sundayDate };
 }
 
-// ── FONTE ÚNICA DA FÓRMULA DE SINTONIA SEMANAL ─────────────────────────────
-// Toda decisão de tier + recompensa vive AQUI. O worker é só agregador; tanto o
-// caminho síncrono quanto o do Worker chamam esta função — sem duplicação.
-const SINTONIA_TIER_MAP = {
-    S: { label: 'SINTONIA S', cls: 'rank-glow-s', gold: 160, xp: 300, desc: '"Desempenho lendário. Pouquíssimos alcançam este nível. Suas habilidades crescem em ritmo avassalador — o topo do mundo está ao seu alcance."' },
-    A: { label: 'SINTONIA A', cls: 'rank-glow-a', gold: 100, xp: 200, desc: '"Desempenho formidável. O Sistema reconhece seu vigor e determinação. Continue assim e o rank S deixará de ser um sonho."' },
-    B: { label: 'SINTONIA B', cls: 'rank-glow-b', gold: 60,  xp: 120, desc: '"Progresso sólido. Suas conquistas são constantes, mas a complacência é sua maior inimiga."' },
-    C: { label: 'SINTONIA C', cls: 'rank-glow-c', gold: 30,  xp: 60,  desc: '"Na média. Você está sobrevivendo, mas o Sistema exige mais empenho e volume."' },
-    D: { label: 'SINTONIA D', cls: 'rank-glow-d', gold: 10,  xp: 30,  desc: '"Desempenho fraco. Você está estagnando. O Sistema observa — e não tem paciência com a inércia."' },
-    E: { label: 'SINTONIA E', cls: 'rank-glow-e', gold: 0,   xp: 0,   desc: '"Praticamente inerte. O Sistema mal registrou sua presença esta semana. Desperte, ou seja esquecido."' },
-};
-
-function computeSintoniaTier({ completedQuests = 0, survivalRate = 0, totalMinutes = 0 } = {}) {
-    // Score 100% baseado no VOLUME: satura em 100 com 50+ conclusões na semana.
-    const score = Math.min(100, completedQuests * 2);
-
-    let tier;
-    if (score > 95) tier = 'S';
-    else if (score >= 85) tier = 'A';
-    else if (score >= 70) tier = 'B';
-    else if (score >= 50) tier = 'C';
-    else if (score >= 30) tier = 'D';
-    else tier = 'E';
-
-    // Gates de tempo: S exige >= 2h de atividade; A exige >= 1h.
-    if (tier === 'S' && totalMinutes < 120) tier = 'A';
-    if (tier === 'A' && totalMinutes < 60) tier = 'B';
-
-    const t = SINTONIA_TIER_MAP[tier];
-    return { tier, score, label: t.label, cls: t.cls, gold: t.gold, xp: t.xp, desc: t.desc };
-}
+// A fórmula de tier da Sintonia (computeSintoniaTier) foi movida para o núcleo
+// puro game-math.js — importada acima e re-exportada no fim deste arquivo.
 
 // Recebe os agregados brutos (do worker ou do caminho síncrono) + a lista de
 // quests para resolver a duração; calcula totalMinutes e monta o objeto de dados

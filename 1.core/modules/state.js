@@ -1,6 +1,8 @@
 // state.js
 import { localDateStr, getXpToNextForLevel, hasSkillLV3, initSkillsState, isQuestActiveOnDay } from './utils.js';
 import { syncQuestsByLevel, checkDungeonExpiry, checkWeeklyBossExpiry, spawnDungeon, checkAchievements, saveToCloud, checkWeeklyChallengeReset } from './game-logic.js';
+// RANK_THRESHOLDS agora vive no núcleo puro; re-exportado abaixo p/ compatibilidade.
+import { RANK_THRESHOLDS } from './game-math.js';
 
 // Versão vem da fonte única (1.core/version.js, carregado antes dos módulos).
 export const APP_VERSION = (typeof self !== 'undefined' && self.APP_VERSION) ? self.APP_VERSION : 'v0.0.0';
@@ -180,18 +182,7 @@ const IMPACT_QUOTES = [
 ];
 
 
-//  Sistema de RANK (Solo Leveling) 
-const RANK_THRESHOLDS = [
-    { min: 35, rank: 'Monarca', css: 'rank-monarca' },
-    { min: 30, rank: 'Nacional', css: 'rank-nacional' },
-    { min: 25, rank: 'RANK S', css: 'rank-s' },
-    { min: 20, rank: 'RANK A', css: 'rank-a' },
-    { min: 15, rank: 'RANK B', css: 'rank-b' },
-    { min: 10, rank: 'RANK C', css: 'rank-c' },
-    { min: 5,  rank: 'RANK D', css: 'rank-d' },
-    { min: 3,  rank: 'RANK E', css: 'rank-e' },
-    { min: 1,  rank: 'Candidato', css: 'rank-candidato' }
-];
+//  Sistema de RANK (Solo Leveling) — RANK_THRESHOLDS movido para game-math.js.
 
 
 //  Boss Quests por Rank Up 

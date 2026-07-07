@@ -19,6 +19,7 @@ O **LifeRPG OS** (v2.0) é um aplicativo web progressivo (PWA) de gamificação 
 
 ## ⚙️ 3. Regras de Desenvolvimento
 *   **Validação de Sintaxe**: Sempre rodar `node -c app.js` no console local antes de commitar alterações no JavaScript para evitar quebras no boot do navegador.
+*   **Testes**: A lógica numérica pura vive em `1.core/modules/game-math.js` (rank, curva de XP, tier da Sintonia) — os demais módulos re-exportam de lá. Rodar `node --test "tests/**/*.test.mjs"` antes de mexer nessas fórmulas. Só o núcleo puro é importável no Node; módulos de UI/estado têm efeitos colaterais no topo e travam a importação — por isso lógica testável deve ir para `game-math.js`. (`package.json`/`npm test` são locais/gitignored.)
 *   **Sincronização de Código**: A cada modificação estrutural no `app.js`, o arquivo espelho `app.txt` **deve** ser atualizado com o mesmo conteúdo.
 *   **Mobile-First e Acessibilidade**:
     *   Touch target de botões e links de ação deve ter no mínimo **44px** (diretriz de acessibilidade WCAG).

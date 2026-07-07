@@ -1,5 +1,8 @@
 // utils.js
-import { gameState, RANK_THRESHOLDS } from './state.js';
+import { gameState } from './state.js';
+// Núcleo puro (rank + curva de XP) vive em game-math.js; re-exportado abaixo p/
+// os consumidores que já importam esses símbolos de utils.js.
+import { getRankForLevel, getXpToNextForLevel } from './game-math.js';
 
 function localDateStr(d) {
     const dt = d || new Date();
@@ -16,12 +19,7 @@ function hasSkillLV3() {
 }
 
 
-function getRankForLevel(level) {
-    for (const r of RANK_THRESHOLDS) {
-        if (level >= r.min) return r;
-    }
-    return RANK_THRESHOLDS[RANK_THRESHOLDS.length - 1];
-}
+// getRankForLevel — movida para game-math.js (importada e re-exportada acima).
 
 
 function computePlayerTitle(skills, gender = 'male') {
@@ -186,9 +184,7 @@ function calcStreakMultiplier() {
     return 1.0;
 }
 
-function getXpToNextForLevel(level) {
-    return Math.round(100 * Math.pow(level, 1.5));
-}
+// getXpToNextForLevel — movida para game-math.js (importada e re-exportada acima).
 
 function calcGroupMultiplier() {
     const count = gameState.friendsCount || 0;

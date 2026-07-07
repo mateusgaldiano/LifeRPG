@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.7] — 2026-07-06
+- **Testes automatizados + núcleo puro testável.** Criado `1.core/modules/game-math.js`: um módulo **sem dependência de DOM/estado/localStorage** que centraliza `RANK_THRESHOLDS` + `getRankForLevel`, `getXpToNextForLevel` e `computeSintoniaTier`/`SINTONIA_TIER_MAP`. `state.js`, `utils.js` e `weekly-report.js` agora **re-exportam** dessa fonte única (superfície de import intacta, zero duplicação). Isso destrava testes de verdade: `tests/game-math.test.mjs` roda com `node --test "tests/**/*.test.mjs"` e cobre fronteiras de tier da Sintonia + gates de tempo, a curva de XP (100·nível^1.5, monotonicidade) e as fronteiras de rank. **11 testes, todos passando.** (`package.json` é local/gitignored, então o comando canônico é o `node --test` direto.) Motivação: importar os módulos de UI/estado no Node trava (efeitos colaterais no topo) — extrair o núcleo puro é o que torna o código testável.
+
 ## [v2.5.6] — 2026-07-06
 - **Refactor (manutenção): Radar Chart extraído para módulo próprio.** As 3 funções do gráfico de radar (`drawRadarChart` + helpers `getSkillColor`/`drawVertexMarker`, ~190 linhas) saíram de `ui.js` para `1.core/modules/radar-chart.js` — unidade de render autocontida que só depende de `gameState.skills`. `ui.js` caiu de 2260 → 2069 linhas e re-exporta `drawRadarChart` (superfície do `app.js` intacta). Bônus: removido um **import morto** (`drawRadarChart`) de `utils.js`, eliminando um ciclo de import `utils → ui`. Sem mudança de comportamento. Adicionado ao cache do SW.
 

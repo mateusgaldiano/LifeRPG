@@ -11,6 +11,7 @@ const ASSETS_TO_CACHE = [
     './',
     'index.html',
     '1.core/version.js',
+    '1.core/modules/game-math.js',
     '1.core/styles.css',
     '1.core/vendor/supabase.min.js',
     '1.core/supabase-config.js',
