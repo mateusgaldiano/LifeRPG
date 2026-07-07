@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.5] — 2026-07-06
+- **Refactor (manutenção): Biblioteca de Hábitos extraída para módulo próprio.** As ~380 linhas da biblioteca de hábitos (busca/filtro/render + modal de confirmação + adição ao estado) saíram de `social.js` — onde não tinham nada de "social" — para o novo `1.core/modules/habit-library.js`. `social.js` caiu de 2726 → 2342 linhas e faz re-export das funções públicas, mantendo a superfície de import do `app.js` intacta. Sem mudança de comportamento. Adicionado ao cache do Service Worker.
+
 ## [v2.5.4] — 2026-07-06
 - **Fix de perda de dados no sync do histórico:** o load da nuvem fazia `gameState.history = {}` e reconstruía só com os dados do servidor — apagando dias que só existiam localmente (ex.: progresso acumulado offline antes de outro aparelho sincronizar). Além disso havia um descasamento de nomes de campo: o upload lia `questsDone`/`questsTotal` (inexistentes no registro local, subindo sempre 0/0) e o download gravava esses mesmos nomes, enquanto heatmap e relatório semanal leem `count`/`total` — então após qualquer sync "nuvem vence" o heatmap e a Sintonia zeravam. Agora o histórico usa um **merge não-destrutivo** (união por data, mantendo o registro com mais conclusões e preservando `completedIds` local) com um **normalizador** que padroniza o formato canônico e **auto-cura** saves antigos corrompidos. As quests já eram protegidas por outbox (flush-antes-de-ler).
 

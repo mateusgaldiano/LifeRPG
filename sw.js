@@ -21,6 +21,7 @@ const ASSETS_TO_CACHE = [
     '1.core/modules/game-logic.js',
     '1.core/modules/weekly-report.js',
     '1.core/modules/social.js',
+    '1.core/modules/habit-library.js',
     '1.core/modules/pwa.js',
     'manifest.json',
     '2.assets/icons/icon-192.png',
