@@ -471,21 +471,9 @@ function loadGameData() {
             parsed.history = {};
         }
 
-        // MOCK DATA (Gera 90 dias caso não exista histórico e o level for > 1)
-        if (Object.keys(parsed.history).length === 0 && parsed.level > 1) {
-            const now = new Date();
-            const statuses = ['missed', 'bad', 'good', 'perfect', 'perfect', 'good'];
-            for (let i = 1; i <= 90; i++) {
-                const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-                const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-                let count = 0, total = 8;
-                if (randomStatus === 'perfect') count = 8;
-                else if (randomStatus === 'good') count = 5;
-                else if (randomStatus === 'bad') count = 2;
-                
-                parsed.history[localDateStr(d)] = { status: randomStatus, count: count, total: total };
-            }
-        }
+        // (Removido em v2.5.8: geração de 90 dias de histórico FALSO quando o save
+        // tinha level > 1 e history vazio. Poluía o heatmap/estatísticas de usuários
+        // reais — era um artefato de desenvolvimento, não comportamento desejado.)
 
         if (!parsed.lastWeeklyReportYearWeek) {
             parsed.lastWeeklyReportYearWeek = "";
@@ -569,7 +557,16 @@ function loadGameData() {
                 status: dailyStatus,
                 count: completedCount,
                 total: totalCount,
-                completedIds: activeYesterday.filter(q => q.completed).map(q => q.title) // salva nomes
+                // Denormaliza skill+duration NO MOMENTO da conclusão (antes salvava só
+                // o título e o relatório re-cruzava por título — frágil com títulos
+                // repetidos, renomeados ou excluídos). Entradas legadas (strings) ainda
+                // são aceitas pelos leitores via fallback.
+                completedIds: activeYesterday.filter(q => q.completed).map(q => ({
+                    id: q.id,
+                    title: q.title,
+                    skill: q.skill || 'routine',
+                    duration: q.duration || 5
+                }))
             };
 
             // Verifica penalidade (apenas se concluiu menos de 70% das missões ativas)

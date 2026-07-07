@@ -46,9 +46,16 @@ self.onmessage = function(e) {
     const skillCounts = {};
     const allQuests = [...(quests || []), ...(sideQuests || [])];
 
-    completedTitles.forEach(title => {
-        const match = allQuests.find(q => q.title === title);
-        const skill = match ? (match.skill || 'routine') : 'routine';
+    // Entrada pode ser objeto denormalizado {id,title,skill,duration} (novo) ou
+    // string com o título (legado). No legado, cai no cruzamento por título.
+    const resolveSkill = (entry) => {
+        if (entry && typeof entry === 'object') return entry.skill || 'routine';
+        const m = allQuests.find(q => q.title === entry);
+        return m ? (m.skill || 'routine') : 'routine';
+    };
+
+    completedTitles.forEach(entry => {
+        const skill = resolveSkill(entry);
         skillCounts[skill] = (skillCounts[skill] || 0) + 1;
     });
 

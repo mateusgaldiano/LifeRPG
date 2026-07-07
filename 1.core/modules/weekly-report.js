@@ -48,8 +48,11 @@ function getPreviousWeekDates(todayDate) {
 // quests para resolver a duração; calcula totalMinutes e monta o objeto de dados
 // completo que renderWeeklyReportUI espera.
 function assembleReportData(agg, allQuests) {
-    const totalMinutes = (agg.completedTitles || []).reduce((sum, title) => {
-        const q = allQuests.find(x => x.title === title);
+    // Entrada pode ser objeto denormalizado {id,title,skill,duration} (novo) ou
+    // string com o título (legado). No legado, resolve a duração por título.
+    const totalMinutes = (agg.completedTitles || []).reduce((sum, entry) => {
+        if (entry && typeof entry === 'object') return sum + (entry.duration || 5);
+        const q = allQuests.find(x => x.title === entry);
         return sum + (q && q.duration ? q.duration : 5);
     }, 0);
 
@@ -113,10 +116,16 @@ function calculateWeeklyReportSync(history, quests, sideQuests, dates, prevWeekS
     
     const skillCounts = {};
     const allQuests = [...(quests || []), ...(sideQuests || [])];
-    
-    completedTitles.forEach(title => {
-        const match = allQuests.find(q => q.title === title);
-        const skill = match ? (match.skill || 'routine') : 'routine';
+
+    // Objeto denormalizado {id,title,skill,duration} (novo) ou string título (legado).
+    const resolveSkill = (entry) => {
+        if (entry && typeof entry === 'object') return entry.skill || 'routine';
+        const m = allQuests.find(q => q.title === entry);
+        return m ? (m.skill || 'routine') : 'routine';
+    };
+
+    completedTitles.forEach(entry => {
+        const skill = resolveSkill(entry);
         skillCounts[skill] = (skillCounts[skill] || 0) + 1;
     });
     

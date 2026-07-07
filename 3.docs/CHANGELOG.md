@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.8] — 2026-07-06
+- **Fix: atribuição de skill/tempo no relatório deixou de depender de "join por título".** O histórico salvava só o *título* de cada quest concluída (`completedIds`) e o relatório/heatmap re-cruzavam por `title` para achar skill e duração — o que falhava silenciosamente (caía em Rotina/5min) se houvesse títulos repetidos, uma quest renomeada ou excluída. Agora cada conclusão é **denormalizada** no momento em que acontece: `{ id, title, skill, duration }`. Os leitores (worker do relatório, caminho síncrono e heatmap "Top Hábitos") usam skill/duração direto, sem lookup, e continuam aceitando entradas antigas (string) via fallback. Imune a rename/duplicação de título.
+- **Removido MOCK DATA de produção.** O `loadGameData` gerava **90 dias de histórico falso** quando o save tinha nível > 1 e histórico vazio — artefato de dev que poluía heatmap e estatísticas de usuários reais. Removido.
+
 ## [v2.5.7] — 2026-07-06
 - **Testes automatizados + núcleo puro testável.** Criado `1.core/modules/game-math.js`: um módulo **sem dependência de DOM/estado/localStorage** que centraliza `RANK_THRESHOLDS` + `getRankForLevel`, `getXpToNextForLevel` e `computeSintoniaTier`/`SINTONIA_TIER_MAP`. `state.js`, `utils.js` e `weekly-report.js` agora **re-exportam** dessa fonte única (superfície de import intacta, zero duplicação). Isso destrava testes de verdade: `tests/game-math.test.mjs` roda com `node --test "tests/**/*.test.mjs"` e cobre fronteiras de tier da Sintonia + gates de tempo, a curva de XP (100·nível^1.5, monotonicidade) e as fronteiras de rank. **11 testes, todos passando.** (`package.json` é local/gitignored, então o comando canônico é o `node --test` direto.) Motivação: importar os módulos de UI/estado no Node trava (efeitos colaterais no topo) — extrair o núcleo puro é o que torna o código testável.
 

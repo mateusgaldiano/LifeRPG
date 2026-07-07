@@ -1906,8 +1906,10 @@ function renderGlobalDashboard() {
         const month = new Date(d).getMonth();
         monthlyData[month] += log.count;
 
-        (log.completedIds || []).forEach(habitTitle => {
-            habitCounts[habitTitle] = (habitCounts[habitTitle] || 0) + 1;
+        (log.completedIds || []).forEach(entry => {
+            // Objeto denormalizado {id,title,skill,duration} (novo) ou string (legado).
+            const habitTitle = (entry && typeof entry === 'object') ? entry.title : entry;
+            if (habitTitle) habitCounts[habitTitle] = (habitCounts[habitTitle] || 0) + 1;
         });
     });
 
