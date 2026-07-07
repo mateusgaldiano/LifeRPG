@@ -1,6 +1,5 @@
 // utils.js
 import { gameState, RANK_THRESHOLDS } from './state.js';
-import { drawRadarChart } from './ui.js';
 
 function localDateStr(d) {
     const dt = d || new Date();

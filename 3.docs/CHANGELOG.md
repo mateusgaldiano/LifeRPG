@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.6] — 2026-07-06
+- **Refactor (manutenção): Radar Chart extraído para módulo próprio.** As 3 funções do gráfico de radar (`drawRadarChart` + helpers `getSkillColor`/`drawVertexMarker`, ~190 linhas) saíram de `ui.js` para `1.core/modules/radar-chart.js` — unidade de render autocontida que só depende de `gameState.skills`. `ui.js` caiu de 2260 → 2069 linhas e re-exporta `drawRadarChart` (superfície do `app.js` intacta). Bônus: removido um **import morto** (`drawRadarChart`) de `utils.js`, eliminando um ciclo de import `utils → ui`. Sem mudança de comportamento. Adicionado ao cache do SW.
+
 ## [v2.5.5] — 2026-07-06
 - **Refactor (manutenção): Biblioteca de Hábitos extraída para módulo próprio.** As ~380 linhas da biblioteca de hábitos (busca/filtro/render + modal de confirmação + adição ao estado) saíram de `social.js` — onde não tinham nada de "social" — para o novo `1.core/modules/habit-library.js`. `social.js` caiu de 2726 → 2342 linhas e faz re-export das funções públicas, mantendo a superfície de import do `app.js` intacta. Sem mudança de comportamento. Adicionado ao cache do Service Worker.
 

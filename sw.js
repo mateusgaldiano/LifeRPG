@@ -18,6 +18,7 @@ const ASSETS_TO_CACHE = [
     '1.core/modules/state.js',
     '1.core/modules/utils.js',
     '1.core/modules/ui.js',
+    '1.core/modules/radar-chart.js',
     '1.core/modules/game-logic.js',
     '1.core/modules/weekly-report.js',
     '1.core/modules/social.js',
