@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.14] — 2026-07-08
+- **Fix: prevenção definitiva de re-upload de dados mock para o Supabase:** Adicionado um filtro de segurança na rotina `saveAllHistoryToSupabase()` para garantir que qualquer entrada mock/fantasma (sem `completedIds` reais e sem `xpEarned`) seja excluída antes de tentar fazer upload para a nuvem. Isso interrompe de vez o ciclo vicioso onde dados mock deletados diretamente da nuvem eram re-enviados pelo cliente do jogo.
+
 ## [v2.5.13] — 2026-07-08
 - **Fix: limpeza definitiva de dados mock na Visão Geral.** O filtro anterior (`total===8`) não detectava mock entries cujos campos `total`/`count` foram corrompidos por ciclos de sync local↔nuvem. Novo critério: qualquer entrada de histórico **sem `completedIds` preenchido** (array vazio ou ausente) **E sem `xpEarned`** é considerada fantasma/mock e removida. Migração única com flag `mock_purge_v2`. O mesmo filtro é aplicado dentro de `loadHistoryFromSupabase()` para impedir que entries fantasma do localStorage sobrevivam ao merge pós-sync.
 

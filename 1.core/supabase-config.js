@@ -1042,7 +1042,14 @@ async function saveAllHistoryToSupabase() {
   if (!window._currentUserDbId) return;
   if (!navigator.onLine) return;
 
-  const historyEntries = Object.entries(gameState.history || {});
+  // Filtra entradas fantasma/mock ANTES do upload — impede o ciclo onde dados
+  // deletados da nuvem são re-enviados a partir do localStorage.
+  const historyEntries = Object.entries(gameState.history || {}).filter(([, entry]) => {
+    if (!entry || typeof entry !== 'object') return false;
+    const hasRealIds = Array.isArray(entry.completedIds) && entry.completedIds.length > 0;
+    const hasRealXp = typeof entry.xpEarned === 'number' && entry.xpEarned > 0;
+    return hasRealIds || hasRealXp;
+  });
   if (historyEntries.length === 0) return;
 
   // Lê os campos CANÔNICOS (count/total) — antes lia questsDone/questsTotal, que
