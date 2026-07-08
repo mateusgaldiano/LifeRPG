@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.16] — 2026-07-08
+- **Refactor: `completedIds` agora usa coluna dedicada `history.completed_ids` (jsonb).** A v2.5.15 resolvia a persistência dos nomes de hábitos concluídos enfiando o array dentro de `skills_xp._completedIds` — mas `skills_xp` tem significado próprio (XP por skill), então era uma gambiarra semântica. Migração no Supabase adiciona `history.completed_ids jsonb NOT NULL DEFAULT '[]'`, move qualquer resquício de `skills_xp._completedIds` pra ela e limpa o `skills_xp`. O upload passa a gravar em `completed_ids`; o download lê de lá (com fallback transitório pro `skills_xp._completedIds`, caso um sync da v2.5.15 tenha rodado antes desta versão). Sem perda de dado e sem quebra de retrocompatibilidade.
+
 ## [v2.5.15] — 2026-07-08
 - **Fix: persistência da lista de hábitos concluídos (`completedIds`) no banco de dados:**
   - **Problema:** A tabela `history` do Supabase não possui uma coluna para `completedIds`. Portanto, sempre que o usuário limpava o cache local do navegador, reinstalava o PWA ou fazia login em um novo dispositivo, os nomes das tarefas concluídas no histórico eram perdidos, zerando as contagens de hábitos individuais (como "Deepstash") na aba Visão Geral/Dashboard.

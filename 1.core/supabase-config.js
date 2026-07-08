@@ -1056,12 +1056,6 @@ async function saveAllHistoryToSupabase() {
   // não existem no registro local, subindo sempre 0/0 para a nuvem.
   const rows = historyEntries.map(([date, entry]) => {
     const e = normalizeHistoryEntry(entry);
-    // Persiste completedIds dentro do campo JSONB skills_xp para não perdê-lo
-    // se o usuário sincronizar a nuvem em outro aparelho ou limpar o cache local.
-    const skillsXpWithIds = {
-      ...(e.skillsXp || {}),
-      _completedIds: e.completedIds || []
-    };
     return {
       user_id: window._currentUserDbId,
       date: date,
@@ -1071,7 +1065,9 @@ async function saveAllHistoryToSupabase() {
       quests_total: e.total,
       status: e.status,
       penalty_applied: e.penaltyApplied,
-      skills_xp: skillsXpWithIds,
+      skills_xp: e.skillsXp,
+      // Coluna dedicada (antes era enfiado em skills_xp._completedIds — gambiarra).
+      completed_ids: e.completedIds || [],
     };
   });
 
@@ -1098,22 +1094,23 @@ window.loadHistoryFromSupabase = async function() {
   //  1. Parte do histórico local, já normalizado (auto-cura shapes antigos).
   //  2. Sobrepõe a nuvem por data; em datas nos dois lados, mantém o registro com
   //     MAIS conclusões (não deixa um registro pobre apagar um mais completo).
-  //  3. completedIds não é persistido na tabela `history` — preserva o do lado
-  //     local para o relatório semanal não perder a atribuição de skill.
+  //  3. completedIds vem da coluna dedicada `completed_ids` (jsonb). Preserva o do
+  //     lado local para o relatório semanal não perder a atribuição de skill.
   const merged = {};
   for (const [date, entry] of Object.entries(gameState.history || {})) {
     merged[date] = normalizeHistoryEntry(entry);
   }
   data.forEach(row => {
-    // Se o row.skills_xp contiver a chave privada _completedIds, nós a extraímos para popular e.completedIds.
-    let extractedCompletedIds = [];
-    let cleanSkillsXp = {};
-    if (row.skills_xp && typeof row.skills_xp === 'object') {
-      cleanSkillsXp = { ...row.skills_xp };
-      if (Array.isArray(cleanSkillsXp._completedIds)) {
-        extractedCompletedIds = cleanSkillsXp._completedIds;
-        delete cleanSkillsXp._completedIds;
+    // completedIds vem da coluna dedicada. Fallback TRANSITÓRIO: se um sync da
+    // v2.5.15 gravou em skills_xp._completedIds antes desta versão, ainda lê de lá.
+    let cloudIds = Array.isArray(row.completed_ids) ? row.completed_ids : [];
+    let cleanSkillsXp = row.skills_xp;
+    if (cleanSkillsXp && typeof cleanSkillsXp === 'object' && '_completedIds' in cleanSkillsXp) {
+      if (cloudIds.length === 0 && Array.isArray(cleanSkillsXp._completedIds)) {
+        cloudIds = cleanSkillsXp._completedIds;
       }
+      cleanSkillsXp = { ...cleanSkillsXp };
+      delete cleanSkillsXp._completedIds;
     }
 
     const cloudEntry = normalizeHistoryEntry({
@@ -1124,16 +1121,17 @@ window.loadHistoryFromSupabase = async function() {
       goldEarned: row.gold_earned,
       penaltyApplied: row.penalty_applied,
       skillsXp: cleanSkillsXp,
-      completedIds: extractedCompletedIds
+      completedIds: cloudIds
     });
     const local = merged[row.date];
     if (!local) {
       merged[row.date] = cloudEntry;
     } else if ((cloudEntry.count || 0) > (local.count || 0)) {
-      // Mescla priorizando completedIds do local ou da nuvem (o que tiver itens)
-      const mergedIds = (local.completedIds && local.completedIds.length > 0)
-        ? local.completedIds
-        : cloudEntry.completedIds;
+      // Nuvem venceu na contagem → usa os completedIds dela (consistentes com o
+      // count); só cai no local se a nuvem vier vazia.
+      const mergedIds = (cloudEntry.completedIds && cloudEntry.completedIds.length > 0)
+        ? cloudEntry.completedIds
+        : (local.completedIds || []);
       merged[row.date] = { ...cloudEntry, completedIds: mergedIds };
     }
     // senão: mantém o registro local (igual ou mais completo).
