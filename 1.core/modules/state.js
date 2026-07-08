@@ -381,13 +381,18 @@ function cleanObjectEncoding(obj) {
 // Detecta uma entrada de histórico gerada pela antiga MOCK DATA (removida na
 // v2.5.8). Assinatura exata do gerador: total sempre 8, count ∈ {0,2,5,8} e SEM
 // os campos que o reset real grava (completedIds/xpEarned). Conservador de
-// propósito — entradas reais (que carregam completedIds) nunca casam.
+// propósito — entradas reais (que carregam completedIds preenchido) nunca casam.
+// Nota: entradas mock que passaram por normalizeHistoryEntry ganham
+// completedIds:[] e xpEarned:0 — tratamos esses como ausentes também.
 function isMockHistoryEntry(e) {
-    return !!e && typeof e === 'object'
-        && e.total === 8
-        && [0, 2, 5, 8].includes(e.count)
-        && e.completedIds === undefined
-        && e.xpEarned === undefined;
+    if (!e || typeof e !== 'object') return false;
+    if (e.total !== 8) return false;
+    if (![0, 2, 5, 8].includes(e.count)) return false;
+    // completedIds ausente ou array vazio = sem dados reais de conclusão
+    const noRealIds = e.completedIds === undefined || (Array.isArray(e.completedIds) && e.completedIds.length === 0);
+    // xpEarned ausente ou zero = mock (entradas reais sempre ganham XP)
+    const noRealXp = e.xpEarned === undefined || e.xpEarned === 0;
+    return noRealIds && noRealXp;
 }
 
 function loadGameData() {

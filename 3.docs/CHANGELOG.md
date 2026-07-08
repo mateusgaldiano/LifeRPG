@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.12] — 2026-07-08
+- **Fix: dados mock persistentes na aba Visão Geral mesmo após deletar do Supabase.**
+  - **Causa raiz:** `loadHistoryFromSupabase()` fazia merge não-destrutivo que começava com **todo** o localStorage. Entradas mock locais que não existiam na nuvem permaneciam intocadas no merge. Além disso, a detecção de mock (`isMockHistoryEntry`) verificava `completedIds === undefined`, mas entradas mock que passaram por `normalizeHistoryEntry()` ganhavam `completedIds: []` e `xpEarned: 0` — escapando da limpeza.
+  - **Correções:** (1) `isMockHistoryEntry` agora aceita `completedIds` vazio (`[]`) e `xpEarned: 0` como equivalentes a ausente. (2) `loadHistoryFromSupabase` purga entradas mock do resultado final do merge antes de atribuir a `gameState.history`.
+
 ## [v2.5.11] — 2026-07-08
 - **Fix: persistência e cálculo da Sequência de Abstinência (Streak de Vícios):**
   - **Sincronização com a Nuvem:** O `addictionStreak` (streak de vícios) e `_addictionRelapsedToday` (flag de recaída do dia) não eram salvos no Supabase, fazendo com que a sequência de vícios fosse zerada ou desincronizada constantemente ao fazer login em múltiplos dispositivos ou ao ocorrer um sync "nuvem ganha". Agora ambas as propriedades são salvas e carregadas do JSON `settings` do jogador.
