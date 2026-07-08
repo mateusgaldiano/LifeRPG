@@ -492,17 +492,27 @@ function loadGameData() {
         // tinha level > 1 e history vazio. Poluía o heatmap/estatísticas de usuários
         // reais — era um artefato de desenvolvimento, não comportamento desejado.)
         //
-        // Limpeza (v2.5.10): saves anteriores à v2.5.8 já GRAVARAM esse histórico
-        // falso no localStorage — remover a geração não apaga o que já existe. Aqui
-        // purgamos as entradas com a assinatura exata do mock (total===8, count em
-        // {0,2,5,8}, SEM completedIds/xpEarned). Entradas reais carregam completedIds,
-        // então não são afetadas.
-        if (parsed.history && typeof parsed.history === 'object') {
+        // Limpeza agressiva (v2.5.12): entradas de histórico geradas pelo antigo
+        // MOCK DATA (removido na v2.5.8) podem ter sido corrompidas por ciclos de
+        // sync local↔nuvem (seus campos total/count foram sobrescritos, escapando
+        // da detecção conservadora anterior). Critério definitivo: entradas SEM
+        // completedIds preenchido E SEM xpEarned são consideradas fantasmas/mock
+        // e são removidas. Entradas reais SEMPRE têm completedIds com pelo menos
+        // um item (desde v2.5.8 são objetos denormalizados; antes eram strings).
+        // Migração única — roda apenas se o flag 'mock_purge_v2' não existir.
+        if (parsed.history && typeof parsed.history === 'object'
+            && !localStorage.getItem('mock_purge_v2')) {
             let purged = 0;
             for (const [date, e] of Object.entries(parsed.history)) {
-                if (isMockHistoryEntry(e)) { delete parsed.history[date]; purged++; }
+                if (!e || typeof e !== 'object') { delete parsed.history[date]; purged++; continue; }
+                const hasRealIds = Array.isArray(e.completedIds) && e.completedIds.length > 0;
+                const hasRealXp = typeof e.xpEarned === 'number' && e.xpEarned > 0;
+                if (!hasRealIds && !hasRealXp) {
+                    delete parsed.history[date]; purged++;
+                }
             }
-            if (purged > 0) console.log(`[Migration] Removidas ${purged} entradas de histórico mock (v2.5.8-).`);
+            localStorage.setItem('mock_purge_v2', 'done');
+            if (purged > 0) console.log(`[Migration] Removidas ${purged} entradas de histórico sem dados reais (mock/fantasma).`);
         }
 
         if (!parsed.lastWeeklyReportYearWeek) {

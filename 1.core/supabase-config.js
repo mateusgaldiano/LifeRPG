@@ -1110,16 +1110,16 @@ window.loadHistoryFromSupabase = async function() {
     // senão: mantém o registro local (igual ou mais completo).
   });
 
-  // Purge de mock data: entradas com assinatura do antigo gerador (total===8,
-  // count ∈ {0,2,5,8}, sem completedIds preenchido e sem xpEarned) sobrevivem
-  // ao merge não-destrutivo. Removê-las aqui garante que dados que o usuário
-  // deletou da nuvem não voltem do localStorage.
-  const MOCK_COUNTS = new Set([0, 2, 5, 8]);
+  // Purge de dados fantasma/mock: entradas SEM completedIds preenchido E SEM
+  // xpEarned são resquícios do antigo MOCK DATA (cujos campos total/count podem
+  // ter sido corrompidos por ciclos de sync). Removê-las aqui garante que dados
+  // que o usuário deletou da nuvem não voltem do localStorage.
   for (const date of Object.keys(merged)) {
     const e = merged[date];
-    if (e && e.total === 8 && MOCK_COUNTS.has(e.count)
-        && (!e.completedIds || e.completedIds.length === 0)
-        && (!e.xpEarned || e.xpEarned === 0)) {
+    if (!e) { delete merged[date]; continue; }
+    const hasRealIds = Array.isArray(e.completedIds) && e.completedIds.length > 0;
+    const hasRealXp = typeof e.xpEarned === 'number' && e.xpEarned > 0;
+    if (!hasRealIds && !hasRealXp) {
       delete merged[date];
     }
   }

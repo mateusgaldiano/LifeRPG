@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.13] — 2026-07-08
+- **Fix: limpeza definitiva de dados mock na Visão Geral.** O filtro anterior (`total===8`) não detectava mock entries cujos campos `total`/`count` foram corrompidos por ciclos de sync local↔nuvem. Novo critério: qualquer entrada de histórico **sem `completedIds` preenchido** (array vazio ou ausente) **E sem `xpEarned`** é considerada fantasma/mock e removida. Migração única com flag `mock_purge_v2`. O mesmo filtro é aplicado dentro de `loadHistoryFromSupabase()` para impedir que entries fantasma do localStorage sobrevivam ao merge pós-sync.
+
 ## [v2.5.12] — 2026-07-08
 - **Fix: dados mock persistentes na aba Visão Geral mesmo após deletar do Supabase.**
   - **Causa raiz:** `loadHistoryFromSupabase()` fazia merge não-destrutivo que começava com **todo** o localStorage. Entradas mock locais que não existiam na nuvem permaneciam intocadas no merge. Além disso, a detecção de mock (`isMockHistoryEntry`) verificava `completedIds === undefined`, mas entradas mock que passaram por `normalizeHistoryEntry()` ganhavam `completedIds: []` e `xpEarned: 0` — escapando da limpeza.
