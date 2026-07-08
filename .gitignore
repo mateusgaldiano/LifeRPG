@@ -3,3 +3,6 @@ node_modules/
 package.json
 package-lock.json
 convert-avatars.mjs
+
+# Config local do MCP (contém o token do Supabase — NUNCA commitar)
+.mcp.json
