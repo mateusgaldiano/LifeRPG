@@ -378,6 +378,18 @@ function cleanObjectEncoding(obj) {
 }
 
 
+// Detecta uma entrada de histórico gerada pela antiga MOCK DATA (removida na
+// v2.5.8). Assinatura exata do gerador: total sempre 8, count ∈ {0,2,5,8} e SEM
+// os campos que o reset real grava (completedIds/xpEarned). Conservador de
+// propósito — entradas reais (que carregam completedIds) nunca casam.
+function isMockHistoryEntry(e) {
+    return !!e && typeof e === 'object'
+        && e.total === 8
+        && [0, 2, 5, 8].includes(e.count)
+        && e.completedIds === undefined
+        && e.xpEarned === undefined;
+}
+
 function loadGameData() {
     localStorage.setItem('force_reset_v4', 'true');
 
@@ -474,6 +486,19 @@ function loadGameData() {
         // (Removido em v2.5.8: geração de 90 dias de histórico FALSO quando o save
         // tinha level > 1 e history vazio. Poluía o heatmap/estatísticas de usuários
         // reais — era um artefato de desenvolvimento, não comportamento desejado.)
+        //
+        // Limpeza (v2.5.10): saves anteriores à v2.5.8 já GRAVARAM esse histórico
+        // falso no localStorage — remover a geração não apaga o que já existe. Aqui
+        // purgamos as entradas com a assinatura exata do mock (total===8, count em
+        // {0,2,5,8}, SEM completedIds/xpEarned). Entradas reais carregam completedIds,
+        // então não são afetadas.
+        if (parsed.history && typeof parsed.history === 'object') {
+            let purged = 0;
+            for (const [date, e] of Object.entries(parsed.history)) {
+                if (isMockHistoryEntry(e)) { delete parsed.history[date]; purged++; }
+            }
+            if (purged > 0) console.log(`[Migration] Removidas ${purged} entradas de histórico mock (v2.5.8-).`);
+        }
 
         if (!parsed.lastWeeklyReportYearWeek) {
             parsed.lastWeeklyReportYearWeek = "";

@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.10] — 2026-07-07
+- **Fix: aba Visão Geral não puxava os dados (heatmap sempre vazio).** O heatmap anual buscava `history[d.toDateString()]` (ex.: `"Mon Jul 06 2026"`) enquanto o histórico é chaveado por `localDateStr` (`"2026-07-06"`) — nunca batia, então todos os 365 quadradinhos ficavam cinza. Exatamente o bug que a CLAUDE.md alerta sobre `toDateString()`. Corrigido para `localDateStr(d)`.
+- **Progresso de HOJE aparece na hora.** O histórico de um dia só era gravado no rollover diário, então a atividade de hoje nunca aparecia no dashboard até o dia seguinte. Agora o dia atual é computado ao vivo do estado das quests (sem gravar) e entra no heatmap + métricas imediatamente.
+- **Limpeza dos "números genéricos".** Saves anteriores à v2.5.8 gravaram no localStorage os 90 dias de histórico FALSO da antiga MOCK DATA — remover a *geração* (v2.5.8) não apagou o que já estava salvo. Adicionada uma limpeza única no `loadGameData` que purga só as entradas com a assinatura exata do mock (`total===8`, `count ∈ {0,2,5,8}`, sem `completedIds`/`xpEarned`); entradas reais carregam `completedIds` e não são tocadas.
+
 ## [v2.5.9] — 2026-07-07
 - **Fix (perda de dados): vícios sumiam ao sincronizar com a nuvem.** `loadQuestsFromSupabase` só reconstruía quests dos tipos `daily`/`weekly`/`side` — o tipo `addiction` não batia com nenhum filtro, então todo vício era descartado num sync "nuvem vence" (ou no botão de sincronizar) assim que sua op de outbox flushava. Adicionado o mapeamento de `addiction` no load (preservando `completed`/abstinência e incluindo os ids no merge). Bug existia desde a v2.5.0.
 - **Fix: vício "abstinente" contava como quest concluída.** Como vícios nascem `completed: true`, três lugares os contavam como missão concluída: a conquista *"Conclua sua primeira Missão"* auto-desbloqueava ao só adicionar um vício; o pico diário (`_maxDailyCompleted`) inflava; e a "frase de impacto da primeira quest do dia" disparava na quest errada. Os três agora excluem `type === 'addiction'`.

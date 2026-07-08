@@ -1815,9 +1815,28 @@ function renderGlobalDashboard() {
     const tabGlobal = document.getElementById('tab-global');
     if (!tabGlobal || !tabGlobal.classList.contains('active')) return;
 
-    const history = gameState.history || {};
+    // Inclui o progresso REAL de HOJE (que só entra no history no rollover diário),
+    // computado ao vivo do estado atual das quests — sem gravar, só p/ exibição.
+    // Assim o dashboard reflete a atividade de hoje na hora.
+    const history = { ...(gameState.history || {}) };
+    const todayKey = localDateStr(new Date());
+    if (!history[todayKey]) {
+        const dow = new Date().getDay();
+        const activeToday = (gameState.quests || []).filter(q => isQuestActiveOnDay(q, dow));
+        const total = activeToday.length;
+        const doneList = activeToday.filter(q => q.completed);
+        const done = doneList.length;
+        if (total > 0 && done > 0) { // só marca hoje se houve alguma conclusão real
+            const pct = done / total;
+            const status = pct >= 1 ? 'perfect' : pct >= 0.5 ? 'good' : 'bad';
+            history[todayKey] = {
+                status, count: done, total,
+                completedIds: doneList.map(q => ({ id: q.id, title: q.title, skill: q.skill || 'routine', duration: q.duration || 5 }))
+            };
+        }
+    }
     const dates = Object.keys(history).sort((a,b) => new Date(a) - new Date(b));
-    
+
     const emptyStateEl = document.getElementById('global-empty-state');
     if (dates.length === 0) {
         if (emptyStateEl) emptyStateEl.style.display = 'block';
@@ -1865,12 +1884,14 @@ function renderGlobalDashboard() {
         const d = new Date(startDate);
         d.setDate(startDate.getDate() + i);
         
-        const dateStr = d.toDateString();
+        // CLAUDE.md: history é chaveado por localDateStr (YYYY-MM-DD). Usar
+        // d.toDateString() (ex.: "Mon Jul 06 2026") NUNCA batia → heatmap vazio.
+        const dateStr = localDateStr(d);
         const log = history[dateStr];
-        
+
         const block = document.createElement('div');
         block.className = 'hm-block';
-        
+
         if (log) {
             block.classList.add(`hm-${log.status}`);
             block.title = `${dateStr}: ${log.count}/${log.total} completos`;
