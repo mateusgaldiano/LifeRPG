@@ -606,8 +606,13 @@ function loadGameData() {
             // ontem (o flag é setado em toggleQuest ao desmarcar um vício). Só conta
             // se o jogador de fato tem algum vício cadastrado.
             const hasAddictions = (parsed.quests || []).some(q => q.type === 'addiction');
-            if (hasAddictions && !parsed._addictionRelapsedToday) {
-                parsed.addictionStreak = (parsed.addictionStreak || 0) + 1;
+            if (hasAddictions) {
+                const relapsed = parsed._addictionRelapsedToday || parsed.quests.some(q => q.type === 'addiction' && !q.completed);
+                if (relapsed) {
+                    parsed.addictionStreak = 0;
+                } else {
+                    parsed.addictionStreak = (parsed.addictionStreak || 0) + 1;
+                }
             }
             parsed._addictionRelapsedToday = false;
 
@@ -733,6 +738,7 @@ function loadGameData() {
         // Inicializa campos novos caso seja um save antigo
         if (gameState.shields === undefined) gameState.shields = 0;
         if (gameState.addictionStreak === undefined) gameState.addictionStreak = 0;
+        if (gameState._addictionRelapsedToday === undefined) gameState._addictionRelapsedToday = false;
         if (gameState.consecutiveStreak7Days === undefined) gameState.consecutiveStreak7Days = 0;
         if (gameState.consecutiveMisses === undefined) gameState.consecutiveMisses = 0;
         if (gameState.bossQuest === undefined) gameState.bossQuest = null;

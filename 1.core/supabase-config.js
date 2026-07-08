@@ -392,6 +392,8 @@ async function ensureUserProfile(authUser) {
             activeTitle: gameState.inventory?.activeTitle || null,
             activeBorder: gameState.inventory?.activeBorder || null,
             rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
+            addictionStreak: gameState.addictionStreak || 0,
+            _addictionRelapsedToday: gameState._addictionRelapsedToday || false,
           },
           last_active_at: new Date().toISOString(),
         }, { onConflict: 'person_id' })
@@ -489,6 +491,8 @@ window.syncFromCloud = async function() {
       gameState.achievements = cloudUser.settings?.achievements || [];
       gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
       gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
+      gameState.addictionStreak = cloudUser.settings?.addictionStreak ?? 0;
+      gameState._addictionRelapsedToday = cloudUser.settings?._addictionRelapsedToday ?? false;
       applyCloudCosmetics(cloudUser.settings);
 
       // Carregar dados adicionais em paralelo
@@ -702,6 +706,8 @@ window.saveToSupabase = async function() {
       activeTitle: gameState.inventory?.activeTitle || null,
       activeBorder: gameState.inventory?.activeBorder || null,
       rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
+      addictionStreak: gameState.addictionStreak || 0,
+      _addictionRelapsedToday: gameState._addictionRelapsedToday || false,
     }
   });
 

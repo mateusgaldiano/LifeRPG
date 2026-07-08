@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.11] — 2026-07-08
+- **Fix: persistência e cálculo da Sequência de Abstinência (Streak de Vícios):**
+  - **Sincronização com a Nuvem:** O `addictionStreak` (streak de vícios) e `_addictionRelapsedToday` (flag de recaída do dia) não eram salvos no Supabase, fazendo com que a sequência de vícios fosse zerada ou desincronizada constantemente ao fazer login em múltiplos dispositivos ou ao ocorrer um sync "nuvem ganha". Agora ambas as propriedades são salvas e carregadas do JSON `settings` do jogador.
+  - **Cálculo Robusto no Reset Diário:** O reset diário dependia apenas do flag `_addictionRelapsedToday`, o que podia causar descompassos se o flag não estivesse persistido. Agora, o reset diário também analisa as quests de vício ativas do dia anterior: se qualquer vício tiver sido deixado sem concluir (`completed === false`), o sistema reconhece a recaída e reseta o streak para 0, mesmo se o flag temporário estiver ausente.
+
 ## [v2.5.10] — 2026-07-07
 - **Fix: aba Visão Geral não puxava os dados (heatmap sempre vazio).** O heatmap anual buscava `history[d.toDateString()]` (ex.: `"Mon Jul 06 2026"`) enquanto o histórico é chaveado por `localDateStr` (`"2026-07-06"`) — nunca batia, então todos os 365 quadradinhos ficavam cinza. Exatamente o bug que a CLAUDE.md alerta sobre `toDateString()`. Corrigido para `localDateStr(d)`.
 - **Progresso de HOJE aparece na hora.** O histórico de um dia só era gravado no rollover diário, então a atividade de hoje nunca aparecia no dashboard até o dia seguinte. Agora o dia atual é computado ao vivo do estado das quests (sem gravar) e entra no heatmap + métricas imediatamente.
