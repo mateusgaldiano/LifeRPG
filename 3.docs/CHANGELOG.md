@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.15] — 2026-07-08
+- **Fix: persistência da lista de hábitos concluídos (`completedIds`) no banco de dados:**
+  - **Problema:** A tabela `history` do Supabase não possui uma coluna para `completedIds`. Portanto, sempre que o usuário limpava o cache local do navegador, reinstalava o PWA ou fazia login em um novo dispositivo, os nomes das tarefas concluídas no histórico eram perdidos, zerando as contagens de hábitos individuais (como "Deepstash") na aba Visão Geral/Dashboard.
+  - **Solução:** Como a coluna `skills_xp` é do tipo `jsonb` (objeto JSON arbitrário), agora passamos a embutir o array `completedIds` de forma transparente dentro de `skills_xp` sob a chave privada `_completedIds` durante o sync de upload. No sync de download, decodificamos essa chave de volta para restaurar o `completedIds`. Isso preserva o histórico de nomes de tarefas com 100% de retrocompatibilidade e sem precisar alterar a estrutura física do banco.
+
 ## [v2.5.14] — 2026-07-08
 - **Fix: prevenção definitiva de re-upload de dados mock para o Supabase:** Adicionado um filtro de segurança na rotina `saveAllHistoryToSupabase()` para garantir que qualquer entrada mock/fantasma (sem `completedIds` reais e sem `xpEarned`) seja excluída antes de tentar fazer upload para a nuvem. Isso interrompe de vez o ciclo vicioso onde dados mock deletados diretamente da nuvem eram re-enviados pelo cliente do jogo.
 

@@ -1056,6 +1056,12 @@ async function saveAllHistoryToSupabase() {
   // não existem no registro local, subindo sempre 0/0 para a nuvem.
   const rows = historyEntries.map(([date, entry]) => {
     const e = normalizeHistoryEntry(entry);
+    // Persiste completedIds dentro do campo JSONB skills_xp para não perdê-lo
+    // se o usuário sincronizar a nuvem em outro aparelho ou limpar o cache local.
+    const skillsXpWithIds = {
+      ...(e.skillsXp || {}),
+      _completedIds: e.completedIds || []
+    };
     return {
       user_id: window._currentUserDbId,
       date: date,
@@ -1065,7 +1071,7 @@ async function saveAllHistoryToSupabase() {
       quests_total: e.total,
       status: e.status,
       penalty_applied: e.penaltyApplied,
-      skills_xp: e.skillsXp,
+      skills_xp: skillsXpWithIds,
     };
   });
 
@@ -1099,6 +1105,17 @@ window.loadHistoryFromSupabase = async function() {
     merged[date] = normalizeHistoryEntry(entry);
   }
   data.forEach(row => {
+    // Se o row.skills_xp contiver a chave privada _completedIds, nós a extraímos para popular e.completedIds.
+    let extractedCompletedIds = [];
+    let cleanSkillsXp = {};
+    if (row.skills_xp && typeof row.skills_xp === 'object') {
+      cleanSkillsXp = { ...row.skills_xp };
+      if (Array.isArray(cleanSkillsXp._completedIds)) {
+        extractedCompletedIds = cleanSkillsXp._completedIds;
+        delete cleanSkillsXp._completedIds;
+      }
+    }
+
     const cloudEntry = normalizeHistoryEntry({
       status: row.status,
       count: row.quests_done,
@@ -1106,13 +1123,18 @@ window.loadHistoryFromSupabase = async function() {
       xpEarned: row.xp_earned,
       goldEarned: row.gold_earned,
       penaltyApplied: row.penalty_applied,
-      skillsXp: row.skills_xp,
+      skillsXp: cleanSkillsXp,
+      completedIds: extractedCompletedIds
     });
     const local = merged[row.date];
     if (!local) {
       merged[row.date] = cloudEntry;
     } else if ((cloudEntry.count || 0) > (local.count || 0)) {
-      merged[row.date] = { ...cloudEntry, completedIds: local.completedIds || [] };
+      // Mescla priorizando completedIds do local ou da nuvem (o que tiver itens)
+      const mergedIds = (local.completedIds && local.completedIds.length > 0)
+        ? local.completedIds
+        : cloudEntry.completedIds;
+      merged[row.date] = { ...cloudEntry, completedIds: mergedIds };
     }
     // senão: mantém o registro local (igual ou mais completo).
   });
