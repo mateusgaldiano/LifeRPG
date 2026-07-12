@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.22] — 2026-07-12
+- **Balance: Amuleto de Fim de Semana virou prospectivo (nunca congela hoje).** Antes, `nextWeekendDateStr` incluía o próprio dia — dava pra comprar o Amuleto do Sábado no sábado à noite, já tendo falhado, e ser perdoado por 600 de ouro, pisando no nicho retroativo da Ampulheta (2500 + cooldown de 30 dias). Agora, se hoje já é o dia-alvo, o amuleto pula para a semana seguinte (`|| 7`). Reforça o Amuleto como ferramenta de **planejamento** (descanso decidido com antecedência) e reserva o perdão "no mesmo dia depois de falhar" à Ampulheta.
+
 ## [v2.5.21] — 2026-07-12
 - **Sync na nuvem das mecânicas novas (cross-device).** `frozenDates` (Amuletos), `lastHourglassAt` (cooldown da Ampulheta), `lastTributeWeek`, `lostStreak` e `dailyChest` (Baús) passam a viajar no jsonb `settings` da RPC `sync_user_state_secure` — mesmo saco dos demais flags de usuário (`addictionStreak`, `rankEvaluationsClaimed`…), sem tocar no schema/RPC (mudança 100% client-side). Novo `applyCloudProgressionFlags()` restaura no ramo "nuvem vence" (`syncFromCloud`/`forceLoadFromCloud`); os dois caminhos de upload (`ensureUserProfile` e `saveToSupabase`) enviam os campos. `frozenDates` faz **união** (não substituição) pra não perder um Amuleto comprado em outro dispositivo. A Poção de Foco (30 min) segue local de propósito (transiente). *Ressalva:* como a sincronização é grossa (estado inteiro "nuvem vence" ou "local vence"), o cooldown da Ampulheta em uso simultâneo em 2 aparelhos ainda pode divergir no pior caso.
 - **Balance: baú dá menos ouro e não escala com rank.** A recompensa de Ouro dos Baús de Foco virou fixa (40–80), sem `getRankIncomeMultiplier`, pra não virar uma torneira que anula os ralos (Tributo/Amuletos) no fim de jogo — que é justo onde eles importam.

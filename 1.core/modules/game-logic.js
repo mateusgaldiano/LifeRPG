@@ -1531,10 +1531,13 @@ function openDailyChest(which) {
 // ==========================================================================
 // AMULETOS DE FIM DE SEMANA (WEEKEND FREEZE)
 // ==========================================================================
-// Data (YYYY-MM-DD) da próxima ocorrência de um dia da semana (inclui hoje se bater).
+// Data (YYYY-MM-DD) da PRÓXIMA ocorrência FUTURA de um dia da semana — nunca hoje.
+// Amuleto é ferramenta de planejamento (congelar um descanso à frente), não um botão
+// de pânico retroativo: se hoje já é o dia-alvo, pula para a semana seguinte. Assim o
+// perdão "no mesmo dia depois de falhar" fica reservado à Ampulheta (cara, cooldown).
 function nextWeekendDateStr(targetDow) {
     const now = new Date();
-    const diff = (targetDow - now.getDay() + 7) % 7; // 0 se hoje já é o dia-alvo
+    const diff = ((targetDow - now.getDay() + 7) % 7) || 7; // hoje = alvo → +7 (semana que vem)
     const d = new Date(now);
     d.setDate(now.getDate() + diff);
     return localDateStr(d);
