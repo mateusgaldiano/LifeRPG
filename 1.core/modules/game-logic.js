@@ -159,7 +159,8 @@ function spawnDungeon(forcedSkill = null) {
         target: target,
         progress: 0,
         expiresAt: Date.now() + DUNGEON_DURATION_MS,
-        completed: false
+        completed: false,
+        fromKey: !!forcedSkill   // aberta por Chave de Portal (paga) → sem penalidade de expiração
     };
     saveGameData();
     const openingLabel = forcedSkill ? '🗝️ *PORTAL ABERTO!*' : `${rarityLabel} *MASMORRA ABERTA!*`;
@@ -176,11 +177,16 @@ function checkDungeonExpiry() {
     if (!d || d.completed) return;
     if (Date.now() >= d.expiresAt) {
         const title = d.title;
+        const fromKey = !!d.fromKey;
         gameState.activeDungeon = null;
-        gameState.xp = Math.max(0, (gameState.xp || 0) - 100);
+        // Masmorra aberta por Chave já foi paga com ouro — expirar não aplica a
+        // penalidade de −100 XP (evita punição dupla). As aleatórias mantêm o preço.
+        if (!fromKey) gameState.xp = Math.max(0, (gameState.xp || 0) - 100);
         saveGameData();
         setTimeout(() => {
-            showSystemToast(`💀 *DUNGEON EXPIRADA.* A missão *"${title}"* foi abandonada. O Sistema cobrou o preço: −100 XP.`);
+            showSystemToast(fromKey
+                ? `⌛ *PORTAL FECHADO.* A masmorra *"${title}"* expirou sem ser concluída. Sem penalidade de XP — a chave já foi seu custo.`
+                : `💀 *DUNGEON EXPIRADA.* A missão *"${title}"* foi abandonada. O Sistema cobrou o preço: −100 XP.`);
 
         }, 500);
     }

@@ -843,6 +843,24 @@ function updateUI() {
         const parts = [];
         if (dxpActive) parts.push(`<span class="buff-badge buff-xp">⚡ ${b.xpMult || 2}x XP</span>`);
         if (b.legendaryFocus) parts.push('<span class="buff-badge buff-gold">x3 💰</span>');
+
+        // Poção de Foco (Baús de Foco Diário): +50% XP por 30 min — mostra os minutos restantes.
+        if (b.focusPotionExpiresAt && Date.now() < b.focusPotionExpiresAt) {
+            const mins = Math.max(1, Math.ceil((b.focusPotionExpiresAt - Date.now()) / 60000));
+            parts.push(`<span class="buff-badge buff-focus" title="Poção de Foco ativa: +50% de XP nas missões">🧪 Foco ${mins}min</span>`);
+        }
+
+        // Amuletos de Fim de Semana: dias futuros congelados (informativo, não é buff temporal).
+        const DOW_ABBR = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+        const todayStr = localDateStr();
+        (gameState.frozenDates || [])
+            .filter(dt => dt >= todayStr)
+            .sort()
+            .forEach(dt => {
+                const dow = new Date(dt + 'T00:00:00').getDay();
+                parts.push(`<span class="buff-badge buff-freeze" title="Amuleto ativo: ${dt} congelado (faltas perdoadas, streak preservado)">❄️ ${DOW_ABBR[dow]}</span>`);
+            });
+
         buffIndEl.innerHTML = parts.join('');
         buffIndEl.style.display = parts.length ? '' : 'none';
     }

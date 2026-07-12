@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.20] — 2026-07-12
+- **Fix: masmorra aberta por Chave de Portal não sofre mais a penalidade de −100 XP ao expirar.** Antes, a masmorra da chave (paga com 300 de ouro) herdava a mesma punição das aleatórias em `checkDungeonExpiry` — punição dupla (ouro + XP). Agora ela é marcada com `fromKey: true` no spawn e o `checkDungeonExpiry` isenta o −100 XP nesse caso (com toast próprio: "Portal fechado, sem penalidade — a chave já foi seu custo"). Masmorras aleatórias continuam com a penalidade.
+- **Melhoria: indicadores persistentes de efeitos ativos no HUD.** O `buff-indicator` (que já mostrava tomos de XP e Foco Lendário) passou a exibir também: (1) **🧪 Poção de Foco** com os minutos restantes enquanto ativa (+50% XP); (2) **❄️ badges de dias congelados** por Amuletos de Fim de Semana (ex.: "❄️ Sáb"), com tooltip da data. Antes esses estados pagos eram invisíveis após o toast inicial.
+
 ## [v2.5.19] — 2026-07-12
 - **Baús de Foco Diário (Early Bird / Night Owl):** recompensam a consistência de horário e induzem o hábito de abrir o app 2×/dia.
   - **🌅 Baú do Caçador Matutino:** conclua 1 hábito **antes das 09h** → ganha um baú que só abre **após as 18h**.
