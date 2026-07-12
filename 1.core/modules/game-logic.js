@@ -1395,7 +1395,16 @@ const TRIBUTE_SKILL_MAP = {
     tribute_routine:      'routine',
 };
 const TRIBUTE_COST = 1000;  // ouro drenado por tributo
-const TRIBUTE_XP   = 5;     // skill XP concedido (taxa dura de propósito)
+
+// Skill XP concedido pelo tributo. ESCALA com o nível da skill-alvo (a curva de XP
+// é exponencial — um valor fixo vira pó no fim de jogo, justo onde o tributo deveria
+// ser um dreno relevante). Piso 5, teto 30: continua um péssimo negócio vs. hábitos
+// grátis, mas empurra skills atrasadas de verdade sem virar exploit.
+function tributeXpFor(skillType) {
+    initSkillsState();
+    const lvl = (gameState.skills[skillType] && gameState.skills[skillType].level) || 1;
+    return Math.min(30, Math.max(5, Math.round(0.15 * calcSkillXpToNext(lvl))));
+}
 
 // Chave de semana ISO (segunda-feira desta semana) — usada no cooldown do tributo.
 function currentWeekKey() {
@@ -1481,7 +1490,9 @@ function getNightOwlChestStatus() {
     return 'none'; // ganho há 2+ dias sem resgate → expirou
 }
 
-// Rola a recompensa do baú: 50% Poção de Foco (30 min, +50% XP), 50% Ouro (escala c/ rank).
+// Rola a recompensa do baú: 50% Poção de Foco (30 min, +50% XP), 50% Ouro.
+// Ouro é um bônus de engajamento FIXO e modesto (40–80) — de propósito NÃO escala
+// com o rank, pra não virar uma torneira que anula os ralos (Tributo/Amuletos) no fim de jogo.
 function grantChestReward(source) {
     if (!gameState.buffs) gameState.buffs = {};
     if (Math.random() < 0.5) {
@@ -1489,7 +1500,7 @@ function grantChestReward(source) {
         trackEvent('daily_chest_reward', { source, reward: 'focus_potion' });
         return '🧪 *Poção de Foco* ativada — +50% de XP nas missões pelos próximos 30 minutos. Aproveite o embalo.';
     }
-    const gold = Math.round((50 + Math.floor(Math.random() * 51)) * getRankIncomeMultiplier());
+    const gold = 40 + Math.floor(Math.random() * 41); // 40–80, plano
     gameState.gold = (gameState.gold || 0) + gold;
     trackEvent('daily_chest_reward', { source, reward: 'gold', amount: gold });
     return `+${gold} 💰 de Ouro caíram no seu bolso.`;
@@ -1787,11 +1798,12 @@ async function buyStoreItem(itemId) {
     else if (itemId.startsWith('tribute_')) {
         // Tributo ao Sistema: converte ouro em skill XP a uma taxa dura (dreno de fim de jogo).
         const skill = TRIBUTE_SKILL_MAP[itemId];
+        const tributeXp = tributeXpFor(skill); // escala com o nível da skill-alvo
         gameState.lastTributeWeek = currentWeekKey(); // arma o cooldown semanal
-        grantRawSkillXP(skill, TRIBUTE_XP);
+        grantRawSkillXP(skill, tributeXp);
         const label = SKILL_LABELS[skill] || skill;
-        showSystemToast(`🏛️ *TRIBUTO ACEITO.* O Sistema converteu ${TRIBUTE_COST} de Ouro em *+${TRIBUTE_XP} XP de ${label}*. Uma troca cara — mas o poder tem seu preço.`);
-        trackEvent('tribute_offered', { item_id: itemId, skill, xp: TRIBUTE_XP, cost: TRIBUTE_COST });
+        showSystemToast(`🏛️ *TRIBUTO ACEITO.* O Sistema converteu ${TRIBUTE_COST} de Ouro em *+${tributeXp} XP de ${label}*. Uma troca cara — mas o poder tem seu preço.`);
+        trackEvent('tribute_offered', { item_id: itemId, skill, xp: tributeXp, cost: TRIBUTE_COST });
     }
     else if (itemId.startsWith('amulet_')) {
         // Amuleto de Fim de Semana: congela o próximo sábado/domingo (perdão automático).

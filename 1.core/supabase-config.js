@@ -80,6 +80,23 @@ function applyCloudCosmetics(settings) {
   if (settings.activeBorder !== undefined) gameState.inventory.activeBorder = settings.activeBorder;
 }
 
+// Restaura da nuvem os flags de progressão das mecânicas novas (Ampulheta, Tributo,
+// Baús, Amuletos). Ficam no jsonb `settings` — mesmo saco dos demais flags de
+// usuário (addictionStreak, rankEvaluationsClaimed…). Só roda no ramo "nuvem vence".
+function applyCloudProgressionFlags(settings) {
+  if (!settings) return;
+  if (settings.lastHourglassAt !== undefined) gameState.lastHourglassAt = settings.lastHourglassAt;
+  if (settings.lastTributeWeek !== undefined) gameState.lastTributeWeek = settings.lastTributeWeek;
+  if (settings.lostStreak !== undefined)      gameState.lostStreak      = settings.lostStreak;
+  if (settings.dailyChest && typeof settings.dailyChest === 'object') gameState.dailyChest = settings.dailyChest;
+  if (Array.isArray(settings.frozenDates)) {
+    // União (não substituição): não perde um Amuleto comprado em outro dispositivo.
+    const today = (typeof window.localDateStr === 'function') ? window.localDateStr() : new Date().toISOString().slice(0, 10);
+    const merged = new Set([...(gameState.frozenDates || []), ...settings.frozenDates]);
+    gameState.frozenDates = [...merged].filter(d => d >= today).sort();
+  }
+}
+
 // --------------------------------------------------------------------------
 // AUTH — login/logout com Google
 // --------------------------------------------------------------------------
@@ -394,6 +411,11 @@ async function ensureUserProfile(authUser) {
             rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
             addictionStreak: gameState.addictionStreak || 0,
             _addictionRelapsedToday: gameState._addictionRelapsedToday || false,
+            lastHourglassAt: gameState.lastHourglassAt || 0,
+            lastTributeWeek: gameState.lastTributeWeek || "",
+            lostStreak: gameState.lostStreak || null,
+            dailyChest: gameState.dailyChest || null,
+            frozenDates: gameState.frozenDates || [],
           },
           last_active_at: new Date().toISOString(),
         }, { onConflict: 'person_id' })
@@ -494,6 +516,7 @@ window.syncFromCloud = async function() {
       gameState.addictionStreak = cloudUser.settings?.addictionStreak ?? 0;
       gameState._addictionRelapsedToday = cloudUser.settings?._addictionRelapsedToday ?? false;
       applyCloudCosmetics(cloudUser.settings);
+      applyCloudProgressionFlags(cloudUser.settings);
 
       // Carregar dados adicionais em paralelo
       const authUserPromise = supabaseClient.auth.getUser();
@@ -611,6 +634,7 @@ window.forceLoadFromCloud = async function() {
   gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
   gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
   applyCloudCosmetics(cloudUser.settings);
+  applyCloudProgressionFlags(cloudUser.settings);
 
   // Carregar dados adicionais em paralelo
   const authUserPromise = supabaseClient.auth.getUser();
@@ -708,6 +732,12 @@ window.saveToSupabase = async function() {
       rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
       addictionStreak: gameState.addictionStreak || 0,
       _addictionRelapsedToday: gameState._addictionRelapsedToday || false,
+      // Flags de progressão das mecânicas novas (Ampulheta, Tributo, Baús, Amuletos)
+      lastHourglassAt: gameState.lastHourglassAt || 0,
+      lastTributeWeek: gameState.lastTributeWeek || "",
+      lostStreak: gameState.lostStreak || null,
+      dailyChest: gameState.dailyChest || null,
+      frozenDates: gameState.frozenDates || [],
     }
   });
 
