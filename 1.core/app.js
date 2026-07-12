@@ -105,7 +105,11 @@ import {
     ACHIEVEMENTS_DEFS,
     showQuestCleared,
     syncQuestsByLevel,
-    buyRankEvaluation
+    buyRankEvaluation,
+    checkDailyChestEarn,
+    getEarlyBirdChestStatus,
+    getNightOwlChestStatus,
+    openDailyChest
 } from './modules/game-logic.js';
 
 import {
@@ -226,6 +230,10 @@ window.applyDailyPenalty = applyDailyPenalty;
 window.checkAllDailies = checkAllDailies;
 window.buyStoreItem = buyStoreItem;
 window.buyRankEvaluation = buyRankEvaluation;
+window.checkDailyChestEarn = checkDailyChestEarn;
+window.getEarlyBirdChestStatus = getEarlyBirdChestStatus;
+window.getNightOwlChestStatus = getNightOwlChestStatus;
+window.openDailyChest = openDailyChest;
 window.saveToCloud = saveToCloud;
 window.ACHIEVEMENTS_DEFS = ACHIEVEMENTS_DEFS;
 window.showQuestCleared = showQuestCleared;

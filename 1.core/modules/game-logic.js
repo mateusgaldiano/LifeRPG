@@ -20,9 +20,18 @@ function isDoubleXpActive() {
     return false;
 }
 
+// Poção de Foco (recompensa dos Baús de Foco Diário): +50% XP por 30 minutos.
+function isFocusPotionActive() {
+    const b = gameState.buffs;
+    return !!(b && b.focusPotionExpiresAt && Date.now() < b.focusPotionExpiresAt);
+}
+
 // Multiplicador de XP ativo (2/3/5 conforme o tomo); 1 se nenhum ativo.
+// A Poção de Foco (+50%) empilha multiplicativamente com o tomo.
 function getActiveXpMultiplier() {
-    return isDoubleXpActive() ? (gameState.buffs?.xpMult || 2) : 1;
+    let mult = isDoubleXpActive() ? (gameState.buffs?.xpMult || 2) : 1;
+    if (isFocusPotionActive()) mult *= 1.5;
+    return mult;
 }
 
 // Debuff de recaída de vício: -30% de XP enquanto ativo (24h após uma recaída).
@@ -897,6 +906,9 @@ function toggleQuest(id) {
         if (isDaily) {
             checkAllDailies();
         }
+
+        // Baús de Foco Diário: verifica se o horário desta conclusão concede um baú.
+        checkDailyChestEarn();
     }
 
     // Sincroniza o estado desta quest (completed/contador) para a nuvem via outbox,
@@ -1411,6 +1423,108 @@ function grantRawSkillXP(skillType, amount) {
 
 
 // ==========================================================================
+// BAÚS DE FOCO DIÁRIO (EARLY BIRD / NIGHT OWL)
+// Recompensam a consistência de horário e induzem o hábito de abrir o app 2×/dia:
+//   • Caçador Matutino: complete 1 hábito antes das 09h → baú abre após as 18h.
+//   • Patrulha Noturna: complete 1 hábito após as 20h → baú resgatável na manhã seguinte.
+// Estado derivado de datas (dailyChest); status calculado, não armazenado.
+// ==========================================================================
+
+// Chamada em toggleQuest ao CONCLUIR um hábito: concede o baú se o horário se encaixa.
+function checkDailyChestEarn() {
+    if (!gameState.dailyChest) gameState.dailyChest = {};
+    const c = gameState.dailyChest;
+    const today = localDateStr();
+    const hour = new Date().getHours();
+
+    if (hour < 9 && c.earlyBirdEarnedDate !== today) {
+        c.earlyBirdEarnedDate = today;
+        c.earlyBirdOpenedDate = null;
+        trackEvent('daily_chest_earned', { chest: 'early_bird' });
+        setTimeout(() => showSystemToast('🌅 *BAÚ DO CAÇADOR MATUTINO CONQUISTADO!* Você começou o dia cedo. O baú aparece nas Missões e abre após as *18h* — uma recompensa para fechar a noite.'), 1400);
+    }
+    if (hour >= 20 && c.nightOwlEarnedDate !== today) {
+        c.nightOwlEarnedDate = today;
+        c.nightOwlOpenedDate = null;
+        trackEvent('daily_chest_earned', { chest: 'night_owl' });
+        setTimeout(() => showSystemToast('🌙 *BAÚ DA PATRULHA NOTURNA CONQUISTADO!* Disciplina até tarde. Resgate a recompensa *amanhã de manhã* nas Missões.'), 1400);
+    }
+}
+
+// Status derivado: 'none' | 'locked' (ganho, aguardando janela) | 'ready' | 'opened'.
+function getEarlyBirdChestStatus() {
+    const c = gameState.dailyChest; if (!c) return 'none';
+    const today = localDateStr();
+    if (c.earlyBirdEarnedDate !== today) return 'none';
+    if (c.earlyBirdOpenedDate === today) return 'opened';
+    return new Date().getHours() >= 18 ? 'ready' : 'locked';
+}
+
+function getNightOwlChestStatus() {
+    const c = gameState.dailyChest; if (!c) return 'none';
+    const today = localDateStr();
+    const yesterday = localDateStr(new Date(Date.now() - 86400000));
+    if (!c.nightOwlEarnedDate) return 'none';
+    if (c.nightOwlEarnedDate === today) {
+        // Ganho hoje à noite → travado até a manhã seguinte.
+        return c.nightOwlOpenedDate === today ? 'opened' : 'locked';
+    }
+    if (c.nightOwlEarnedDate === yesterday) {
+        return c.nightOwlOpenedDate ? 'opened' : 'ready';
+    }
+    return 'none'; // ganho há 2+ dias sem resgate → expirou
+}
+
+// Rola a recompensa do baú: 50% Poção de Foco (30 min, +50% XP), 50% Ouro (escala c/ rank).
+function grantChestReward(source) {
+    if (!gameState.buffs) gameState.buffs = {};
+    if (Math.random() < 0.5) {
+        gameState.buffs.focusPotionExpiresAt = Date.now() + 30 * 60 * 1000;
+        trackEvent('daily_chest_reward', { source, reward: 'focus_potion' });
+        return '🧪 *Poção de Foco* ativada — +50% de XP nas missões pelos próximos 30 minutos. Aproveite o embalo.';
+    }
+    const gold = Math.round((50 + Math.floor(Math.random() * 51)) * getRankIncomeMultiplier());
+    gameState.gold = (gameState.gold || 0) + gold;
+    trackEvent('daily_chest_reward', { source, reward: 'gold', amount: gold });
+    return `+${gold} 💰 de Ouro caíram no seu bolso.`;
+}
+
+// Abre um baú pronto ('ready'); ignora com aviso se ainda travado.
+function openDailyChest(which) {
+    const status = which === 'earlyBird' ? getEarlyBirdChestStatus() : getNightOwlChestStatus();
+    if (status !== 'ready') {
+        if (status === 'locked') {
+            showSystemToast(which === 'earlyBird'
+                ? '🔒 *BAÚ TRANCADO.* O Baú do Caçador Matutino só abre após as 18h. Volte à noite.'
+                : '🔒 *BAÚ TRANCADO.* O Baú da Patrulha Noturna só é resgatável amanhã de manhã.');
+        }
+        return;
+    }
+    const today = localDateStr();
+    gameState.dailyChest[which + 'OpenedDate'] = today;
+    const rewardMsg = grantChestReward(which === 'earlyBird' ? 'early_bird' : 'night_owl');
+    const chestName = which === 'earlyBird' ? 'CAÇADOR MATUTINO' : 'PATRULHA NOTURNA';
+    showSystemToast(`🎁 *BAÚ DO ${chestName} ABERTO!* ${rewardMsg}`);
+    saveGameData();
+    renderQuests();
+    updateUI();
+}
+
+
+// ==========================================================================
+// AMULETOS DE FIM DE SEMANA (WEEKEND FREEZE)
+// ==========================================================================
+// Data (YYYY-MM-DD) da próxima ocorrência de um dia da semana (inclui hoje se bater).
+function nextWeekendDateStr(targetDow) {
+    const now = new Date();
+    const diff = (targetDow - now.getDay() + 7) % 7; // 0 se hoje já é o dia-alvo
+    const d = new Date(now);
+    d.setDate(now.getDate() + diff);
+    return localDateStr(d);
+}
+
+
+// ==========================================================================
 // LOJA E TAVERNA (COMPRA DE BUFFS E COSMÉTICOS)
 // ==========================================================================
 async function buyStoreItem(itemId) {
@@ -1430,7 +1544,9 @@ async function buyStoreItem(itemId) {
         'border_neonred': 2500,
         'skin_shadow_master': 2000,
         'skin_mist_monarch': 3500,
-        'skin_arise_emperor': 6000
+        'skin_arise_emperor': 6000,
+        'amulet_saturday': 600,
+        'amulet_sunday': 600
     };
     // Chaves de Portal (masmorra sob demanda por skill) — todas 300 de ouro.
     Object.keys(KEY_SKILL_MAP).forEach(k => { prices[k] = 300; });
@@ -1504,6 +1620,16 @@ async function buyStoreItem(itemId) {
         if (gameState.lastTributeWeek && gameState.lastTributeWeek === currentWeekKey()) {
             trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'weekly_cooldown' });
             showSystemToast("🏛️ *TRIBUTO JÁ OFERTADO.* O Sistema aceita apenas um tributo por semana. Retorne na próxima.");
+            return;
+        }
+    }
+
+    // ── Amuleto de Fim de Semana: não pode congelar o mesmo dia duas vezes ──────
+    if (itemId.startsWith('amulet_')) {
+        const targetDate = nextWeekendDateStr(itemId === 'amulet_saturday' ? 6 : 0);
+        if ((gameState.frozenDates || []).includes(targetDate)) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'already_frozen' });
+            showSystemToast(`❄️ *JÁ CONGELADO.* O próximo ${itemId === 'amulet_saturday' ? 'sábado' : 'domingo'} (${targetDate}) já está protegido por um amuleto.`);
             return;
         }
     }
@@ -1661,6 +1787,16 @@ async function buyStoreItem(itemId) {
         showSystemToast(`🏛️ *TRIBUTO ACEITO.* O Sistema converteu ${TRIBUTE_COST} de Ouro em *+${TRIBUTE_XP} XP de ${label}*. Uma troca cara — mas o poder tem seu preço.`);
         trackEvent('tribute_offered', { item_id: itemId, skill, xp: TRIBUTE_XP, cost: TRIBUTE_COST });
     }
+    else if (itemId.startsWith('amulet_')) {
+        // Amuleto de Fim de Semana: congela o próximo sábado/domingo (perdão automático).
+        const dow = itemId === 'amulet_saturday' ? 6 : 0;
+        const targetDate = nextWeekendDateStr(dow);
+        if (!Array.isArray(gameState.frozenDates)) gameState.frozenDates = [];
+        gameState.frozenDates.push(targetDate);
+        const dayName = dow === 6 ? 'sábado' : 'domingo';
+        showSystemToast(`❄️ *AMULETO DE ${dayName.toUpperCase()} ATIVADO!* O ${dayName} (${targetDate}) está congelado: faltas nesse dia serão perdoadas e seu streak preservado. Descanse com tranquilidade.`);
+        trackEvent('weekend_freeze_bought', { item_id: itemId, date: targetDate });
+    }
 
     // Cobra o ouro
     trackEvent('item_purchased', { item_id: itemId, cost: cost, level: gameState.level });
@@ -1709,5 +1845,9 @@ export {
     syncQuestsByLevel,
     getPendingRankEvaluation,
     buyRankEvaluation,
-    checkWeeklyChallengeReset
+    checkWeeklyChallengeReset,
+    checkDailyChestEarn,
+    getEarlyBirdChestStatus,
+    getNightOwlChestStatus,
+    openDailyChest
 };

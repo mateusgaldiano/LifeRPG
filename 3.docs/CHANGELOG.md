@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.19] — 2026-07-12
+- **Baús de Foco Diário (Early Bird / Night Owl):** recompensam a consistência de horário e induzem o hábito de abrir o app 2×/dia.
+  - **🌅 Baú do Caçador Matutino:** conclua 1 hábito **antes das 09h** → ganha um baú que só abre **após as 18h**.
+  - **🌙 Baú da Patrulha Noturna:** conclua 1 hábito **após as 20h** → resgate **na manhã seguinte**.
+  - Recompensa (50/50): bônus de Ouro (escala com o rank) ou a **Poção de Foco** (+50% de XP nas missões por 30 min). O gatilho de ganho roda em `toggleQuest` (`checkDailyChestEarn`); o status é derivado de datas (`gameState.dailyChest`), calculado em tempo real (`none`/`locked`/`ready`/`opened`), e um banner clicável aparece no topo das Missões (`renderDailyChests`). Poção de Foco entra em `getActiveXpMultiplier` (empilha ×1,5 multiplicativo com os tomos).
+- **❄️ Amuletos de Fim de Semana (Weekend Freeze):** amuleto na Taverna (600 Ouro) que congela o próximo **sábado** ou **domingo**. Ao virar o dia, o reset diário perdoa automaticamente as faltas da data congelada: **sem penalidade, sem reset de streak**, `consecutiveMisses` zerado e o dia marcado como neutro no histórico. Ideal para detox/descanso de fim de semana sem arruinar a sequência. Datas ficam em `gameState.frozenDates`; amuletos vencidos são consumidos no rollover. Não é possível congelar o mesmo dia duas vezes.
+- Persistência via `gameState`/localStorage (mesmo padrão de `shields`/`activeDungeon`); migração aditiva em `loadGameData`. A Poção de Foco (`buffs.focusPotionExpiresAt`) sobrevive ao sync de buffs da nuvem (fica local).
+
 ## [v2.5.18] — 2026-07-12
 - **Novos itens de loja na Taverna (3 mecânicas de economia/retenção):**
   - **⏳ Ampulheta de Chronos (Restauração Retroativa de Streak):** item caro (2500 Ouro) que reverte uma sequência perdida recentemente, apagando a falha — combate o churn de quem esquece de abrir o app e perde um streak longo. Restrições: só reverte perda ocorrida nos **últimos 3 dias** e **uso único a cada 30 dias**. Ao resetar o streak, o `applyDailyPenalty` agora tira um *snapshot* (`gameState.lostStreak = { value, lostOn }`) que a Ampulheta consome; o uso zera `consecutiveMisses` e arma o cooldown (`lastHourglassAt`).

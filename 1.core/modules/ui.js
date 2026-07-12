@@ -6,7 +6,7 @@ import {
     getSynergyGoldBonus, getPerkXpBonus, initSkillsState, isQuestActiveOnDay,
     computePlayerTitle, computeSynergies
 } from './utils.js';
-import { toggleQuest, adjustWater, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation, BOSS_QUEST_BY_LEVEL } from './game-logic.js';
+import { toggleQuest, adjustWater, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation, BOSS_QUEST_BY_LEVEL, getEarlyBirdChestStatus, getNightOwlChestStatus } from './game-logic.js';
 import { setupSettingsListeners } from './pwa.js';
 import { drawRadarChart } from './radar-chart.js';
 
@@ -1019,6 +1019,47 @@ function renderSkills() {
 
 // Inicializa a árvore de skills caso não esteja presente no estado (retrocompatibilidade robusta)
 
+// Renderiza os Baús de Foco Diário (Early Bird / Night Owl) no topo das Missões.
+function renderDailyChests() {
+    const banner = document.getElementById('daily-chest-banner');
+    if (!banner) return;
+
+    const buildChip = (which, status) => {
+        const isEarly = which === 'earlyBird';
+        const icon = isEarly ? '🌅' : '🌙';
+        const name = isEarly ? 'Caçador Matutino' : 'Patrulha Noturna';
+        if (status === 'ready') {
+            return `<div onclick="openDailyChest('${which}')" style="cursor:pointer; flex:1 1 160px; display:flex; align-items:center; gap:10px; background:linear-gradient(135deg, rgba(251,191,36,0.06), rgba(251,191,36,0.16)); border:1px solid var(--neon-gold); border-radius:8px; padding:12px 14px; box-shadow:0 0 14px rgba(251,191,36,0.15);">
+                    <span style="font-size:22px;">🎁</span>
+                    <div>
+                        <div style="font-size:10px; color:var(--neon-gold); font-family:var(--font-hud); letter-spacing:1px;">BAÚ PRONTO</div>
+                        <div style="font-size:13px; font-weight:bold; color:white;">${icon} ${name}</div>
+                        <div style="font-size:10px; color:var(--text-muted);">Toque para abrir</div>
+                    </div>
+                </div>`;
+        }
+        const hint = isEarly ? 'Abre após as 18h' : 'Resgate amanhã de manhã';
+        return `<div style="flex:1 1 160px; display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.03); border:1px dashed var(--border-glass); border-radius:8px; padding:12px 14px; opacity:0.8;">
+                    <span style="font-size:22px;">${icon}</span>
+                    <div>
+                        <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-hud); letter-spacing:1px;">BAÚ GANHO</div>
+                        <div style="font-size:13px; font-weight:bold; color:var(--text-secondary);">${name}</div>
+                        <div style="font-size:10px; color:var(--text-muted);">🔒 ${hint}</div>
+                    </div>
+                </div>`;
+    };
+
+    const chips = [];
+    const eb = getEarlyBirdChestStatus();
+    const no = getNightOwlChestStatus();
+    if (eb === 'ready' || eb === 'locked') chips.push(buildChip('earlyBird', eb));
+    if (no === 'ready' || no === 'locked') chips.push(buildChip('nightOwl', no));
+
+    if (chips.length === 0) { banner.style.display = 'none'; return; }
+    banner.style.display = 'block';
+    banner.innerHTML = `<div style="display:flex; flex-wrap:wrap; gap:10px;">${chips.join('')}</div>`;
+}
+
 function renderQuests() {
     const colPhysical     = document.getElementById('quests-list-physical');
     const colWisdom       = document.getElementById('quests-list-wisdom');
@@ -1107,6 +1148,9 @@ function renderQuests() {
     } else if (weeklyChallengeBanner) {
         weeklyChallengeBanner.style.display = 'none';
     }
+
+    // Baús de Foco Diário (Early Bird / Night Owl)
+    renderDailyChests();
 
     // Helper para mapeamento direto de skill para coluna
     const SKILL_COLUMN_MAP = {

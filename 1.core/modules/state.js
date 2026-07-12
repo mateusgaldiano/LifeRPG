@@ -139,7 +139,7 @@ export let gameState = {
     },
     messages: [],
     history: {},
-    buffs: { autoHeal: false, doubleXp: false, legendaryFocus: false, shieldDays: 0, addictionPenalty: false, addictionPenaltyExpiresAt: null },
+    buffs: { autoHeal: false, doubleXp: false, legendaryFocus: false, shieldDays: 0, addictionPenalty: false, addictionPenaltyExpiresAt: null, focusPotionExpiresAt: null },
     inventory: { unlockedTitles: [], unlockedBorders: [], unlockedSkins: ['default'], activeTitle: null, activeBorder: null, activeSkin: 'default' },
     notificationTimes: { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 },
     lastWeeklyReportYearWeek: "",
@@ -151,7 +151,10 @@ export let gameState = {
     questOps: [],  // outbox de operações de quest (add/edit/delete) p/ sync confiável
     lostStreak: null,        // snapshot da última sequência perdida { value, lostOn } — restaurável pela Ampulheta
     lastHourglassAt: 0,      // timestamp do último uso da Ampulheta do Tempo (cooldown de 30 dias)
-    lastTributeWeek: ""      // semana ISO (segunda) do último Tributo ao Sistema (1×/semana)
+    lastTributeWeek: "",     // semana ISO (segunda) do último Tributo ao Sistema (1×/semana)
+    // Baús de Foco Diário (Early Bird / Night Owl): datas de quando o baú foi ganho/aberto.
+    dailyChest: { earlyBirdEarnedDate: null, earlyBirdOpenedDate: null, nightOwlEarnedDate: null, nightOwlOpenedDate: null },
+    frozenDates: []          // datas (YYYY-MM-DD) congeladas por Amuletos de Fim de Semana
 };
 
 // Banco de Frases de Impacto
@@ -535,6 +538,12 @@ function loadGameData() {
         if (parsed.lostStreak === undefined) parsed.lostStreak = null;
         if (parsed.lastHourglassAt === undefined) parsed.lastHourglassAt = 0;
         if (parsed.lastTributeWeek === undefined) parsed.lastTributeWeek = "";
+        // Migração: Baús de Foco Diário e Amuletos de Fim de Semana
+        if (parsed.buffs.focusPotionExpiresAt === undefined) parsed.buffs.focusPotionExpiresAt = null;
+        if (!parsed.dailyChest || typeof parsed.dailyChest !== 'object') {
+            parsed.dailyChest = { earlyBirdEarnedDate: null, earlyBirdOpenedDate: null, nightOwlEarnedDate: null, nightOwlOpenedDate: null };
+        }
+        if (!Array.isArray(parsed.frozenDates)) parsed.frozenDates = [];
         if (!parsed.messages) {
             parsed.messages = [];
         }
@@ -596,7 +605,9 @@ function loadGameData() {
 
             // Identifica se era um dia ativo (para evitar punir dias de descanso)
             const isRestDay = parsed.activeDays && !parsed.activeDays.includes(yesterdayDayOfWeek);
-            if (isRestDay && dailyStatus === 'missed') {
+            // Amuleto de Fim de Semana: o dia anterior foi congelado? (perdão automático)
+            const isFrozenDay = Array.isArray(parsed.frozenDates) && parsed.frozenDates.includes(parsed.lastCheckedDate);
+            if ((isRestDay || isFrozenDay) && (dailyStatus === 'missed' || dailyStatus === 'bad')) {
                 dailyStatus = 'skipped';
             }
 
@@ -616,13 +627,27 @@ function loadGameData() {
                 }))
             };
 
-            // Verifica penalidade (apenas se concluiu menos de 70% das missões ativas)
-            if (totalCount > 0 && shouldPenalize && (parsed.streak || 0) > 0 && !isRestDay) {
+            // Verifica penalidade (apenas se concluiu menos de 70% das missões ativas).
+            // Amuleto de Fim de Semana congelado (isFrozenDay) perdoa o dia: sem penalidade,
+            // sem reset de streak — a sequência é preservada.
+            if (totalCount > 0 && shouldPenalize && (parsed.streak || 0) > 0 && !isRestDay && !isFrozenDay) {
                 // Penalidade adiada para depois do DOM estar pronto
                 const yesterdayStr = parsed.lastCheckedDate;
                 setTimeout(() => window.applyDailyPenalty(yesterdayStr), 2000);
             } else if (completionRate >= 0.70) {
                 parsed.consecutiveMisses = 0; // Reseta falhas consecutivas se completou 70%+ das quests
+            } else if (isFrozenDay) {
+                parsed.consecutiveMisses = 0; // congelamento quebra a corrente de falhas
+                if (shouldPenalize && (parsed.streak || 0) > 0) {
+                    const _frozenStreak = parsed.streak;
+                    setTimeout(() => {
+                        if (window.showSystemToast) window.showSystemToast(`❄️ *AMULETO DE CONGELAMENTO ATIVADO!* O dia foi congelado — suas falhas foram perdoadas e sua sequência de *${_frozenStreak} dias* segue intacta. Aproveite o descanso.`, 'toast-alert');
+                    }, 2200);
+                }
+            }
+            // Consome amuletos já vencidos (datas até ontem) — mantém só hoje/futuro.
+            if (Array.isArray(parsed.frozenDates)) {
+                parsed.frozenDates = parsed.frozenDates.filter(d => d >= todayStr);
             }
             // Vícios: incrementa a streak de abstinência se nenhuma recaída ocorreu
             // ontem (o flag é setado em toggleQuest ao desmarcar um vício). Só conta

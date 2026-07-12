@@ -220,6 +220,8 @@
                     <div id="dungeon-active-banner" style="display:none; margin-bottom: 20px;"></div>
                     <!-- Desafio Semanal -->
                     <div id="weekly-challenge-banner" style="display:none; margin-bottom: 20px;"></div>
+                    <!-- Baús de Foco Diário (Early Bird / Night Owl) -->
+                    <div id="daily-chest-banner" style="display:none; margin-bottom: 20px;"></div>
                     <!-- Tutorial Questline -->
                     <div id="tutorial-questline-banner" style="display:none; margin-bottom: 20px;"></div>
                     
@@ -682,6 +684,36 @@
                                 <div class="reward-bottom">
                                      <span class="reward-cost">2500 OURO</span>
                                      <button class="btn-buy">USAR</button>
+                                </div>
+                            </div>
+
+                            <!-- Amuleto do Sábado -->
+                            <div class="reward-card" onclick="buyStoreItem('amulet_saturday')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                     <div>
+                                         <h3 style="color:var(--neon-cyan);">Amuleto do Sábado</h3>
+                                         <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Congela o próximo sábado: faltas são perdoadas e o streak preservado. Ideal p/ detox de fim de semana.</p>
+                                     </div>
+                                     <span style="font-size: 1.5rem;">❄️</span>
+                                </div>
+                                <div class="reward-bottom">
+                                     <span class="reward-cost">600 OURO</span>
+                                     <button class="btn-buy">ATIVAR</button>
+                                </div>
+                            </div>
+
+                            <!-- Amuleto do Domingo -->
+                            <div class="reward-card" onclick="buyStoreItem('amulet_sunday')">
+                                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                     <div>
+                                         <h3 style="color:var(--neon-cyan);">Amuleto do Domingo</h3>
+                                         <p style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">Congela o próximo domingo: faltas são perdoadas e o streak preservado. Descanse sem culpa.</p>
+                                     </div>
+                                     <span style="font-size: 1.5rem;">❄️</span>
+                                </div>
+                                <div class="reward-bottom">
+                                     <span class="reward-cost">600 OURO</span>
+                                     <button class="btn-buy">ATIVAR</button>
                                 </div>
                             </div>
                         </div>
