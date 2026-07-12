@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.18] — 2026-07-12
+- **Novos itens de loja na Taverna (3 mecânicas de economia/retenção):**
+  - **⏳ Ampulheta de Chronos (Restauração Retroativa de Streak):** item caro (2500 Ouro) que reverte uma sequência perdida recentemente, apagando a falha — combate o churn de quem esquece de abrir o app e perde um streak longo. Restrições: só reverte perda ocorrida nos **últimos 3 dias** e **uso único a cada 30 dias**. Ao resetar o streak, o `applyDailyPenalty` agora tira um *snapshot* (`gameState.lostStreak = { value, lostOn }`) que a Ampulheta consome; o uso zera `consecutiveMisses` e arma o cooldown (`lastHourglassAt`).
+  - **🗝️ Chaves de Portal (Masmorras sob demanda):** 6 chaves (uma por atributo — Ferro/Físico, Mente/Sabedoria, Zen/Mental, Foco/Produtividade, Laços/Social, Ordem/Rotina), 300 Ouro cada, que abrem uma masmorra focada na skill escolhida na hora. Dá controle ao jogador para evoluir atributos atrasados no radar em vez de esperar a masmorra aleatória do agendamento. `spawnDungeon(forcedSkill)` passou a aceitar uma skill forçada (bypassa o agendamento, mantém a regra de "uma masmorra por vez"). Exige 1 habilidade em Nível 3+ e nenhuma masmorra ativa.
+  - **🏛️ Tributo Semanal ao Sistema (dreno de fim de jogo):** doação voluntária que converte 1000 Ouro em +5 XP na habilidade escolhida — taxa dura de propósito, para drenar o excedente de ouro de quem já maximizou tudo. Limite de **1× por semana** (cooldown por semana ISO em `lastTributeWeek`) e liberado a partir do nível 10. Novo helper `grantRawSkillXP(skill, amount)` concede uma quantidade exata de skill XP com carry-over de nível.
+  - Persistência: os três campos novos vivem no `gameState` (localStorage), mesmo padrão de `shields`/`activeDungeon` — mecânicas consumíveis não sincronizadas via RPC. Migração aditiva em `loadGameData` dá default a saves antigos.
+
 ## [v2.5.17] — 2026-07-08
 - **Avisos de falha/punição agora persistem até o usuário fechar no X.** Antes, a mensagem que explicava *por que* você falhou e *qual* a punição (−XP, reset de streak, debuff) era um toast que sumia sozinho em ~3s (o `toastFadeOut` da CSS disparava em 2.6s), sem dar tempo de ler. Agora: (1) **todo** toast ganhou um botão **✕** pra dispensar manualmente; (2) toasts do tipo `toast-alert` (falha diária, recaída de vício, escudo/poção consumidos) **não somem sozinhos** — a CSS remove o fade-out e o JS não agenda a remoção automática; só saem no ✕. As mensagens de penalidade do reset diário passaram a usar `toast-alert`.
 

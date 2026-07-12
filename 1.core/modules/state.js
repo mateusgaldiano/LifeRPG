@@ -148,7 +148,10 @@ export let gameState = {
     tutorialCompleted: false,
     friendsCount: 0,
     _lastSyncedAt: "",
-    questOps: []   // outbox de operações de quest (add/edit/delete) p/ sync confiável
+    questOps: [],  // outbox de operações de quest (add/edit/delete) p/ sync confiável
+    lostStreak: null,        // snapshot da última sequência perdida { value, lostOn } — restaurável pela Ampulheta
+    lastHourglassAt: 0,      // timestamp do último uso da Ampulheta do Tempo (cooldown de 30 dias)
+    lastTributeWeek: ""      // semana ISO (segunda) do último Tributo ao Sistema (1×/semana)
 };
 
 // Banco de Frases de Impacto
@@ -528,6 +531,10 @@ function loadGameData() {
         // Migração: debuff de recaída de vícios
         if (parsed.buffs.addictionPenalty === undefined) parsed.buffs.addictionPenalty = false;
         if (parsed.buffs.addictionPenaltyExpiresAt === undefined) parsed.buffs.addictionPenaltyExpiresAt = null;
+        // Migração: campos das novas mecânicas (Ampulheta, Chaves de Portal, Tributo)
+        if (parsed.lostStreak === undefined) parsed.lostStreak = null;
+        if (parsed.lastHourglassAt === undefined) parsed.lastHourglassAt = 0;
+        if (parsed.lastTributeWeek === undefined) parsed.lastTributeWeek = "";
         if (!parsed.messages) {
             parsed.messages = [];
         }

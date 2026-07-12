@@ -101,12 +101,19 @@ function getRankIncomeMultiplier() {
 // Gera uma nova dungeon aleatória
 const SKILL_LABELS = { physical: 'Físico', mental: 'Mental', productivity: 'Foco', wisdom: 'Sabedoria', social: 'Conexão', routine: 'Rotina' };
 
-function spawnDungeon() {
-    if (!hasSkillLV3()) return;
+function spawnDungeon(forcedSkill = null) {
+    // Chaves de Portal abrem masmorras sob demanda (forcedSkill) — bypassa o gate de
+    // agendamento, mas a regra de "uma masmorra por vez" continua valendo.
+    if (!forcedSkill && !hasSkillLV3()) return;
     if (gameState.activeDungeon && !gameState.activeDungeon.completed) return;
 
-    const pick = DUNGEON_POOL[Math.floor(Math.random() * DUNGEON_POOL.length)];
-    
+    let pool = DUNGEON_POOL;
+    if (forcedSkill) {
+        const filtered = DUNGEON_POOL.filter(d => d.skill === forcedSkill);
+        if (filtered.length > 0) pool = filtered;
+    }
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+
     // Roleta de Raridade (Épico: 10%, Raro: 25%, Comum: 65%)
     const roll = Math.random();
     let rarity = 'comum';
@@ -146,8 +153,9 @@ function spawnDungeon() {
         completed: false
     };
     saveGameData();
+    const openingLabel = forcedSkill ? '🗝️ *PORTAL ABERTO!*' : `${rarityLabel} *MASMORRA ABERTA!*`;
     setTimeout(() => {
-        showSystemToast(`${rarityLabel} *MASMORRA ABERTA!* *"${pick.title}"* — objetivo: conclua *${target} hábitos de ${skillName}*\n\nRecompensa: +${xpVal} XP · +${goldVal} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
+        showSystemToast(`${openingLabel} *"${pick.title}"* — objetivo: conclua *${target} hábitos de ${skillName}*\n\nRecompensa: +${xpVal} XP · +${goldVal} 💰\n⏳ Prazo: 48 horas. Conclua antes que expire.`);
 
     }, 1000);
 }
@@ -1246,6 +1254,16 @@ function applyDailyPenalty(yesterdayStr) {
 
     // ── Reseta streak se necessário ─────────────────────────────────────────
     if (streakReset) {
+        // Snapshot da sequência perdida ANTES de zerar — a Ampulheta do Tempo pode
+        // revertê-la. Só grava se havia sequência real (>0) para não sobrescrever um
+        // registro bom com 0 em falhas consecutivas subsequentes.
+        const prevStreak = gameState.streak || 0;
+        if (prevStreak > 0) {
+            gameState.lostStreak = {
+                value: prevStreak,
+                lostOn: yesterdayStr || localDateStr(new Date(Date.now() - 86400000))
+            };
+        }
         gameState.streak = 0;
         gameState.consecutiveStreak7Days = 0;
     }
@@ -1310,6 +1328,89 @@ function applyDailyPenalty(yesterdayStr) {
 
 
 // ==========================================================================
+// AMPULHETA DO TEMPO · CHAVES DE PORTAL · TRIBUTO AO SISTEMA (helpers)
+// ==========================================================================
+
+// ── Ampulheta do Tempo (restauração retroativa de streak) ──────────────────
+const HOURGLASS_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000; // 1 uso a cada 30 dias
+const HOURGLASS_RESTORE_WINDOW_DAYS = 3;                 // só reverte perda recente (≤3 dias)
+
+function isHourglassOnCooldown() {
+    const last = gameState.lastHourglassAt || 0;
+    return last > 0 && (Date.now() - last) < HOURGLASS_COOLDOWN_MS;
+}
+
+function hourglassDaysLeft() {
+    const last = gameState.lastHourglassAt || 0;
+    const remaining = HOURGLASS_COOLDOWN_MS - (Date.now() - last);
+    return Math.max(1, Math.ceil(remaining / (24 * 60 * 60 * 1000)));
+}
+
+// Há uma sequência perdida recentemente que valha a pena restaurar?
+function hasRestorableStreak() {
+    const ls = gameState.lostStreak;
+    if (!ls || !ls.value || ls.value <= (gameState.streak || 0)) return false;
+    if (!ls.lostOn) return true; // sem data → assume elegível (compat)
+    const lost = new Date(ls.lostOn + 'T00:00:00');
+    const today = new Date(localDateStr() + 'T00:00:00');
+    const diffDays = Math.round((today - lost) / (24 * 60 * 60 * 1000));
+    return diffDays >= 0 && diffDays <= HOURGLASS_RESTORE_WINDOW_DAYS;
+}
+
+// ── Chaves de Portal (masmorras sob demanda por skill) ─────────────────────
+const KEY_SKILL_MAP = {
+    key_physical:     'physical',
+    key_wisdom:       'wisdom',
+    key_mental:       'mental',
+    key_productivity: 'productivity',
+    key_social:       'social',
+    key_routine:      'routine',
+};
+
+// ── Tributo Semanal ao Sistema (converte ouro em skill XP — taxa ruim) ──────
+const TRIBUTE_SKILL_MAP = {
+    tribute_physical:     'physical',
+    tribute_mental:       'mental',
+    tribute_productivity: 'productivity',
+    tribute_social:       'social',
+    tribute_wisdom:       'wisdom',
+    tribute_routine:      'routine',
+};
+const TRIBUTE_COST = 1000;  // ouro drenado por tributo
+const TRIBUTE_XP   = 5;     // skill XP concedido (taxa dura de propósito)
+
+// Chave de semana ISO (segunda-feira desta semana) — usada no cooldown do tributo.
+function currentWeekKey() {
+    const now = new Date();
+    const dow = now.getDay(); // 0=Dom .. 6=Sab
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + (dow === 0 ? -6 : 1 - dow));
+    return localDateStr(monday);
+}
+
+// Concede uma quantidade EXATA de skill XP (com carry-over de nível). Diferente de
+// addSkillXP (que soma o ganho-padrão de quest e zera o excedente ao subir).
+function grantRawSkillXP(skillType, amount) {
+    initSkillsState();
+    const s = gameState.skills[skillType];
+    if (!s) return false;
+    s.xp = (s.xp || 0) + amount;
+    let leveled = false;
+    let guard = 0;
+    while (s.xp >= s.xpToNext && guard < 100) {
+        s.xp -= s.xpToNext;
+        s.level++;
+        s.xpToNext = calcSkillXpToNext(s.level);
+        leveled = true;
+        guard++;
+    }
+    checkAndActivateBossQuest();
+    saveGameData();
+    return leveled;
+}
+
+
+// ==========================================================================
 // LOJA E TAVERNA (COMPRA DE BUFFS E COSMÉTICOS)
 // ==========================================================================
 async function buyStoreItem(itemId) {
@@ -1323,6 +1424,7 @@ async function buyStoreItem(itemId) {
         'buff_shield': 1000,
         'buff_immortality': 2500,
         'buff_legendary_focus': 400,
+        'buff_hourglass': 2500,
         'title_implacavel': 1500,
         'title_mestre': 1500,
         'border_neonred': 2500,
@@ -1330,6 +1432,10 @@ async function buyStoreItem(itemId) {
         'skin_mist_monarch': 3500,
         'skin_arise_emperor': 6000
     };
+    // Chaves de Portal (masmorra sob demanda por skill) — todas 300 de ouro.
+    Object.keys(KEY_SKILL_MAP).forEach(k => { prices[k] = 300; });
+    // Tributo Semanal ao Sistema (converte ouro em skill XP).
+    Object.keys(TRIBUTE_SKILL_MAP).forEach(k => { prices[k] = TRIBUTE_COST; });
 
     let cost = prices[itemId];
     if (!cost) return;
@@ -1358,6 +1464,48 @@ async function buyStoreItem(itemId) {
         trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
         showSystemToast("⚠️ *BLOQUEADO.* O Grimório Lendário exige nível 20+ para ser adquirido.");
         return;
+    }
+
+    // ── Ampulheta do Tempo: valida cooldown e disponibilidade ANTES de cobrar ──
+    if (itemId === 'buff_hourglass') {
+        if (isHourglassOnCooldown()) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'cooldown' });
+            showSystemToast(`⏳ *AMPULHETA EM RECARGA.* O tempo se dobra devagar. Aguarde ${hourglassDaysLeft()} dia(s) para poder usá-la de novo.`, 'toast-alert');
+            return;
+        }
+        if (!hasRestorableStreak()) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'no_streak' });
+            showSystemToast(`⌛ *NADA A RESTAURAR.* A Ampulheta só reverte uma sequência perdida nos últimos ${HOURGLASS_RESTORE_WINDOW_DAYS} dias. Sua ofensiva atual está intacta.`, 'toast-alert');
+            return;
+        }
+    }
+
+    // ── Chaves de Portal: exige masmorras desbloqueadas e nenhuma masmorra ativa ──
+    if (itemId.startsWith('key_')) {
+        if (!hasSkillLV3()) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'feature_locked' });
+            showSystemToast("⚠️ *PORTAIS ADORMECIDOS.* Eleve ao menos uma habilidade ao Nível 3 para abrir masmorras.");
+            return;
+        }
+        if (gameState.activeDungeon && !gameState.activeDungeon.completed) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'dungeon_active' });
+            showSystemToast("⚠️ *MASMORRA EM ANDAMENTO.* Conclua a masmorra ativa antes de abrir um novo portal.");
+            return;
+        }
+    }
+
+    // ── Tributo ao Sistema: end-game (nível 10+) e 1× por semana ────────────────
+    if (itemId.startsWith('tribute_')) {
+        if ((gameState.level || 1) < 10) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
+            showSystemToast("⚠️ *BLOQUEADO.* O Tributo ao Sistema exige nível 10+ para ser ofertado.");
+            return;
+        }
+        if (gameState.lastTributeWeek && gameState.lastTributeWeek === currentWeekKey()) {
+            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'weekly_cooldown' });
+            showSystemToast("🏛️ *TRIBUTO JÁ OFERTADO.* O Sistema aceita apenas um tributo por semana. Retorne na próxima.");
+            return;
+        }
     }
 
     if ((gameState.gold || 0) < cost) {
@@ -1417,7 +1565,16 @@ async function buyStoreItem(itemId) {
             gameState.shields = 3; // restaura escudos ao máximo (3/3)
             showSystemToast(`👑 *CÁLICE DA IMORTALIDADE CONSUMIDO!* Seus escudos foram restaurados ao máximo (3/3).`);
         }
-    } 
+        else if (itemId === 'buff_hourglass') {
+            // Disponibilidade já validada acima (cooldown + hasRestorableStreak).
+            const restored = gameState.lostStreak.value;
+            gameState.streak = restored;
+            gameState.consecutiveMisses = 0;   // apaga a falha por completo
+            gameState.lostStreak = null;       // consome o snapshot
+            gameState.lastHourglassAt = Date.now(); // arma o cooldown de 30 dias
+            showSystemToast(`⏳ *AMPULHETA DE CHRONOS CONSUMIDA!* O tempo recuou — sua sequência de *${restored} dias* foi restaurada e a falha, apagada. Não desperdice esta segunda chance.`, 'toast-alert');
+        }
+    }
     else if (itemId.startsWith('title_') || itemId.startsWith('border_')) {
         if (!gameState.inventory) gameState.inventory = { unlockedTitles: [], unlockedBorders: [], unlockedSkins: ['default'], activeTitle: null, activeBorder: null, activeSkin: 'default' };
         if (!gameState.inventory.unlockedSkins) gameState.inventory.unlockedSkins = ['default'];
@@ -1487,6 +1644,22 @@ async function buyStoreItem(itemId) {
                 completeTutorialQuestline();
             }
         }
+    }
+    else if (itemId.startsWith('key_')) {
+        // Chave de Portal: abre uma masmorra sob demanda focada na skill escolhida.
+        // (Gate e "sem masmorra ativa" já validados acima.) spawnDungeon exibe o toast.
+        const skill = KEY_SKILL_MAP[itemId];
+        spawnDungeon(skill);
+        trackEvent('portal_key_used', { item_id: itemId, skill });
+    }
+    else if (itemId.startsWith('tribute_')) {
+        // Tributo ao Sistema: converte ouro em skill XP a uma taxa dura (dreno de fim de jogo).
+        const skill = TRIBUTE_SKILL_MAP[itemId];
+        gameState.lastTributeWeek = currentWeekKey(); // arma o cooldown semanal
+        grantRawSkillXP(skill, TRIBUTE_XP);
+        const label = SKILL_LABELS[skill] || skill;
+        showSystemToast(`🏛️ *TRIBUTO ACEITO.* O Sistema converteu ${TRIBUTE_COST} de Ouro em *+${TRIBUTE_XP} XP de ${label}*. Uma troca cara — mas o poder tem seu preço.`);
+        trackEvent('tribute_offered', { item_id: itemId, skill, xp: TRIBUTE_XP, cost: TRIBUTE_COST });
     }
 
     // Cobra o ouro

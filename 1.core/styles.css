@@ -908,6 +908,21 @@ body::before {
 }
 .btn-buy:hover { background: #fff; box-shadow: 0 0 15px var(--glow-gold); }
 
+/* Tributo ao Sistema: linha de chips de skill para escolher o alvo do tributo */
+.tribute-skill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.btn-tribute {
+    font-family: var(--font-hud); font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.04); color: var(--text-primary);
+    border: 1px solid var(--border-glass); border-radius: var(--radius-sm);
+    padding: 8px 12px; min-height: 40px; cursor: pointer; flex: 1 1 auto;
+    transition: all 0.2s;
+}
+.btn-tribute:hover {
+    border-color: var(--neon-gold); color: var(--neon-gold);
+    box-shadow: 0 0 12px rgba(251,191,36,0.12);
+}
+.btn-tribute:active { transform: scale(0.97); }
+
 .tavern-footer { margin-top: 24px; display: flex; justify-content: center; }
 .btn-add-reward {
     width: 100%;
