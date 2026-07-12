@@ -1813,11 +1813,12 @@ body::before {
 }
 
 .toast {
+    position: relative;
     background: rgba(245, 248, 252, 0.96);
     border: 1px solid var(--border-color);
     border-left: 4px solid var(--neon-blue);
     color: var(--text-primary);
-    padding: 12px 20px;
+    padding: 12px 38px 12px 20px; /* espaço à direita p/ o botão X */
     border-radius: 6px;
     font-size: 13px;
     backdrop-filter: blur(10px);
@@ -1830,6 +1831,29 @@ body::before {
 .toast.toast-gold { border-color: var(--border-color); border-left: 4px solid var(--neon-gold); }
 .toast.toast-level { border-color: var(--border-color); border-left: 4px solid var(--neon-purple); }
 .toast.toast-alert { border-color: var(--border-color); border-left: 4px solid var(--neon-red); }
+/* Toasts de alerta (falha/penalidade) NÃO desaparecem sozinhos — só o slide-in,
+   sem o fade-out automático — pra a pessoa ler o motivo e a punição com calma. */
+.toast.toast-alert {
+    animation: toastSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+/* Botão de fechar (X) presente em todo toast. */
+.toast-close {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.55;
+    transition: opacity 0.15s;
+}
+.toast-close:hover { opacity: 1; color: var(--text-primary); }
 
 @keyframes toastSlideIn {
     from { transform: translateX(100%); opacity: 0; }

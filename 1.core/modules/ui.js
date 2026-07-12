@@ -1486,17 +1486,27 @@ function showSystemToast(text, type = '') {
                             .replace(/\n/g, '<br>');
     
     toast.innerHTML = formattedText;
+
+    // Botão de fechar (X) em todo toast — permite dispensar manualmente.
+    const dismiss = () => { if (toast.parentNode) toast.parentNode.removeChild(toast); };
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'toast-close';
+    closeBtn.setAttribute('aria-label', 'Fechar');
+    closeBtn.textContent = '✕';
+    closeBtn.addEventListener('click', dismiss);
+    toast.appendChild(closeBtn);
+
     container.appendChild(toast);
+
+    // Toasts de alerta (falha/penalidade) PERSISTEM até o X — a pessoa precisa
+    // ler o motivo da falha e a punição. A CSS .toast-alert já tira o fade-out.
+    if (type.split(' ').includes('toast-alert')) return;
 
     // UX-003: toasts longos (mensagens do Iroh) ficam mais tempo na tela
     const plainLen = text.replace(/[*_\n]/g, '').length;
     const duration = plainLen > 160 ? 8500 : plainLen > 90 ? 6000 : 3500;
 
-    setTimeout(() => {
-        if (toast.parentNode) {
-            toast.parentNode.removeChild(toast);
-        }
-    }, duration);
+    setTimeout(dismiss, duration);
 }
 
 function showImpactQuote() {

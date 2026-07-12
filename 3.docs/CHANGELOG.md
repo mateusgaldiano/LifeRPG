@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.17] — 2026-07-08
+- **Avisos de falha/punição agora persistem até o usuário fechar no X.** Antes, a mensagem que explicava *por que* você falhou e *qual* a punição (−XP, reset de streak, debuff) era um toast que sumia sozinho em ~3s (o `toastFadeOut` da CSS disparava em 2.6s), sem dar tempo de ler. Agora: (1) **todo** toast ganhou um botão **✕** pra dispensar manualmente; (2) toasts do tipo `toast-alert` (falha diária, recaída de vício, escudo/poção consumidos) **não somem sozinhos** — a CSS remove o fade-out e o JS não agenda a remoção automática; só saem no ✕. As mensagens de penalidade do reset diário passaram a usar `toast-alert`.
+
 ## [v2.5.16] — 2026-07-08
 - **Refactor: `completedIds` agora usa coluna dedicada `history.completed_ids` (jsonb).** A v2.5.15 resolvia a persistência dos nomes de hábitos concluídos enfiando o array dentro de `skills_xp._completedIds` — mas `skills_xp` tem significado próprio (XP por skill), então era uma gambiarra semântica. Migração no Supabase adiciona `history.completed_ids jsonb NOT NULL DEFAULT '[]'`, move qualquer resquício de `skills_xp._completedIds` pra ela e limpa o `skills_xp`. O upload passa a gravar em `completed_ids`; o download lê de lá (com fallback transitório pro `skills_xp._completedIds`, caso um sync da v2.5.15 tenha rodado antes desta versão). Sem perda de dado e sem quebra de retrocompatibilidade.
 

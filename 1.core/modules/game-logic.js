@@ -1176,7 +1176,7 @@ function applyDailyPenalty(yesterdayStr) {
 
         // delay de 500ms para não competir visualmente com outros toasts/eventos de reset diário
         setTimeout(() => {
-            showSystemToast(`🧪 *POÇÃO DE CURA CONSUMIDA!* Sua poção protegeu seu streak e evitou qualquer penalidade hoje! _"A alquimia salvou o dia."_`);
+            showSystemToast(`🧪 *POÇÃO DE CURA CONSUMIDA!* Sua poção protegeu seu streak e evitou qualquer penalidade hoje! _"A alquimia salvou o dia."_`, 'toast-alert');
         }, 500);
 
         saveGameData();
@@ -1194,7 +1194,7 @@ function applyDailyPenalty(yesterdayStr) {
         gameState.consecutiveStreak7Days = 0;
 
         setTimeout(() => {
-            showSystemToast(`🛡️ *ESCUDO ATIVADO!* Você falhou hoje, mas seu escudo absorveu a penalidade. Streak preservada em ${gameState.streak} dias. Escudos restantes: ${gameState.shields}/3. Não abuse dessa proteção.`);
+            showSystemToast(`🛡️ *ESCUDO ATIVADO!* Você falhou hoje, mas seu escudo absorveu a penalidade. Streak preservada em ${gameState.streak} dias. Escudos restantes: ${gameState.shields}/3. Não abuse dessa proteção.`, 'toast-alert');
 
         }, 500);
 
@@ -1300,7 +1300,7 @@ function applyDailyPenalty(yesterdayStr) {
             angry: `☠️ *SISTEMA:* Três dias consecutivos de falha. Penalidade severa aplicada. −${penalty} XP. Suas habilidades sofreram regressão. _"Você conhece seu potencial e ainda assim escolheu a fraqueza."_ Corrija isso agora.`,
             severe: `💀 *SISTEMA — ALERTA CRÍTICO:* Cinco dias ou mais sem cumprir suas missões. Penalidade máxima: −${penalty} XP. Debuff de 48h ativo. Regressão de habilidades aplicada. _"${getPlayerTerm(gameState.gender) === 'Guerreira' ? 'Uma guerreira que abandona sua disciplina por dias não é mais uma guerreira' : 'Um guerreiro que abandona sua disciplina por dias não é mais um guerreiro'} — é apenas alguém com o uniforme."_ Retorne. Agora.`
         };
-        showSystemToast(irohMessages[irohTone]);
+        showSystemToast(irohMessages[irohTone], 'toast-alert');
 
     }, 600);
 
