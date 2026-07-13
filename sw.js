@@ -28,6 +28,7 @@ const ASSETS_TO_CACHE = [
     'manifest.json',
     '2.assets/icons/icon-192.png',
     '2.assets/icons/icon-512.png',
+    '2.assets/icons/badge-96.png',
     '2.assets/avatars/0 - female/1.rank-e.png',
     '2.assets/avatars/0 - female/2.rank-d.png',
     '2.assets/avatars/0 - female/3.rank-c.png',
@@ -219,7 +220,7 @@ function showNotification(title, body, tag) {
     self.registration.showNotification(title, {
         body,
         icon: '2.assets/icons/icon-192.png',
-        badge: '2.assets/icons/icon-192.png',
+        badge: '2.assets/icons/badge-96.png', // silhueta branca (raio) p/ a barra de status
         vibrate: [200, 100, 200, 100, 200],
         tag,
         renotify: true,
@@ -261,7 +262,7 @@ self.addEventListener('push', (event) => {
     const options = {
         body: payload.body,
         icon: '2.assets/icons/icon-192.png',
-        badge: '2.assets/icons/icon-192.png',
+        badge: '2.assets/icons/badge-96.png', // silhueta branca (raio) p/ a barra de status
         vibrate: [200, 100, 200],
         tag: payload.tag || 'general-push',
         renotify: true,

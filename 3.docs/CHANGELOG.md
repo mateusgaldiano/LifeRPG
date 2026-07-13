@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.23] — 2026-07-12
+- **Fix: ícone da notificação na barra de status (Android) deixou de ser um quadrado branco.** O `badge` das notificações (tanto locais quanto push) apontava para o ícone colorido `icon-192.png` — no Android o badge tem que ser uma **silhueta branca em fundo transparente**, então qualquer imagem opaca/colorida vira um quadrado branco. Criado `2.assets/icons/badge-96.png` (raio branco, transparente, gerado via `sharp`) e apontado o `badge` das duas notificações (`showNotification` local e handler de `push`) para ele. O novo asset também entrou no pre-cache do Service Worker. O ícone grande (colorido) da notificação segue o `icon-192.png`.
+
 ## [v2.5.22] — 2026-07-12
 - **Balance: Amuleto de Fim de Semana virou prospectivo (nunca congela hoje).** Antes, `nextWeekendDateStr` incluía o próprio dia — dava pra comprar o Amuleto do Sábado no sábado à noite, já tendo falhado, e ser perdoado por 600 de ouro, pisando no nicho retroativo da Ampulheta (2500 + cooldown de 30 dias). Agora, se hoje já é o dia-alvo, o amuleto pula para a semana seguinte (`|| 7`). Reforça o Amuleto como ferramenta de **planejamento** (descanso decidido com antecedência) e reserva o perdão "no mesmo dia depois de falhar" à Ampulheta.
 
