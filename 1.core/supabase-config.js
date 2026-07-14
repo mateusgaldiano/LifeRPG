@@ -85,6 +85,10 @@ function applyCloudCosmetics(settings) {
 // usuário (addictionStreak, rankEvaluationsClaimed…). Só roda no ramo "nuvem vence".
 function applyCloudProgressionFlags(settings) {
   if (!settings) return;
+  // Gênero: identidade do personagem (define o avatar). Não é coluna própria — mora
+  // no `settings`. Sem isso, ao logar em outro aparelho/limpar cache, caía no default
+  // 'male' e uma usuária feminina via o avatar masculino.
+  if (settings.gender) gameState.gender = settings.gender;
   if (settings.lastHourglassAt !== undefined) gameState.lastHourglassAt = settings.lastHourglassAt;
   if (settings.lastTributeWeek !== undefined) gameState.lastTributeWeek = settings.lastTributeWeek;
   if (settings.lostStreak !== undefined)      gameState.lostStreak      = settings.lostStreak;
@@ -411,6 +415,7 @@ async function ensureUserProfile(authUser) {
             rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
             addictionStreak: gameState.addictionStreak || 0,
             _addictionRelapsedToday: gameState._addictionRelapsedToday || false,
+            gender: gameState.gender || 'male',
             lastHourglassAt: gameState.lastHourglassAt || 0,
             lastTributeWeek: gameState.lastTributeWeek || "",
             lostStreak: gameState.lostStreak || null,
@@ -732,6 +737,7 @@ window.saveToSupabase = async function() {
       rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
       addictionStreak: gameState.addictionStreak || 0,
       _addictionRelapsedToday: gameState._addictionRelapsedToday || false,
+      gender: gameState.gender || 'male',
       // Flags de progressão das mecânicas novas (Ampulheta, Tributo, Baús, Amuletos)
       lastHourglassAt: gameState.lastHourglassAt || 0,
       lastTributeWeek: gameState.lastTributeWeek || "",
