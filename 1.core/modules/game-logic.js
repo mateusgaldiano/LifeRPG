@@ -810,13 +810,22 @@ function toggleQuest(id) {
         if (quest.current !== undefined) {
             quest.current = 0; // Reseta contador de água
         }
-        
-        let goldLost = quest.gold;
-        if (quest._legendaryFocusConsumed) {
-            goldLost *= 5;
-            delete quest._legendaryFocusConsumed;
+
+        // Remove EXATAMENTE o que a conclusão concedeu (com todos os multiplicadores),
+        // não o valor base — senão cada ciclo marcar/desmarcar dá lucro líquido.
+        const xpToRemove = (quest._xpAwarded != null) ? quest._xpAwarded : quest.xp;
+        let goldToRemove;
+        if (quest._goldAwarded != null) {
+            goldToRemove = quest._goldAwarded;
+        } else {
+            // Fallback p/ quests concluídas ANTES desta correção (sem _goldAwarded).
+            goldToRemove = quest.gold;
+            if (quest._legendaryFocusConsumed) goldToRemove *= 5;
         }
-        deductRewards(quest.xp, goldLost);
+        delete quest._xpAwarded;
+        delete quest._goldAwarded;
+        delete quest._legendaryFocusConsumed;
+        deductRewards(xpToRemove, goldToRemove);
 
         // Deduz pontos no atributo
         deductSkillXP(skillType);
@@ -855,7 +864,11 @@ function toggleQuest(id) {
         }
 
         quest.completed = true;
-        addRewards(xpGained, goldGained);
+        // Guarda os valores REAIS concedidos (com multiplicadores) p/ desmarcar remover
+        // exatamente isto — senão marcar/desmarcar dá lucro (bug de farm de XP/ouro).
+        const awarded = addRewards(xpGained, goldGained);
+        quest._xpAwarded = awarded.xp;
+        quest._goldAwarded = awarded.gold;
         addSkillXP(skillType);
         bumpDungeonProgress(skillType, 1);
 
@@ -938,12 +951,19 @@ function adjustWater(id, operation) {
         // Se já estava concluída e diminuiu a água, desmarca
         quest.completed = false;
         quest.current = targetVal - 1;
-        let goldLost = quest.gold;
-        if (quest._legendaryFocusConsumed) {
-            goldLost *= 5;
-            delete quest._legendaryFocusConsumed;
+        // Remove EXATAMENTE o que a conclusão concedeu (mesma correção do toggleQuest).
+        const xpToRemove = (quest._xpAwarded != null) ? quest._xpAwarded : quest.xp;
+        let goldToRemove;
+        if (quest._goldAwarded != null) {
+            goldToRemove = quest._goldAwarded;
+        } else {
+            goldToRemove = quest.gold;
+            if (quest._legendaryFocusConsumed) goldToRemove *= 5;
         }
-        deductRewards(quest.xp, goldLost);
+        delete quest._xpAwarded;
+        delete quest._goldAwarded;
+        delete quest._legendaryFocusConsumed;
+        deductRewards(xpToRemove, goldToRemove);
         deductSkillXP(skillType);
         bumpDungeonProgress(skillType, -1);
     } else if (!quest.completed) {
@@ -961,10 +981,12 @@ function adjustWater(id, operation) {
                 }
                 quest.completed = true;
                 let xpGained = quest.xp * getActiveXpMultiplier();
-                addRewards(xpGained, goldGained);
+                const awarded = addRewards(xpGained, goldGained);
+                quest._xpAwarded = awarded.xp;     // p/ desmarcar remover o valor exato
+                quest._goldAwarded = awarded.gold;
                 addSkillXP(skillType);
                 bumpDungeonProgress(skillType, 1);
-                
+
                 checkAllDailies();
             }
         } else if (operation === 'minus' && quest.current > 0) {
@@ -1096,21 +1118,27 @@ function addRewards(xpGained, goldGained) {
 
     // Verifica conclusão de boss quest mesmo sem level up
     checkAndActivateBossQuest();
+
+    // Retorna os valores REAIS concedidos (já com todos os multiplicadores) para que
+    // o desmarcar remova exatamente isto — evita o exploit de marcar/desmarcar.
+    return { xp: bonusXp, gold: bonusGold };
 }
 
 
 
-// Subtrai XP e Gold ao desmarcar (impede negativar XP/Ouro)
+// Subtrai XP e Gold ao desmarcar (impede negativar XP/Ouro).
+// Reverte também eventuais level-ups causados pela conclusão ("empresta" do nível
+// anterior), pra que desmarcar devolva ao estado exato de antes — sem farmar nível.
 function deductRewards(xpLost, goldLost) {
-    gameState.xp -= xpLost;
-    gameState.gold -= goldLost;
+    gameState.gold = Math.max(0, (gameState.gold || 0) - goldLost);
 
-    if (gameState.xp < 0) {
-        gameState.xp = 0;
+    let xp = (gameState.xp || 0) - xpLost;
+    while (xp < 0 && (gameState.level || 1) > 1) {
+        gameState.level--;
+        gameState.xpToNext = getXpToNextForLevel(gameState.level);
+        xp += gameState.xpToNext;
     }
-    if (gameState.gold < 0) {
-        gameState.gold = 0;
-    }
+    gameState.xp = xp < 0 ? 0 : xp;
 }
 
 // Dispara Overlay de evolução (estilo Arise)
@@ -1122,7 +1150,11 @@ function checkAllDailies() {
         isQuestActiveOnDay(q, todayDayOfWeek)
     );
     const allDone = activeToday.length > 0 && activeToday.every(q => q.completed);
-    if (allDone) {
+    // As recompensas de "dia completo" (streak, escudo, perks mente_diamante/o_sistema)
+    // só valem UMA vez por dia. Sem esta trava, marcar/desmarcar a última daily inflava
+    // streak e escudos indefinidamente — e o streak alimenta o multiplicador de XP.
+    if (allDone && gameState._dailiesRewardedDate !== localDateStr()) {
+        gameState._dailiesRewardedDate = localDateStr();
         gameState.streak++;
 
         // Desbloqueia título especial com 30 dias de streak
