@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.26] — 2026-07-12
+- **Removido o contador "X/Y" das atividades (água 0/8, higiene bucal 0/2 etc.) — toda atividade virou check simples.** A pedido do usuário (atrapalhava mais do que ajudava). Mudanças:
+  - **Render:** `renderQuests` não desenha mais a linha de +/− (`water-adjust-row`); handler de clique `.water-btn` e a função `adjustWater` removidos (com import/binding). CSS `.water-*` removido.
+  - **Modelo:** `lib-dente-easy` (higiene bucal) perdeu `current/target`; criação de quest não injeta mais `current/target` para 💧; `syncQuestsByLevel` não preserva mais contador; `toggleQuest` não mexe em `current`.
+  - **Migração:** `cleanQuestCounters` no `loadGameData` agora **remove** `current/target` de toda quest salva — saves antigos viram check simples automaticamente.
+  - **Supabase:** upload/download de quests não gravam/leem mais `current/target`. As colunas `current` e `target` da tabela `quests` serão dropadas (migração separada). Weekly Challenge e Masmorras seguem intactos (usam `target`/`current` próprios, não relacionados).
+
 ## [v2.5.25] — 2026-07-12
 - **Fix: usuária feminina via o avatar masculino.** A lógica do avatar (`updateAvatarImage`) estava correta (`gender === 'female'` → pasta feminina), mas o campo `gameState.gender` **nunca era sincronizado com a nuvem** — só existia no localStorage. Ao logar em outro aparelho, limpar o cache ou após um sync "nuvem vence", o gênero caía no default `'male'` e a usuária passava a ver o avatar do homem. Além disso, **não havia como trocar o gênero depois do onboarding**.
   - **Sync:** `gender` passa a viajar no jsonb `settings` da RPC (write em `saveToSupabase` + `ensureUserProfile`; restore em `applyCloudProgressionFlags`, ramo "nuvem vence"). Mudança client-side, sem tocar schema/RPC.

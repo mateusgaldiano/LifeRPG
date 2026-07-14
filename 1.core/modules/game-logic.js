@@ -807,9 +807,6 @@ function toggleQuest(id) {
     if (quest.completed) {
         // CANCELAR / DESMARCAR QUEST
         quest.completed = false;
-        if (quest.current !== undefined) {
-            quest.current = 0; // Reseta contador de água
-        }
 
         // Remove EXATAMENTE o que a conclusão concedeu (com todos os multiplicadores),
         // não o valor base — senão cada ciclo marcar/desmarcar dá lucro líquido.
@@ -844,10 +841,6 @@ function toggleQuest(id) {
         gameState._totalQuestsCompleted = Math.max(0, (gameState._totalQuestsCompleted || 0) - 1);
     } else {
         // CONCLUIR QUEST
-        if (quest.current !== undefined) {
-            quest.current = quest.target || 8;
-        }
-        
         // Aplica Double XP Buff se ativo (dura até meia-noite — não consome na 1ª quest)
         let xpGained = quest.xp * getActiveXpMultiplier();
 
@@ -939,68 +932,7 @@ function toggleQuest(id) {
     updateUI();
 }
 
-// Gerencia copos de água individualmente
-function adjustWater(id, operation) {
-    const quest = gameState.quests.find(q => q.id === id);
-    if (!quest) return;
-
-    const skillType = quest.skill || 'physical';
-    const targetVal = quest.target || 8;
-
-    if (quest.completed && operation === 'minus') {
-        // Se já estava concluída e diminuiu a água, desmarca
-        quest.completed = false;
-        quest.current = targetVal - 1;
-        // Remove EXATAMENTE o que a conclusão concedeu (mesma correção do toggleQuest).
-        const xpToRemove = (quest._xpAwarded != null) ? quest._xpAwarded : quest.xp;
-        let goldToRemove;
-        if (quest._goldAwarded != null) {
-            goldToRemove = quest._goldAwarded;
-        } else {
-            goldToRemove = quest.gold;
-            if (quest._legendaryFocusConsumed) goldToRemove *= 5;
-        }
-        delete quest._xpAwarded;
-        delete quest._goldAwarded;
-        delete quest._legendaryFocusConsumed;
-        deductRewards(xpToRemove, goldToRemove);
-        deductSkillXP(skillType);
-        bumpDungeonProgress(skillType, -1);
-    } else if (!quest.completed) {
-        if (operation === 'plus' && quest.current < targetVal) {
-            quest.current++;
-            if (quest.current === targetVal) {
-                let goldGained = quest.gold;
-                if (gameState.buffs && gameState.buffs.legendaryFocus) {
-                    // Nota explicativa de game design: o multiplicador de Foco Lendário (x5) e o multiplicador de grupo (+2% a +10%)
-                    // se empilham de forma multiplicativa (em conjunto).
-                    goldGained *= 5;
-                    gameState.buffs.legendaryFocus = false;
-                    if (window.deleteBuffFromSupabase) window.deleteBuffFromSupabase('legendaryFocus');
-                    quest._legendaryFocusConsumed = true;
-                }
-                quest.completed = true;
-                let xpGained = quest.xp * getActiveXpMultiplier();
-                const awarded = addRewards(xpGained, goldGained);
-                quest._xpAwarded = awarded.xp;     // p/ desmarcar remover o valor exato
-                quest._goldAwarded = awarded.gold;
-                addSkillXP(skillType);
-                bumpDungeonProgress(skillType, 1);
-
-                checkAllDailies();
-            }
-        } else if (operation === 'minus' && quest.current > 0) {
-            quest.current--;
-        }
-    }
-
-    // Sincroniza o estado desta quest (contador de água/completed) para a nuvem.
-    if (typeof window.queueQuestOp === 'function') window.queueQuestOp(quest.id, 'upsert');
-
-    saveGameData();
-    renderQuests();
-    updateUI();
-}
+// (Removido) adjustWater / contador de copos — toda atividade virou check simples.
 
 // Sincroniza a lista de hábitos ativos de acordo com o nível do jogador (Skill Tree)
 function syncQuestsByLevel() {
@@ -1052,11 +984,6 @@ function syncQuestsByLevel() {
             
             if (currentTotalDuration + habitDur <= limit) {
                 const fresh = { ...dbHabit };
-                // Preserva progresso de água se já existia quest similar
-                const similarWater = gameState.quests.find(q =>
-                    (q.id === dbHabit.id || (dbHabit.baseId && q.id === dbHabit.baseId)) && q.current !== undefined
-                );
-                if (similarWater) fresh.current = similarWater.current;
                 updatedQuests.push(fresh);
                 
                 // Notifica o usuário no chat via Iroh caso não seja a primeira carga do app
@@ -1886,7 +1813,6 @@ export {
     addSkillXP,
     deductSkillXP,
     toggleQuest,
-    adjustWater,
     addRewards,
     deductRewards,
     applyDailyPenalty,

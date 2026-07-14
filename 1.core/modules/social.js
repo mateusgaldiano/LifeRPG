@@ -1244,12 +1244,7 @@ async function loadProfileActivities(userId, container, isSelf) {
         const meta = document.createElement('span');
         meta.className = 'profile-quest-meta';
         
-        // Mostrar status de progresso se for numérica/streak
-        if (quest.target && quest.target > 1) {
-            meta.textContent = `${quest.current || 0}/${quest.target} (${quest.difficulty})`;
-        } else {
-            meta.textContent = quest.completed ? `Concluído` : `${quest.difficulty}`;
-        }
+        meta.textContent = quest.completed ? `Concluído` : `${quest.difficulty}`;
 
         item.appendChild(titleBox);
         item.appendChild(meta);

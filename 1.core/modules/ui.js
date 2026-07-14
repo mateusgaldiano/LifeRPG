@@ -6,7 +6,7 @@ import {
     getSynergyGoldBonus, getPerkXpBonus, initSkillsState, isQuestActiveOnDay,
     computePlayerTitle, computeSynergies
 } from './utils.js';
-import { toggleQuest, adjustWater, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation, BOSS_QUEST_BY_LEVEL, getEarlyBirdChestStatus, getNightOwlChestStatus } from './game-logic.js';
+import { toggleQuest, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation, BOSS_QUEST_BY_LEVEL, getEarlyBirdChestStatus, getNightOwlChestStatus } from './game-logic.js';
 import { setupSettingsListeners } from './pwa.js';
 import { drawRadarChart } from './radar-chart.js';
 
@@ -659,7 +659,7 @@ function applyArchetypeDeck(archetype, minutes) {
         { id: 'q-planejar', title: 'Planejar tarefas do dia seguinte (10 min)', type: 'daily', icon: '📅', completed: false, xp: 15, gold: 8, duration: 10, minLevel: 1, skill: 'productivity' },
         { id: 'q-alongamento', title: 'Alongamento / Mobilidade (10 min)', type: 'daily', icon: '🧘', completed: false, xp: 15, gold: 8, duration: 10, minLevel: 1, skill: 'physical' },
         { id: 'q-acordar', title: 'Acordar Cedo (Horário Fixo) (5 min)', type: 'daily', icon: '🌅', completed: false, xp: 15, gold: 8, duration: 5, minLevel: 1, skill: 'routine' },
-        { id: 'q-agua2', title: 'Beber Água (8 copos - 5 min)', type: 'daily', icon: '💧', completed: false, xp: 15, gold: 8, target: 8, current: 0, duration: 5, minLevel: 1, skill: 'physical' },
+        { id: 'q-agua2', title: 'Beber Água (5 min)', type: 'daily', icon: '💧', completed: false, xp: 15, gold: 8, duration: 5, minLevel: 1, skill: 'physical' },
         { id: 'q-checkin', title: 'Check-in Emocional no Diário (5 min)', type: 'daily', icon: '📝', completed: false, xp: 15, gold: 8, duration: 5, minLevel: 1, skill: 'mental' },
         { id: 'q-meditar', title: 'Meditar por 3 minutos (3 min)', type: 'daily', icon: '🧘', completed: false, xp: 10, gold: 5, duration: 3, minLevel: 1, skill: 'mental' },
         { id: 'q-familia', title: 'Mensagem carinhosa para família (3 min)', type: 'daily', icon: '❤️', completed: false, xp: 10, gold: 5, duration: 3, minLevel: 1, skill: 'social' },
@@ -1245,21 +1245,8 @@ function renderQuests() {
             const skillFallbackMap = { routine: 'Fácil', physical: 'Fácil', wisdom: 'Intermediário', mental: 'Intermediário', productivity: 'Difícil', social: 'Intermediário' };
             const diffLabel = diffMap[quest.difficulty] || skillFallbackMap[quest.skill] || 'Fácil';
 
-            let extraHTML = '';
-            const isWater = quest.id?.includes('agua') ||
-                            quest.title?.toLowerCase().includes('água') ||
-                            quest.title?.toLowerCase().includes('agua') ||
-                            quest.icon === '💧' ||
-                            quest.emoji === '💧';
-            const hasCounter = quest.current !== undefined && quest.target !== undefined && quest.target > 1;
-            if (hasCounter) {
-                const label = isWater ? ` copos` : '';
-                extraHTML = `<div class="water-adjust-row">
-                    <button class="water-btn btn-minus" data-id="${quest.id}">−</button>
-                    <span class="water-val">${quest.current || 0}/${quest.target}${label}</span>
-                    <button class="water-btn btn-plus" data-id="${quest.id}">+</button>
-                </div>`;
-            }
+            // Contador "X/Y" (água/higiene) removido — toda atividade é um check simples.
+            const extraHTML = '';
 
 
             card.innerHTML = `
@@ -1737,9 +1724,7 @@ function setupEventListeners() {
                 skill,
                 completed: false,
                 xp,
-                gold,
-                current: icon === '💧' ? 0 : undefined,
-                target: icon === '💧' ? 8 : undefined
+                gold
             });
         } else {
             // daily
@@ -1752,9 +1737,7 @@ function setupEventListeners() {
                 skill,
                 completed: false,
                 xp,
-                gold,
-                current: icon === '💧' ? 0 : undefined,
-                target: icon === '💧' ? 8 : undefined
+                gold
             });
         }
 
@@ -1857,18 +1840,10 @@ function openAvatarZoom() {
 }
 function handleQuestAction(e) {
     const target = e.target;
-    
+
     // (Masmorra conclui sozinha ao bater o alvo de habitos - sem clique manual.)
 
-    // Se for clique nos botões de ajustar água
-    if (target.classList.contains('water-btn')) {
-        const id = target.getAttribute('data-id');
-        const operation = target.classList.contains('btn-plus') ? 'plus' : 'minus';
-        adjustWater(id, operation);
-        return;
-    }
-    
-    // Caso contrário, se clicou em qualquer lugar no card, completa a quest
+    // Clicou em qualquer lugar no card → completa/desmarca a quest (check simples)
     const card = target.closest('.quest-card');
     if (card) {
         const btn = card.querySelector('.quest-complete-btn');

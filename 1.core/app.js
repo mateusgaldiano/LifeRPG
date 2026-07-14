@@ -95,7 +95,6 @@ import {
     addSkillXP,
     deductSkillXP,
     toggleQuest,
-    adjustWater,
     addRewards,
     deductRewards,
     applyDailyPenalty,
@@ -223,7 +222,6 @@ window.checkAchievements = checkAchievements;
 window.addSkillXP = addSkillXP;
 window.deductSkillXP = deductSkillXP;
 window.toggleQuest = toggleQuest;
-window.adjustWater = adjustWater;
 window.addRewards = addRewards;
 window.deductRewards = deductRewards;
 window.applyDailyPenalty = applyDailyPenalty;

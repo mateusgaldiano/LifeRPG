@@ -65,7 +65,7 @@ const HABIT_LIBRARY = [
     { id: 'lib-cert-hard', title: 'Estudar para certificação', icon: '🎓', difficulty: 'hard', duration: 120, skill: 'wisdom' },
     // Rotina (routine)
     { id: 'lib-financas-easy', title: 'Lançar finanças', icon: '💰', difficulty: 'easy', duration: 5, skill: 'routine' },
-    { id: 'lib-dente-easy', title: 'Higiene bucal', icon: '🪥', difficulty: 'easy', duration: 5, skill: 'routine', current: 0, target: 2 },
+    { id: 'lib-dente-easy', title: 'Higiene bucal', icon: '🪥', difficulty: 'easy', duration: 5, skill: 'routine' },
     { id: 'lib-skincare-easy', title: 'Skincare', icon: '🧴', difficulty: 'easy', duration: 5, skill: 'routine' },
     { id: 'lib-roupa-easy', title: 'Preparar roupas do dia', icon: '💼', difficulty: 'easy', duration: 5, skill: 'routine' },
     { id: 'lib-casa-easy', title: 'Organizar a casa', icon: '🍽️', difficulty: 'easy', duration: 15, skill: 'routine' },
@@ -668,20 +668,17 @@ function loadGameData() {
                 const type = q.type || 'daily';
                 if (type === 'daily') {
                     q.completed = false;
-                    if (q.current !== undefined) q.current = 0;
                 } else if (type === 'addiction') {
                     // Vícios nascem COMPLETOS a cada novo dia (abstinência por padrão).
                     q.completed = true;
                 } else if (type === 'weekly') {
                     if ((q.daysOfWeek || []).includes(yesterdayDayOfWeek)) {
                         q.completed = false;
-                        if (q.current !== undefined) q.current = 0;
                     }
                 } else if (typeof type === 'string' && type.startsWith('weekly-')) {
                     const days = type.split('-').slice(1).map(Number);
                     if (days.includes(yesterdayDayOfWeek)) {
                         q.completed = false;
-                        if (q.current !== undefined) q.current = 0;
                     }
                 }
             });
@@ -714,39 +711,11 @@ function loadGameData() {
         
         // Sanitize legacy corrupted icons in saved quests
         const cleanQuestCounters = (q) => {
-            // Higienização bucal: contador fixo 0/2 (não é checkbox simples e NÃO herda o 8 da água).
-            // Auto-corrige saves antigos em que a quest ficou sem contador.
-            const isOralHygiene = q.id?.includes('dente') || q.id?.includes('bucal') ||
-                                  q.title?.toLowerCase().includes('higieniza') ||
-                                  q.title?.toLowerCase().includes('bucal') ||
-                                  q.icon === '🪥' || q.emoji === '🪥';
-            if (isOralHygiene) {
-                q.target = 2;
-                if (q.current === undefined || q.current === null) q.current = 0;
-                if (q.current > 2) q.current = 2;
-            }
+            // Contador "X/Y" removido: toda quest é um check simples. Tira os campos
+            // residuais de saves antigos (água 0/8, higiene bucal 0/2 etc.) — migração.
+            delete q.current;
+            delete q.target;
 
-            const isWater = q.id?.includes('agua') ||
-                            q.title?.toLowerCase().includes('água') ||
-                            q.title?.toLowerCase().includes('agua') ||
-                            q.icon === '💧' ||
-                            q.emoji === '💧';
-
-            // Preserva contador se target > 1 (água OU qualquer outra quest com contador, ex: higienização bucal 0/2)
-            const hasExplicitCounter = q.target !== undefined && q.target !== null && q.target > 1;
-
-            if (!isWater && !hasExplicitCounter) {
-                // Quest simples sem contador — limpa campos residuais
-                delete q.current;
-                delete q.target;
-            } else if (isWater && !hasExplicitCounter) {
-                // Água sem target definido → garante padrão 8 copos
-                if (q.current === undefined || q.current === null) q.current = 0;
-                if (q.target === undefined || q.target === null) q.target = 8;
-            }
-            // Se hasExplicitCounter === true: preserva target e current como estão
-
-            
             // Extrai a duração do título ou infere com base em palavras-chave
             if (!q.duration) {
                 const match = q.title?.match(/\((\d+)\s*min\)/i);

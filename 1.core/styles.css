@@ -804,12 +804,6 @@ body::before {
     box-shadow: 0 0 12px rgba(16,185,129,0.4);
 }
 
-/* Contador de água */
-.water-adjust-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-.water-btn { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.2); color: var(--text-purple); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; justify-content: center; align-items: center; transition: all 0.2s; }
-.water-btn:hover { background: rgba(139,92,246,0.2); }
-.water-val { font-size: 10px; font-family: var(--font-mono); color: var(--text-secondary); }
-
 /* ── SEÇÃO VÍCIOS (lógica invertida: abstinência por padrão) ─────────────── */
 .addiction-header {
     display: flex; align-items: center; justify-content: space-between;

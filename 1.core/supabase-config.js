@@ -800,8 +800,6 @@ function questToRow(q) {
     completed_at: q.completed ? new Date().toISOString() : null,
     from_library: !!q.fromLibrary,
     recurring: q.type === 'daily' || q.type === 'weekly',
-    current: q.current ?? null,
-    target: q.target ?? null,
   };
 }
 
@@ -976,14 +974,6 @@ window.loadQuestsFromSupabase = async function() {
           }
           return 5;
         })(),
-        // Contador de copos: só ativo quando target > 1 está salvo no banco
-        // (ex: 'Beber 2 litros' tem target=8; 'Beber 1 copo ao acordar' tem target=null → checkbox simples)
-        current: (q.target !== null && q.target !== undefined && q.target > 1)
-          ? (q.current !== null && q.current !== undefined ? q.current : 0)
-          : undefined,
-        target: (q.target !== null && q.target !== undefined && q.target > 1)
-          ? q.target
-          : undefined,
       };
     });
 
