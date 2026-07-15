@@ -4,8 +4,9 @@ import {
     localDateStr, getRankForLevel, debounce, hasPerk, calcStreakMultiplier,
     calcStreakGoldMultiplier, calcGroupMultiplier, getSynergyXpBonus,
     getSynergyGoldBonus, getPerkXpBonus, initSkillsState, isQuestActiveOnDay,
-    computePlayerTitle, computeSynergies
+    computePlayerTitle, computeSynergies, computePlayerClassKey
 } from './utils.js';
+import { getAvatarCandidates, getRankTitle } from './game-math.js';
 import { toggleQuest, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation, BOSS_QUEST_BY_LEVEL, getEarlyBirdChestStatus, getNightOwlChestStatus } from './game-logic.js';
 import { setupSettingsListeners } from './pwa.js';
 import { drawRadarChart } from './radar-chart.js';
@@ -999,31 +1000,28 @@ function renderRankPerks() {
     `).join('');
 }
 
+// Aplica a primeira imagem da lista que existir; cada 404 tenta a próxima.
+// Sem isso, a pasta de classe vazia deixaria o avatar quebrado.
+function setImgWithFallback(imgEl, candidates) {
+    let i = 0;
+    const tryNext = () => {
+        if (i >= candidates.length) { imgEl.onerror = null; return; }
+        imgEl.src = candidates[i++];
+    };
+    imgEl.onerror = tryNext;
+    tryNext();
+}
+
+// Avatar do jogador: muda por RANK e por CLASSE dominante do radar.
 function updateAvatarImage() {
     const avatarEl = document.getElementById('char-avatar-img');
     if (!avatarEl) return;
-    
-    const gender = gameState.gender || 'male';
-    const folder = gender === 'female' ? '0 - female' : '1 - male';
-    
-    const rank = getRankForLevel(gameState.level);
-    const rankKey = rank.css.replace('rank-', '');
-    
-    const avatarFileMap = {
-        candidato:  { num: '1', name: 'e' },
-        e:          { num: '1', name: 'e' },
-        d:          { num: '2', name: 'd' },
-        c:          { num: '3', name: 'c' },
-        b:          { num: '4', name: 'b' },
-        a:          { num: '5', name: 'a' },
-        s:          { num: '6', name: 's' },
-        nacional:   { num: '6', name: 's' },
-        monarca:    { num: '6', name: 's' }
-    };
-    
-    const mapping = avatarFileMap[rankKey] || { num: '1', name: 'e' };
-    avatarEl.src = `2.assets/avatars/${folder}/${mapping.num}.rank-${mapping.name}.webp`;
-    avatarEl.onerror = () => { avatarEl.src = `2.assets/avatars/${folder}/1.rank-e.png`; };
+
+    setImgWithFallback(avatarEl, getAvatarCandidates({
+        gender:   gameState.gender,
+        classKey: computePlayerClassKey(gameState.skills),
+        rankKey:  getRankForLevel(gameState.level).css.replace('rank-', '')
+    }));
 }
 
 // Renderiza a árvore de atributos (Hexagonal Radar Chart) dinamicamente
@@ -1819,22 +1817,16 @@ function openAvatarZoom() {
     if (!modal || !imgLarge || !titleEl) return;
     
     const gender = gameState.gender || 'male';
-    const folder = gender === 'female' ? '0 - female' : '1 - male';
-    let level = gameState.level;
-    const rank = getRankForLevel(level);
+    const rank = getRankForLevel(gameState.level);
     const rankKey = rank.css.replace('rank-', '');
-    
-    const prefixMap = { e: '1', d: '2', c: '3', b: '4', a: '5', s: '6' };
-    const num = prefixMap[rankKey] || '1';
-    const src = `2.assets/avatars/${folder}/${num}.rank-${rankKey}.webp`;
-    const titleMap = {
-        male: { e: 'Recruta', d: 'Aventureiro', c: 'Caçador', b: 'Elite', a: 'Herói Lendário', s: 'O Sistema' },
-        female: { e: 'Recruta', d: 'Aventureira', c: 'Caçadora', b: 'Elite', a: 'Heroína Lendária', s: 'O Sistema' }
-    };
-    const titleName = titleMap[gender]?.[rankKey] || 'Recruta';
-    
-    imgLarge.src = src;
-    imgLarge.onerror = () => { imgLarge.src = `2.assets/avatars/${folder}/1.rank-e.png`; };
+
+    const titleName = getRankTitle(rankKey, gender);
+
+    setImgWithFallback(imgLarge, getAvatarCandidates({
+        gender,
+        classKey: computePlayerClassKey(gameState.skills),
+        rankKey
+    }));
     titleEl.innerText = `${titleName.toUpperCase()} (${rank.rank})`;
     modal.style.display = 'flex';
 }

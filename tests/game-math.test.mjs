@@ -8,7 +8,26 @@ import {
     getXpToNextForLevel,
     getRankForLevel,
     RANK_THRESHOLDS,
+    computePlayerClassKey,
+    SKILL_KEYS,
+    getAvatarRankFile,
+    getAvatarCandidates,
 } from '../1.core/modules/game-math.js';
+
+// Monta um objeto de skills no formato real do gameState a partir de um mapa
+// parcial { chave: progresso }. Progresso 1.0 = 1 nível cheio.
+// O xp NÃO é arredondado de propósito: arredondar limitaria a granularidade a
+// 1/xpToNext e impediria testar valores logo abaixo do limiar (ex.: 0.19).
+function mkSkills(partial) {
+    const s = {};
+    SKILL_KEYS.forEach(k => {
+        const p = partial[k] || 0;
+        const level = Math.floor(p) + 1;
+        const frac = p - Math.floor(p);
+        s[k] = { level, xp: frac * 5, xpToNext: 5 };
+    });
+    return s;
+}
 
 // ── computeSintoniaTier ─────────────────────────────────────────────────────
 test('Sintonia: volume alto + tempo suficiente => S', () => {
@@ -98,4 +117,119 @@ test('rank: thresholds ordenados do maior p/ o menor (invariante da busca)', () 
     for (let i = 1; i < RANK_THRESHOLDS.length; i++) {
         assert.ok(RANK_THRESHOLDS[i - 1].min > RANK_THRESHOLDS[i].min, `índice ${i}`);
     }
+});
+
+// ── computePlayerClassKey ───────────────────────────────────────────────────
+test('classe: atributo líder isolado define a classe', () => {
+    assert.equal(computePlayerClassKey(mkSkills({ wisdom: 3, physical: 1 })), 'wisdom');
+    assert.equal(computePlayerClassKey(mkSkills({ physical: 2 })), 'physical');
+    assert.equal(computePlayerClassKey(mkSkills({ social: 1.4, mental: 1 })), 'social');
+});
+
+test('classe: skills vazias/ausentes => novato', () => {
+    assert.equal(computePlayerClassKey(mkSkills({})), 'novato');
+    assert.equal(computePlayerClassKey({}), 'novato');
+    assert.equal(computePlayerClassKey(null), 'novato');
+    assert.equal(computePlayerClassKey(undefined), 'novato');
+});
+
+test('classe: abaixo do limiar de 0.2 ainda é novato; a partir dele, define', () => {
+    assert.equal(computePlayerClassKey(mkSkills({ mental: 0.19 })), 'novato');
+    assert.equal(computePlayerClassKey(mkSkills({ mental: 0.4 })), 'mental');
+});
+
+test('classe: empate na liderança => desperto', () => {
+    assert.equal(computePlayerClassKey(mkSkills({ physical: 2, wisdom: 2 })), 'desperto');
+    // Três empatados também é empate.
+    assert.equal(computePlayerClassKey(mkSkills({ physical: 1, wisdom: 1, social: 1 })), 'desperto');
+    // Todos iguais e acima do limiar: ninguém lidera.
+    const todos = {};
+    SKILL_KEYS.forEach(k => { todos[k] = 1; });
+    assert.equal(computePlayerClassKey(mkSkills(todos)), 'desperto');
+});
+
+test('classe: diferença menor que o epsilon conta como empate', () => {
+    // 0.04 de diferença (< 0.05) => empate técnico.
+    const quaseIgual = { level: 3, xp: 5, xpToNext: 5 };      // progresso 3.0
+    const lider      = { level: 3, xp: 5.2, xpToNext: 5 };    // progresso 3.04
+    assert.equal(computePlayerClassKey({ physical: lider, wisdom: quaseIgual }), 'desperto');
+});
+
+test('classe: sempre retorna uma chave com pasta de avatar correspondente', () => {
+    const validas = new Set([...SKILL_KEYS, 'novato', 'desperto']);
+    const casos = [
+        mkSkills({}), mkSkills({ physical: 5 }), mkSkills({ physical: 2, social: 2 }),
+        {}, null, mkSkills({ routine: 0.2 }),
+    ];
+    for (const c of casos) {
+        assert.ok(validas.has(computePlayerClassKey(c)), `retornou chave fora do conjunto`);
+    }
+});
+
+// ── getAvatarRankFile ───────────────────────────────────────────────────────
+test('avatar: cada rank aponta para o arquivo certo', () => {
+    assert.equal(getAvatarRankFile('e'), '1.rank-e');
+    assert.equal(getAvatarRankFile('d'), '2.rank-d');
+    assert.equal(getAvatarRankFile('c'), '3.rank-c');
+    assert.equal(getAvatarRankFile('b'), '4.rank-b');
+    assert.equal(getAvatarRankFile('a'), '5.rank-a');
+    assert.equal(getAvatarRankFile('s'), '6.rank-s');
+});
+
+test('avatar: rank A não cai no E (bug antigo do social.js)', () => {
+    assert.equal(getAvatarRankFile('a'), '5.rank-a');
+    assert.notEqual(getAvatarRankFile('a'), '1.rank-e');
+});
+
+test('avatar: ranks acima de S reusam a arte do S (bug antigo do zoom)', () => {
+    assert.equal(getAvatarRankFile('nacional'), '6.rank-s');
+    assert.equal(getAvatarRankFile('governante'), '6.rank-s');
+    assert.equal(getAvatarRankFile('monarca'), '6.rank-s');
+});
+
+test('avatar: candidato reusa a arte do E; rank desconhecido/vazio idem', () => {
+    assert.equal(getAvatarRankFile('candidato'), '1.rank-e');
+    assert.equal(getAvatarRankFile('inexistente'), '1.rank-e');
+    assert.equal(getAvatarRankFile(''), '1.rank-e');
+    assert.equal(getAvatarRankFile(null), '1.rank-e');
+    assert.equal(getAvatarRankFile(undefined), '1.rank-e');
+});
+
+test('avatar: rank é case-insensitive (o banco guarda MAIUSCULO)', () => {
+    assert.equal(getAvatarRankFile('MONARCA'), '6.rank-s');
+    assert.equal(getAvatarRankFile('A'), '5.rank-a');
+});
+
+// ── getAvatarCandidates ─────────────────────────────────────────────────────
+test('avatar: cadeia vai da pasta da classe para a base do gênero', () => {
+    const c = getAvatarCandidates({ gender: 'male', classKey: 'wisdom', rankKey: 'c' });
+    assert.deepEqual(c, [
+        '2.assets/avatars/wisdom-male/3.rank-c.webp',
+        '2.assets/avatars/1 - male/3.rank-c.webp',
+        '2.assets/avatars/1 - male/1.rank-e.png',
+    ]);
+});
+
+test('avatar: feminino usa a pasta base 0 - female', () => {
+    const c = getAvatarCandidates({ gender: 'female', classKey: 'mental', rankKey: 'a' });
+    assert.equal(c[0], '2.assets/avatars/mental-female/5.rank-a.webp');
+    assert.equal(c[1], '2.assets/avatars/0 - female/5.rank-a.webp');
+});
+
+test('avatar: o fallback preserva o rank (não rebaixa para E no 2º candidato)', () => {
+    const c = getAvatarCandidates({ gender: 'male', classKey: 'social', rankKey: 'monarca' });
+    assert.ok(c[1].includes('6.rank-s'), 'o 2º candidato deve manter o rank S');
+});
+
+test('avatar: gênero ausente/inválido cai no masculino', () => {
+    assert.equal(getAvatarCandidates({ classKey: 'novato', rankKey: 'e' })[1],
+        '2.assets/avatars/1 - male/1.rank-e.webp');
+    assert.equal(getAvatarCandidates({ gender: 'outro', classKey: 'novato', rankKey: 'e' })[0],
+        '2.assets/avatars/novato-male/1.rank-e.webp');
+});
+
+test('avatar: sem argumentos ainda devolve uma cadeia utilizável', () => {
+    const c = getAvatarCandidates();
+    assert.equal(c.length, 3);
+    assert.ok(c.every(p => p.startsWith('2.assets/avatars/')));
 });

@@ -1,6 +1,7 @@
 // social.js
 import { gameState, saveGameData } from './state.js';
 import { getRankForLevel, localDateStr, getPlayerTerm } from './utils.js';
+import { getBaseAvatarSrc, getRankTitle } from './game-math.js';
 import { showSystemToast, updateUI } from './ui.js';
 import { addSkillXP } from './game-logic.js';
 
@@ -438,32 +439,19 @@ function initSocialSubTabs() {
     });
 }
 
-// Retorna o endereço correto do avatar baseado na Skin ativa e Rank
+// Endereço do avatar de um jogador na tela social (busca, amigos, ranking).
+// Sempre a pasta BASE do gênero — sem classe. Dois motivos: a `public_profiles`
+// ainda não expõe classe nem gênero dos outros jogadores, e estes <img> são
+// criados soltos, sem cadeia de onerror, então apontar para uma pasta de classe
+// arriscaria imagem quebrada (11 das 16 estão vazias). O avatar por classe aqui
+// entra junto com as colunas `class_key`/`gender` na view.
+// Como antes, só o próprio usuário tem o gênero conhecido; os demais caem no
+// masculino.
 function getPlayerAvatarSrc(activeSkin, rank, username) {
-    const rankKey = (rank || 'candidato').toLowerCase();
-    
-    const avatarFileMap = {
-        candidato:  { num: '1', name: 'e' },
-        e:          { num: '1', name: 'e' },
-        d:          { num: '2', name: 'd' },
-        c:          { num: '3', name: 'c' },
-        b:          { num: '4', name: 'b' },
-        s:          { num: '6', name: 's' },
-        nacional:   { num: '6', name: 's' },
-        governante: { num: '6', name: 's' },
-        monarca:    { num: '6', name: 's' }
-    };
-    
-    const mapping = avatarFileMap[rankKey] || { num: '1', name: 'e' };
-    
-    let g = 'male';
-    if (typeof gameState !== 'undefined') {
-        if (!username || username === gameState.playerName) {
-            g = gameState.gender || 'male';
-        }
-    }
-    const folder = g === 'female' ? '0 - female' : '1 - male';
-    return `2.assets/avatars/${folder}/${mapping.num}.rank-${mapping.name}.png`;
+    const ehEu = typeof gameState !== 'undefined'
+        && (!username || username === gameState.playerName);
+    const gender = ehEu ? (gameState.gender || 'male') : 'male';
+    return getBaseAvatarSrc(gender, rank || 'candidato');
 }
 
 // Inicializar ouvintes do buscador de amigos
@@ -947,19 +935,8 @@ async function openPlayerProfile(userId) {
         titleEl.textContent = user.active_title;
         titleEl.style.display = 'inline-block';
     } else {
-        const defaultTitles = {
-            candidato: 'Candidato',
-            e: 'Recruta',
-            d: 'Aventureiro',
-            c: 'Caçador',
-            b: 'Elite',
-            s: 'O Sistema',
-            nacional: 'Caçador Nacional',
-            governante: 'Governante',
-            monarca: 'Monarca'
-        };
-        const rKey = (user.rank || 'candidato').toLowerCase();
-        titleEl.textContent = defaultTitles[rKey] || 'Candidato';
+        // Sem gênero do outro jogador na view pública: usa a forma masculina.
+        titleEl.textContent = getRankTitle(user.rank || 'candidato');
         titleEl.style.display = 'inline-block';
     }
 

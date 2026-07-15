@@ -1,8 +1,8 @@
 // utils.js
 import { gameState } from './state.js';
-// Núcleo puro (rank + curva de XP) vive em game-math.js; re-exportado abaixo p/
-// os consumidores que já importam esses símbolos de utils.js.
-import { getRankForLevel, getXpToNextForLevel } from './game-math.js';
+// Núcleo puro (rank, curva de XP, classe) vive em game-math.js; re-exportado
+// abaixo p/ os consumidores que já importam esses símbolos de utils.js.
+import { getRankForLevel, getXpToNextForLevel, computePlayerClassKey } from './game-math.js';
 
 function localDateStr(d) {
     const dt = d || new Date();
@@ -22,33 +22,24 @@ function hasSkillLV3() {
 // getRankForLevel — movida para game-math.js (importada e re-exportada acima).
 
 
+// Nome exibido de cada classe. As chaves são as de computePlayerClassKey e as
+// mesmas das pastas de avatar em 2.assets/avatars/[classe]-[genero]/.
+const CLASS_TITLES = {
+    physical:     { m: 'Guerreiro',    f: 'Guerreira' },
+    routine:      { m: 'Estoico',      f: 'Estoica' },
+    mental:       { m: 'Monge',        f: 'Monja' },
+    wisdom:       { m: 'Sábio',        f: 'Sábia' },
+    productivity: { m: 'Estrategista', f: 'Estrategista' },
+    social:       { m: 'Conector',     f: 'Conectora' },
+    novato:       { m: 'Novato',       f: 'Novata' },
+    desperto:     { m: 'Desperto',     f: 'Desperta' }
+};
+
+// Título exibido do jogador. A classe em si é calculada em game-math.js — ver lá
+// a nota sobre fonte única (título e avatar não podem divergir).
 function computePlayerTitle(skills, gender = 'male') {
-    const isFemale = gender === 'female';
-    const s = skills || {};
-    const get = (k) => s[k] ? (s[k].level - 1) + (s[k].xp / (s[k].xpToNext || 5)) : 0;
-
-    const THEMATIC = {
-        physical:     { m: 'Guerreiro',    f: 'Guerreira' },
-        routine:      { m: 'Estoico',      f: 'Estoica' },
-        mental:       { m: 'Monge',        f: 'Monja' },
-        wisdom:       { m: 'Sábio',        f: 'Sábia' },
-        productivity: { m: 'Estrategista', f: 'Estrategista' },
-        social:       { m: 'Conector',     f: 'Conectora' }
-    };
-    const keys = Object.keys(THEMATIC);
-    const vals = {};
-    keys.forEach(k => { vals[k] = get(k); });
-
-    const max = Math.max(...keys.map(k => vals[k]));
-    if (max < 0.2) return isFemale ? "Novata" : "Novato";
-
-    const epsilon = 0.05;
-    const leaders = keys.filter(k => Math.abs(vals[k] - max) < epsilon);
-
-    if (leaders.length !== 1) return isFemale ? "Desperta" : "Desperto";
-
-    const t = THEMATIC[leaders[0]];
-    return isFemale ? t.f : t.m;
+    const t = CLASS_TITLES[computePlayerClassKey(skills)] || CLASS_TITLES.novato;
+    return gender === 'female' ? t.f : t.m;
 }
 
 // ── Definições de Sinergias de Skills ──────────────────────────────────
@@ -318,6 +309,7 @@ export {
     hasSkillLV3,
     getRankForLevel,
     computePlayerTitle,
+    computePlayerClassKey,
     SYNERGY_DEFS,
     computeSynergies,
     getSynergyXpBonus,
