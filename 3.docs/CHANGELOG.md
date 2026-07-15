@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.27] — 2026-07-14
+- **Fix (segurança): qualquer usuário logado conseguia ler a tabela `users` inteira.** A policy RLS `users_read_all` era `SELECT` com `qual = true` para o role `authenticated` — bastava um `GET /rest/v1/users?select=*` para puxar TODAS as colunas de TODOS os usuários, incluindo `settings` (jsonb de preferências pessoais, com o `gender`) e `person_id` (que é o `auth.uid()` de cada um). Isso também tornava a view `public_profiles` inútil: ela existe para expor só o subconjunto público, mas o caminho direto pela tabela seguia aberto.
+  - **App:** as 4 leituras de perfil **alheio** em `social.js` foram repontadas de `users` para `public_profiles` — busca por username, solicitantes de amizade, lista de amigos e `openPlayerProfile`. Este último trocou o `select('*')` por lista explícita de colunas (o `select('*')` acoplava a UI ao shape da tabela e era justamente o que puxava `settings`/`person_id`). As leituras do **próprio** usuário (`ensureUserProfile`, `syncWithSupabase`, `refreshGoldFromCloud`) seguem em `users` de propósito: são cobertas pela policy `users_select_own` (`auth.uid() = person_id`).
+  - **DB:** `public_profiles` ganhou `streak`, `gold` e `skills` — são exatamente os stats que o modal de perfil já mostrava de qualquer jogador (Streak, Ouro, ATRIBUTOS), então **nada muda visualmente**. `settings` e `person_id` ficam de fora e agora são inalcançáveis por outro usuário. Em seguida, `users_read_all` foi dropada: sobram só `users_select_own` / `users_insert_own` / `users_delete_own`.
+  - **Validado** com o role `authenticated` impersonado: `users` passou a devolver 1 linha (a própria) e 0 de terceiros, `public_profiles` segue devolvendo todos os 4 perfis (ranking intacto), busca/amigos/perfil seguem retornando dados, e a escrita através da view continua bloqueada (`insufficient_privilege`) — o fix de forja do v2.5.26 (commit 20eff4b) sobreviveu ao `CREATE OR REPLACE`.
+  - **SQL:** `3.docs/sec_users_read_all_drop.sql` (novo, com o pré-requisito de ordem documentado) e `3.docs/fix_public_profiles_view.sql` (atualizado — segue sendo a definição canônica da view).
+
 ## [v2.5.26] — 2026-07-12
 - **Removido o contador "X/Y" das atividades (água 0/8, higiene bucal 0/2 etc.) — toda atividade virou check simples.** A pedido do usuário (atrapalhava mais do que ajudava). Mudanças:
   - **Render:** `renderQuests` não desenha mais a linha de +/− (`water-adjust-row`); handler de clique `.water-btn` e a função `adjustWater` removidos (com import/binding). CSS `.water-*` removido.

@@ -500,7 +500,7 @@ async function handleFriendSearch() {
     resultsDiv.style.display = 'block';
 
     const { data: users, error } = await supabaseClient
-        .from('users')
+        .from('public_profiles')
         .select('id, username, level, rank, active_skin')
         .ilike('username', `%${query}%`)
         .limit(5);
@@ -659,7 +659,7 @@ async function loadFriendsList() {
         // Buscar detalhes dos usuários solicitantes
         const requesterIds = pendingRequests.map(r => r.requester_id);
         const { data: requesters, error: reqError } = await supabaseClient
-            .from('users')
+            .from('public_profiles')
             .select('id, username, level, rank, active_skin')
             .in('id', requesterIds);
 
@@ -770,7 +770,7 @@ async function loadFriendsList() {
     // 3. Renderizar Amigos Aceitos
     if (activeFriendsIds.length > 0) {
         const { data: friends, error: friendsError } = await supabaseClient
-            .from('users')
+            .from('public_profiles')
             .select('id, username, level, rank, active_skin')
             .in('id', activeFriendsIds);
 
@@ -924,9 +924,11 @@ async function openPlayerProfile(userId) {
     modal.style.display = 'block';
 
     // 1. Carregar perfil do banco
+    // Lista explícita de colunas: `public_profiles` não expõe settings/person_id,
+    // e um select('*') aqui voltaria a acoplar a UI ao shape da tabela users.
     const { data: user, error } = await supabaseClient
-        .from('users')
-        .select('*')
+        .from('public_profiles')
+        .select('username, level, rank, xp, gold, streak, skills, active_skin, active_title')
         .eq('id', userId)
         .single();
 
