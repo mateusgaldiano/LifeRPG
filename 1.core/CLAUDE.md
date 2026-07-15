@@ -33,12 +33,20 @@ O **LifeRPG OS** (v2.0) é um aplicativo web progressivo (PWA) de gamificação 
     1.  Toda alteração que vai para produção ou homologação **exige** o bump da **versão única** em `1.core/version.js`:
         `self.APP_VERSION = 'v2.X.Y';`. Esse valor é a fonte única — alimenta tanto a versão exibida nas Configurações quanto o `CACHE_VERSION` do Service Worker (`sw.js` lê via `importScripts`). **Não** há mais dois números.
     2.  Registrar a mudança em `3.docs/CHANGELOG.md` (entrada nova no topo, com data e mudanças agrupadas).
-    3.  Subir para o repositório principal de produção:
-        PowerShell: `git push origin dev:main`
-    4.  **Homologação (Dev) PAUSADA:** **não** pushar em `dev-origin` por enquanto — o Dev não está sendo usado e seu deploy do Pages estava travando. Validar direto no prod. Retomar `git push dev-origin dev:main` só quando o Dev for reativado.
-*   **Repositório de Testes (Dev)**:
+    3.  Subir para o repositório principal de produção, trabalhando **na branch `main`**:
+        PowerShell: `git push origin main`
+    4.  **Dev DESCONTINUADO:** não usar. Ver aviso abaixo.
+*   **⚠️ NÃO pushar via `dev:main` — a branch `dev` está ABANDONADA e DESATUALIZADA.**
+    O fluxo antigo era `git push origin dev:main`, mas o Dev saiu de uso e o trabalho
+    passou a ser feito direto na `main`. A `dev` ficou congelada em `8f707f6` (v2.5.26)
+    e **não tem** os commits `20eff4b` e `b93ed14`, que são correções de segurança
+    (escrita forjável via `public_profiles` e leitura irrestrita da tabela `users`).
+    Rodar `git push origin dev:main` hoje **regride as duas** e reabre os buracos.
+    Se um dia o Dev for reativado, sincronize a `dev` a partir da `main` ANTES de
+    qualquer push — nunca o contrário.
+*   **Repositório de Testes (Dev) — descontinuado**:
     *   **Remoto**: `dev-origin` (aponta para `https://github.com/mateusgaldiano/LifeRPG_Dev`)
-    *   **Deploy**: Roda no GitHub Pages a partir da branch `main` do remoto `dev-origin`.
+    *   Não pushar. O deploy do Pages travava e o ambiente não é mais usado. Validar direto no prod.
 *   **Repositório de Produção (Prod)**:
     *   **Remoto**: `origin` (aponta para `https://github.com/mateusgaldiano/LifeRPG`)
     *   **Deploy**: Deploy de produção estável.
