@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.30] — 2026-07-14
+- **Remove a opção de gênero "Neutro".** Ela era um alias para o masculino desde que entrou (ONBOARD-001): não existe pasta de avatar neutra, e o código sempre fez `gender === 'female' ? 'female' : 'male'` — quem escolhia Neutro recebia o avatar do homem. Oferecer uma escolha que o app ignora é pior do que não oferecer.
+- Removidos o card do wizard (`btn-gender-neutral`), o ramo `'guerreiro(a)'` do texto do passo de nome e o `'neutral'` da lista de listeners em `setupWizardListeners`. O `getPlayerTerm` já ignorava neutro, e não havia CSS próprio.
+- **Sem migração de dados:** nenhum usuário no banco tinha `settings.gender = 'neutral'` (conferido antes de remover).
+- **Bônus de layout:** o `.wizard-genders-grid` é de 2 colunas, então o terceiro card quebrava sozinho numa segunda linha, ocupando metade da largura. Com dois cards, a linha fecha exata.
+
 ## [v2.5.29] — 2026-07-14
 - **Remove o seletor de gênero das Configurações.** A seção 🧍 PERSONAGEM (AVATAR) (adicionada na v2.5.25) saiu: o gênero é escolhido no onboarding e não é uma preferência para ficar trocando depois. Removidos o bloco no `index.html`, o CSS (`.gender-settings-row`/`.btn-gender-set`), o handler de clique e o trecho que destacava o gênero atual ao abrir o modal — nada de handler órfão.
 - O passo de gênero no **wizard de onboarding** continua intacto, assim como o sync de `gender` para a nuvem. Só o atalho nas Configurações deixou de existir.

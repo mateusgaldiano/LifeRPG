@@ -429,7 +429,7 @@ function initOnboardingWizard() {
 
         const pStep1 = document.getElementById('wizard-step-1-p');
         if (pStep1) {
-            const term = gender === 'female' ? 'guerreira' : gender === 'neutral' ? 'guerreiro(a)' : 'guerreiro';
+            const term = gender === 'female' ? 'guerreira' : 'guerreiro';
             pStep1.innerText = `O Sistema te escolheu. Qual é o seu nome, ${term}?`;
         }
 
@@ -438,7 +438,7 @@ function initOnboardingWizard() {
         }, 250);
     };
 
-    ['male', 'female', 'neutral'].forEach(g => {
+    ['male', 'female'].forEach(g => {
         const btn = document.getElementById(`btn-gender-${g}`);
         if (btn) {
             const fresh = btn.cloneNode(true);
