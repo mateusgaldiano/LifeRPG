@@ -9,6 +9,23 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.32] — 2026-07-16
+Lote de **performance de abertura**. Antes, toda abertura do app custava 17 idas à rede (~930 KB) + 4 requisições a dois domínios do Google. Agora custa **300 bytes**.
+
+- **Perf: o Service Worker ia à rede mesmo com tudo em cache.** O app shell (`index.html`, os 14 JS e o CSS) usava **network-first**, então as 17 requisições saíam em TODA abertura, mesmo com os 38 itens já cacheados. Trocado para **cache-first**.
+  - **Por que é seguro agora:** o `CACHE_NAME` carrega o `APP_VERSION` e o `activate` apaga os caches antigos — tudo dentro de um cache foi gravado no mesmo deploy, então servir do cache é servir uma geração só, por construção.
+  - **Por que é mais seguro que antes:** o network-first existia para evitar o bug do `index.html` novo com `ui.js` antigo. Mas era ele quem podia misturar gerações: se a rede caísse no meio do carregamento, o HTML vinha da rede (novo) e o JS caía no cache (antigo). Cache-first com cache versionado não tem esse caminho.
+  - O ciclo de update já estava montado em `pwa.js` (`updateViaCache:'none'` + `reg.update()` a cada boot + reload único guardado por versão no `sessionStorage`). O reload já acontecia antes — a diferença é que agora ele traz algo novo em vez de ser desperdiçado.
+  - **Medido:** 15/15 arquivos do app shell servidos do cache, zero à rede, 300 bytes transferidos.
+- **Perf + offline: as fontes saíram do Google e passaram a ser auto-hospedadas.** O `<link>` para `fonts.googleapis.com` era **render-blocking num terceiro** — o primeiro paint esperava DNS + TLS + fetch em dois domínios. E como o SW ignora cross-origin, as fontes **nunca eram cacheadas**: offline, a Orbitron (a fonte do HUD, a cara do app) caía em `monospace`, apesar do app se dizer offline-first.
+  - 5 arquivos woff2 (188 KB) em `2.assets/fonts/`, com `@font-face` no topo do `styles.css` e os `unicode-range` originais do Google. São fontes **variáveis**: um arquivo por família/subset cobre toda a faixa de peso.
+  - Na prática só ~90 KB baixam (latin); o latin-ext só entra se aparecer um caractere que precise dele.
+  - `<link rel="preload">` só na Orbitron, que aparece no primeiro paint (nível, rank, XP).
+  - **Medido:** zero requisições externas; as 5 fontes no precache do SW; Orbitron aplicada no HUD.
+- **Perf: a cascata de módulos ES caiu de 4 ondas para 1.** O browser só descobre o próximo `import` depois de parsear o anterior, então os módulos chegavam em 4 idas e voltas sequenciais — cada uma custando um RTT no celular. Com `<link rel="modulepreload">` no `<head>`, os 12 módulos do boot passam a ser buscados em paralelo. Sem bundler (o CLAUDE.md proíbe).
+  - `social.js` e `habit-library.js` ficam de fora de propósito: são `import()` dinâmico e devem continuar lazy.
+- **Docs:** o CLAUDE.md dizia que o save vive na chave `lifeRPG_state` do `localStorage`; a chave real é `lifeRPG_gameState` (com `lifeRPG_gameState_Mateus` lida uma vez para migrar saves legados).
+
 ## [v2.5.31] — 2026-07-14
 - **Fix: o avatar por classe estava morto em produção para 11 das 16 classes.** A arte existia só no disco local — as pastas nunca foram versionadas, então no deploy davam 404 e o fallback mandava todo mundo para o avatar base. A feature da v2.5.28 só funcionava na máquina de quem a fez. Agora as 16 pastas de classe estão versionadas — **86 `.webp`, 14 MB** no total, dos quais 56 entraram neste commit. Os `.png` masters (95 MB) seguem locais de propósito: o app serve exclusivamente webp.
   - Inclui a arte definitiva do **rank S de `routine-male`**, que era uma cópia do rank A (a cota do gerador tinha acabado na v2.5.28).

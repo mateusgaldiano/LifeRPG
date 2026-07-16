@@ -29,6 +29,14 @@ const ASSETS_TO_CACHE = [
     '2.assets/icons/icon-192.png',
     '2.assets/icons/icon-512.png',
     '2.assets/icons/badge-96.png',
+    // Fontes auto-hospedadas (188 KB). Antes vinham do Google e o SW as ignorava
+    // por serem cross-origin — offline, a Orbitron do HUD caía em monospace.
+    // Agora são mesmo-domínio, entram no precache e o offline vale de verdade.
+    '2.assets/fonts/orbitron-latin.woff2',
+    '2.assets/fonts/inter-latin.woff2',
+    '2.assets/fonts/inter-latin-ext.woff2',
+    '2.assets/fonts/jetbrains-mono-latin.woff2',
+    '2.assets/fonts/jetbrains-mono-latin-ext.woff2',
     // Avatares BASE em .webp — é o que a tela mostra e o fallback universal de
     // toda classe (ver getAvatarCandidates em game-math.js). São 2,1 MB.
     //
@@ -91,48 +99,39 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// ── FETCH: Network-first para o app shell, Cache-first para assets estáticos ──
-// O app shell (index.html + módulos JS + CSS + version.js) usa NETWORK-FIRST para
-// garantir que HTML e JS sejam SEMPRE da mesma geração. A estratégia antiga
-// (SWR no index.html + cache-first nos JS) permitia que o SW ficasse com um
-// index.html novo e um ui.js antigo no mesmo cache — quebrando a tela (ex.: as
-// 6 colunas de missões ficavam vazias porque o JS antigo procurava ids que não
-// existiam mais no HTML novo). Offline continua funcionando via fallback no cache.
+// ── FETCH: Cache-first para tudo do próprio domínio ──────────────────────────
+// O CACHE_NAME carrega o APP_VERSION e o `activate` apaga os caches antigos, então
+// TUDO dentro de um cache foi gravado no mesmo deploy. Servir do cache é, por
+// construção, servir um conjunto de uma geração só — HTML e JS nunca se misturam.
+//
+// Por que não é mais network-first: o network-first existia para evitar o bug do
+// index.html novo com o ui.js antigo (as 6 colunas de missões ficavam vazias).
+// Mas ele é justamente o que PODE misturar gerações — se a rede cair no meio do
+// carregamento, o HTML vem da rede (novo) e o JS cai no cache (antigo). Cache-first
+// com cache versionado não tem esse caminho. E custava 17 idas à rede (~930 KB) em
+// TODA abertura, mesmo com tudo cacheado.
+//
+// Versão nova chega pelo ciclo de update do SW, que já está montado em pwa.js:
+// `updateViaCache:'none'` + `reg.update()` a cada boot revalidam sw.js e o
+// version.js importado; o activate limpa o cache velho e manda SW_UPDATED; o app
+// recarrega UMA vez (guardado por versão no sessionStorage). O reload já acontecia
+// antes — a diferença é que agora ele traz algo novo em vez de ser desperdiçado.
 self.addEventListener('fetch', (event) => {
     // Only handle GET requests
     if (event.request.method !== 'GET') return;
     // Skip cross-origin requests
     if (!event.request.url.startsWith(self.location.origin)) return;
 
-    const url = new URL(event.request.url);
+    // Navegação pode vir com query string (?fresh=1, ?utm=…) que não existe no
+    // precache — ignoreSearch faz cair no index.html cacheado em vez de ir à rede.
+    const isNavigation = event.request.mode === 'navigate';
+    const matchOpts = isNavigation ? { ignoreSearch: true } : undefined;
 
-    const isAppShell =
-        url.pathname === '/' ||
-        url.pathname.endsWith('/LifeRPG/') ||
-        url.pathname.endsWith('/LifeRPG_Dev/') ||
-        url.pathname.endsWith('index.html') ||
-        url.pathname.endsWith('.js') ||
-        url.pathname.endsWith('.css');
-
-    if (isAppShell) {
-        // Network-first: online recebe sempre o conjunto fresco e consistente;
-        // se a rede falhar, cai no cache (conjunto já cacheado, também consistente).
-        event.respondWith(
-            fetch(event.request).then((response) => {
-                if (response.ok) {
-                    const clone = response.clone();
-                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-                }
-                return response;
-            }).catch(() => caches.match(event.request))
-        );
-        return;
-    }
-
-    // Assets estáticos (imagens, ícones, fontes): cache-first com fallback para rede
     event.respondWith(
-        caches.match(event.request).then((cached) => {
-            return cached || fetch(event.request).then((response) => {
+        caches.match(event.request, matchOpts).then((cached) => {
+            if (cached) return cached;
+            // Não está no cache (precache parcial, asset novo): busca e guarda.
+            return fetch(event.request).then((response) => {
                 if (response.ok) {
                     const clone = response.clone();
                     caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));

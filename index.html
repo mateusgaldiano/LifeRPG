@@ -24,12 +24,31 @@
     <meta property="twitter:description" content="Gamified habit tracker — Level Up In Real Life. Transforme suas tarefas em missões diárias, ganhe XP e suba de nível!">
     <meta property="twitter:image" content="2.assets/og-preview.png">
 
-    <!-- Fontes Arise-style -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <!-- Fontes Arise-style — auto-hospedadas em 2.assets/fonts (@font-face no topo
+         do styles.css). Antes vinham de fonts.googleapis.com num <link> render-
+         blocking, que o Service Worker não cacheava (ele ignora cross-origin): a
+         Orbitron do HUD não carregava offline. Ver a nota no styles.css. -->
     <link rel="stylesheet" href="1.core/styles.css">
+
+    <!-- A fonte do HUD aparece no primeiro paint (nível, rank, XP). Precarregar só
+         ela evita o flash de fallback; as demais entram via @font-face. -->
+    <link rel="preload" href="2.assets/fonts/orbitron-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+    <!-- MODULEPRELOAD: o grafo de módulos ES chegava em 4 ONDAS sequenciais (o
+         browser só descobre o próximo import depois de parsear o anterior), e cada
+         onda custa um RTT no celular. Declarar os módulos aqui faz o browser buscar
+         todos em paralelo já no parse do <head>, achatando a cascata para ~1 onda.
+         Sem bundler — o CLAUDE.md proíbe. Manter em dia se os módulos mudarem;
+         um caminho errado aqui é só um download desperdiçado, não quebra o app. -->
+    <link rel="modulepreload" href="1.core/app.js">
+    <link rel="modulepreload" href="1.core/modules/state.js">
+    <link rel="modulepreload" href="1.core/modules/utils.js">
+    <link rel="modulepreload" href="1.core/modules/game-math.js">
+    <link rel="modulepreload" href="1.core/modules/ui.js">
+    <link rel="modulepreload" href="1.core/modules/game-logic.js">
+    <link rel="modulepreload" href="1.core/modules/weekly-report.js">
+    <link rel="modulepreload" href="1.core/modules/pwa.js">
+    <link rel="modulepreload" href="1.core/modules/radar-chart.js">
 </head>
 <body>
     <!-- Banner de Modo Offline -->

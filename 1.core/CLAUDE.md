@@ -49,7 +49,7 @@ O **LifeRPG OS** (v2.0) é um aplicativo web progressivo (PWA) de gamificação 
 ## 📐 5. Arquitetura e Decisões Técnicas
 *   **Variável de Estado Global (`gameState`)**:
     *   O estado de progresso é salvo sob o objeto centralizado `gameState` (nível, atributos, inventário, conquistas, missões diárias, etc.).
-    *   Persistido e sincronizado no cache local do navegador através da chave `lifeRPG_state` no `localStorage`.
+    *   Persistido e sincronizado no cache local do navegador através da chave `lifeRPG_gameState` no `localStorage` (a chave antiga `lifeRPG_gameState_Mateus` ainda é lida uma vez, para migrar saves legados).
     *   Inclui um sanitizador de encoding para recuperar strings ou emojis corrompidos na transferência de arquivos.
 *   **Radar Chart (Gráfico de Radar)**:
     *   Renderizado programaticamente em tempo real em um elemento Canvas 2D (`cx = 130`, `cy = 130`, `maxR = 72`).
