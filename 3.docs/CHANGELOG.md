@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.29] — 2026-07-14
+- **Remove o seletor de gênero das Configurações.** A seção 🧍 PERSONAGEM (AVATAR) (adicionada na v2.5.25) saiu: o gênero é escolhido no onboarding e não é uma preferência para ficar trocando depois. Removidos o bloco no `index.html`, o CSS (`.gender-settings-row`/`.btn-gender-set`), o handler de clique e o trecho que destacava o gênero atual ao abrir o modal — nada de handler órfão.
+- O passo de gênero no **wizard de onboarding** continua intacto, assim como o sync de `gender` para a nuvem. Só o atalho nas Configurações deixou de existir.
+
 ## [v2.5.28] — 2026-07-14
 - **Feat: o avatar agora muda pela CLASSE dominante do radar, não só pelo rank.** O atributo líder define a pasta (`wisdom-male`, `physical-female`…), cruzando com o gênero: 16 combinações × 6 ranks. Empate técnico entre atributos vira `desperto`; quem ainda não saiu do lugar é `novato`.
   - **Fonte única da classe:** `computePlayerClassKey` nasceu em `game-math.js` (núcleo puro, testável) e o `computePlayerTitle` passou a consumi-la em vez de recalcular a mesma coisa. Antes as duas lógicas eram a mesma conta escrita duas vezes — bastava uma divergir para o título dizer "Sábio" e o avatar mostrar o Monge.

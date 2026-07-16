@@ -116,23 +116,6 @@ function setupSettingsListeners() {
             });
         }
 
-        // Seletor de gênero → define o avatar. Persiste local + nuvem na hora.
-        ['male', 'female', 'neutral'].forEach(g => {
-            const btn = document.getElementById(`btn-set-gender-${g}`);
-            if (!btn) return;
-            btn.addEventListener('click', () => {
-                gameState.gender = g;
-                document.querySelectorAll('.btn-gender-set').forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                saveGameData();
-                if (typeof window.updateAvatarImage === 'function') window.updateAvatarImage();
-                if (typeof window.updateUI === 'function') window.updateUI();
-                if (typeof window.saveToCloud === 'function') window.saveToCloud(); // empurra p/ a nuvem
-                const term = g === 'female' ? 'Guerreira' : g === 'neutral' ? 'Guerreiro(a)' : 'Guerreiro';
-                showSystemToast(`🧍 *AVATAR ATUALIZADO!* O Sistema reconhece você como ${term}.`);
-            });
-        });
-
         // Clique fora para fechar
         window.addEventListener('click', (e) => {
             if (e.target === modalSettings) {
@@ -278,11 +261,6 @@ function loadSettingsToUI() {
     document.getElementById('notif-evening-hour').value = times.eveningHour;
     document.getElementById('notif-evening-min').value = pad(times.eveningMin);
 
-    // Destaca o gênero atual no seletor de personagem
-    const currentGender = gameState.gender || 'male';
-    document.querySelectorAll('.btn-gender-set').forEach(b => {
-        b.classList.toggle('selected', b.dataset.gender === currentGender);
-    });
 }
 
 // Atualiza a badge visual de permissão
