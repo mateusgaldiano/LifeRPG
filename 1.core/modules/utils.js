@@ -265,6 +265,20 @@ function getPlayerTerm(gender = 'male') {
     return gender === 'female' ? 'Guerreira' : 'Guerreiro';
 }
 
+// Aplica a primeira imagem da lista que existir; cada 404 tenta a próxima.
+// Necessário porque nem toda pasta de classe tem os 6 ranks (novato-* só tem o
+// E) — sem a cadeia, o avatar quebraria em vez de cair na arte base.
+function setImgWithFallback(imgEl, candidates) {
+    if (!imgEl) return;
+    let i = 0;
+    const tryNext = () => {
+        if (i >= candidates.length) { imgEl.onerror = null; return; }
+        imgEl.src = candidates[i++];
+    };
+    imgEl.onerror = tryNext;
+    tryNext();
+}
+
 function isQuestActiveOnDay(quest, dayOfWeek = new Date().getDay()) {
     const type = quest.type || 'daily';
     if (type === 'daily') return true;
@@ -310,6 +324,7 @@ export {
     getRankForLevel,
     computePlayerTitle,
     computePlayerClassKey,
+    setImgWithFallback,
     SYNERGY_DEFS,
     computeSynergies,
     getSynergyXpBonus,

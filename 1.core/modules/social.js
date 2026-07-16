@@ -1,7 +1,7 @@
 // social.js
 import { gameState, saveGameData } from './state.js';
-import { getRankForLevel, localDateStr, getPlayerTerm } from './utils.js';
-import { getBaseAvatarSrc, getRankTitle } from './game-math.js';
+import { getRankForLevel, localDateStr, getPlayerTerm, computePlayerClassKey, setImgWithFallback } from './utils.js';
+import { getBaseAvatarSrc, getRankTitle, getAvatarCandidates } from './game-math.js';
 import { showSystemToast, updateUI } from './ui.js';
 import { addSkillXP } from './game-logic.js';
 
@@ -439,19 +439,27 @@ function initSocialSubTabs() {
     });
 }
 
-// Endereço do avatar de um jogador na tela social (busca, amigos, ranking).
-// Sempre a pasta BASE do gênero — sem classe. Dois motivos: a `public_profiles`
-// ainda não expõe classe nem gênero dos outros jogadores, e estes <img> são
-// criados soltos, sem cadeia de onerror, então apontar para uma pasta de classe
-// arriscaria imagem quebrada (11 das 16 estão vazias). O avatar por classe aqui
-// entra junto com as colunas `class_key`/`gender` na view.
-// Como antes, só o próprio usuário tem o gênero conhecido; os demais caem no
-// masculino.
-function getPlayerAvatarSrc(activeSkin, rank, username) {
+// Aplica o avatar de um jogador na tela social (busca, amigos, ranking, perfil).
+// Recebe o <img> em vez de devolver uma string porque a cadeia de fallback
+// precisa reagir ao onerror — nem toda pasta de classe tem os 6 ranks.
+//
+// Só o PRÓPRIO usuário ganha classe e gênero reais: a `public_profiles` ainda
+// não expõe `class_key`/`gender` dos outros, então eles caem na base masculina
+// (mesmo comportamento de antes). Isso muda quando as colunas entrarem na view.
+function setPlayerAvatar(imgEl, activeSkin, rank, username) {
+    const rankKey = rank || 'candidato';
     const ehEu = typeof gameState !== 'undefined'
         && (!username || username === gameState.playerName);
-    const gender = ehEu ? (gameState.gender || 'male') : 'male';
-    return getBaseAvatarSrc(gender, rank || 'candidato');
+
+    if (!ehEu) {
+        setImgWithFallback(imgEl, [getBaseAvatarSrc('male', rankKey)]);
+        return;
+    }
+    setImgWithFallback(imgEl, getAvatarCandidates({
+        gender:   gameState.gender,
+        classKey: computePlayerClassKey(gameState.skills),
+        rankKey
+    }));
 }
 
 // Inicializar ouvintes do buscador de amigos
@@ -536,7 +544,7 @@ async function handleFriendSearch() {
         });
 
         const avatar = document.createElement('img');
-        avatar.src = getPlayerAvatarSrc(u.active_skin, u.rank, u.username);
+        setPlayerAvatar(avatar, u.active_skin, u.rank, u.username);
         avatar.style.width = '36px';
         avatar.style.height = '36px';
         avatar.style.borderRadius = '50%';
@@ -669,7 +677,7 @@ async function loadFriendsList() {
                 });
 
                 const avatar = document.createElement('img');
-                avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
+                setPlayerAvatar(avatar, user.active_skin, user.rank, user.username);
                 avatar.style.width = '36px';
                 avatar.style.height = '36px';
                 avatar.style.borderRadius = '50%';
@@ -807,7 +815,7 @@ async function loadFriendsList() {
                 statusDot.style.boxShadow = isOnline ? '0 0 8px var(--neon-cyan)' : 'none';
 
                 const avatar = document.createElement('img');
-                avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
+                setPlayerAvatar(avatar, user.active_skin, user.rank, user.username);
                 avatar.style.width = '36px';
                 avatar.style.height = '36px';
                 avatar.style.borderRadius = '50%';
@@ -929,7 +937,7 @@ async function openPlayerProfile(userId) {
 
     // Preencher dados básicos
     nameEl.textContent = user.username;
-    avatarImg.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
+    setPlayerAvatar(avatarImg, user.active_skin, user.rank, user.username);
     
     if (user.active_title) {
         titleEl.textContent = user.active_title;
@@ -1537,7 +1545,7 @@ async function loadGlobalRanking() {
         }
 
         const avatar = document.createElement('img');
-        avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
+        setPlayerAvatar(avatar, user.active_skin, user.rank, user.username);
         avatar.style.width = '36px';
         avatar.style.height = '36px';
         avatar.style.borderRadius = '50%';
@@ -1727,7 +1735,7 @@ async function loadFriendsRanking() {
             }
 
             const avatar = document.createElement('img');
-            avatar.src = getPlayerAvatarSrc(user.active_skin, user.rank, user.username);
+            setPlayerAvatar(avatar, user.active_skin, user.rank, user.username);
             avatar.style.width = '36px';
             avatar.style.height = '36px';
             avatar.style.borderRadius = '50%';

@@ -29,18 +29,30 @@ const ASSETS_TO_CACHE = [
     '2.assets/icons/icon-192.png',
     '2.assets/icons/icon-512.png',
     '2.assets/icons/badge-96.png',
-    '2.assets/avatars/0 - female/1.rank-e.png',
-    '2.assets/avatars/0 - female/2.rank-d.png',
-    '2.assets/avatars/0 - female/3.rank-c.png',
-    '2.assets/avatars/0 - female/4.rank-b.png',
-    '2.assets/avatars/0 - female/5.rank-a.png',
-    '2.assets/avatars/0 - female/6.rank-s.png',
-    '2.assets/avatars/1 - male/1.rank-e.png',
-    '2.assets/avatars/1 - male/2.rank-d.png',
-    '2.assets/avatars/1 - male/3.rank-c.png',
-    '2.assets/avatars/1 - male/4.rank-b.png',
-    '2.assets/avatars/1 - male/5.rank-a.png',
-    '2.assets/avatars/1 - male/6.rank-s.png',
+    // Avatares BASE em .webp — é o que a tela mostra e o fallback universal de
+    // toda classe (ver getAvatarCandidates em game-math.js). São 2,1 MB.
+    //
+    // NÃO precachear os .png: o app serve exclusivamente webp, e o único png da
+    // cadeia (1.rank-e.png) é último recurso, inalcançável enquanto o webp base
+    // existir. Eram 12 MB baixados a CADA bump de versão (o CACHE_NAME carrega o
+    // APP_VERSION e o activate limpa o cache antigo) para imagens que ninguém vê.
+    //
+    // A arte de CLASSE (16 pastas × 6 ranks, ~16 MB) também fica fora: o handler
+    // de fetch é cache-first com `cache.put`, então a pasta do próprio jogador
+    // entra no cache sozinha na primeira visita online. Precachear as 16 puniria
+    // todo mundo pela arte de 15 classes que não são a sua.
+    '2.assets/avatars/0 - female/1.rank-e.webp',
+    '2.assets/avatars/0 - female/2.rank-d.webp',
+    '2.assets/avatars/0 - female/3.rank-c.webp',
+    '2.assets/avatars/0 - female/4.rank-b.webp',
+    '2.assets/avatars/0 - female/5.rank-a.webp',
+    '2.assets/avatars/0 - female/6.rank-s.webp',
+    '2.assets/avatars/1 - male/1.rank-e.webp',
+    '2.assets/avatars/1 - male/2.rank-d.webp',
+    '2.assets/avatars/1 - male/3.rank-c.webp',
+    '2.assets/avatars/1 - male/4.rank-b.webp',
+    '2.assets/avatars/1 - male/5.rank-a.webp',
+    '2.assets/avatars/1 - male/6.rank-s.webp',
 ];
 
 // ── INSTALL: pre-cache all assets ────────────────────────────────────────────

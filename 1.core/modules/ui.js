@@ -4,7 +4,7 @@ import {
     localDateStr, getRankForLevel, debounce, hasPerk, calcStreakMultiplier,
     calcStreakGoldMultiplier, calcGroupMultiplier, getSynergyXpBonus,
     getSynergyGoldBonus, getPerkXpBonus, initSkillsState, isQuestActiveOnDay,
-    computePlayerTitle, computeSynergies, computePlayerClassKey
+    computePlayerTitle, computeSynergies, computePlayerClassKey, setImgWithFallback
 } from './utils.js';
 import { getAvatarCandidates, getRankTitle } from './game-math.js';
 import { toggleQuest, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation, BOSS_QUEST_BY_LEVEL, getEarlyBirdChestStatus, getNightOwlChestStatus } from './game-logic.js';
@@ -998,18 +998,6 @@ function renderRankPerks() {
             <span class="perk-name">${p.name}</span>
         </div>
     `).join('');
-}
-
-// Aplica a primeira imagem da lista que existir; cada 404 tenta a próxima.
-// Sem isso, a pasta de classe vazia deixaria o avatar quebrado.
-function setImgWithFallback(imgEl, candidates) {
-    let i = 0;
-    const tryNext = () => {
-        if (i >= candidates.length) { imgEl.onerror = null; return; }
-        imgEl.src = candidates[i++];
-    };
-    imgEl.onerror = tryNext;
-    tryNext();
 }
 
 // Avatar do jogador: muda por RANK e por CLASSE dominante do radar.

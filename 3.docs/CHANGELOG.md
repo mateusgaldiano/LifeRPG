@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.31] — 2026-07-14
+- **Fix: o avatar por classe estava morto em produção para 11 das 16 classes.** A arte existia só no disco local — as pastas nunca foram versionadas, então no deploy davam 404 e o fallback mandava todo mundo para o avatar base. A feature da v2.5.28 só funcionava na máquina de quem a fez. Agora as 16 pastas de classe estão versionadas — **86 `.webp`, 14 MB** no total, dos quais 56 entraram neste commit. Os `.png` masters (95 MB) seguem locais de propósito: o app serve exclusivamente webp.
+  - Inclui a arte definitiva do **rank S de `routine-male`**, que era uma cópia do rank A (a cota do gerador tinha acabado na v2.5.28).
+  - `novato-male`/`novato-female` têm só o rank E — correto, já que Novato é por definição quem não progrediu. A cadeia de fallback cobre os ranks maiores.
+- **Fix: avatar de classe na tela social podia quebrar a imagem.** O `getPlayerAvatarSrc` devolvia uma string e os `<img>` da aba social são criados soltos, **sem `onerror`** — apontar para uma pasta sem a arte daquele rank deixava a imagem quebrada, sem fallback. Virou `setPlayerAvatar(imgEl, …)`, que recebe o elemento e aplica a mesma cadeia usada no avatar principal (6 pontos de uso atualizados). O `setImgWithFallback` saiu do `ui.js` para o `utils.js`, que os dois módulos já importam.
+- **Perf: o Service Worker baixava 12,9 MB de avatares a cada atualização — e nenhum aparecia na tela.** O precache listava os 12 `.png` das pastas base, mas o app serve `.webp`; o único png da cadeia (`1.rank-e.png`) é último recurso e é inalcançável enquanto o webp base existir. Como o `CACHE_NAME` carrega o `APP_VERSION` e o `activate` limpa o cache antigo, **todo bump rebaixava os 12,9 MB**. Trocados pelos 12 webp base: **precache de assets vai de 12,9 MB → 3,8 MB (−70%)**. A arte de classe fica fora do precache de propósito — o handler de fetch é cache-first com `cache.put`, então a pasta do próprio jogador entra sozinha na primeira visita, sem punir ninguém com a arte das outras 15 classes.
+
 ## [v2.5.30] — 2026-07-14
 - **Remove a opção de gênero "Neutro".** Ela era um alias para o masculino desde que entrou (ONBOARD-001): não existe pasta de avatar neutra, e o código sempre fez `gender === 'female' ? 'female' : 'male'` — quem escolhia Neutro recebia o avatar do homem. Oferecer uma escolha que o app ignora é pior do que não oferecer.
 - Removidos o card do wizard (`btn-gender-neutral`), o ramo `'guerreiro(a)'` do texto do passo de nome e o `'neutral'` da lista de listeners em `setupWizardListeners`. O `getPlayerTerm` já ignorava neutro, e não havia CSS próprio.
