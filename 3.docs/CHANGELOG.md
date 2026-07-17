@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.33] — 2026-07-17
+- **Fix: a notificação matinal chamava todo mundo de "MATEUS".** O título era `⚔️ GET UP, MATEUS!` hardcoded — qualquer usuário que ligasse notificações era chamado pelo nome errado, quebrando a imersão bem na alavanca de reengajamento. Agora usa o nome real do jogador (ou "Caçador" como neutro; nunca um nome fixo).
+- **Feat: o tom das notificações ESCALA com o nível.** Abaixo do 10 o Sistema é um **aliado** (encorajador, sem vergonha) — cutucar quem ainda é frágil com "não tenho paciência para fraqueza" espantava o novato. A partir do 10 endurece por faixa: **firme** (10–19), **rigoroso** (20–29) e **implacável** (30+, o tom durão de Solo Leveling). Mesmo espírito da proteção de penalidade < nível 10 que já existia em `game-logic.js`.
+  - As 3 notificações (manhã, noite, streak em risco) têm copy própria por tier, montada **na hora de disparar** — então o tom acompanha a evolução do jogador sem precodificar nada.
+  - **Pipeline:** `pwa.js` passa a enviar `playerName` + `playerLevel` no `SCHEDULE_NOTIFICATIONS`; o `sw.js` guarda em memória e escolhe o tier via `toneTier(level)`. O e-mail é filtrado do nome (fallback "Caçador").
+  - **Verificado:** lógica de tom testada contra o código real do `sw.js` nos 4 tiers + fallback + interpolação do contador de streak; SW novo instala limpo; app boota sem erros no console.
+
 ## [v2.5.32] — 2026-07-16
 Lote de **performance de abertura**. Antes, toda abertura do app custava 17 idas à rede (~930 KB) + 4 requisições a dois domínios do Google. Agora custa **300 bytes**.
 

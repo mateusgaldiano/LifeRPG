@@ -302,9 +302,17 @@ function updateNotificationPermissionUI() {
 function updateSWNotifications() {
     if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
         const times = gameState.notificationTimes || { morningHour: 7, morningMin: 0, eveningHour: 19, eveningMin: 0 };
+        // Nome + nível vão junto para o SW personalizar e ESCALAR o tom das
+        // notificações (aliado no início, implacável nos ranks altos). Sem isso o
+        // texto era fixo — inclusive com um "MATEUS" hardcoded que chamava todo
+        // usuário pelo nome errado.
+        const nome = (gameState.playerName && !gameState.playerName.includes('@'))
+            ? gameState.playerName : '';
         navigator.serviceWorker.controller.postMessage({
             type: 'SCHEDULE_NOTIFICATIONS',
-            ...times
+            ...times,
+            playerName: nome,
+            playerLevel: gameState.level || 1
         });
     }
 }

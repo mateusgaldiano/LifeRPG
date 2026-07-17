@@ -146,6 +146,63 @@ self.addEventListener('fetch', (event) => {
 // Quests pendentes guardadas em memória
 let pendingQuestsCount = 0;
 let lastMorningHour = 7, lastMorningMin = 0, lastEveningHour = 19, lastEveningMin = 0;
+// Nome e nível do jogador, enviados pelo app em SCHEDULE_NOTIFICATIONS. Ficam em
+// memória do SW e são lidos NA HORA de disparar — assim o último valor que o app
+// mandou (via boot ou mudança de config) é o que vale.
+let playerName = '';
+let playerLevel = 1;
+
+// ── TOM ADAPTATIVO ────────────────────────────────────────────────────────────
+// O tom das notificações ESCALA com o nível. Abaixo de 10, o Sistema é um aliado
+// — cutucar quem ainda é frágil com "não tenho paciência para fraqueza" espanta o
+// novato (foi o caso do onboarding). A partir do 10, o Sistema endurece por faixa
+// de rank, até virar implacável no topo. É o mesmo espírito da proteção de
+// penalidade < nível 10 que já existe em game-logic.js.
+//   tier 0: nível < 10   — Aliado (encorajador, sem vergonha)
+//   tier 1: nível 10–19  — Firme (direto, cobra sem humilhar)
+//   tier 2: nível 20–29  — Rigoroso (exige, tom de elite)
+//   tier 3: nível 30+    — Implacável (o Sistema durão de Solo Leveling)
+function toneTier(level) {
+    if (level >= 30) return 3;
+    if (level >= 20) return 2;
+    if (level >= 10) return 1;
+    return 0;
+}
+
+// Nome para exibir: o que o app mandou, ou "Caçador" como neutro (nunca um nome
+// hardcoded — o bug antigo chamava todo mundo de "MATEUS").
+function displayName() {
+    return (playerName && playerName.trim()) ? playerName.trim() : 'Caçador';
+}
+
+// Mensagens por momento × tier. {nome} é substituído; {n} nas de streak.
+const NOTIF_COPY = {
+    morning: [
+        { title: '☀️ Bom dia, {nome}!',   body: 'Suas missões de hoje te esperam. Um passo de cada vez — o Sistema está com você.' },
+        { title: '⚔️ De pé, {nome}.',      body: 'O Sistema registrou seu progresso. Suas missões diárias aguardam.' },
+        { title: '⚔️ Levante, {nome}.',    body: 'Caçadores de elite não esperam vontade. Suas missões estão na fila.' },
+        { title: '⚔️ GET UP, {nome}.',     body: 'O Sistema não tem paciência para hesitação. Cumpra suas missões.' },
+    ],
+    evening: [
+        { title: '🌙 Como foi o dia, {nome}?', body: 'Ainda dá tempo de fechar suas missões. Cada uma conta.' },
+        { title: '🔥 Balanço do dia, {nome}.', body: 'Você completou suas missões? Não deixe o streak escapar.' },
+        { title: '🔥 Alerta do Sistema',       body: '{nome}, o dia acaba em breve. Um caçador de elite não deixa missão em aberto.' },
+        { title: '🔥 Alerta do Sistema',       body: '{nome}, o Sistema está de olho. Missões incompletas não são toleradas.' },
+    ],
+    streak: [
+        { title: '⏰ Falta pouco, {nome}!',   body: 'Ainda restam {n} missões. Termine antes da meia-noite e mantenha seu ritmo!' },
+        { title: '⚠️ Streak em risco, {nome}', body: '{n} missões pendentes. Feche-as antes da meia-noite para manter a sequência.' },
+        { title: '⚠️ OFFENSIVE EM RISCO',       body: '{nome}, {n} missões abertas. Sua sequência morre à meia-noite se você parar agora.' },
+        { title: '⚠️ OFFENSIVE EM RISCO',       body: '{n} missões pendentes, {nome}. O Sistema não perdoa quem desiste perto do fim.' },
+    ],
+};
+
+// Monta {title, body} do momento pedido, no tier do nível atual, já interpolado.
+function buildNotif(momento, n) {
+    const t = NOTIF_COPY[momento][toneTier(playerLevel)];
+    const fill = (s) => s.replace(/\{nome\}/g, displayName()).replace(/\{n\}/g, n);
+    return { title: fill(t.title), body: fill(t.body) };
+}
 
 // Called from app.js via postMessage when user configures notification times or updates quest status
 self.addEventListener('message', (event) => {
@@ -155,6 +212,9 @@ self.addEventListener('message', (event) => {
         lastMorningMin = morningMin;
         lastEveningHour = eveningHour;
         lastEveningMin = eveningMin;
+        // Atualiza nome/nível para o tom (podem vir undefined em payloads antigos).
+        if (typeof event.data.playerName === 'string') playerName = event.data.playerName;
+        if (typeof event.data.playerLevel === 'number') playerLevel = event.data.playerLevel;
         scheduleNotifications(morningHour, morningMin, eveningHour, eveningMin);
     }
     if (event.data && event.data.type === 'UPDATE_QUEST_STATUS') {
@@ -178,14 +238,12 @@ function scheduleNotifications(morningHour = 7, morningMin = 0, eveningHour = 19
     notifTimers.forEach(t => clearTimeout(t));
     notifTimers = [];
 
-    // Agenda notificação da manhã
+    // Agenda notificação da manhã. O texto é montado NA HORA de disparar, então
+    // usa o nível/nome mais recente que o app enviou (o tom acompanha a evolução).
     const morningMs = msUntil(morningHour, morningMin);
     notifTimers.push(setTimeout(() => {
-        showNotification(
-            '⚔️ GET UP, MATEUS!',
-            'Suas missões diárias estão esperando. O Sistema não tem paciência para fraqueza.',
-            'morning-reminder'
-        );
+        const m = buildNotif('morning');
+        showNotification(m.title, m.body, 'morning-reminder');
         // Re-agenda para o próximo dia
         scheduleNotifications(morningHour, morningMin, eveningHour, eveningMin);
     }, morningMs));
@@ -193,22 +251,16 @@ function scheduleNotifications(morningHour = 7, morningMin = 0, eveningHour = 19
     // Agenda notificação da noite (alerta geral)
     const eveningMs = msUntil(eveningHour, eveningMin);
     notifTimers.push(setTimeout(() => {
-        showNotification(
-            '🔥 ALERTA DO SISTEMA',
-            'Você completou suas missões hoje? Não quebre seu streak — o Sistema está de olho.',
-            'evening-reminder'
-        );
+        const e = buildNotif('evening');
+        showNotification(e.title, e.body, 'evening-reminder');
     }, eveningMs));
 
     // Agenda notificação de Streak Ameaçado (21h30)
     const warningMs = msUntil(21, 30);
     notifTimers.push(setTimeout(() => {
         if (pendingQuestsCount > 0) {
-            showNotification(
-                '⚠️ OFFENSIVE EM RISCO!',
-                `Ainda restam ${pendingQuestsCount} missões diárias pendentes. Complete-as antes da meia-noite para manter o seu streak!`,
-                'streak-danger'
-            );
+            const s = buildNotif('streak', pendingQuestsCount);
+            showNotification(s.title, s.body, 'streak-danger');
         }
         // Re-agenda
         scheduleNotifications(morningHour, morningMin, eveningHour, eveningMin);
