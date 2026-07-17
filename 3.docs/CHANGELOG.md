@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.34] — 2026-07-17
+- **Feat: o onboarding aceita MAIS DE UM arquétipo.** Antes era escolha única (rádio); agora os pilares são toggles — dá pra combinar Corpo + Foco, ou quantos quiser. Sugestão de uma usuária.
+  - O passo do gancho junta os micro-hábitos de todos os pilares escolhidos (Corpo + Foco → 6 opções); a pessoa ainda escolhe **um** como primeira missão.
+  - O deck inicial é semeado com a missão-base de **cada** pilar, então todos aparecem nas missões do dia — não só o primeiro.
+  - `gameState.archetypes` guarda o conjunto (array); `gameState.archetype` guarda o rótulo legível (`"foco, corpo"`) que faz round-trip na coluna do banco sem mudar schema (o arquétipo não controla nada pós-onboarding, é registro).
+  - "Outro" (texto livre) segue funcionando: combina com pilares ou sozinho, e sozinho pula o passo do gancho.
+  - **Verificado no navegador:** multi-seleção marca/desmarca certo; gancho agrupa os hábitos dos dois pilares; deck traz missões de ambos (física + sabedoria); só-"Outro" pula o gancho; console limpo.
+
 ## [v2.5.33] — 2026-07-17
 - **Fix: a notificação matinal chamava todo mundo de "MATEUS".** O título era `⚔️ GET UP, MATEUS!` hardcoded — qualquer usuário que ligasse notificações era chamado pelo nome errado, quebrando a imersão bem na alavanca de reengajamento. Agora usa o nome real do jogador (ou "Caçador" como neutro; nunca um nome fixo).
 - **Feat: o tom das notificações ESCALA com o nível.** Abaixo do 10 o Sistema é um **aliado** (encorajador, sem vergonha) — cutucar quem ainda é frágil com "não tenho paciência para fraqueza" espantava o novato. A partir do 10 endurece por faixa: **firme** (10–19), **rigoroso** (20–29) e **implacável** (30+, o tom durão de Solo Leveling). Mesmo espírito da proteção de penalidade < nível 10 que já existia em `game-logic.js`.

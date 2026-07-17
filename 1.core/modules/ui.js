@@ -392,8 +392,9 @@ function initOnboardingWizard() {
     let startStep = 'wizard-step-0';
     if (gameState.tutorialStep && document.getElementById(gameState.tutorialStep)) {
         startStep = gameState.tutorialStep;
-        if (startStep === 'wizard-step-hook' && gameState.archetype) {
-            setupHookStep(gameState.archetype);
+        if (startStep === 'wizard-step-hook' && (gameState.archetypes?.length || gameState.archetype)) {
+            // Ao retomar: usa o conjunto de pilares se houver; senão o legado (string única).
+            setupHookStep(gameState.archetypes?.length ? gameState.archetypes : gameState.archetype);
         }
     }
     setWizardStep(startStep);
@@ -474,40 +475,56 @@ function initOnboardingWizard() {
     const archCards = document.querySelectorAll('.archetype-card');
     const otherInputContainer = document.getElementById('wizard-other-container');
     const otherInput = document.getElementById('wizard-other-input');
-    let selectedArch = gameState.archetype || null;
+    // MULTI-SELEÇÃO: a pessoa pode combinar pilares (ex.: Corpo + Foco). O
+    // conjunto vive num Set; 'outros' é o pilar livre (texto). Nada downstream
+    // depende de archetype ser um valor único — ele só semeia o deck e é registro.
+    const selectedArchs = new Set(gameState.archetypes || []);
+
+    // Habilita o "Próximo" se há ≥1 pilar e, caso 'outros' esteja marcado, seu texto existe.
+    const refreshNext2 = () => {
+        const precisaTexto = selectedArchs.has('outros');
+        newBtnNext2.disabled = selectedArchs.size === 0
+            || (precisaTexto && otherInput.value.trim() === '');
+    };
+
+    // Restaura seleção visual se o usuário voltar ao passo.
+    archCards.forEach(c => c.classList.toggle('selected', selectedArchs.has(c.getAttribute('data-arch'))));
+    if (selectedArchs.has('outros')) otherInputContainer.style.display = 'block';
+    refreshNext2();
 
     archCards.forEach(card => {
         card.addEventListener('click', () => {
-            archCards.forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selectedArch = card.getAttribute('data-arch');
-            
-            if (selectedArch === 'outros') {
-                otherInputContainer.style.display = 'block';
-                newBtnNext2.disabled = otherInput.value.trim() === '';
-            } else {
-                otherInputContainer.style.display = 'none';
-                newBtnNext2.disabled = false;
+            const arch = card.getAttribute('data-arch');
+            if (selectedArchs.has(arch)) selectedArchs.delete(arch);
+            else selectedArchs.add(arch);
+            card.classList.toggle('selected', selectedArchs.has(arch));
+
+            if (arch === 'outros') {
+                otherInputContainer.style.display = selectedArchs.has('outros') ? 'block' : 'none';
             }
+            refreshNext2();
         });
     });
 
-    otherInput.addEventListener('input', () => {
-        if (selectedArch === 'outros') {
-            newBtnNext2.disabled = otherInput.value.trim() === '';
-        }
-    });
+    otherInput.addEventListener('input', refreshNext2);
 
     newBtnNext2.addEventListener('click', () => {
-        if (selectedArch) {
-            if (selectedArch === 'outros') {
-                gameState.archetype = otherInput.value.trim() || 'Desconhecido';
-                setWizardStep('wizard-step-3');
-            } else {
-                gameState.archetype = selectedArch;
-                setupHookStep(selectedArch);
-                setWizardStep('wizard-step-hook');
-            }
+        if (selectedArchs.size === 0) return;
+        // Pilares concretos (com hábitos/deck) vs. o texto livre do 'outros'.
+        const concretos = [...selectedArchs].filter(a => a !== 'outros');
+        const custom = selectedArchs.has('outros') ? (otherInput.value.trim() || 'Desconhecido') : null;
+
+        gameState.archetypes = [...selectedArchs];
+        // archetype (coluna do banco) = rótulo legível do conjunto, p/ round-trip
+        // na nuvem sem mudar schema. Ninguém depende do formato.
+        gameState.archetype = [...concretos, custom].filter(Boolean).join(', ');
+
+        if (concretos.length > 0) {
+            setupHookStep(concretos);
+            setWizardStep('wizard-step-hook');
+        } else {
+            // Só 'outros': não há micro-hábito sugerido — pula o gancho.
+            setWizardStep('wizard-step-3');
         }
     });
 
@@ -548,8 +565,8 @@ function initOnboardingWizard() {
             const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
             gameState.activeDays = selectedDays.length > 0 ? selectedDays : [0,1,2,3,4,5,6]; // Fallback
             
-            // Adapta o deck de missões com base no arquétipo e no tempo
-            applyArchetypeDeck(selectedArch, gameState.dailyCommitmentMins);
+            // Adapta o deck de missões com base nos pilares escolhidos e no tempo
+            applyArchetypeDeck(gameState.archetypes || [], gameState.dailyCommitmentMins);
             
             // FINALIZAR TUTORIAL
             gameState.tutorialCompleted = true;
@@ -599,13 +616,21 @@ const ARCHETYPE_HOOK_NAMES = {
     zen: 'Zen & Saúde Mental', rotina: 'Estilo de Vida & Rotina',
 };
 
+// Aceita um pilar único (string) ou vários (array). Com vários, agrupa os
+// micro-hábitos de todos — a pessoa escolhe UM para ser a primeira missão.
 function setupHookStep(archetype) {
     const lblArch = document.getElementById('hook-arch-name');
     const icon = document.getElementById('hook-icon');
     const optionsEl = document.getElementById('hook-habit-options');
-    const habits = ARCHETYPE_HOOK_HABITS[archetype] || ARCHETYPE_HOOK_HABITS.rotina;
 
-    if (lblArch) lblArch.innerText = ARCHETYPE_HOOK_NAMES[archetype] || 'Sua Jornada';
+    const archList = Array.isArray(archetype) ? archetype : [archetype];
+    const concretos = archList.filter(a => ARCHETYPE_HOOK_HABITS[a]);
+    // Junta os hábitos dos pilares escolhidos; fallback p/ rotina se nada bater.
+    const habits = concretos.length
+        ? concretos.flatMap(a => ARCHETYPE_HOOK_HABITS[a])
+        : ARCHETYPE_HOOK_HABITS.rotina;
+
+    if (lblArch) lblArch.innerText = concretos.map(a => ARCHETYPE_HOOK_NAMES[a]).filter(Boolean).join(' + ') || 'Sua Jornada';
     if (icon) icon.innerText = habits[0].icon || '🎯';
     if (!optionsEl) return;
 
@@ -626,29 +651,37 @@ function setupHookStep(archetype) {
     });
 }
 
+// Missão-base de cada pilar. 'outros'/desconhecido cai em produtividade.
+const BASE_BY_ARCH = {
+    corpo:  { id: 'q-agua', title: 'Beber 1 copo de água ao acordar (2 min)', type: 'daily', icon: '💧', completed: false, xp: 10, gold: 5, duration: 2, minLevel: 1, skill: 'physical' },
+    foco:   { id: 'q-ler', title: 'Leitura (15 min)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 1, skill: 'wisdom' },
+    zen:    { id: 'q-meditar', title: 'Meditar por 3 minutos (3 min)', type: 'daily', icon: '🧘', completed: false, xp: 10, gold: 5, duration: 3, minLevel: 1, skill: 'mental' },
+    rotina: { id: 'q-cama', title: 'Arrumei a cama ao levantar (2 min)', type: 'daily', icon: '🛏️', completed: false, xp: 10, gold: 5, duration: 2, minLevel: 1, skill: 'routine' },
+    _default: { id: 'q-planejar', title: 'Planejar tarefas do dia seguinte (10 min)', type: 'daily', icon: '📅', completed: false, xp: 15, gold: 8, duration: 10, minLevel: 1, skill: 'productivity' },
+};
+
+// Aceita um pilar único (string) ou vários (array). Com vários, o deck é semeado
+// com a missão-base de CADA pilar escolhido — assim todos os pilares aparecem —
+// e o hábito do gancho vira a missão garantida do topo.
 function applyArchetypeDeck(archetype, minutes) {
+    const archList = (Array.isArray(archetype) ? archetype : [archetype]).filter(Boolean);
     let deck = [];
-    
-    // 1. O Micro-hábito base (ONBOARD-002: usa o hábito escolhido no Hook, se houver; senão fallback por arquétipo)
-    let baseQuest = null;
+    const idsNoDeck = new Set();
+    const addUnique = (q) => { if (q && !idsNoDeck.has(q.id)) { deck.push(q); idsNoDeck.add(q.id); } };
+
+    // 1. Gancho escolhido no passo anterior = primeira missão garantida.
     const hook = gameState._selectedHookHabit;
-    if (archetype !== 'outros' && hook && hook.title) {
+    const soOutros = archList.length === 1 && archList[0] === 'outros';
+    if (!soOutros && hook && hook.title) {
         const sk = hook.skill || 'routine';
-        baseQuest = { id: 'q-hook-' + sk, title: `${hook.title} (${hook.duration || 5} min)`, type: 'daily', icon: hook.icon || '🎯', completed: false, xp: hook.xp || 10, gold: hook.gold || 5, duration: hook.duration || 5, minLevel: 1, skill: sk };
-    } else if (archetype === 'corpo') {
-        baseQuest = { id: 'q-agua', title: 'Beber 1 copo de água ao acordar (2 min)', type: 'daily', icon: '💧', completed: false, xp: 10, gold: 5, duration: 2, minLevel: 1, skill: 'physical' };
-    } else if (archetype === 'foco') {
-        baseQuest = { id: 'q-ler', title: 'Leitura (15 min)', type: 'daily', icon: '📚', completed: false, xp: 20, gold: 10, duration: 15, minLevel: 1, skill: 'wisdom' };
-    } else if (archetype === 'zen') {
-        baseQuest = { id: 'q-meditar', title: 'Meditar por 3 minutos (3 min)', type: 'daily', icon: '🧘', completed: false, xp: 10, gold: 5, duration: 3, minLevel: 1, skill: 'mental' };
-    } else if (archetype === 'rotina') {
-        baseQuest = { id: 'q-cama', title: 'Arrumei a cama ao levantar (2 min)', type: 'daily', icon: '🛏️', completed: false, xp: 10, gold: 5, duration: 2, minLevel: 1, skill: 'routine' };
-    } else {
-        baseQuest = { id: 'q-planejar', title: 'Planejar tarefas do dia seguinte (10 min)', type: 'daily', icon: '📅', completed: false, xp: 15, gold: 8, duration: 10, minLevel: 1, skill: 'productivity' };
+        addUnique({ id: 'q-hook-' + sk, title: `${hook.title} (${hook.duration || 5} min)`, type: 'daily', icon: hook.icon || '🎯', completed: false, xp: hook.xp || 10, gold: hook.gold || 5, duration: hook.duration || 5, minLevel: 1, skill: sk });
     }
-    
-    deck.push(baseQuest);
-    let currentTotal = baseQuest.duration;
+
+    // 2. Missão-base de cada pilar escolhido (representa todos os pilares no deck).
+    archList.forEach(a => addUnique(BASE_BY_ARCH[a] ? { ...BASE_BY_ARCH[a] } : { ...BASE_BY_ARCH._default }));
+    if (deck.length === 0) addUnique({ ...BASE_BY_ARCH._default });
+
+    let currentTotal = deck.reduce((s, q) => s + q.duration, 0);
 
     // Pool de candidatos a hábitos fáceis (Nível 1)
     let candidates = [
@@ -675,13 +708,14 @@ function applyArchetypeDeck(archetype, minutes) {
 
     // Adiciona candidatos de forma orçamentada até atingir o limite
     candidates.forEach(cand => {
-        // Evita duplicar o hábito base
-        if (cand.id === baseQuest.id) return;
-        // Evita colisão lógica de copos de água
-        if (baseQuest.id === 'q-agua' && cand.id === 'q-agua2') return;
+        // Evita duplicar qualquer missão-base já semeada (gancho + pilares).
+        if (idsNoDeck.has(cand.id)) return;
+        // Evita colisão lógica de copos de água se o base de água já entrou.
+        if (idsNoDeck.has('q-agua') && cand.id === 'q-agua2') return;
 
         if (currentTotal + cand.duration <= minutes) {
             deck.push({ ...cand });
+            idsNoDeck.add(cand.id);
             currentTotal += cand.duration;
         }
     });
