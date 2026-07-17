@@ -1525,6 +1525,19 @@
 
                 <button class="btn-submit" id="btn-wizard-finish" style="width: 100%;" disabled>DESPERTAR</button>
             </div>
+
+            <!-- PRIMEIRA VITÓRIA: em vez de largar o novato numa lista de tarefas
+                 (trabalho), o onboarding termina fabricando a primeira recompensa.
+                 A pessoa conclui UMA missão aqui e sente o loop (XP, ouro, avatar
+                 reagindo) antes de sair — a alavanca de ativação mais forte que existe. -->
+            <div id="wizard-step-firstwin" class="wizard-step" style="display: none; text-align: center;">
+                <h2 style="color: var(--neon-purple); text-transform: uppercase;">Desperte Agora</h2>
+                <p style="margin: 12px 0 4px; font-size: 1.05rem;">O Sistema não recompensa intenção — recompensa <strong style="color: var(--neon-purple);">ação</strong>.</p>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 18px;">Conclua sua primeira missão e ganhe seus primeiros XP.</p>
+                <div id="firstwin-quest-card" class="firstwin-quest"></div>
+                <button class="btn-submit" id="btn-wizard-firstwin" style="width: 100%; margin-top: 20px;">✓ CONCLUIR MINHA PRIMEIRA MISSÃO</button>
+                <p style="font-size: 0.72rem; color: #888; margin-top: 12px;">Escolha algo que você consiga fazer nos próximos minutos — beber água conta.</p>
+            </div>
         </div>
     </div>
 

@@ -1607,6 +1607,37 @@ body::before {
     box-shadow: 0 0 10px rgba(139, 92, 246, 0.25);
 }
 
+/* Card da primeira missão (passo "Desperte Agora" do onboarding). Pulsa de leve
+   para atrair o toque — é a ação que dispara a primeira recompensa. */
+.firstwin-quest {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: rgba(139, 92, 246, 0.10);
+    border: 1px solid var(--neon-purple);
+    border-radius: var(--radius-md);
+    text-align: left;
+    box-shadow: 0 0 16px rgba(139, 92, 246, 0.30);
+    animation: firstwin-pulse 1.8s ease-in-out infinite;
+}
+.firstwin-quest .fw-icon { font-size: 1.8rem; }
+.firstwin-quest .fw-title { font-weight: 700; font-size: 1.05rem; }
+.firstwin-quest .fw-reward { font-size: 0.78rem; color: var(--neon-purple); margin-top: 2px; }
+@keyframes firstwin-pulse {
+    0%, 100% { box-shadow: 0 0 12px rgba(139, 92, 246, 0.25); }
+    50%      { box-shadow: 0 0 22px rgba(139, 92, 246, 0.45); }
+}
+
+/* Brilho do avatar no instante da primeira vitória — o "despertar" visível.
+   No nível 1 não há level-up (a imagem não muda), então este pulso é a reação. */
+@keyframes avatar-awaken {
+    0%   { filter: brightness(1); transform: scale(1); }
+    30%  { filter: brightness(1.7) drop-shadow(0 0 22px var(--neon-purple)); transform: scale(1.09); }
+    100% { filter: brightness(1); transform: scale(1); }
+}
+.avatar-awaken { animation: avatar-awaken 1.2s ease-out; }
+
 /* A11Y-003: conteúdo só para leitores de tela */
 .sr-only {
     position: absolute;

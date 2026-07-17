@@ -338,13 +338,15 @@ function setWizardStep(stepId) {
     const step2 = document.getElementById('wizard-step-2');
     const stepHook = document.getElementById('wizard-step-hook');
     const step3 = document.getElementById('wizard-step-3');
+    const stepFirstWin = document.getElementById('wizard-step-firstwin');
 
     if (step0) step0.style.display = (stepId === 'wizard-step-0') ? 'block' : 'none';
     if (step1) step1.style.display = (stepId === 'wizard-step-1') ? 'block' : 'none';
     if (step2) step2.style.display = (stepId === 'wizard-step-2') ? 'block' : 'none';
     if (stepHook) stepHook.style.display = (stepId === 'wizard-step-hook') ? 'block' : 'none';
     if (step3) step3.style.display = (stepId === 'wizard-step-3') ? 'block' : 'none';
-    
+    if (stepFirstWin) stepFirstWin.style.display = (stepId === 'wizard-step-firstwin') ? 'block' : 'none';
+
     if (typeof gameState !== 'undefined') {
         gameState.tutorialStep = stepId;
         if (typeof saveGameData === 'function') {
@@ -559,33 +561,69 @@ function initOnboardingWizard() {
     newBtnFinish.addEventListener('click', () => {
         if (selectedHours) {
             gameState.dailyCommitmentMins = parseInt(selectedHours);
-            
+
             // Coletar dias selecionados
             const dayCheckboxes = document.querySelectorAll('.day-checkbox input:checked');
             const selectedDays = Array.from(dayCheckboxes).map(cb => parseInt(cb.value));
             gameState.activeDays = selectedDays.length > 0 ? selectedDays : [0,1,2,3,4,5,6]; // Fallback
-            
+
             // Adapta o deck de missões com base nos pilares escolhidos e no tempo
             applyArchetypeDeck(gameState.archetypes || [], gameState.dailyCommitmentMins);
-            
+
             // FINALIZAR TUTORIAL
             gameState.tutorialCompleted = true;
             gameState.tutorialStep = null;
-            
-            wizardModal.style.cssText = 'display: none !important;';
             saveGameData();
-            updateUI();
-            
-            setTimeout(() => {
-                showSystemToast(`Despertar concluído, ${gameState.playerName}. O Sistema iniciou sua jornada.`);
-            }, 1000);
+            updateUI(); // prepara a UI do app ATRÁS do wizard (avatar, missões)
 
+            // PRIMEIRA VITÓRIA: em vez de fechar e largar o novato na lista, mostra
+            // o passo "Desperte Agora" com a missão MAIS CURTA do deck — a mais
+            // honesta de concluir na hora. O clique dispara o loop de recompensa real.
+            setupFirstWinStep();
+            setWizardStep('wizard-step-firstwin');
+        }
+    });
+
+    // Passo Primeira Vitória
+    const btnFirstWin = document.getElementById('btn-wizard-firstwin');
+    if (btnFirstWin) {
+        const newBtnFirstWin = btnFirstWin.cloneNode(true);
+        btnFirstWin.parentNode.replaceChild(newBtnFirstWin, btnFirstWin);
+        newBtnFirstWin.addEventListener('click', () => {
+            const firstId = gameState._firstWinQuestId;
+            // Fecha o wizard PRIMEIRO para a celebração e o avatar aparecerem no app.
+            wizardModal.style.cssText = 'display: none !important;';
+            // Conclui a missão de verdade: XP, ouro, celebração e avatar reagindo.
+            setTimeout(() => {
+                if (firstId && typeof window.toggleQuest === 'function') window.toggleQuest(firstId);
+                const av = document.getElementById('char-avatar-img');
+                if (av) { av.classList.add('avatar-awaken'); setTimeout(() => av.classList.remove('avatar-awaken'), 1300); }
+            }, 250);
+            setTimeout(() => {
+                showSystemToast(`Bem-vindo, ${gameState.playerName}. Sua jornada começou — e você já provou que age.`);
+            }, 1600);
             // ONBOARD-003: oferece instalar o PWA logo após o onboarding
             setTimeout(() => {
                 if (typeof window.promptInstallAfterOnboarding === 'function') window.promptInstallAfterOnboarding();
-            }, 2200);
-        }
-    });
+            }, 3000);
+        });
+    }
+}
+
+// Popula o card da primeira vitória com a missão mais curta do deck (a mais
+// realista de completar no momento) e guarda seu id para o clique concluir.
+function setupFirstWinStep() {
+    const card = document.getElementById('firstwin-quest-card');
+    const dailies = (gameState.quests || []).filter(q => !q.completed);
+    if (!card || dailies.length === 0) return;
+    const q = dailies.reduce((menor, cur) => (cur.duration || 99) < (menor.duration || 99) ? cur : menor, dailies[0]);
+    gameState._firstWinQuestId = q.id;
+    card.innerHTML = `
+        <span class="fw-icon">${q.icon || '🎯'}</span>
+        <div>
+            <div class="fw-title">${q.title}</div>
+            <div class="fw-reward">+${q.xp} XP · +${q.gold} OURO</div>
+        </div>`;
 }
 
 // ONBOARD-002: 3 micro-hábitos sugeridos por arquétipo (usuário escolhe 1)

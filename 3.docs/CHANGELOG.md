@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.35] — 2026-07-17
+- **Feat: o onboarding termina com uma PRIMEIRA VITÓRIA, não com uma lista de tarefas.** Antes, o wizard fechava e largava o novato numa lista de missões por fazer (trabalho, zero recompensa) — foi assim que o João criou 14 quests e nunca voltou. Agora, o último passo ("Desperte Agora") mostra a missão mais curta do deck e um botão grande; ao tocar, a missão é concluída **de verdade** e o jogador sente o loop inteiro antes de sair.
+  - Reusa o `toggleQuest` real: XP, ouro, a celebração `quest-cleared-overlay` e a reação do avatar são os mesmos do jogo — recompensa genuína, não uma animação falsa.
+  - A missão do momento é a **mais curta** do deck (ex.: "beber água, 2 min"), não o gancho — é a mais honesta de concluir ali na hora.
+  - O avatar ganha um pulso de "despertar" (`avatar-awaken`) no instante da vitória; no nível 1 não há level-up, então o pulso é a reação visível.
+  - Fecha o wizard **antes** de disparar a recompensa, para a celebração e o avatar aparecerem no app.
+  - **Verificado no navegador** em dois arquétipos (corpo, zen): o passo aparece após DESPERTAR; mostra a missão de 2 min; o clique conclui a missão real (XP 0→10, ouro 0→15), dispara a celebração e o pulso do avatar; o novato aterrissa no app já com 1 vitória e 8 missões esperando; console limpo.
+
 ## [v2.5.34] — 2026-07-17
 - **Feat: o onboarding aceita MAIS DE UM arquétipo.** Antes era escolha única (rádio); agora os pilares são toggles — dá pra combinar Corpo + Foco, ou quantos quiser. Sugestão de uma usuária.
   - O passo do gancho junta os micro-hábitos de todos os pilares escolhidos (Corpo + Foco → 6 opções); a pessoa ainda escolhe **um** como primeira missão.
