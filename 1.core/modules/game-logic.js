@@ -1152,7 +1152,9 @@ function showQuestCleared(quest) {
     setTimeout(() => overlay.classList.remove('show'), 1800);
 }
 
-function applyDailyPenalty(yesterdayStr) {
+// done/total: quantas missões você concluiu de quantas ativas no dia penalizado.
+// Servem só para a mensagem ficar auto-explicativa ("Dia 16/07: 3 de 12 · 25%").
+function applyDailyPenalty(yesterdayStr, done, total) {
     // ── 1. Verifica Poção de Cura (Prioridade Máxima) ────────────────────────
     if (gameState.buffs && gameState.buffs.autoHeal) {
         gameState.buffs.autoHeal = false;
@@ -1287,15 +1289,27 @@ function applyDailyPenalty(yesterdayStr) {
     document.getElementById('penalty-loss-text').innerText = `−${penalty} XP`;
     document.getElementById('penalty-overlay').style.display = 'flex';
 
-    //  Mensagem do Iroh por tom 
+    //  Mensagem do Iroh por tom
     setTimeout(() => {
+        // Linha factual: QUAL dia e QUANTO você fez — para a penalidade deixar de
+        // ser opaca ("por que fui punido?") e virar auto-explicativa.
+        let motivo = '';
+        if (typeof total === 'number' && total > 0) {
+            const pct = Math.round((done / total) * 100);
+            let dataFmt = yesterdayStr;
+            if (yesterdayStr && yesterdayStr.includes('-')) {
+                const [, mm, dd] = yesterdayStr.split('-');
+                dataFmt = `${dd}/${mm}`;
+            }
+            motivo = `📊 *Dia ${dataFmt}:* você concluiu ${done} de ${total} missões (${pct}%) — abaixo dos 70% exigidos.\n\n`;
+        }
         const irohMessages = {
             motivational: `☀️ *SISTEMA:* Você falhou hoje, ${gameState.playerName || getPlayerTerm(gameState.gender)}. Mas um tropeço não define sua jornada. _"A jornada mais longa começa com um único passo — e você ainda pode dar o de amanhã."_ Penalidade leve aplicada: −${penalty} XP. Levante-se.`,
             firm: `⚠️ *SISTEMA:* Dois dias, ${gameState.playerName || getPlayerTerm(gameState.gender)}. O Sistema registrou. Sua sequência foi zerada. _"O rio que para de correr logo apodrece."_ −${penalty} XP deduzidos. Não deixe virar hábito.`,
             angry: `☠️ *SISTEMA:* Três dias consecutivos de falha. Penalidade severa aplicada. −${penalty} XP. Suas habilidades sofreram regressão. _"Você conhece seu potencial e ainda assim escolheu a fraqueza."_ Corrija isso agora.`,
             severe: `💀 *SISTEMA — ALERTA CRÍTICO:* Cinco dias ou mais sem cumprir suas missões. Penalidade máxima: −${penalty} XP. Debuff de 48h ativo. Regressão de habilidades aplicada. _"${getPlayerTerm(gameState.gender) === 'Guerreira' ? 'Uma guerreira que abandona sua disciplina por dias não é mais uma guerreira' : 'Um guerreiro que abandona sua disciplina por dias não é mais um guerreiro'} — é apenas alguém com o uniforme."_ Retorne. Agora.`
         };
-        showSystemToast(irohMessages[irohTone], 'toast-alert');
+        showSystemToast(motivo + irohMessages[irohTone], 'toast-alert');
 
     }, 600);
 

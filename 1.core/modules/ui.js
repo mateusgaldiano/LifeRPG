@@ -1581,7 +1581,78 @@ function animateGoldGain() {
     }
 }
 
+// Registro persistente de notificações — os toasts eram efêmeros (sumiam sem
+// volta). Guarda os últimos 40 no gameState p/ a pessoa reler no modal 🔔.
+const NOTIF_LOG_MAX = 40;
+function logNotification(text, type = '') {
+    if (!Array.isArray(gameState.notificationLog)) gameState.notificationLog = [];
+    gameState.notificationLog.push({ text, type, ts: Date.now() });
+    if (gameState.notificationLog.length > NOTIF_LOG_MAX) {
+        gameState.notificationLog = gameState.notificationLog.slice(-NOTIF_LOG_MAX);
+    }
+    gameState.notifUnread = (gameState.notifUnread || 0) + 1;
+    updateNotifBadge();
+}
+
+function updateNotifBadge() {
+    const badge = document.getElementById('notif-unread-badge');
+    if (!badge) return;
+    const n = gameState.notifUnread || 0;
+    if (n > 0) { badge.textContent = n > 9 ? '9+' : String(n); badge.style.display = ''; }
+    else { badge.style.display = 'none'; }
+}
+
+// Formata o markup leve dos toasts (*negrito*, _itálico_, \n) em HTML.
+function formatNotifText(text) {
+    return String(text || '')
+        .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+        .replace(/_(.*?)_/g, '<em>$1</em>')
+        .replace(/\n/g, '<br>');
+}
+
+// "agora", "há 5 min", "há 3 h", ou a data DD/MM HH:MM se for antigo.
+function notifRelativeTime(ts) {
+    const diff = Date.now() - ts;
+    const min = Math.floor(diff / 60000);
+    if (min < 1) return 'agora';
+    if (min < 60) return `há ${min} min`;
+    const h = Math.floor(min / 60);
+    if (h < 24) return `há ${h} h`;
+    const d = new Date(ts);
+    const p = (n) => String(n).padStart(2, '0');
+    return `${p(d.getDate())}/${p(d.getMonth() + 1)} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function renderNotifications() {
+    const list = document.getElementById('notifications-list');
+    if (!list) return;
+    const log = Array.isArray(gameState.notificationLog) ? gameState.notificationLog : [];
+    if (log.length === 0) {
+        list.innerHTML = '<div class="notif-empty">Nenhuma notificação ainda. O Sistema registra tudo por aqui.</div>';
+        return;
+    }
+    // Mais recente no topo.
+    list.innerHTML = log.slice().reverse().map(n => {
+        const alerta = String(n.type || '').split(' ').includes('toast-alert') ? ' notif-alert' : '';
+        return `<div class="notif-item${alerta}">
+            <div class="notif-text">${formatNotifText(n.text)}</div>
+            <div class="notif-time">${notifRelativeTime(n.ts)}</div>
+        </div>`;
+    }).join('');
+}
+
+// Abre o modal, renderiza o registro e zera o contador de não-lidas.
+function openNotificationsModal() {
+    renderNotifications();
+    const modal = document.getElementById('modal-notifications');
+    if (modal) modal.style.display = 'flex';
+    gameState.notifUnread = 0;
+    updateNotifBadge();
+    if (typeof saveGameData === 'function') saveGameData();
+}
+
 function showSystemToast(text, type = '') {
+    logNotification(text, type); // grava ANTES de exibir — vale mesmo se o toast falhar
     const container = document.getElementById('toast-container');
     if (!container) return;
     
@@ -1673,6 +1744,18 @@ function setupEventListeners() {
             personsGroup.style.display = '';
         }
     });
+
+    // Notificações — sininho abre o registro; X e clique fora fecham.
+    document.getElementById('btn-header-notifications')?.addEventListener('click', openNotificationsModal);
+    document.getElementById('close-notifications-modal')?.addEventListener('click', () => {
+        const m = document.getElementById('modal-notifications');
+        if (m) m.style.display = 'none';
+    });
+    document.getElementById('modal-notifications')?.addEventListener('click', (e) => {
+        if (e.target.id === 'modal-notifications') e.target.style.display = 'none';
+    });
+    // Restaura o badge de não-lidas ao carregar (sobrevive ao reload via gameState).
+    updateNotifBadge();
 
     // Taverna
     // Modais

@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.36] — 2026-07-17
+- **Feat: modal de Notificações (sininho 🔔 no topo) — dá pra reler tudo.** Os toasts eram efêmeros: apareciam, sumiam e não voltavam. Agora todo toast é gravado num registro (últimos 40, com data/hora), acessível pelo sininho. Badge de não-lidas no ícone, zerado ao abrir; sobrevive a reload (vive no `gameState`).
+- **Feat: a penalidade virou AUTO-EXPLICATIVA.** Era só "você falhou" — sem dizer qual dia nem quanto. Agora abre com a linha factual: *"📊 Dia 16/07: você concluiu 3 de 12 missões (25%) — abaixo dos 70% exigidos."* Fim da dúvida "por que fui punido?".
+  - **Reforço do conceito:** a penalidade NÃO é por deixar de abrir o app — é por concluir menos de 70% das missões ativas do último dia. Abrir ≠ completar. Ao abrir hoje, o app fecha o balanço de ontem e, se ficou abaixo de 70%, aplica.
+- **Como foi feito:** `showSystemToast` passou a gravar no `gameState.notificationLog`; `applyDailyPenalty(dia, feitas, total)` recebe a contagem e prefixa o motivo. Modal renderiza do mais recente ao mais antigo, com tempo relativo ("agora", "há 5 min") e destaque vermelho para alertas.
+  - **Verificado no navegador:** toasts logam (inclusive os do boot); badge mostra a contagem e some ao abrir; lista ordena do recente ao antigo; a penalidade aparece com dia/percentual e é relegível; tudo sobrevive a reload; console limpo.
+
 ## [v2.5.35] — 2026-07-17
 - **Feat: o onboarding termina com uma PRIMEIRA VITÓRIA, não com uma lista de tarefas.** Antes, o wizard fechava e largava o novato numa lista de missões por fazer (trabalho, zero recompensa) — foi assim que o João criou 14 quests e nunca voltou. Agora, o último passo ("Desperte Agora") mostra a missão mais curta do deck e um botão grande; ao tocar, a missão é concluída **de verdade** e o jogador sente o loop inteiro antes de sair.
   - Reusa o `toggleQuest` real: XP, ouro, a celebração `quest-cleared-overlay` e a reação do avatar são os mesmos do jogo — recompensa genuína, não uma animação falsa.
