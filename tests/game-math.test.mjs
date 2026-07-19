@@ -12,6 +12,8 @@ import {
     SKILL_KEYS,
     getAvatarRankFile,
     getAvatarCandidates,
+    getHexTier,
+    HEX_TIERS,
 } from '../1.core/modules/game-math.js';
 
 // Monta um objeto de skills no formato real do gameState a partir de um mapa
@@ -232,4 +234,75 @@ test('avatar: sem argumentos ainda devolve uma cadeia utilizável', () => {
     const c = getAvatarCandidates();
     assert.equal(c.length, 3);
     assert.ok(c.every(p => p.startsWith('2.assets/avatars/')));
+});
+
+// ── getHexTier (faixas do radar) ────────────────────────────────────────────
+test('hexágono: novato (tudo LV1) fica na faixa 1 com o teto de hoje', () => {
+    const t = getHexTier(mkSkills({}));
+    assert.equal(t.nivel, 1);
+    assert.equal(t.nome, 'Iniciante');
+    assert.equal(t.teto, 5); // idêntico ao teto fixo antigo: nada muda p/ iniciante
+});
+
+test('hexágono: a faixa vem do atributo MAIS ALTO, não da média', () => {
+    // um único atributo alto (LV9 => val 8) puxa a faixa sozinho
+    const t = getHexTier(mkSkills({ routine: 8, mental: 0.5 }));
+    assert.equal(t.nivel, 2);
+    assert.equal(t.teto, 10);
+});
+
+test('hexágono: fronteira — val 5 (nível 6) JÁ sobe para a faixa 2', () => {
+    assert.equal(getHexTier(mkSkills({ physical: 4.9 })).nivel, 1);
+    assert.equal(getHexTier(mkSkills({ physical: 5 })).nivel, 2);
+});
+
+test('hexágono: todas as fronteiras das 5 faixas', () => {
+    const casos = [
+        [0, 1, 5], [4.99, 1, 5],
+        [5, 2, 10], [9.99, 2, 10],
+        [10, 3, 15], [14.99, 3, 15],
+        [15, 4, 20], [19.99, 4, 20],
+        [20, 5, 25], [24.99, 5, 25],
+    ];
+    for (const [val, nivel, teto] of casos) {
+        const t = getHexTier(mkSkills({ wisdom: val }));
+        assert.equal(t.nivel, nivel, `val ${val} deveria estar na faixa ${nivel}`);
+        assert.equal(t.teto, teto, `val ${val} deveria ter teto ${teto}`);
+    }
+});
+
+test('hexágono: acima da última faixa o teto continua subindo (nunca satura)', () => {
+    const t = getHexTier(mkSkills({ routine: 27 })); // além de Lendário
+    assert.equal(t.nome, 'Lendário');
+    assert.ok(t.teto >= 30, 'o teto deve crescer além de 25');
+    // e o atributo nunca deve estourar o próprio teto
+    assert.ok(27 <= t.teto);
+});
+
+test('hexágono: entrada vazia/nula não quebra', () => {
+    for (const entrada of [undefined, null, {}]) {
+        const t = getHexTier(entrada);
+        assert.equal(t.nivel, 1);
+        assert.equal(t.teto, 5);
+    }
+});
+
+test('hexágono: o caso real do Mateus (maior = LV9) cai em Intermediário', () => {
+    // valores reais: rotina 8.70, sabedoria 7.75, foco 7.23, físico 6.21, social 6.0, mental 5.30
+    const t = getHexTier(mkSkills({
+        routine: 8.70, wisdom: 7.75, productivity: 7.23,
+        physical: 6.21, social: 6.00, mental: 5.30,
+    }));
+    assert.equal(t.nome, 'Intermediário');
+    assert.equal(t.teto, 10);
+    // com teto 10 os atributos voltam a se ESPALHAR (antes: todos em 1.00)
+    assert.ok(8.70 / t.teto < 1, 'o maior não pode mais estourar o teto');
+    assert.ok((8.70 / t.teto) - (5.30 / t.teto) > 0.3, 'deve haver diferença visível');
+});
+
+test('hexágono: as faixas são contíguas e crescentes (sem buraco nem sobreposição)', () => {
+    for (let i = 1; i < HEX_TIERS.length; i++) {
+        assert.ok(HEX_TIERS[i].maxVal > HEX_TIERS[i - 1].maxVal, `faixa ${i} deve subir`);
+        assert.equal(HEX_TIERS[i].nivel, HEX_TIERS[i - 1].nivel + 1, 'níveis sequenciais');
+    }
 });

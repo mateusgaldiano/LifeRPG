@@ -568,6 +568,27 @@ body::before {
     font-size: 8px; font-weight: 700;
     letter-spacing: 2px; color: var(--text-muted);
 }
+
+/* Badge da faixa do hexágono (ao lado de ATRIBUTOS). A cor escala com a faixa —
+   o mesmo vocabulário visual de progressão do resto do app. */
+.hex-tier-badge {
+    font-family: var(--font-hud);
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    margin-right: auto;
+    margin-left: 8px;
+    border: 1px solid currentColor;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+.hex-tier-badge[data-tier="1"] { color: #64748b; }                                     /* Iniciante — cinza */
+.hex-tier-badge[data-tier="2"] { color: #06b6d4; }                                     /* Intermediário — ciano */
+.hex-tier-badge[data-tier="3"] { color: #8b5cf6; }                                     /* Avançado — roxo */
+.hex-tier-badge[data-tier="4"] { color: #f59e0b; box-shadow: 0 0 8px rgba(245,158,11,0.35); }  /* Elite — âmbar */
+.hex-tier-badge[data-tier="5"] { color: #fbbf24; box-shadow: 0 0 12px rgba(251,191,36,0.55); } /* Lendário — dourado */
 .btn-toggle-radar {
     display: inline-block;
     font-family: var(--font-hud);

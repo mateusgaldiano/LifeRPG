@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.39] — 2026-07-18
+- **Feat: o hexágono de atributos ganhou FAIXAS e voltou a informar.** O radar tinha teto fixo em `val 5` (= nível 6): quem passasse disso via **todos os atributos grudados em 100%** e um hexágono perfeitamente regular. O gráfico parava de dizer qualquer coisa exatamente quando o jogador ficava interessante. Nos dados reais do Mateus, os seis atributos (LV6 a LV9) estavam **todos em 1.00**.
+  - **Cinco faixas**, definidas pelo atributo mais alto — o teto sobe junto: **Iniciante** (LV1–5, teto LV6) → **Intermediário** (LV6–10, teto LV11) → **Avançado** (LV11–15) → **Elite** (LV16–20) → **Lendário** (LV21+). Acima da última, o teto segue crescendo de 5 em 5, então o radar **nunca volta a saturar**.
+  - **O encolhimento virou conquista.** Ao trocar de faixa o polígono encolhe (o teto subiu) — em vez de parecer perda de progresso, entra um badge novo e um toast comemorando. Ideia do Mateus; resolve o único trade-off que a escala automática silenciosa não tinha como esconder.
+  - **Badge ao lado de ATRIBUTOS** mostrando a faixa atual, com cor que escala (cinza → ciano → roxo → âmbar → dourado).
+  - **Iniciante não vê diferença nenhuma:** a faixa 1 tem exatamente o teto antigo (5). Quem está começando continua com o gráfico de sempre — e não recebe parabéns retroativo ao abrir pela primeira vez.
+  - **Verificado:** 8 testes novos em `game-math.test.mjs` (35 no total) cobrindo todas as fronteiras, entrada nula e o caso real; e no navegador, medindo os **pixels do contorno** no canvas: os 6 vértices saíram em 51/45/44/41/39/35 px (**16,3 px de variação**, na ordem exata dos níveis) — antes era um hexágono regular.
+
 ## [v2.5.38] — 2026-07-18
 - **Fix: os VÍCIOS nunca chegavam na nuvem — existiam só no aparelho.** Um vício nasce com `skill: null` (não tem atributo, por design), mas a coluna `skill` da tabela `quests` é **NOT NULL**. O `questToRow` mandava esse `null` direto, o Postgres rejeitava o upsert e o erro só ia para o console. Resultado: 30 quests sincronizavam, **0 vícios** — e num segundo aparelho (ou após limpar o cache) o vício simplesmente sumia.
   - **Correção:** `questToRow` passa a gravar `skill: q.skill || 'routine'`. É inócuo: o `loadQuestsFromSupabase` já força `skill: null` de volta ao ler um vício, então a semântica local não muda. O `difficulty` já tinha esse fallback — só o `skill` tinha ficado sem.

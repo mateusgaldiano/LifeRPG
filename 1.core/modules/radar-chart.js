@@ -2,6 +2,7 @@
 // Gráfico de radar (hexágono) dos 6 atributos, desenhado em <canvas>. Extraído
 // de ui.js — unidade de render autocontida que só depende de gameState.skills.
 import { gameState } from "./state.js";
+import { getHexTier } from "./game-math.js";
 
 function drawRadarChart() {
     try {
@@ -30,12 +31,17 @@ function drawRadarChart() {
         };
         const N = skillTypes.length;
 
+        // Faixa do hexágono: define o TETO da escala. Antes era fixo em 5 (nível 6),
+        // então quem passava disso via todos os atributos em 100% — um hexágono
+        // regular que não informava nada. Agora o teto acompanha a evolução.
+        const tier = getHexTier(gameState.skills);
+
         // Helper: raio e skill
         const getR = (type) => {
             const skill = (gameState.skills && gameState.skills[type])
                 || { level: 1, xp: 0, xpToNext: 5 };
             const val  = (skill.level - 1) + (skill.xp / (skill.xpToNext || 5));
-            const frac = Math.min(val / 5, 1.0);
+            const frac = Math.min(val / tier.teto, 1.0);
             // Raio mínimo de 4px apenas para manter o marcador visível no vértice
             // Escala real começa do zero
             const minR = 4;
@@ -134,10 +140,34 @@ function drawRadarChart() {
             ctx.fillText('LV' + skill.level, lx, ly + 6);
         }
 
+        // Badge da faixa ao lado do título ATRIBUTOS.
+        const tierBadge = document.getElementById('hex-tier-badge');
+        if (tierBadge) {
+            tierBadge.textContent = `HEXÁGONO ${tier.nome.toUpperCase()}`;
+            tierBadge.dataset.tier = tier.nivel;
+        }
+
+        // Subiu de faixa? Comemora. É isto que transforma o "polígono encolheu"
+        // em conquista: o teto subiu porque VOCÊ subiu.
+        // Na primeira execução apenas registra a faixa atual, sem alarde — quem já
+        // estava avançado não recebe um parabéns retroativo.
+        if (gameState.hexTierSeen === undefined) {
+            gameState.hexTierSeen = tier.nivel;
+        } else if (tier.nivel > gameState.hexTierSeen) {
+            gameState.hexTierSeen = tier.nivel;
+            if (typeof window.showSystemToast === 'function') {
+                window.showSystemToast(
+                    `⬢ *HEXÁGONO EVOLUÍDO!* Seus atributos romperam a escala anterior — o radar agora é *${tier.nome}* (faixa ${tier.nivel} de 5). _"O mapa cresceu porque o território cresceu."_`
+                );
+            }
+            if (typeof window.saveGameData === 'function') window.saveGameData();
+        }
+
         // A11Y-003: descrição textual do radar para leitores de tela
         const radarDesc = document.getElementById('radar-description');
         if (radarDesc) {
-            radarDesc.textContent = 'Atributos: ' + skillTypes.map(t => `${skillLabels[t]} nível ${getR(t).skill.level}`).join(', ') + '.';
+            radarDesc.textContent = `Hexágono ${tier.nome} (faixa ${tier.nivel} de 5, escala até nível ${tier.teto + 1}). `
+                + 'Atributos: ' + skillTypes.map(t => `${skillLabels[t]} nível ${getR(t).skill.level}`).join(', ') + '.';
         }
 
     } catch (err) {

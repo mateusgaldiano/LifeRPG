@@ -96,6 +96,34 @@ function computePlayerClassKey(skills) {
     return leaders.length === 1 ? leaders[0] : 'desperto';
 }
 
+// ── FAIXAS DO HEXÁGONO (radar de atributos) ────────────────────────────────
+// O radar tinha teto FIXO em val 5 (= nível 6). Quem passasse disso via todos os
+// atributos grudados em 100% e um hexágono regular — o gráfico parava de informar
+// exatamente quando o jogador ficava interessante.
+// Agora o teto sobe em faixas nomeadas, de 5 em 5. O encolhimento do polígono ao
+// trocar de faixa deixa de ser efeito colateral e vira conquista.
+// `maxVal` é exclusivo: val 5.0 (nível 6) já entra na faixa 2.
+const HEX_TIERS = [
+    { nivel: 1, nome: 'Iniciante',     maxVal: 5  },
+    { nivel: 2, nome: 'Intermediário', maxVal: 10 },
+    { nivel: 3, nome: 'Avançado',      maxVal: 15 },
+    { nivel: 4, nome: 'Elite',         maxVal: 20 },
+    { nivel: 5, nome: 'Lendário',      maxVal: 25 },
+];
+
+// Faixa do hexágono a partir do atributo MAIS ALTO.
+// Retorna { nivel, nome, teto } — `teto` é o val que encosta na borda do radar.
+function getHexTier(skills) {
+    const maxVal = Math.max(...SKILL_KEYS.map(k => skillProgress(skills && skills[k])), 0);
+    for (const t of HEX_TIERS) {
+        if (maxVal < t.maxVal) return { nivel: t.nivel, nome: t.nome, teto: t.maxVal };
+    }
+    // Acima da última faixa: mantém o nome Lendário, mas o teto segue subindo de
+    // 5 em 5 — assim o radar nunca volta a saturar, por mais longe que se chegue.
+    const ultimo = HEX_TIERS[HEX_TIERS.length - 1];
+    return { nivel: ultimo.nivel, nome: ultimo.nome, teto: Math.ceil(maxVal / 5) * 5 || 5 };
+}
+
 // ── AVATAR ─────────────────────────────────────────────────────────────────
 // Arquivo do avatar por rank. Candidato reusa a arte do E; Nacional/Governante/
 // Monarca reusam a do S — não têm arte própria.
@@ -175,6 +203,8 @@ export {
     computeSintoniaTier,
     SKILL_KEYS,
     computePlayerClassKey,
+    HEX_TIERS,
+    getHexTier,
     AVATAR_RANK_FILE,
     getAvatarRankFile,
     getAvatarCandidates,
