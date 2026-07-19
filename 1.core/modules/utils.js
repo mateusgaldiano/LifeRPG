@@ -50,6 +50,7 @@ const SYNERGY_DEFS = [
         name: 'Vontade de Ferro',
         icon: '⚡',
         description: '+10% XP em todas as quests',
+        requisito: 'Físico e Rotina em LV3',
         check: (skills) => skills.physical.level >= 3 && skills.routine.level >= 3,
         bonusXpPct: 0.10,
         bonusSkillXp: 0,
@@ -60,6 +61,7 @@ const SYNERGY_DEFS = [
         name: 'Mente Afiada',
         icon: '🧠',
         description: '+1 Skill XP em cada quest',
+        requisito: 'Mental e Sabedoria em LV3',
         check: (skills) => skills.mental.level >= 3 && skills.wisdom.level >= 3,
         bonusXpPct: 0,
         bonusSkillXp: 1,
@@ -70,6 +72,7 @@ const SYNERGY_DEFS = [
         name: 'Corpo e Mente',
         icon: '⚖️',
         description: '+5% Ouro em todas as quests',
+        requisito: 'Físico, Rotina, Foco e Conexão em LV3',
         check: (skills) => skills.physical.level >= 3 && skills.routine.level >= 3
                          && skills.productivity.level >= 3 && skills.social.level >= 3,
         bonusXpPct: 0,
@@ -81,6 +84,7 @@ const SYNERGY_DEFS = [
         name: 'O Sistema',
         icon: '⚡',
         description: '+15% XP, +1 Skill XP, +5% Ouro',
+        requisito: 'Todos os 6 atributos em LV3',
         check: (skills) => ['physical','routine','mental','wisdom','productivity','social']
             .every(k => skills[k].level >= 3),
         bonusXpPct: 0.15,
@@ -92,6 +96,7 @@ const SYNERGY_DEFS = [
         name: 'Lenda Imortal',
         icon: '👑',
         description: '+25% XP + Escudo bônus a cada 7-streak',
+        requisito: 'Todos os 6 atributos em LV5',
         check: (skills) => ['physical','routine','mental','wisdom','productivity','social']
             .every(k => skills[k].level >= 5),
         bonusXpPct: 0.25,
@@ -191,41 +196,43 @@ function calcStreakGoldMultiplier() {
     return 0.0;
 }
 
+// `nivel` = nível do jogador que desbloqueia o perk (espelha RANK_THRESHOLDS em
+// game-math.js). Usado no modal explicativo para mostrar o que ainda falta.
 const RANK_PERKS = {
     'd': {
         id: 'foco_matinal',
         name: 'Foco Matinal',
         icon: '🌅',
         description: '+5 XP bônus na primeira quest do dia',
-        rank: 'RANK D'
+        rank: 'RANK D', nivel: 5
     },
     'c': {
         id: 'mente_diamante',
         name: 'Mente de Diamante',
         icon: '💎',
         description: '+10 XP bônus ao completar todas as dailies',
-        rank: 'RANK C'
+        rank: 'RANK C', nivel: 10
     },
     'b': {
         id: 'momentum',
         name: 'Momentum',
         icon: '⚡',
         description: '+1 XP por quest consecutiva (acumula até 5)',
-        rank: 'RANK B'
+        rank: 'RANK B', nivel: 15
     },
     'a': {
         id: 'o_sistema',
         name: 'O Sistema',
         icon: '🔄',
         description: '1 skill XP de bônus ao completar todas as dailies',
-        rank: 'RANK A'
+        rank: 'RANK A', nivel: 20
     },
     's': {
         id: 'lenda_imortal',
         name: 'Lenda Imortal',
         icon: '👑',
         description: '+25% XP em todas as recompensas',
-        rank: 'RANK S'
+        rank: 'RANK S', nivel: 25
     }
 };
 

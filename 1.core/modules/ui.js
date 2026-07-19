@@ -4,7 +4,8 @@ import {
     localDateStr, getRankForLevel, debounce, hasPerk, calcStreakMultiplier,
     calcStreakGoldMultiplier, calcGroupMultiplier, getSynergyXpBonus,
     getSynergyGoldBonus, getPerkXpBonus, initSkillsState, isQuestActiveOnDay,
-    computePlayerTitle, computeSynergies, computePlayerClassKey, setImgWithFallback
+    computePlayerTitle, computeSynergies, computePlayerClassKey, setImgWithFallback,
+    SYNERGY_DEFS, RANK_PERKS
 } from './utils.js';
 import { getAvatarCandidates, getRankTitle } from './game-math.js';
 import { toggleQuest, buyStoreItem, completeDungeon, showQuestCleared, getPendingRankEvaluation, BOSS_QUEST_BY_LEVEL, getEarlyBirdChestStatus, getNightOwlChestStatus } from './game-logic.js';
@@ -1036,15 +1037,21 @@ function renderSynergies() {
     if (!container) return; // Elemento ainda não existe no HTML — seguro ignorar
 
     const active = computeSynergies();
+    const cabecalho = '<div style="width:100%; font-size:10px; color:#fbbf24; font-family:var(--font-hud); letter-spacing:2px; margin-bottom:4px; border-bottom: 1px solid rgba(251,191,36,0.3); padding-bottom: 2px;">⚡ SINERGIAS ATIVAS <button class="bonus-info-btn" data-bonus="sinergias" aria-label="O que são sinergias?">?</button></div>';
+
+    // Sem nenhuma ativa, o card inteiro sumia — junto com o "?". Justamente quem
+    // não desbloqueou nada é quem mais precisa saber que isso existe e como
+    // conquistar. Agora o cabeçalho fica, com um convite.
     if (active.length === 0) {
-        container.innerHTML = '';
-        container.style.display = 'none';
+        container.style.display = 'flex';
+        container.innerHTML = cabecalho
+            + '<div class="bonus-empty-hint" data-bonus="sinergias">Nenhuma ativa ainda — toque para ver as 5 e como desbloquear.</div>';
         return;
     }
 
     container.style.display = 'flex';
-    container.innerHTML = '<div style="width:100%; font-size:10px; color:#fbbf24; font-family:var(--font-hud); letter-spacing:2px; margin-bottom:4px; border-bottom: 1px solid rgba(251,191,36,0.3); padding-bottom: 2px;">⚡ SINERGIAS ATIVAS</div>' + active.map(s => `
-        <div class="synergy-badge" title="${s.description}">
+    container.innerHTML = cabecalho + active.map(s => `
+        <div class="synergy-badge" data-bonus="sinergias" title="${s.description}">
             <span class="synergy-icon">${s.icon}</span>
             <span class="synergy-name">${s.name}</span>
         </div>
@@ -1057,19 +1064,81 @@ function renderRankPerks() {
     if (!container) return;
 
     const active = getActivePerks();
+    const cabecalho = '<div style="width:100%; font-size:10px; color:#00f0ff; font-family:var(--font-hud); letter-spacing:2px; margin-bottom:4px; margin-top:8px; border-bottom: 1px solid rgba(0,240,255,0.3); padding-bottom: 2px;">RANK PERKS <button class="bonus-info-btn" data-bonus="perks" aria-label="O que são rank perks?">?</button></div>';
+
+    // Mesma razão das sinergias: quem ainda não tem perk precisa enxergar o alvo.
     if (active.length === 0) {
-        container.innerHTML = '';
-        container.style.display = 'none';
+        container.style.display = 'flex';
+        container.innerHTML = cabecalho
+            + '<div class="bonus-empty-hint" data-bonus="perks">Nenhum ainda — o primeiro chega no RANK D (nível 5). Toque para ver todos.</div>';
         return;
     }
 
     container.style.display = 'flex';
-    container.innerHTML = '<div style="width:100%; font-size:10px; color:#00f0ff; font-family:var(--font-hud); letter-spacing:2px; margin-bottom:4px; margin-top:8px; border-bottom: 1px solid rgba(0,240,255,0.3); padding-bottom: 2px;">P RANK PERKS</div>' + active.map(p => `
-        <div class="perk-badge" title="${p.description}">
+    container.innerHTML = cabecalho + active.map(p => `
+        <div class="perk-badge" data-bonus="perks" title="${p.description}">
             <span class="perk-icon">${p.icon}</span>
             <span class="perk-name">${p.name}</span>
         </div>
     `).join('');
+}
+
+// ── Modal explicativo de Sinergias / Rank Perks ─────────────────────────────
+// A descrição de cada bônus só existia como `title=` (tooltip de hover), que NÃO
+// aparece em toque — no celular ninguém descobria o que eram. Aqui o conteúdo
+// vira toque e ganha o que faltava: o que ainda está trancado e como destravar.
+const BONUS_INFO = {
+    sinergias: {
+        titulo: '⚡ SINERGIAS',
+        intro: 'Sinergias são bônus <strong>permanentes</strong> que nascem da <strong>combinação</strong> de atributos — não se compram, se conquistam subindo atributos em conjunto. Ficam ativas enquanto os requisitos forem mantidos, e os bônus <strong>somam</strong> entre si.',
+        itens: () => {
+            const ativos = new Set(computeSynergies().map(s => s.id));
+            return SYNERGY_DEFS.map(s => ({
+                icon: s.icon, nome: s.name, efeito: s.description,
+                requisito: s.requisito, ativo: ativos.has(s.id),
+            }));
+        },
+    },
+    perks: {
+        titulo: '🏅 RANK PERKS',
+        intro: 'Perks são bônus que o Sistema concede ao alcançar cada <strong>Rank</strong> (que sobe com o seu nível). São <strong>cumulativos</strong>: ao ganhar um novo, você mantém todos os anteriores para sempre.',
+        itens: () => {
+            const nivelAtual = gameState.level || 1;
+            return Object.values(RANK_PERKS).map(p => ({
+                icon: p.icon, nome: p.name, efeito: p.description,
+                requisito: `${p.rank} — nível ${p.nivel}`,
+                ativo: nivelAtual >= p.nivel,
+            }));
+        },
+    },
+};
+
+function openBonusInfoModal(qual) {
+    const cfg = BONUS_INFO[qual];
+    if (!cfg) return;
+    const modal = document.getElementById('modal-bonus-info');
+    const titulo = document.getElementById('bonus-info-title');
+    const intro = document.getElementById('bonus-info-intro');
+    const lista = document.getElementById('bonus-info-list');
+    if (!modal || !lista) return;
+
+    if (titulo) titulo.textContent = cfg.titulo;
+    if (intro) intro.innerHTML = cfg.intro;
+
+    const itens = cfg.itens();
+    const desbloqueados = itens.filter(i => i.ativo).length;
+    lista.innerHTML = `<div class="bonus-info-count">${desbloqueados} de ${itens.length} desbloqueados</div>`
+        + itens.map(i => `
+        <div class="bonus-info-item ${i.ativo ? 'is-on' : 'is-off'}">
+            <span class="bonus-info-icon">${i.ativo ? i.icon : '🔒'}</span>
+            <div class="bonus-info-body">
+                <div class="bonus-info-name">${i.nome}</div>
+                <div class="bonus-info-effect">${i.efeito}</div>
+                <div class="bonus-info-req">${i.ativo ? '✅ Ativo' : 'Requer: ' + i.requisito}</div>
+            </div>
+        </div>`).join('');
+
+    modal.style.display = 'flex';
 }
 
 // Avatar do jogador: muda por RANK e por CLASSE dominante do radar.
@@ -1756,6 +1825,20 @@ function setupEventListeners() {
     });
     // Restaura o badge de não-lidas ao carregar (sobrevive ao reload via gameState).
     updateNotifBadge();
+
+    // Sinergias / Rank Perks — delegação, porque os badges são recriados a cada
+    // render. Tocar no "?" do cabeçalho OU em qualquer badge abre a explicação.
+    document.addEventListener('click', (e) => {
+        const alvo = e.target.closest('[data-bonus]');
+        if (alvo) openBonusInfoModal(alvo.dataset.bonus);
+    });
+    document.getElementById('close-bonus-info-modal')?.addEventListener('click', () => {
+        const m = document.getElementById('modal-bonus-info');
+        if (m) m.style.display = 'none';
+    });
+    document.getElementById('modal-bonus-info')?.addEventListener('click', (e) => {
+        if (e.target.id === 'modal-bonus-info') e.target.style.display = 'none';
+    });
 
     // Taverna
     // Modais

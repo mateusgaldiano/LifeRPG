@@ -1204,6 +1204,19 @@
             </div>
         </div>
 
+        <!-- Modal: explicação de Sinergias / Rank Perks. Os bônus tinham a
+             descrição só em `title=` (tooltip de hover), invisível no celular —
+             então ninguém sabia o que eram. Aqui vira toque, e mostra também o
+             que ainda está trancado, virando um mapa de progressão. -->
+        <div id="modal-bonus-info" class="modal">
+            <div class="modal-box modal-box-md">
+                <span class="close-modal-btn" id="close-bonus-info-modal">&times;</span>
+                <h3 id="bonus-info-title">BÔNUS</h3>
+                <p id="bonus-info-intro" class="bonus-info-intro"></p>
+                <div id="bonus-info-list"></div>
+            </div>
+        </div>
+
         <!-- Modal: Notificações do Sistema -->
         <div id="modal-notifications" class="modal">
             <div class="modal-box modal-box-md">

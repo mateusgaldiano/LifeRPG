@@ -9,6 +9,15 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.41] — 2026-07-18
+- **Feat: Sinergias e Rank Perks agora se explicam (modal por toque).** A descrição de cada bônus **já existia**, mas só como `title=` — o tooltip de hover do HTML, que **não aparece em toque**. No celular a informação era invisível, e ninguém descobria o que aqueles chips eram.
+  - Um **"?"** ao lado de cada cabeçalho (e o toque em qualquer chip) abre um modal que explica o **conceito** e lista **todos** os bônus — os ativos ✅ e os que ainda faltam 🔒, com o requisito de cada um. Vira um mapa de progressão, não só uma legenda.
+  - **Sinergias:** bônus permanentes que nascem da *combinação* de atributos; somam entre si. Ex.: *Vontade de Ferro* pede Físico e Rotina em LV3.
+  - **Rank Perks:** bônus que o Sistema concede a cada Rank alcançado; são *cumulativos*. Ex.: *Momentum* chega no RANK B (nível 15).
+  - **Fix de descoberta:** quando **nada** estava desbloqueado, o card inteiro era escondido — junto com o "?". Ou seja, quem mais precisava entender (o iniciante) era exatamente quem não conseguia abrir. Agora o cabeçalho permanece com um convite: *"Nenhuma ativa ainda — toque para ver as 5 e como desbloquear."*
+  - Requisitos legíveis (`requisito` nas sinergias, `nivel` nos perks) foram para as próprias definições em `utils.js` — fonte única, sem texto duplicado na tela.
+  - **Verificado no navegador:** com o estado real do Mateus (LV12), sinergias mostram 5/5 e perks 2/5 com os três trancados e seus níveis; abre pelo "?" e pelo chip; como novato, 0/5 com todos os requisitos visíveis e o convite na tela; console limpo.
+
 ## [v2.5.40] — 2026-07-18
 - **Fix: removido o rank fantasma "Governante" — Monarca é o topo.** As Boss Quests de LV30 e LV35 prometiam promover o jogador a **Governante**, um rank que nunca existiu em `RANK_THRESHOLDS`. Quem chegasse lá completaria uma missão dizendo "você se tornou Governante" e continuaria Nacional.
 - **Fix (maior): a escada das Boss Quests estava desalinhada dos ranks a partir do LV20 — e o RANK A era pulado por completo.** A missão do LV20 dizia `B → S`, sendo que o LV20 promove a **A**. Daí pra cima tudo ficava deslocado em um degrau. Agora a escada segue exatamente a régua de ranks:

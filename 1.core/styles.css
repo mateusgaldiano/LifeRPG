@@ -569,6 +569,67 @@ body::before {
     letter-spacing: 2px; color: var(--text-muted);
 }
 
+/* Botão "?" ao lado de SINERGIAS / RANK PERKS — abre a explicação. Alvo de
+   toque generoso (a descrição só existia em tooltip de hover, invisível no
+   celular). */
+.bonus-info-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px; height: 15px;
+    margin-left: 5px;
+    padding: 0;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    font-family: var(--font-hud);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.75;
+    vertical-align: middle;
+}
+.bonus-info-btn:hover, .bonus-info-btn:focus { opacity: 1; }
+/* Os badges também abrem o modal: sinaliza que são tocáveis. */
+.synergy-badge, .perk-badge { cursor: pointer; }
+
+/* Convite quando nada foi desbloqueado ainda (é tocável e abre o modal). */
+.bonus-empty-hint {
+    width: 100%;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-style: italic;
+    cursor: pointer;
+    padding: 2px 0;
+}
+.bonus-empty-hint:hover { color: var(--text-secondary); }
+
+/* Conteúdo do modal de bônus */
+.bonus-info-intro { font-size: 0.85rem; line-height: 1.45; color: var(--text-secondary); margin-bottom: 12px; }
+.bonus-info-count {
+    font-family: var(--font-hud); font-size: 9px; letter-spacing: 1px;
+    color: var(--text-muted); margin-bottom: 8px;
+}
+#bonus-info-list { display: flex; flex-direction: column; gap: 8px; max-height: 52vh; overflow-y: auto; }
+.bonus-info-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-sm);
+    background: var(--surface-bg);
+}
+.bonus-info-item.is-on  { border-left: 3px solid var(--neon-cyan); }
+.bonus-info-item.is-off { border-left: 3px solid var(--border-glass); opacity: 0.62; }
+.bonus-info-icon { font-size: 1.3rem; line-height: 1.2; }
+.bonus-info-name { font-weight: 700; font-size: 0.9rem; }
+.bonus-info-effect { font-size: 0.8rem; color: var(--text-secondary); margin-top: 1px; }
+.bonus-info-req {
+    font-family: var(--font-hud); font-size: 9px; letter-spacing: 0.5px;
+    color: var(--text-muted); margin-top: 4px;
+}
+
 /* Badge da faixa do hexágono (ao lado de ATRIBUTOS). A cor escala com a faixa —
    o mesmo vocabulário visual de progressão do resto do app. */
 .hex-tier-badge {
