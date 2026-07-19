@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.38] — 2026-07-18
+- **Fix: os VÍCIOS nunca chegavam na nuvem — existiam só no aparelho.** Um vício nasce com `skill: null` (não tem atributo, por design), mas a coluna `skill` da tabela `quests` é **NOT NULL**. O `questToRow` mandava esse `null` direto, o Postgres rejeitava o upsert e o erro só ia para o console. Resultado: 30 quests sincronizavam, **0 vícios** — e num segundo aparelho (ou após limpar o cache) o vício simplesmente sumia.
+  - **Correção:** `questToRow` passa a gravar `skill: q.skill || 'routine'`. É inócuo: o `loadQuestsFromSupabase` já força `skill: null` de volta ao ler um vício, então a semântica local não muda. O `difficulty` já tinha esse fallback — só o `skill` tinha ficado sem.
+  - **Verificado contra o banco real** (transação com rollback): inserir vício com `skill=null` → *"violates not-null constraint"*; com `skill='routine'` → aceito.
+  - Este bug se somava ao da v2.5.37: sem vício na nuvem, a streak de abstinência não teria como acumular de qualquer forma.
+
 ## [v2.5.37] — 2026-07-18
 - **Fix: a streak de abstinência dos vícios nunca acumulava — zerava todo dia mesmo sem recaída.** A flag de recaída era um booleano (`_addictionRelapsedToday`) que **viajava para a nuvem**. O rollover a limpava no início do dia, mas logo depois o ramo "nuvem vence" a restaurava com o valor **velho** (`true`), ressuscitando uma recaída que já tinha sido processada. No rollover seguinte, a streak zerava de novo — em loop, para sempre. A flag ficava presa em `true` na nuvem indefinidamente (confirmado nos dados: `_addictionRelapsedToday: "true"`, `addictionStreak: 0`).
   - **Correção:** a recaída passa a ser marcada por **data** (`_addictionRelapseDate`), não por booleano. Uma data é auto-expirável: só conta se for exatamente o dia que está fechando. Mesmo que volte velha da nuvem, não bate com o dia atual e é ignorada — o bug não pode se repetir.

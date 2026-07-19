@@ -790,7 +790,12 @@ function questToRow(q) {
     user_id: window._currentUserDbId,
     local_id: q.id,
     title: q.title,
-    skill: q.skill,
+    // `skill` é NOT NULL no banco, mas VÍCIOS nascem com skill: null (não têm
+    // atributo por design). Sem este fallback o upsert do vício era REJEITADO
+    // pelo Postgres e ele nunca chegava na nuvem — ficava só no aparelho e sumia
+    // em outro dispositivo. Gravar 'routine' é inócuo: loadQuestsFromSupabase
+    // força skill: null de volta ao ler um vício, preservando a semântica local.
+    skill: q.skill || 'routine',
     type: serializedType,
     difficulty: q.difficulty || 'medium',
     xp: q.xp,
