@@ -432,14 +432,19 @@ function renderWeeklyBoss() {
 
 
 // Mapeia nível mínimo do rank atual → boss quest a ser ativada
+// Uma Boss Quest por promoção de rank. A escada segue EXATAMENTE
+// RANK_THRESHOLDS (game-math.js): 5→D, 10→C, 15→B, 20→A, 25→S, 30→Nacional,
+// 35→Monarca. Antes, daqui pra cima, ela divergia: o RANK A era pulado e havia
+// um rank fantasma "Governante" que não existe na régua — o jogador seria
+// promovido a algo inexistente. Monarca é o topo.
 const BOSS_QUEST_BY_LEVEL = {
     5:  'e-to-d',
     10: 'd-to-c',
     15: 'c-to-b',
-    20: 'b-to-s',
-    25: 's-to-nacional',
-    30: 'nacional-to-governante',
-    35: 'governante-to-monarca'
+    20: 'b-to-a',
+    25: 'a-to-s',
+    30: 's-to-nacional',
+    35: 'nacional-to-monarca'
 };
 
 
@@ -486,7 +491,9 @@ function getBossVictoryQuote(bossId) {
         'd-to-c': 'Missões extras revelam o caráter. Você foi além do mínimo — isso é tudo.',
         'c-to-b': 'Quatro atributos forjados. Não é sorte. É consistência transformada em força.',
         'b-to-a': 'Catorze dias sem parar. Isso não é disciplina — isso é identidade.',
-        'a-to-s': 'O Sistema Encarnado. Você não segue mais o método — você virou o método.'
+        'a-to-s': 'O Sistema Encarnado. Você não segue mais o método — você virou o método.',
+        's-to-nacional': 'Trinta dias. A que ponto chegou quem começou com um copo de água.',
+        'nacional-to-monarca': 'Cem missões. O trono não estava vazio — estava esperando. Não há rank acima deste.'
     };
     return quotes[bossId] || 'A vitória pertence a quem persiste.';
 }

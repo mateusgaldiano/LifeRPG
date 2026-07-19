@@ -125,8 +125,8 @@ function getHexTier(skills) {
 }
 
 // ── AVATAR ─────────────────────────────────────────────────────────────────
-// Arquivo do avatar por rank. Candidato reusa a arte do E; Nacional/Governante/
-// Monarca reusam a do S — não têm arte própria.
+// Arquivo do avatar por rank. Candidato reusa a arte do E; Nacional e Monarca
+// reusam a do S — não têm arte própria.
 // FONTE ÚNICA: existiam três cópias divergentes deste mapa (updateAvatarImage e
 // openAvatarZoom em ui.js, getPlayerAvatarSrc em social.js), cada uma com um
 // buraco diferente — rank A virava E na tela social, Nacional/Monarca viravam E
@@ -140,7 +140,6 @@ const AVATAR_RANK_FILE = {
     a:          '5.rank-a',
     s:          '6.rank-s',
     nacional:   '6.rank-s',
-    governante: '6.rank-s',
     monarca:    '6.rank-s'
 };
 
@@ -161,7 +160,6 @@ const RANK_TITLES = {
     a:          { m: 'Herói Lendário',   f: 'Heroína Lendária' },
     s:          { m: 'O Sistema',        f: 'O Sistema' },
     nacional:   { m: 'Caçador Nacional', f: 'Caçadora Nacional' },
-    governante: { m: 'Governante',       f: 'Governante' },
     monarca:    { m: 'Monarca',          f: 'Monarca' }
 };
 

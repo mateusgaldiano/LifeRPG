@@ -228,20 +228,22 @@ const BOSS_QUESTS = {
             return `${Math.min(lv3count, 4)}/4 skills em LV3+`;
         }
     },
-    'b-to-s': {
-        id: 'b-to-s',
+    // LV20 — antes era 'b-to-s' e pulava o RANK A, que existe na régua de ranks.
+    'b-to-a': {
+        id: 'b-to-a',
         title: 'Vigília do Estoico',
         description: 'Mantenha uma sequência de 14 dias consecutivos.',
-        rankFrom: 'RANK B', rankTo: 'RANK S',
+        rankFrom: 'RANK B', rankTo: 'RANK A',
         xpReward: 600, goldReward: 180,
         check: () => (gameState.streak || 0) >= 14,
         progress: () => `${Math.min(gameState.streak || 0, 14)}/14 dias de streak`
     },
-    's-to-nacional': {
-        id: 's-to-nacional',
+    // LV25 — o desafio é o mesmo; só o rótulo de rank foi corrigido.
+    'a-to-s': {
+        id: 'a-to-s',
         title: 'O Sistema Completo',
         description: 'Eleve TODAS as 6 skills para o Nível 5 simultaneamente.',
-        rankFrom: 'RANK S', rankTo: 'Nacional',
+        rankFrom: 'RANK A', rankTo: 'RANK S',
         xpReward: 1000, goldReward: 300,
         check: () => {
             const skills = gameState.skills || {};
@@ -253,20 +255,22 @@ const BOSS_QUESTS = {
             return `${lv5count}/6 skills em LV5+`;
         }
     },
-    'nacional-to-governante': {
-        id: 'nacional-to-governante',
+    // LV30 — antes prometia o rank fantasma "Governante"; agora leva a Nacional.
+    's-to-nacional': {
+        id: 's-to-nacional',
         title: 'Força de Autoridade',
         description: 'Chegue a uma sequência de 30 dias de streak.',
-        rankFrom: 'Nacional', rankTo: 'Governante',
+        rankFrom: 'RANK S', rankTo: 'Nacional',
         xpReward: 1500, goldReward: 500,
         check: () => (gameState.streak || 0) >= 30,
         progress: () => `${Math.min(gameState.streak || 0, 30)}/30 dias de streak`
     },
-    'governante-to-monarca': {
-        id: 'governante-to-monarca',
+    // LV35 — o topo. Monarca é o rank final do jogo.
+    'nacional-to-monarca': {
+        id: 'nacional-to-monarca',
         title: 'O Trono Vazio',
         description: 'Complete 100 quests no total.',
-        rankFrom: 'Governante', rankTo: 'Monarca',
+        rankFrom: 'Nacional', rankTo: 'Monarca',
         xpReward: 2500, goldReward: 1000,
         check: () => true, // Auto-completa ou check simbólico
         progress: () => `Desafio Supremo Liberado`

@@ -14,6 +14,8 @@ import {
     getAvatarCandidates,
     getHexTier,
     HEX_TIERS,
+    RANK_TITLES,
+    AVATAR_RANK_FILE,
 } from '../1.core/modules/game-math.js';
 
 // Monta um objeto de skills no formato real do gameState a partir de um mapa
@@ -185,8 +187,33 @@ test('avatar: rank A não cai no E (bug antigo do social.js)', () => {
 
 test('avatar: ranks acima de S reusam a arte do S (bug antigo do zoom)', () => {
     assert.equal(getAvatarRankFile('nacional'), '6.rank-s');
-    assert.equal(getAvatarRankFile('governante'), '6.rank-s');
     assert.equal(getAvatarRankFile('monarca'), '6.rank-s');
+});
+
+test('rank: "Governante" não existe — Monarca é o topo', () => {
+    // Havia um rank fantasma: as Boss Quests de LV30/35 prometiam promover a
+    // "Governante", que nunca esteve em RANK_THRESHOLDS. Foi removido.
+    const nomes = RANK_THRESHOLDS.map(r => r.rank.toLowerCase());
+    assert.ok(!nomes.some(n => n.includes('governante')), 'Governante não pode voltar à régua');
+    assert.equal(RANK_THRESHOLDS[0].rank, 'Monarca', 'Monarca é o rank mais alto');
+    assert.ok(!('governante' in RANK_TITLES), 'sem título de Governante');
+    assert.ok(!('governante' in AVATAR_RANK_FILE), 'sem avatar de Governante');
+});
+
+test('rank: os mapas de título e avatar cobrem exatamente a régua de ranks', () => {
+    // Trava contra rank fantasma: todo rank da régua precisa ter título e arte,
+    // e nenhum dos mapas pode inventar um rank que não existe.
+    const daRegua = new Set(RANK_THRESHOLDS.map(r => r.css.replace('rank-', '')));
+    for (const chave of daRegua) {
+        assert.ok(chave in RANK_TITLES, `rank "${chave}" sem título`);
+        assert.ok(chave in AVATAR_RANK_FILE, `rank "${chave}" sem avatar`);
+    }
+    for (const chave of Object.keys(RANK_TITLES)) {
+        assert.ok(daRegua.has(chave), `título de rank inexistente na régua: "${chave}"`);
+    }
+    for (const chave of Object.keys(AVATAR_RANK_FILE)) {
+        assert.ok(daRegua.has(chave), `avatar de rank inexistente na régua: "${chave}"`);
+    }
 });
 
 test('avatar: candidato reusa a arte do E; rank desconhecido/vazio idem', () => {

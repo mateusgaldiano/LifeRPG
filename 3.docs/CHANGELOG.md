@@ -9,6 +9,22 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.40] — 2026-07-18
+- **Fix: removido o rank fantasma "Governante" — Monarca é o topo.** As Boss Quests de LV30 e LV35 prometiam promover o jogador a **Governante**, um rank que nunca existiu em `RANK_THRESHOLDS`. Quem chegasse lá completaria uma missão dizendo "você se tornou Governante" e continuaria Nacional.
+- **Fix (maior): a escada das Boss Quests estava desalinhada dos ranks a partir do LV20 — e o RANK A era pulado por completo.** A missão do LV20 dizia `B → S`, sendo que o LV20 promove a **A**. Daí pra cima tudo ficava deslocado em um degrau. Agora a escada segue exatamente a régua de ranks:
+
+  | Nível | Antes | Agora |
+  |---|---|---|
+  | 20 | B → S ✗ | **B → A** |
+  | 25 | S → Nacional ✗ | **A → S** |
+  | 30 | Nacional → Governante ✗ | **S → Nacional** |
+  | 35 | Governante → Monarca ✗ | **Nacional → Monarca** |
+
+  - **Pista que confirmou o desenho pretendido:** as frases de vitória do Iroh já existiam para `'b-to-a'` e `'a-to-s'` — os IDs corretos —, mas eram **código morto**, porque nenhuma quest tinha esses ids. Agora voltaram a disparar.
+  - Os desafios não mudaram (cada um continua no seu nível); só os rótulos de rank e os ids foram corrigidos. Ninguém está perto do LV20, então não há progresso afetado.
+  - Adicionadas as frases de vitória que faltavam para `s-to-nacional` e `nacional-to-monarca` — o rank final agora tem um fecho à altura.
+  - **Trava contra reincidência:** novo teste garante que os mapas de título e de avatar cubram **exatamente** os ranks da régua — nem um rank sem arte, nem um rank inventado. Teria pego o Governante. (37 testes no total.)
+
 ## [v2.5.39] — 2026-07-18
 - **Feat: o hexágono de atributos ganhou FAIXAS e voltou a informar.** O radar tinha teto fixo em `val 5` (= nível 6): quem passasse disso via **todos os atributos grudados em 100%** e um hexágono perfeitamente regular. O gráfico parava de dizer qualquer coisa exatamente quando o jogador ficava interessante. Nos dados reais do Mateus, os seis atributos (LV6 a LV9) estavam **todos em 1.00**.
   - **Cinco faixas**, definidas pelo atributo mais alto — o teto sobe junto: **Iniciante** (LV1–5, teto LV6) → **Intermediário** (LV6–10, teto LV11) → **Avançado** (LV11–15) → **Elite** (LV16–20) → **Lendário** (LV21+). Acima da última, o teto segue crescendo de 5 em 5, então o radar **nunca volta a saturar**.
