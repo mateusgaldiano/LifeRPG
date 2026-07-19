@@ -414,7 +414,7 @@ async function ensureUserProfile(authUser) {
             activeBorder: gameState.inventory?.activeBorder || null,
             rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
             addictionStreak: gameState.addictionStreak || 0,
-            _addictionRelapsedToday: gameState._addictionRelapsedToday || false,
+            _addictionRelapseDate: gameState._addictionRelapseDate || null,
             gender: gameState.gender || 'male',
             lastHourglassAt: gameState.lastHourglassAt || 0,
             lastTributeWeek: gameState.lastTributeWeek || "",
@@ -519,7 +519,7 @@ window.syncFromCloud = async function() {
       gameState.tutorialCompleted = cloudUser.settings?.tutorialCompleted ?? false;
       gameState.tutorialStep = cloudUser.settings?.tutorialStep ?? null;
       gameState.addictionStreak = cloudUser.settings?.addictionStreak ?? 0;
-      gameState._addictionRelapsedToday = cloudUser.settings?._addictionRelapsedToday ?? false;
+      gameState._addictionRelapseDate = cloudUser.settings?._addictionRelapseDate ?? null;
       applyCloudCosmetics(cloudUser.settings);
       applyCloudProgressionFlags(cloudUser.settings);
 
@@ -736,7 +736,7 @@ window.saveToSupabase = async function() {
       activeBorder: gameState.inventory?.activeBorder || null,
       rankEvaluationsClaimed: gameState.rankEvaluationsClaimed || [],
       addictionStreak: gameState.addictionStreak || 0,
-      _addictionRelapsedToday: gameState._addictionRelapsedToday || false,
+      _addictionRelapseDate: gameState._addictionRelapseDate || null,
       gender: gameState.gender || 'male',
       // Flags de progressão das mecânicas novas (Ampulheta, Tributo, Baús, Amuletos)
       lastHourglassAt: gameState.lastHourglassAt || 0,

@@ -749,7 +749,9 @@ function handleAddictionToggle(quest) {
         // RECAÍDA
         quest.completed = false;
         gameState.addictionStreak = 0;
-        gameState._addictionRelapsedToday = true;
+        // Marca a recaída pela DATA (auto-expirável). Ver a nota no rollover em
+        // state.js: o booleano antigo voltava da nuvem e zerava a streak sem motivo.
+        gameState._addictionRelapseDate = localDateStr();
         gameState.buffs.addictionPenalty = true;
         gameState.buffs.addictionPenaltyExpiresAt = Date.now() + 86400000; // 24h
         if (window.saveBuffsToSupabase) window.saveBuffsToSupabase();

@@ -655,14 +655,22 @@ function loadGameData() {
             // se o jogador de fato tem algum vício cadastrado.
             const hasAddictions = (parsed.quests || []).some(q => q.type === 'addiction');
             if (hasAddictions) {
-                const relapsed = parsed._addictionRelapsedToday || parsed.quests.some(q => q.type === 'addiction' && !q.completed);
+                // A recaída é marcada por DATA, não por booleano. Motivo: o booleano
+                // `_addictionRelapsedToday` viajava para a nuvem e voltava no ramo
+                // "nuvem vence" DEPOIS do rollover já tê-lo limpado — ressuscitando um
+                // `true` velho. Resultado: a streak zerava todo dia mesmo sem recaída,
+                // e a flag ficava presa em true na nuvem para sempre.
+                // Uma data é auto-expirável: só conta se for o dia que está fechando.
+                const relapsedByDate = parsed._addictionRelapseDate
+                    && parsed._addictionRelapseDate === parsed.lastCheckedDate;
+                const relapsed = relapsedByDate || parsed.quests.some(q => q.type === 'addiction' && !q.completed);
                 if (relapsed) {
                     parsed.addictionStreak = 0;
                 } else {
                     parsed.addictionStreak = (parsed.addictionStreak || 0) + 1;
                 }
             }
-            parsed._addictionRelapsedToday = false;
+            // Não precisa limpar nada: a data expira sozinha ao virar o dia.
 
             // Reseta hábitos diários para um novo dia
             parsed.quests.forEach(q => {
@@ -755,7 +763,17 @@ function loadGameData() {
         // Inicializa campos novos caso seja um save antigo
         if (gameState.shields === undefined) gameState.shields = 0;
         if (gameState.addictionStreak === undefined) gameState.addictionStreak = 0;
-        if (gameState._addictionRelapsedToday === undefined) gameState._addictionRelapsedToday = false;
+        // Migração do booleano antigo (_addictionRelapsedToday) → data.
+        // O booleano é DESCARTADO, não convertido. Dois motivos:
+        //  1. Ele era justamente a parte quebrada (ficava preso em `true` porque
+        //     voltava da nuvem depois do rollover já tê-lo limpado);
+        //  2. Esta migração roda DEPOIS do rollover, quando lastCheckedDate já é
+        //     hoje — convertê-lo criaria uma "recaída hoje" fantasma, punindo o
+        //     usuário amanhã por um bug.
+        // Uma recaída real continua detectada pelo estado do próprio vício
+        // (quest.completed === false), que é o sinal confiável.
+        if (gameState._addictionRelapseDate === undefined) gameState._addictionRelapseDate = null;
+        delete gameState._addictionRelapsedToday;
         if (gameState.consecutiveStreak7Days === undefined) gameState.consecutiveStreak7Days = 0;
         if (gameState.consecutiveMisses === undefined) gameState.consecutiveMisses = 0;
         if (gameState.bossQuest === undefined) gameState.bossQuest = null;

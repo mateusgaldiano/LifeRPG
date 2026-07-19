@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.37] — 2026-07-18
+- **Fix: a streak de abstinência dos vícios nunca acumulava — zerava todo dia mesmo sem recaída.** A flag de recaída era um booleano (`_addictionRelapsedToday`) que **viajava para a nuvem**. O rollover a limpava no início do dia, mas logo depois o ramo "nuvem vence" a restaurava com o valor **velho** (`true`), ressuscitando uma recaída que já tinha sido processada. No rollover seguinte, a streak zerava de novo — em loop, para sempre. A flag ficava presa em `true` na nuvem indefinidamente (confirmado nos dados: `_addictionRelapsedToday: "true"`, `addictionStreak: 0`).
+  - **Correção:** a recaída passa a ser marcada por **data** (`_addictionRelapseDate`), não por booleano. Uma data é auto-expirável: só conta se for exatamente o dia que está fechando. Mesmo que volte velha da nuvem, não bate com o dia atual e é ignorada — o bug não pode se repetir.
+  - **Migração:** o booleano legado é **descartado**, não convertido. Ele era a parte quebrada, e a migração roda depois do rollover (quando `lastCheckedDate` já é hoje) — convertê-lo criaria uma "recaída hoje" fantasma, punindo o usuário amanhã por um bug. Uma recaída real continua sendo detectada pelo estado do próprio vício (`completed === false`), que é o sinal confiável.
+  - **Verificado no navegador, 3 cenários:** (1) recaída antiga + vício intacto → streak **incrementa** (era o bug: zerava); (2) recaída real ontem → streak **zera** (punição legítima preservada); (3) booleano legado travado → descartado, sem punição fantasma, streak incrementa.
+
 ## [v2.5.36] — 2026-07-17
 - **Feat: modal de Notificações (sininho 🔔 no topo) — dá pra reler tudo.** Os toasts eram efêmeros: apareciam, sumiam e não voltavam. Agora todo toast é gravado num registro (últimos 40, com data/hora), acessível pelo sininho. Badge de não-lidas no ícone, zerado ao abrir; sobrevive a reload (vive no `gameState`).
 - **Feat: a penalidade virou AUTO-EXPLICATIVA.** Era só "você falhou" — sem dizer qual dia nem quanto. Agora abre com a linha factual: *"📊 Dia 16/07: você concluiu 3 de 12 missões (25%) — abaixo dos 70% exigidos."* Fim da dúvida "por que fui punido?".
