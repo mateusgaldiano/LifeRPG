@@ -2209,6 +2209,37 @@ body::before {
 .hm-missed { background: rgba(15,31,53,0.08); }
 .hm-empty { background: transparent; pointer-events: none; }
 
+/* ==== Consistência compacta (Semanal / Mensal / Anual) ==== */
+.consistency-card { display: flex; flex-direction: column; gap: 18px; }
+.consistency-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
+.consistency-head h3 { color: var(--text-light); font-size: 0.8rem; letter-spacing: 0.5px; margin: 0; }
+.consistency-sub { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); white-space: nowrap; }
+
+/* Cores de status compartilhadas pelos níveis compactos */
+.c-none { background: rgba(15,31,53,0.06); }
+.c-bad { background: rgba(139,92,246,0.22); }
+.c-good { background: rgba(139,92,246,0.6); }
+.c-perfect { background: var(--neon-purple); box-shadow: 0 0 6px rgba(139,92,246,0.5); }
+
+/* Nível Semanal — 7 pílulas */
+.week-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.week-day { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.week-day-lbl { font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.week-cell { width: 100%; aspect-ratio: 1; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-family: var(--font-hud); color: var(--text-muted); transition: transform 0.15s; }
+.week-cell.c-good, .week-cell.c-perfect { color: #fff; }
+.week-cell:hover { transform: scale(1.08); }
+.week-day.today .week-cell { outline: 2px solid var(--neon-cyan); outline-offset: 2px; }
+
+/* Nível Mensal — 30 quadradinhos */
+.month-grid { display: grid; grid-template-columns: repeat(15, 1fr); gap: 4px; }
+.month-cell { width: 100%; aspect-ratio: 1; border-radius: 3px; transition: transform 0.15s; }
+.month-cell:hover { transform: scale(1.2); }
+
+/* Nível Anual — heatmap menor pra ocupar menos tela */
+.year-scroll { width: 100%; overflow-x: auto; padding-bottom: 6px; }
+.year-scroll .heatmap-container { grid-template-rows: repeat(7, 9px); gap: 3px; }
+.year-scroll .hm-block { width: 9px; height: 9px; }
+
 /* Mobile CSS Scroll overrides */
 
 /* CONSOLIDATED MOBILE CSS */

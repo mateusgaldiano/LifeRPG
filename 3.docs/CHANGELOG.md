@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.42] — 2026-07-22
+- **Feat: Visão Global compacta — semana, mês e ano empilhados em vez do heatmap anual gigante.** O único painel de consistência era um heatmap de 365 dias (7×52 quadradinhos com scroll horizontal) que ocupava muita tela e dava pouca informação num relance — dava trabalho até achar "hoje".
+  - Agora um card único traz **três níveis empilhados**, do mais acionável ao panorâmico:
+    - **ESTA SEMANA:** os últimos 7 dias como pílulas com o número do dia e a inicial do dia da semana; hoje ganha um contorno ciano. É o nível de olhar rápido.
+    - **ÚLTIMOS 30 DIAS:** 30 quadradinhos compactos pro ritmo do mês.
+    - **NO ANO:** o mesmo heatmap de 365 dias, porém com células menores (9px) — continua lá pra visão de longo prazo, mas ocupando bem menos espaço.
+  - Cada nível mostra um resumo do lado (`X/7 dias`, `X/30 dias`, `X dias ativos`). Métricas anuais, gráfico mensal e Top Hábitos seguem abaixo, inalterados.
+
 ## [v2.5.41] — 2026-07-18
 - **Feat: Sinergias e Rank Perks agora se explicam (modal por toque).** A descrição de cada bônus **já existia**, mas só como `title=` — o tooltip de hover do HTML, que **não aparece em toque**. No celular a informação era invisível, e ninguém descobria o que aqueles chips eram.
   - Um **"?"** ao lado de cada cabeçalho (e o toque em qualquer chip) abre um modal que explica o **conceito** e lista **todos** os bônus — os ativos ✅ e os que ainda faltam 🔒, com o requisito de cada um. Vira um mapa de progressão, não só uma legenda.

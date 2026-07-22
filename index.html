@@ -380,21 +380,46 @@
                 </div>
 
                 
-                <!-- HEATMAP ANUAL -->
-                <div class="dashboard-card" style="margin-bottom: 20px;">
-                    <h3 style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px;">CONSISTÊNCIA ANUAL (365 DIAS)</h3>
-                    <div style="width: 100%; overflow-x: auto; padding-bottom: 10px;">
-                        <div id="heatmap-grid" class="heatmap-container" style="min-width: max-content;">
-                            <!-- Quadradinhos injetados via JS -->
+                <!-- CONSISTÊNCIA COMPACTA (Semanal / Mensal / Anual) -->
+                <div class="dashboard-card consistency-card" style="margin-bottom: 20px;">
+
+                    <!-- SEMANAL -->
+                    <div class="consistency-tier">
+                        <div class="consistency-head">
+                            <h3>ESTA SEMANA</h3>
+                            <span id="week-summary" class="consistency-sub"></span>
                         </div>
+                        <div id="week-strip" class="week-strip"><!-- JS --></div>
                     </div>
-                    <div class="heatmap-legend" style="display: flex; gap: 8px; font-size: 0.7rem; justify-content: flex-end; margin-top: 8px; color: var(--text-muted);">
-                        <span>Menos</span>
-                        <span class="hm-block" style="background: rgba(15,31,53,0.06); width: 10px; height: 10px; border-radius: 2px;"></span>
-                        <span class="hm-block" style="background: rgba(139,92,246,0.2); width: 10px; height: 10px; border-radius: 2px;"></span>
-                        <span class="hm-block" style="background: rgba(139,92,246,0.6); width: 10px; height: 10px; border-radius: 2px;"></span>
-                        <span class="hm-block" style="background: var(--neon-purple); width: 10px; height: 10px; border-radius: 2px; box-shadow: 0 0 5px var(--neon-purple);"></span>
-                        <span>Mais</span>
+
+                    <!-- MENSAL -->
+                    <div class="consistency-tier">
+                        <div class="consistency-head">
+                            <h3>ÚLTIMOS 30 DIAS</h3>
+                            <span id="month-summary" class="consistency-sub"></span>
+                        </div>
+                        <div id="month-grid" class="month-grid"><!-- JS --></div>
+                    </div>
+
+                    <!-- ANUAL -->
+                    <div class="consistency-tier">
+                        <div class="consistency-head">
+                            <h3>NO ANO</h3>
+                            <span id="year-summary" class="consistency-sub"></span>
+                        </div>
+                        <div class="year-scroll">
+                            <div id="heatmap-grid" class="heatmap-container" style="min-width: max-content;">
+                                <!-- Quadradinhos injetados via JS -->
+                            </div>
+                        </div>
+                        <div class="heatmap-legend" style="display: flex; gap: 8px; font-size: 0.7rem; justify-content: flex-end; margin-top: 8px; color: var(--text-muted);">
+                            <span>Menos</span>
+                            <span class="hm-block" style="background: rgba(15,31,53,0.06); width: 10px; height: 10px; border-radius: 2px;"></span>
+                            <span class="hm-block" style="background: rgba(139,92,246,0.2); width: 10px; height: 10px; border-radius: 2px;"></span>
+                            <span class="hm-block" style="background: rgba(139,92,246,0.6); width: 10px; height: 10px; border-radius: 2px;"></span>
+                            <span class="hm-block" style="background: var(--neon-purple); width: 10px; height: 10px; border-radius: 2px; box-shadow: 0 0 5px var(--neon-purple);"></span>
+                            <span>Mais</span>
+                        </div>
                     </div>
                 </div>
 

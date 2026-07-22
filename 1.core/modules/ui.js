@@ -2126,12 +2126,62 @@ function renderGlobalDashboard() {
         });
     }
     
-    // 1. Preencher Heatmap Anual (365 dias)
-    const heatmapGrid = document.getElementById('heatmap-grid');
-    if(heatmapGrid) heatmapGrid.innerHTML = '';
-    
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    // Mapeia o status de um dia para a classe de cor compacta
+    const statusClass = (log) => log
+        ? (log.status === 'perfect' ? 'c-perfect' : log.status === 'good' ? 'c-good' : 'c-bad')
+        : 'c-none';
+
+    // 1a. Nível Semanal (últimos 7 dias, terminando hoje)
+    const weekStrip = document.getElementById('week-strip');
+    if (weekStrip) {
+        weekStrip.innerHTML = '';
+        const weekLbls = ['D','S','T','Q','Q','S','S'];
+        let weekActive = 0;
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(today.getDate() - i);
+            const ds = localDateStr(d);
+            const log = history[ds];
+            if (log) weekActive++;
+            const dayEl = document.createElement('div');
+            dayEl.className = 'week-day' + (i === 0 ? ' today' : '');
+            dayEl.innerHTML = `
+                <span class="week-day-lbl">${weekLbls[d.getDay()]}</span>
+                <div class="week-cell ${statusClass(log)}" title="${ds}${log ? `: ${log.count}/${log.total} completos` : ': sem dados'}">${d.getDate()}</div>
+            `;
+            weekStrip.appendChild(dayEl);
+        }
+        const ws = document.getElementById('week-summary');
+        if (ws) ws.innerText = `${weekActive}/7 dias`;
+    }
+
+    // 1b. Nível Mensal (últimos 30 dias)
+    const monthGrid = document.getElementById('month-grid');
+    if (monthGrid) {
+        monthGrid.innerHTML = '';
+        let monthActive = 0;
+        for (let i = 29; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(today.getDate() - i);
+            const ds = localDateStr(d);
+            const log = history[ds];
+            if (log) monthActive++;
+            const cell = document.createElement('div');
+            cell.className = `month-cell ${statusClass(log)}`;
+            cell.title = `${ds}${log ? `: ${log.count}/${log.total} completos` : ': sem dados'}`;
+            monthGrid.appendChild(cell);
+        }
+        const ms = document.getElementById('month-summary');
+        if (ms) ms.innerText = `${monthActive}/30 dias`;
+    }
+
+    // 1c. Preencher Heatmap Anual (365 dias)
+    const heatmapGrid = document.getElementById('heatmap-grid');
+    if(heatmapGrid) heatmapGrid.innerHTML = '';
+    let yearActive = 0;
     
     // Dia inicial (364 dias atrás + hoje = 365)
     const startDate = new Date(today);
@@ -2158,6 +2208,7 @@ function renderGlobalDashboard() {
         block.className = 'hm-block';
 
         if (log) {
+            yearActive++;
             block.classList.add(`hm-${log.status}`);
             block.title = `${dateStr}: ${log.count}/${log.total} completos`;
         } else {
@@ -2165,6 +2216,9 @@ function renderGlobalDashboard() {
         }
         if(heatmapGrid) heatmapGrid.appendChild(block);
     }
+
+    const yearSummaryEl = document.getElementById('year-summary');
+    if (yearSummaryEl) yearSummaryEl.innerText = `${yearActive} dias ativos`;
 
     // Rola para o final para mostrar "hoje"
     if (heatmapGrid && heatmapGrid.parentElement) {
