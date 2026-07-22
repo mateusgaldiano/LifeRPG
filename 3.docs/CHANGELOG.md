@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.46] — 2026-07-22
+- **Ajuste: novos níveis de trava das seções da Loja + limpeza de travas redundantes.** As seções agora abrem em: Buffs **Nv5**, Chaves **Nv10**, Cosméticos **Nv15**, Tributo **Nv20**.
+  - Removida a trava por-item do **Tributo (Nv10)** em `game-logic.js` — ficou menor que a trava da seção (Nv20), então era código morto. Texto do card atualizado para "(Requer Nível 20)". As travas por-item que continuam **maiores** que a seção (Foco Lendário Nv10, Cálice Nv15, Grimório Nv20 — todas em Buffs/Nv5) foram mantidas.
+  - Verificado no navegador nos níveis 1/5/10/15/20: a progressão de desbloqueio abre uma seção por vez, na ordem certa; console limpo.
+
 ## [v2.5.45] — 2026-07-22
 - **Feat: Loja da Taverna vira accordion + trava por nível.** A Loja era um paredão de cards de rolagem infinita. Agora as 4 seções (🧪 Buffs, 🗝️ Chaves, 🏛️ Tributo, 💎 Cosméticos) são **colapsáveis**: cada cabeçalho virou um botão com seta (▾) que abre/fecha a seção, e **todas começam fechadas** — abre-se só a Loja com 4 barras empilhadas.
   - **Trava por nível** (complementa as travas por item que já existiam): Buffs abre no **Nv2**, Chaves no **Nv3**, Cosméticos no **Nv5**, Tributo no **Nv15**. Seção travada aparece esmaecida com "🔒 Nível N" e, ao tocar, avisa por toast em vez de abrir.

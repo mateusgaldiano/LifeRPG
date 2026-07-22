@@ -196,10 +196,10 @@ function initTabs() {
 // LOJA — SEÇÕES COLAPSÁVEIS (ACCORDION) + TRAVA POR NÍVEL
 // ==========================================================================
 const SHOP_SECTION_UNLOCKS = {
-    'shop-sec-buffs': 2,
-    'shop-sec-keys': 3,
-    'shop-sec-tribute': 15,
-    'shop-sec-cosmetics': 5,
+    'shop-sec-buffs': 5,
+    'shop-sec-keys': 10,
+    'shop-sec-tribute': 20,
+    'shop-sec-cosmetics': 15,
 };
 
 // Aplica a trava por nível: mostra "🔒 Nível N" nas travadas e força o colapso delas.

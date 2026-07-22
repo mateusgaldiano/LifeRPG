@@ -1612,13 +1612,8 @@ async function buyStoreItem(itemId) {
         }
     }
 
-    // ── Tributo ao Sistema: end-game (nível 10+) e 1× por semana ────────────────
+    // ── Tributo ao Sistema: 1× por semana (a trava de nível é da seção da Loja, Nv20) ──
     if (itemId.startsWith('tribute_')) {
-        if ((gameState.level || 1) < 10) {
-            trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'level_restriction' });
-            showSystemToast("⚠️ *BLOQUEADO.* O Tributo ao Sistema exige nível 10+ para ser ofertado.");
-            return;
-        }
         if (gameState.lastTributeWeek && gameState.lastTributeWeek === currentWeekKey()) {
             trackEvent('item_purchase_blocked', { item_id: itemId, reason: 'weekly_cooldown' });
             showSystemToast("🏛️ *TRIBUTO JÁ OFERTADO.* O Sistema aceita apenas um tributo por semana. Retorne na próxima.");
