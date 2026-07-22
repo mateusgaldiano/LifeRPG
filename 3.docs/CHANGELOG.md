@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.43] — 2026-07-22
+- **Feat: Visão Global enxuta — só consistência + Top Hábitos.** Abaixo do card de consistência havia três blocos que confundiam mais do que informavam: as 4 métricas acumuladas (com o "Total Missões" em vermelho que na verdade eram *missões falhadas*) e o gráfico "Progresso Mensal" (barras de 12 meses, quase sempre vazio e redundante com o novo nível mensal). Ambos foram removidos.
+  - Sobra o essencial: o card de consistência (semana/mês/ano) e o **Top Hábitos**. JS morto que alimentava as métricas e o gráfico também foi removido.
+
 ## [v2.5.42] — 2026-07-22
 - **Feat: Visão Global compacta — semana, mês e ano empilhados em vez do heatmap anual gigante.** O único painel de consistência era um heatmap de 365 dias (7×52 quadradinhos com scroll horizontal) que ocupava muita tela e dava pouca informação num relance — dava trabalho até achar "hoje".
   - Agora um card único traz **três níveis empilhados**, do mais acionável ao panorâmico:

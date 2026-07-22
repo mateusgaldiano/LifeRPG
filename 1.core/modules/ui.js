@@ -2228,24 +2228,10 @@ function renderGlobalDashboard() {
         }, 10);
     }
 
-    // 2. Preencher Métricas de Topo
-    let totalHabitsDone = 0;
-    let totalMissed = 0;
-    let perfectDays = 0;
-    let totalDaysLogged = dates.length;
-
-    let monthlyData = new Array(12).fill(0); // [Jan, Fev, ... Dez]
+    // 2. Agregar contagem de hábitos (alimenta o Top Hábitos)
     let habitCounts = {};
-
     dates.forEach(d => {
         const log = history[d];
-        totalHabitsDone += log.count;
-        totalMissed += (log.total - log.count);
-        if (log.status === 'perfect') perfectDays++;
-        
-        const month = new Date(d).getMonth();
-        monthlyData[month] += log.count;
-
         (log.completedIds || []).forEach(entry => {
             // Objeto denormalizado {id,title,skill,duration} (novo) ou string (legado).
             const habitTitle = (entry && typeof entry === 'object') ? entry.title : entry;
@@ -2253,39 +2239,7 @@ function renderGlobalDashboard() {
         });
     });
 
-    const elHabits = document.getElementById('dash-total-habits');
-    const elPerfect = document.getElementById('dash-perfect-days');
-    const elMissed = document.getElementById('dash-total-missed');
-    const elRhythm = document.getElementById('dash-rhythm');
-    
-    if(elHabits) elHabits.innerText = totalHabitsDone;
-    if(elPerfect) elPerfect.innerText = perfectDays;
-    if(elMissed) elMissed.innerText = totalMissed;
-    
-    const rhythm = totalDaysLogged > 0 ? Math.round((perfectDays / totalDaysLogged) * 100) : 0;
-    if(elRhythm) elRhythm.innerText = rhythm + '%';
-
-    // 3. Gráfico de Barras Mensais
-    const barChart = document.getElementById('dash-bar-chart');
-    if(barChart) {
-        barChart.innerHTML = '';
-        const monthsNames = ['J','F','M','A','M','J','J','A','S','O','N','D'];
-        const maxMonthly = Math.max(...monthlyData, 1); // Evita divisão por zero
-
-        for (let i = 0; i < 12; i++) {
-            const hPercent = (monthlyData[i] / maxMonthly) * 100;
-            
-            const col = document.createElement('div');
-            col.className = 'dash-bar-col';
-            col.innerHTML = `
-                <div class="dash-bar-fill" style="height: ${hPercent}%" title="${monthlyData[i]} hábitos em ${monthsNames[i]}"></div>
-                <div class="dash-bar-lbl">${monthsNames[i]}</div>
-            `;
-            barChart.appendChild(col);
-        }
-    }
-
-    // 4. Top Hábitos
+    // 3. Top Hábitos
     const topHabitsContainer = document.getElementById('dash-top-habits');
     if(topHabitsContainer) {
         topHabitsContainer.innerHTML = '';
