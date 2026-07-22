@@ -9,6 +9,10 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.44] — 2026-07-22
+- **Remoção: saem da Loja do Alquimista a "Poção de Auto-Cura" e o "Escudo de Ferro".** Ambos eram proteções *passivas* que disparavam sozinhas na falha (sem botão de "usar"), o que deixava pouco claro pra que serviam. Removidos os dois cards da loja em `index.html`.
+  - **Importante:** a *mecânica* do escudo continua intacta — o escudo ganho automaticamente a cada 7 dias de consistência segue protegendo o primeiro dia falho. Só a **compra** do escudo por ouro saiu. A lógica de consumo dos dois buffs permanece no código (dormant), sem afetar quem não os possui.
+
 ## [v2.5.43] — 2026-07-22
 - **Feat: Visão Global enxuta — só consistência + Top Hábitos.** Abaixo do card de consistência havia três blocos que confundiam mais do que informavam: as 4 métricas acumuladas (com o "Total Missões" em vermelho que na verdade eram *missões falhadas*) e o gráfico "Progresso Mensal" (barras de 12 meses, quase sempre vazio e redundante com o novo nível mensal). Ambos foram removidos.
   - Sobra o essencial: o card de consistência (semana/mês/ano) e o **Top Hábitos**. JS morto que alimentava as métricas e o gráfico também foi removido.
