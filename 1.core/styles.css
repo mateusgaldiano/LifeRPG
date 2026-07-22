@@ -2240,6 +2240,43 @@ body::before {
 .year-scroll .heatmap-container { grid-template-rows: repeat(7, 9px); gap: 3px; }
 .year-scroll .hm-block { width: 9px; height: 9px; }
 
+/* ==== Loja: seções colapsáveis (accordion) + trava por nível ==== */
+.shop-section { margin-top: 12px; }
+.shop-section-toggle {
+    width: 100%;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-hud);
+    color: var(--text-light);
+    transition: border-color 0.2s, opacity 0.2s;
+}
+.shop-section-toggle:hover { border-color: var(--neon-purple); }
+.shop-section.open .shop-section-toggle {
+    border-color: var(--neon-purple);
+    border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+}
+.shop-section-title { flex: 1; font-size: 0.95rem; letter-spacing: 0.5px; }
+.shop-lock { font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono); white-space: nowrap; }
+.shop-chevron { color: var(--text-muted); transition: transform 0.28s ease; font-size: 0.8rem; }
+.shop-section.open .shop-chevron { transform: rotate(180deg); }
+
+.shop-section-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.28s ease;
+}
+.shop-section.open .shop-section-body { grid-template-rows: 1fr; }
+.shop-section-inner { overflow: hidden; min-height: 0; }
+
+.shop-section.locked .shop-section-toggle { opacity: 0.5; cursor: not-allowed; }
+.shop-section.locked .shop-section-toggle:hover { border-color: var(--border-glass); }
+.shop-section.locked .shop-chevron { display: none; }
+
 /* Mobile CSS Scroll overrides */
 
 /* CONSOLIDATED MOBILE CSS */

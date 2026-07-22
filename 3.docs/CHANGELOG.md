@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.45] — 2026-07-22
+- **Feat: Loja da Taverna vira accordion + trava por nível.** A Loja era um paredão de cards de rolagem infinita. Agora as 4 seções (🧪 Buffs, 🗝️ Chaves, 🏛️ Tributo, 💎 Cosméticos) são **colapsáveis**: cada cabeçalho virou um botão com seta (▾) que abre/fecha a seção, e **todas começam fechadas** — abre-se só a Loja com 4 barras empilhadas.
+  - **Trava por nível** (complementa as travas por item que já existiam): Buffs abre no **Nv2**, Chaves no **Nv3**, Cosméticos no **Nv5**, Tributo no **Nv15**. Seção travada aparece esmaecida com "🔒 Nível N" e, ao tocar, avisa por toast em vez de abrir.
+  - Implementação: seções envolvidas em `.shop-section > .shop-section-toggle + .shop-section-body` no `index.html`; animação de abrir via `grid-template-rows: 0fr→1fr` (sem medir altura no JS). Toggle por delegação de evento em `#taverna-shop`; trava reavaliada ao abrir a Taverna e ao voltar do Inventário (`refreshShopSections`). Verificado no navegador nos níveis 1/4/20; console limpo.
+
 ## [v2.5.44] — 2026-07-22
 - **Remoção: saem da Loja do Alquimista a "Poção de Auto-Cura" e o "Escudo de Ferro".** Ambos eram proteções *passivas* que disparavam sozinhas na falha (sem botão de "usar"), o que deixava pouco claro pra que serviam. Removidos os dois cards da loja em `index.html`.
   - **Importante:** a *mecânica* do escudo continua intacta — o escudo ganho automaticamente a cada 7 dias de consistência segue protegendo o primeiro dia falho. Só a **compra** do escudo por ouro saiu. A lógica de consumo dos dois buffs permanece no código (dormant), sem afetar quem não os possui.

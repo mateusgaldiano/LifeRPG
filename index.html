@@ -587,9 +587,13 @@
                     <!-- MODO LOJA -->
                     <div id="taverna-shop">
                         <!-- LOJA DO ALQUIMISTA -->
-                        <div class="quest-section-header" style="margin-top: 10px;">
-                            <h2>🧪 Loja do Alquimista (Buffs)</h2>
-                        </div>
+                        <div class="shop-section" id="shop-sec-buffs" data-unlock="2">
+                        <button type="button" class="shop-section-toggle">
+                            <span class="shop-section-title">🧪 Loja do Alquimista (Buffs)</span>
+                            <span class="shop-lock"></span>
+                            <span class="shop-chevron">▾</span>
+                        </button>
+                        <div class="shop-section-body"><div class="shop-section-inner">
                         <div class="rewards-grid" style="margin-top: 8px; margin-bottom: 16px;">
                             <!-- Tomo Básico (2x / 1 dia) -->
                             <div class="reward-card" onclick="buyStoreItem('buff_doubleXp')">
@@ -711,11 +715,16 @@
                                 </div>
                             </div>
                         </div>
+                        </div></div></div> <!-- fim shop-sec-buffs -->
 
                         <!-- PORTAIS DE MASMORRA (CHAVES) -->
-                        <div class="quest-section-header">
-                            <h2>🗝️ Portais de Masmorra (Chaves)</h2>
-                        </div>
+                        <div class="shop-section" id="shop-sec-keys" data-unlock="3">
+                        <button type="button" class="shop-section-toggle">
+                            <span class="shop-section-title">🗝️ Portais de Masmorra (Chaves)</span>
+                            <span class="shop-lock"></span>
+                            <span class="shop-chevron">▾</span>
+                        </button>
+                        <div class="shop-section-body"><div class="shop-section-inner">
                         <p style="font-size:0.7rem; color:var(--text-muted); margin: 4px 0 8px;">Abra uma masmorra sob demanda para treinar uma habilidade específica e recuperar atributos atrasados no radar. Requer 1 habilidade em Nível 3+ e nenhuma masmorra ativa.</p>
                         <div class="rewards-grid" style="margin-top: 8px; margin-bottom: 16px;">
 
@@ -809,11 +818,16 @@
                                 </div>
                             </div>
                         </div>
+                        </div></div></div> <!-- fim shop-sec-keys -->
 
                         <!-- TRIBUTO SEMANAL AO SISTEMA -->
-                        <div class="quest-section-header">
-                            <h2>🏛️ Tributo ao Sistema</h2>
-                        </div>
+                        <div class="shop-section" id="shop-sec-tribute" data-unlock="15">
+                        <button type="button" class="shop-section-toggle">
+                            <span class="shop-section-title">🏛️ Tributo ao Sistema</span>
+                            <span class="shop-lock"></span>
+                            <span class="shop-chevron">▾</span>
+                        </button>
+                        <div class="shop-section-body"><div class="shop-section-inner">
                         <div class="reward-card" style="cursor: default; margin-top: 8px; margin-bottom: 16px;">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                 <div>
@@ -834,11 +848,16 @@
                                 <span class="reward-cost">1000 OURO / TRIBUTO</span>
                             </div>
                         </div>
+                        </div></div></div> <!-- fim shop-sec-tribute -->
 
                         <!-- MERCADO CLANDESTINO -->
-                        <div class="quest-section-header">
-                            <h2>💎 Mercado Clandestino (Cosméticos)</h2>
-                        </div>
+                        <div class="shop-section" id="shop-sec-cosmetics" data-unlock="5">
+                        <button type="button" class="shop-section-toggle">
+                            <span class="shop-section-title">💎 Mercado Clandestino (Cosméticos)</span>
+                            <span class="shop-lock"></span>
+                            <span class="shop-chevron">▾</span>
+                        </button>
+                        <div class="shop-section-body"><div class="shop-section-inner">
                         <div class="rewards-grid" style="margin-top: 8px; margin-bottom: 16px;">
                             
                             <!-- Título 1 -->
@@ -931,6 +950,7 @@
                                 </div>
                             </div>
                         </div>
+                        </div></div></div> <!-- fim shop-sec-cosmetics -->
                     </div> <!-- fim taverna-shop -->
 
                     <!-- MODO INVENTÁRIO -->

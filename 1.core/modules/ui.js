@@ -160,6 +160,10 @@ function initTabs() {
             if (tabName === 'global') {
                 renderGlobalDashboard();
             }
+            // Se for a Taverna, reavalia a trava por nível das seções da Loja
+            if (tabName === 'rewards') {
+                refreshShopSections();
+            }
             if (tabName === 'community') {
                 if (typeof enterCommunityTab === 'function') {
                     enterCommunityTab();
@@ -183,6 +187,55 @@ function initTabs() {
     if (typeof initSocialSubTabs === 'function') initSocialSubTabs();
     if (typeof initFriendsSearchListeners === 'function') initFriendsSearchListeners();
     if (typeof setupPlayerProfileListeners === 'function') setupPlayerProfileListeners();
+
+    // Liga o accordion da Loja (uma vez) e aplica a trava por nível inicial
+    initShopCollapse();
+}
+
+// ==========================================================================
+// LOJA — SEÇÕES COLAPSÁVEIS (ACCORDION) + TRAVA POR NÍVEL
+// ==========================================================================
+const SHOP_SECTION_UNLOCKS = {
+    'shop-sec-buffs': 2,
+    'shop-sec-keys': 3,
+    'shop-sec-tribute': 15,
+    'shop-sec-cosmetics': 5,
+};
+
+// Aplica a trava por nível: mostra "🔒 Nível N" nas travadas e força o colapso delas.
+function refreshShopSections() {
+    const level = (typeof gameState !== 'undefined' && gameState.level) || 1;
+    Object.entries(SHOP_SECTION_UNLOCKS).forEach(([id, need]) => {
+        const sec = document.getElementById(id);
+        if (!sec) return;
+        const locked = level < need;
+        sec.classList.toggle('locked', locked);
+        const lockEl = sec.querySelector('.shop-lock');
+        if (lockEl) lockEl.textContent = locked ? `🔒 Nível ${need}` : '';
+        if (locked) sec.classList.remove('open'); // seção travada nunca fica aberta
+    });
+}
+
+// Liga o toggle de abrir/fechar via delegação (idempotente).
+function initShopCollapse() {
+    const shop = document.getElementById('taverna-shop');
+    if (!shop || shop.dataset.collapseReady) return;
+    shop.dataset.collapseReady = '1';
+    shop.addEventListener('click', (e) => {
+        const toggle = e.target.closest('.shop-section-toggle');
+        if (!toggle) return;
+        const sec = toggle.closest('.shop-section');
+        if (!sec) return;
+        if (sec.classList.contains('locked')) {
+            const need = SHOP_SECTION_UNLOCKS[sec.id];
+            if (typeof showSystemToast === 'function') {
+                showSystemToast(`🔒 *SELADO.* Esta seção da Loja se abre no Nível ${need}. Continue evoluindo.`, 'toast-alert');
+            }
+            return;
+        }
+        sec.classList.toggle('open');
+    });
+    refreshShopSections();
 }
 
 
@@ -203,6 +256,7 @@ function switchTavernaTab(mode) {
         btnInventory.classList.remove('active');
         panelShop.style.display = 'block';
         panelInventory.style.display = 'none';
+        refreshShopSections();
     } else {
         btnShop.classList.remove('active');
         btnInventory.classList.add('active');
