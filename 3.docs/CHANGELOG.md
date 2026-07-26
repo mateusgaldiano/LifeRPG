@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.47] — 2026-07-25
+- **Fix: onboarding inacessível em telas curtas (ex.: iPhone mini) — botão "ACEITAR MISSÃO" fora de alcance.** O modal do wizard era aberto com estilo inline (`initOnboardingWizard`) que fixava `align-items: center` **sem `overflow-y: auto`**. Quando o conteúdo do passo é mais alto que a tela (o passo "A Primeira Missão" lista até 6 opções), a caixa centralizada transbordava para cima e para baixo **sem rolagem** — o botão caía abaixo da dobra e ficava inalcançável. Só afetava telas baixas; em celulares mais altos o conteúdo cabia. O usuário afetado precisou diminuir o zoom do sistema para conseguir clicar.
+  - Correção **escopada só no wizard** (zero impacto nos outros modais): adicionado `overflow-y: auto` ao modal e `margin: auto` em `.modal-box-wizard`. O `margin: auto` centraliza quando cabe e, ao contrário de `align-items: center`, **não corta o topo** quando o conteúdo transborda — permitindo rolar até o botão.
+  - Verificado no navegador: em viewport 375×620 o botão fica fora da tela mas é alcançável rolando (top 496 de 620); em 375×900 a caixa segue perfeitamente centralizada (66px acima/abaixo), sem regressão. Sem compressão nem sobreposição de elementos; console limpo.
+
 ## [v2.5.46] — 2026-07-22
 - **Ajuste: novos níveis de trava das seções da Loja + limpeza de travas redundantes.** As seções agora abrem em: Buffs **Nv5**, Chaves **Nv10**, Cosméticos **Nv15**, Tributo **Nv20**.
   - Removida a trava por-item do **Tributo (Nv10)** em `game-logic.js` — ficou menor que a trava da seção (Nv20), então era código morto. Texto do card atualizado para "(Requer Nível 20)". As travas por-item que continuam **maiores** que a seção (Foco Lendário Nv10, Cálice Nv15, Grimório Nv20 — todas em Buffs/Nv5) foram mantidas.

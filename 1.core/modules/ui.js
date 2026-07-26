@@ -437,7 +437,11 @@ function initOnboardingWizard() {
     const wizardModal = document.getElementById('onboarding-wizard');
     if (!wizardModal) return;
     
-    wizardModal.style.cssText = 'display: flex !important; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); justify-content: center; align-items: center; padding: 24px;';
+    // overflow-y: auto — permite rolar quando o conteúdo do passo é mais alto que a
+    // tela (ex.: iPhone mini na etapa "A Primeira Missão"). A centralização vertical
+    // fica a cargo do `margin: auto` em .modal-box-wizard (CSS), que — ao contrário de
+    // align-items: center — não corta o topo do conteúdo quando ele transborda.
+    wizardModal.style.cssText = 'display: flex !important; position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); justify-content: center; align-items: center; overflow-y: auto; padding: 24px;';
     
     const step0 = document.getElementById('wizard-step-0');
     const step1 = document.getElementById('wizard-step-1');

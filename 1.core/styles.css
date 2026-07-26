@@ -3950,6 +3950,10 @@ body::before {
 
 .modal-box-wizard {
     border: 1px solid var(--neon-purple) !important;
+    /* Centraliza verticalmente quando cabe, mas — junto do overflow-y: auto no
+       .modal — permite rolar até o botão quando o passo é mais alto que a tela
+       (ex.: iPhone mini). margin: auto não corta o topo como align-items: center. */
+    margin: auto;
 }
 
 .wizard-genders-grid {
