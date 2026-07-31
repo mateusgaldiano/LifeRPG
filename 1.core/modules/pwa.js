@@ -9,6 +9,20 @@ let serviceWorkerRegistration = null;
 let deferredPrompt = null;
 
 function registerServiceWorker() {
+    // No app nativo (Capacitor) os assets já vêm empacotados no APK, então o
+    // Service Worker é redundante — e o cache-first do SW no esquema
+    // https://localhost do WebView pode servir uma versão velha e mascarar
+    // atualizações. Detecta o Capacitor nativo e pula o registro, mantendo o
+    // SW 100% intacto para o PWA/web (na web window.Capacitor é undefined, então
+    // esta guarda é inerte e o comportamento do GitHub Pages não muda).
+    const isNativeCapacitor = !!(window.Capacitor
+        && typeof window.Capacitor.isNativePlatform === 'function'
+        && window.Capacitor.isNativePlatform());
+    if (isNativeCapacitor) {
+        console.log('[App] App nativo (Capacitor) — Service Worker NÃO registrado (assets locais no APK).');
+        return;
+    }
+
     if ('serviceWorker' in navigator) {
         // Havia um SW controlando a página ANTES deste boot? Se sim, um SW_UPDATED
         // significa uma atualização real (não a 1ª instalação) e vale recarregar.
