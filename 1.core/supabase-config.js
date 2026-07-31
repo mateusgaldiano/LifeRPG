@@ -474,6 +474,21 @@ async function ensureUserProfile(authUser) {
 // --------------------------------------------------------------------------
 // SYNC FROM CLOUD — chamado após login, resolve conflitos
 // --------------------------------------------------------------------------
+// Compara progresso NUVEM vs LOCAL. Fonte única usada por syncFromCloud e
+// forceLoadFromCloud. Cascata: nível > streak > xp > gold > timestamp.
+// TRUE = a nuvem está à frente (ou empatada e mais recente) e deve sobrescrever
+// o estado local.
+function cloudIsAheadOfLocal(cloudUser) {
+  return (
+    cloudUser.level > gameState.level ||
+    (cloudUser.level === gameState.level && cloudUser.streak > gameState.streak) ||
+    (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp > gameState.xp) ||
+    (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp === gameState.xp && cloudUser.gold > gameState.gold) ||
+    (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp === gameState.xp && cloudUser.gold === gameState.gold &&
+      cloudUser.last_active_at && new Date(cloudUser.last_active_at) > new Date(gameState._lastSyncedAt || 0))
+  );
+}
+
 let syncStarted = false;
 
 window.syncFromCloud = async function() {
@@ -498,13 +513,7 @@ window.syncFromCloud = async function() {
     if (window._currentUserDbId !== syncUserId) return; // Abort check
     if (!cloudUser) return;
 
-    const cloudIsNewer =
-      cloudUser.level > gameState.level ||
-      (cloudUser.level === gameState.level && cloudUser.streak > gameState.streak) ||
-      (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp > gameState.xp) ||
-      (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp === gameState.xp && cloudUser.gold > gameState.gold) ||
-      (cloudUser.level === gameState.level && cloudUser.streak === gameState.streak && cloudUser.xp === gameState.xp && cloudUser.gold === gameState.gold &&
-        cloudUser.last_active_at && new Date(cloudUser.last_active_at) > new Date(gameState._lastSyncedAt || 0));
+    const cloudIsNewer = cloudIsAheadOfLocal(cloudUser);
 
     if (cloudIsNewer) {
       // Nuvem ganha — sobrescrever estado local
@@ -627,7 +636,37 @@ window.forceLoadFromCloud = async function() {
   if (window._currentUserDbId !== syncUserId) return; // Abort check
   if (!cloudUser) return;
 
-  // Sempre sobrescreve com dados da nuvem — sem comparação
+  // GUARDA ANTI-PERDA: só sobrescreve o local se a nuvem estiver de fato à frente.
+  // Antes, "atualizar" puxava a nuvem cegamente e, se ela estivesse ATRASADA (ex.:
+  // um sync anterior foi rejeitado e o progresso bom ficou só no aparelho), apagava
+  // esse progresso. Agora: nuvem à frente → puxa; local à frente → sobe o local;
+  // iguais → nada.
+  if (!cloudIsAheadOfLocal(cloudUser)) {
+    const sincronizado =
+      cloudUser.level === gameState.level &&
+      cloudUser.xp === gameState.xp &&
+      cloudUser.streak === gameState.streak &&
+      cloudUser.gold === gameState.gold;
+    if (sincronizado) {
+      if (typeof showSystemToast === 'function') showSystemToast('✔️ Já sincronizado com a nuvem.');
+    } else {
+      // Local à frente — sobe para a nuvem em vez de sobrescrever.
+      try {
+        await Promise.all([
+          saveToSupabase(),
+          syncQuestsToSupabase(),
+          saveAllHistoryToSupabase(),
+          syncInventoryToSupabase()
+        ]);
+      } catch (e) {
+        console.error('[Supabase] forceLoadFromCloud: falha ao subir o local à frente', e);
+      }
+      if (typeof showSystemToast === 'function') showSystemToast('☁️ Seu progresso local estava à frente — enviado para a nuvem (nada foi sobrescrito).');
+    }
+    return;
+  }
+
+  // Nuvem à frente → puxa (sobrescreve o local).
   gameState.level     = cloudUser.level;
   gameState.xp        = cloudUser.xp;
   gameState.gold      = cloudUser.gold;
@@ -756,9 +795,9 @@ window.saveToSupabase = async function() {
     } else if (error.message.includes('[VAL_ERR_INVALID_RANK]')) {
       friendlyMessage = 'Falha de validação: Rank inválido para o nível enviado.';
     } else if (error.message.includes('[VAL_ERR_GOLD_LIMIT_EXCEEDED]')) {
-      friendlyMessage = 'Falha de validação: Limite fixo de ganho de Ouro (+2000) excedido.';
+      friendlyMessage = 'Ganho de Ouro acima do limite deste sync — seu progresso segue salvo no aparelho.';
     } else if (error.message.includes('[VAL_ERR_XP_LIMIT_EXCEEDED]')) {
-      friendlyMessage = 'Falha de validação: Limite fixo de ganho de XP (+2000) excedido.';
+      friendlyMessage = 'Ganho de XP acima do limite deste sync — seu progresso segue salvo no aparelho.';
     } else if (error.message.includes('[VAL_ERR_USER_NOT_FOUND]')) {
       friendlyMessage = 'Falha de validação: Usuário não encontrado no banco.';
     } else if (error.status === 401 || error.status === 403) {

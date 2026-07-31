@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.48] — 2026-07-31
+- **Fix: perda de progresso no sync multi-device (nível/XP some ao "atualizar").** Descoberto ao rodar o app num segundo aparelho (emulador): o nível de um jogador caiu de 14 → 13. Dois footguns que, juntos, apagavam progresso:
+  - **Cliente — `forceLoadFromCloud` (botão "atualizar"):** sobrescrevia o estado local com o da nuvem **sem comparar**. Se a nuvem estivesse atrasada (ex.: um sync anterior foi rejeitado e o progresso bom ficou só no aparelho), o "atualizar" apagava esse progresso. Agora só sobrescreve quando a nuvem está **de fato à frente**; se o local está à frente, **sobe o local** em vez de apagar; iguais, não faz nada. A cascata de comparação (nível > streak > xp > ouro > timestamp) virou fonte única (`cloudIsAheadOfLocal`), compartilhada com `syncFromCloud`.
+  - **Banco — RPC `sync_user_state_secure`:** o teto **fixo** de +2000 de XP/Ouro por sync rejeitava o sync **inteiro** quando o jogador acumulava mais que isso; como o delta é medido contra o banco, ele só crescia e **todo sync seguinte também era rejeitado** — a nuvem travava permanentemente no valor antigo. Trocado por um limite **proporcional ao tempo** desde o último sync (piso 2000 + 4000/hora): ainda barra saltos instantâneos absurdos (anti-cheat), mas o limite cresce com o tempo, então progresso legítimo nunca fica travado (e um sync que falhou se auto-cura). Migração remota `harden_sync_cap_time_based` / [`supabase/migration_04_sync_cap_time_based.sql`](../supabase/migration_04_sync_cap_time_based.sql).
+  - Mensagens de erro de sync no cliente ajustadas (não cravam mais "+2000" e avisam que o progresso segue salvo no aparelho).
+  - Núcleo puro intacto: `node --test` 37/37 passando.
+
 ## [v2.5.47] — 2026-07-25
 - **Fix: onboarding inacessível em telas curtas (ex.: iPhone mini) — botão "ACEITAR MISSÃO" fora de alcance.** O modal do wizard era aberto com estilo inline (`initOnboardingWizard`) que fixava `align-items: center` **sem `overflow-y: auto`**. Quando o conteúdo do passo é mais alto que a tela (o passo "A Primeira Missão" lista até 6 opções), a caixa centralizada transbordava para cima e para baixo **sem rolagem** — o botão caía abaixo da dobra e ficava inalcançável. Só afetava telas baixas; em celulares mais altos o conteúdo cabia. O usuário afetado precisou diminuir o zoom do sistema para conseguir clicar.
   - Correção **escopada só no wizard** (zero impacto nos outros modais): adicionado `overflow-y: auto` ao modal e `margin: auto` em `.modal-box-wizard`. O `margin: auto` centraliza quando cabe e, ao contrário de `align-items: center`, **não corta o topo** quando o conteúdo transborda — permitindo rolar até o botão.
