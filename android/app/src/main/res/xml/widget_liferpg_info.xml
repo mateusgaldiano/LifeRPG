@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Metadados do App Widget do LifeRPG.
-     updatePeriodMillis = 30 min (mínimo efetivo do sistema) como fallback; a
-     atualização ao vivo vem da app (Etapa 4). previewLayout mostra o próprio
-     layout no seletor de widgets (API 31+; o emulador é API 35). -->
+     Redimensionável de 1x1 (40dp) até 4x4 (~250dp). O tamanho padrão ao adicionar
+     é 2x2 (targetCellWidth/Height). O layout se adapta ao tamanho via mapa de
+     RemoteViews no LifeRPGWidget (small/medium/large).
+     updatePeriodMillis = 30 min (mínimo do sistema) como fallback; a atualização
+     ao vivo vem da app (Etapa 4). -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="180dp"
-    android:minHeight="110dp"
-    android:targetCellWidth="4"
+    android:minWidth="40dp"
+    android:minHeight="40dp"
+    android:minResizeWidth="40dp"
+    android:minResizeHeight="40dp"
+    android:maxResizeWidth="250dp"
+    android:maxResizeHeight="250dp"
+    android:targetCellWidth="2"
     android:targetCellHeight="2"
     android:updatePeriodMillis="1800000"
-    android:initialLayout="@layout/widget_liferpg"
-    android:previewLayout="@layout/widget_liferpg"
+    android:initialLayout="@layout/widget_liferpg_medium"
+    android:previewLayout="@layout/widget_liferpg_medium"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen" />
