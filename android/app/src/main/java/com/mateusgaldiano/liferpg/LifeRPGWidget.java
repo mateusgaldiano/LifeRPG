@@ -12,13 +12,17 @@ import android.widget.RemoteViews;
 import org.json.JSONObject;
 
 /**
- * App Widget de tela inicial do LifeRPG.
+ * App Widget de tela inicial do LifeRPG — v1.
  *
- * Mostra nível + rank, barra de XP, streak e missões restantes no visual do app.
+ * Mostra, no visual do app:
+ *   • ATIVIDADES: feitas / total do dia (barra ciano).
+ *   • MASMORRA: masmorra ativa (título, progresso/alvo, tempo restante) — barra
+ *     dourada; ou "Nenhuma masmorra ativa".
+ *
  * Lê o objeto {@code widget_stats} do SharedPreferences onde o plugin
  * @capacitor/preferences grava (grupo padrão "CapacitorStorage"). Enquanto a app
- * ainda não gravou nada (Etapa 3), cai nos valores placeholder — o que já valida
- * o layout. A Etapa 4 liga a ponte de dados de verdade.
+ * ainda não gravou nada (Etapa 3), cai nos placeholders — o que já valida o
+ * layout. A Etapa 4 liga a ponte de dados de verdade.
  */
 public class LifeRPGWidget extends AppWidgetProvider {
 
@@ -37,43 +41,47 @@ public class LifeRPGWidget extends AppWidgetProvider {
     static void updateWidget(Context context, AppWidgetManager manager, int widgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_liferpg);
 
-        // Placeholder (Etapa 3) — sobrescrito pelos dados reais se existirem.
-        int level = 12;
-        String rank = "C";
-        int xp = 780;
-        int xpToNext = 1300;
-        int streak = 7;
-        int questsRemaining = 3;
+        // ── Placeholders (Etapa 3) — sobrescritos pelos dados reais se existirem ──
+        int activitiesDone = 10;
+        int activitiesTotal = 20;
+        String dungeonTitle = "Templo Mental";
+        int dungeonProgress = 2;
+        int dungeonTarget = 3;
+        long dungeonExpiresAt = System.currentTimeMillis() + 14L * 3600_000L;
 
         try {
             SharedPreferences sp = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
             String raw = sp.getString(KEY, null);
             if (raw != null && !raw.isEmpty()) {
                 JSONObject o = new JSONObject(raw);
-                level = o.optInt("level", level);
-                rank = o.optString("rank", rank);
-                xp = o.optInt("xp", xp);
-                xpToNext = o.optInt("xpToNext", xpToNext);
-                streak = o.optInt("streak", streak);
-                questsRemaining = o.optInt("questsRemaining", questsRemaining);
+                activitiesDone = o.optInt("activitiesDone", activitiesDone);
+                activitiesTotal = o.optInt("activitiesTotal", activitiesTotal);
+                // dungeonTitle vazio/ausente = nenhuma masmorra ativa.
+                dungeonTitle = o.optString("dungeonTitle", "");
+                dungeonProgress = o.optInt("dungeonProgress", 0);
+                dungeonTarget = o.optInt("dungeonTarget", 0);
+                dungeonExpiresAt = o.optLong("dungeonExpiresAt", 0L);
             }
         } catch (Exception ignored) {
             // JSON malformado / prefs ausentes → mantém placeholder.
         }
 
-        int pct = xpToNext > 0 ? Math.round(xp * 100f / xpToNext) : 0;
-        if (pct < 0) pct = 0;
-        if (pct > 100) pct = 100;
+        // ── ATIVIDADES ──────────────────────────────────────────────
+        views.setTextViewText(R.id.widget_act_value, activitiesDone + " / " + activitiesTotal);
+        views.setProgressBar(R.id.widget_act_bar, 100, pct(activitiesDone, activitiesTotal), false);
 
-        views.setTextViewText(R.id.widget_level, "LV " + level);
-        views.setTextViewText(R.id.widget_rank, rank);
-        views.setProgressBar(R.id.widget_xp_bar, 100, pct, false);
-        views.setTextViewText(R.id.widget_xp_text, xp + " / " + xpToNext + " XP");
-        views.setTextViewText(R.id.widget_streak, "🔥 " + streak);
-        views.setTextViewText(R.id.widget_quests,
-                questsRemaining <= 0
-                        ? "✓ tudo feito"
-                        : ("⚔ " + questsRemaining + (questsRemaining == 1 ? " missao" : " missoes")));
+        // ── MASMORRA ────────────────────────────────────────────────
+        if (dungeonTitle == null || dungeonTitle.isEmpty()) {
+            views.setTextViewText(R.id.widget_dungeon_title, "Nenhuma masmorra ativa");
+            views.setTextViewText(R.id.widget_dungeon_value, "");
+            views.setTextViewText(R.id.widget_dungeon_time, "");
+            views.setProgressBar(R.id.widget_dungeon_bar, 100, 0, false);
+        } else {
+            views.setTextViewText(R.id.widget_dungeon_title, "🗝 " + dungeonTitle); // 🗝
+            views.setTextViewText(R.id.widget_dungeon_value, dungeonProgress + " / " + dungeonTarget);
+            views.setProgressBar(R.id.widget_dungeon_bar, 100, pct(dungeonProgress, dungeonTarget), false);
+            views.setTextViewText(R.id.widget_dungeon_time, timeLeft(dungeonExpiresAt));
+        }
 
         // Toque no widget abre o app.
         Intent launch = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
@@ -85,6 +93,25 @@ public class LifeRPGWidget extends AppWidgetProvider {
         }
 
         manager.updateAppWidget(widgetId, views);
+    }
+
+    /** Percentual inteiro (0–100) de done/total, à prova de divisão por zero. */
+    private static int pct(int done, int total) {
+        if (total <= 0) return 0;
+        int p = Math.round(done * 100f / total);
+        if (p < 0) return 0;
+        if (p > 100) return 100;
+        return p;
+    }
+
+    /** Tempo restante da masmorra em horas (arredonda pra cima), ou "expirada". */
+    private static String timeLeft(long expiresAt) {
+        if (expiresAt <= 0) return "";
+        long ms = expiresAt - System.currentTimeMillis();
+        if (ms <= 0) return "expirada";
+        long hours = (ms + 3599_999L) / 3600_000L;
+        if (hours >= 48) return "⏳ " + (hours / 24) + "d";
+        return "⏳ " + hours + "h";
     }
 
     /**

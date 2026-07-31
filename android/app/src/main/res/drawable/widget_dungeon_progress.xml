@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Barra de progresso da Masmorra: trilho escuro + preenchimento dourado
+     (Ouro Escovado), pra diferenciar da barra ciano das Atividades. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <corners android:radius="6dp" />
+            <solid android:color="#1FFFFFFF" />
+        </shape>
+    </item>
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <corners android:radius="6dp" />
+                <gradient
+                    android:angle="0"
+                    android:startColor="#F59E0B"
+                    android:endColor="#FBBF24" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>
