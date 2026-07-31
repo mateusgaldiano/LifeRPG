@@ -4,4 +4,5 @@
     <string name="title_activity_main">LifeRPG</string>
     <string name="package_name">com.mateusgaldiano.liferpg</string>
     <string name="custom_url_scheme">com.mateusgaldiano.liferpg</string>
+    <string name="widget_label">LifeRPG — Status</string>
 </resources>
