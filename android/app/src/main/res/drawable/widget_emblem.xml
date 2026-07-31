@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Emblema do LifeRPG (marca d'água do widget), ecoando o ÍCONE do app:
+     hexágono + anel de "power" + raio, em ciano bem esmaecido. Vetorial → nítido
+     de 1x1 a 4x4. O raio (fill) é um pouco mais forte que as linhas, como herói. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Hexágono (moldura, como no ícone) -->
+    <path
+        android:strokeColor="#1400F2FE"
+        android:strokeWidth="1.4"
+        android:fillColor="#00000000"
+        android:pathData="M92,50 L71,86.4 L29,86.4 L8,50 L29,13.6 L71,13.6 Z" />
+
+    <!-- Anel de power -->
+    <path
+        android:strokeColor="#1400F2FE"
+        android:strokeWidth="1.4"
+        android:fillColor="#00000000"
+        android:pathData="M22,50 A28,28 0 1 1 78,50 A28,28 0 1 1 22,50 Z" />
+
+    <!-- Raio (herói) -->
+    <path
+        android:fillColor="#2600F2FE"
+        android:pathData="M56,16 L34,52 L47,52 L44,86 L68,45 L54,45 Z" />
+</vector>

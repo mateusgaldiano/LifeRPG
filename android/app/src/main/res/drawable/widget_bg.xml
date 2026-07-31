@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Fundo do widget LifeRPG — "vidro do System": obsidiana com gradiente sutil,
-     brilho ciano radial no canto superior direito, borda ciano e trama hexagonal
-     esmaecida (@drawable/widget_hex). Tudo vetorial → nítido em 1x1 a 4x4. -->
+<!-- Fundo do widget LifeRPG — "vidro do System": obsidiana com gradiente, brilho
+     ciano radial (canto superior direito + toque no inferior esquerdo), borda
+     ciano e o EMBLEMA do app (raio + anel + hexágono) como marca d'água central.
+     Tudo vetorial → nítido de 1x1 a 4x4. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base obsidiana com gradiente vertical sutil + borda ciano. -->
@@ -12,29 +13,42 @@
                 android:angle="90"
                 android:startColor="#F2070810"
                 android:endColor="#F20E1119" />
-            <stroke android:width="1dp" android:color="#3300F2FE" />
+            <stroke android:width="1dp" android:color="#4000F2FE" />
         </shape>
     </item>
 
-    <!-- Brilho ciano radial no canto superior direito. -->
+    <!-- Brilho ciano radial no canto superior direito (mais presente). -->
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="20dp" />
             <gradient
                 android:type="radial"
-                android:centerX="0.82"
-                android:centerY="0.12"
-                android:gradientRadius="70%p"
-                android:startColor="#3300F2FE"
+                android:centerX="0.85"
+                android:centerY="0.10"
+                android:gradientRadius="75%p"
+                android:startColor="#4D00F2FE"
                 android:endColor="#0000F2FE" />
         </shape>
     </item>
 
-    <!-- Marca d'água hexagonal, ancorada à direita (não estica com o widget). -->
+    <!-- Toque de brilho no canto inferior esquerdo (ambiência). -->
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="20dp" />
+            <gradient
+                android:type="radial"
+                android:centerX="0.12"
+                android:centerY="0.92"
+                android:gradientRadius="55%p"
+                android:startColor="#2600F2FE"
+                android:endColor="#0000F2FE" />
+        </shape>
+    </item>
+
+    <!-- Emblema (raio + anel + hexágono), marca d'água central. -->
     <item
-        android:width="120dp"
-        android:height="120dp"
-        android:gravity="end|center_vertical"
-        android:end="6dp"
-        android:drawable="@drawable/widget_hex" />
+        android:width="130dp"
+        android:height="130dp"
+        android:gravity="center"
+        android:drawable="@drawable/widget_emblem" />
 </layer-list>
