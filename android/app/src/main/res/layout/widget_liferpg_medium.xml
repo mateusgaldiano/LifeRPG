@@ -1,34 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Widget LifeRPG — layout MÉDIO (~2x2 a 3x2). Atividades (label + valor +
-     barra) + Masmorra em uma linha compacta (valor + tempo, sem título/barra).
-     Usado pelo sistema em tamanhos intermediários. -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Widget LifeRPG — layout MÉDIO (~2x2 a 3x2). Avatar de fundo + véu; à esquerda:
+     Atividades (label + valor + barra) + Masmorra compacta (valor + tempo). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_vertical"
-    android:background="@drawable/widget_bg"
-    android:padding="12dp">
+    android:background="#FF0A0C12">
 
-    <!-- ATIVIDADES -->
+    <ImageView
+        android:id="@+id/widget_avatar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/widget_avatar"
+        android:contentDescription="LifeRPG" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:background="@drawable/widget_scrim"
+        android:paddingStart="14dp"
+        android:paddingEnd="60dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp">
 
+        <!-- ATIVIDADES -->
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="ATIVIDADES"
-            android:textColor="#8A94A6"
+            android:textColor="#C8D0DC"
             android:textSize="10sp"
             android:textStyle="bold"
             android:letterSpacing="0.12"
-            android:maxLines="1"
-            android:ellipsize="end"
             android:fontFamily="sans-serif-condensed" />
 
         <TextView
@@ -38,58 +44,58 @@
             android:text="10 / 20"
             android:textColor="#00F2FE"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:fontFamily="sans-serif-condensed" />
-    </LinearLayout>
-
-    <ProgressBar
-        android:id="@+id/widget_act_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:layout_marginTop="6dp"
-        android:max="100"
-        android:progress="50"
-        android:progressDrawable="@drawable/widget_xp_progress" />
-
-    <!-- MASMORRA (compacta: valor + tempo) -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="12dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="MASMORRA"
-            android:textColor="#8A94A6"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.12"
-            android:maxLines="1"
-            android:ellipsize="end"
+            android:textSize="20sp"
             android:fontFamily="sans-serif-condensed" />
 
-        <TextView
-            android:id="@+id/widget_dungeon_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2 / 3"
-            android:textColor="#FBBF24"
-            android:textStyle="bold"
-            android:textSize="14sp" />
+        <ProgressBar
+            android:id="@+id/widget_act_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="8dp"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            android:progress="50"
+            android:progressDrawable="@drawable/widget_xp_progress" />
 
-        <TextView
-            android:id="@+id/widget_dungeon_time"
-            android:layout_width="wrap_content"
+        <!-- MASMORRA (compacta) -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="⏳ 14h"
-            android:textColor="#FBBF24"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="MASMORRA"
+                android:textColor="#C8D0DC"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.12"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-condensed" />
+
+            <TextView
+                android:id="@+id/widget_dungeon_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2 / 3"
+                android:textColor="#FBBF24"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/widget_dungeon_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="⏳ 14h"
+                android:textColor="#FBBF24"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>

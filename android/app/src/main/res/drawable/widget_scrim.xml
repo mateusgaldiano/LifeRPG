@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Véu escuro sobre o avatar: forte à esquerda (onde ficam os textos) e quase
+     transparente à direita (onde o personagem aparece). Mantém a leitura nítida
+     sem esconder a arte. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="linear"
+        android:angle="0"
+        android:startColor="#F20A0C12"
+        android:centerColor="#B00A0C12"
+        android:endColor="#1A0A0C12" />
+</shape>
