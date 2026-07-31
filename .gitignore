@@ -1,8 +1,32 @@
-# Ferramentas locais (conversão de imagens — não fazem parte do app)
+# Dependências (Node / Capacitor)
 node_modules/
-package.json
-package-lock.json
+
+# Ferramentas locais de imagem (não fazem parte do app servido)
 convert-avatars.mjs
 
 # Config local do MCP (contém o token do Supabase — NUNCA commitar)
 .mcp.json
+
+# Upload temporário do Google Drive
+.tmp.driveupload/
+
+# ── Capacitor / Android ──────────────────────────────────────────────
+# webDir gerado pelo `npm run build:www` (cópia de index.html, 1.core/,
+# 2.assets/, sw.js e manifest.json). É artefato de build — os originais
+# na raiz continuam servindo o GitHub Pages.
+/www/
+
+# O projeto android/ É versionado (contém o código Kotlin do widget).
+# As saídas de build e configs locais/geradas são ignoradas — a maior
+# parte já é coberta pelo android/.gitignore que o Capacitor gera; estas
+# linhas são uma rede de segurança no nível da raiz.
+/android/build/
+/android/.gradle/
+/android/.idea/
+/android/local.properties
+/android/app/build/
+/android/app/src/main/assets/public/
+/android/app/src/main/assets/capacitor.config.json
+/android/app/src/main/assets/capacitor.plugins.json
+/android/capacitor.settings.gradle
+/android/app/capacitor.build.gradle
