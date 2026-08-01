@@ -57,26 +57,24 @@
             android:progress="50"
             android:progressDrawable="@drawable/widget_xp_progress" />
 
-        <!-- MASMORRA (compacta) -->
+        <!-- MASMORRA (label em cima; valor + tempo embaixo pra não cortar) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="MASMORRA"
+            android:textColor="#C8D0DC"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12"
+            android:fontFamily="sans-serif-condensed" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="2dp"
             android:gravity="center_vertical">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="MASMORRA"
-                android:textColor="#C8D0DC"
-                android:textSize="10sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.12"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:fontFamily="sans-serif-condensed" />
 
             <TextView
                 android:id="@+id/widget_dungeon_value"
@@ -85,16 +83,16 @@
                 android:text="2 / 3"
                 android:textColor="#FBBF24"
                 android:textStyle="bold"
-                android:textSize="14sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/widget_dungeon_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="12dp"
                 android:text="⏳ 14h"
                 android:textColor="#FBBF24"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
