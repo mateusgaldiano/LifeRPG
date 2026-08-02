@@ -348,6 +348,47 @@ function saveGameData() {
     localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
     if (typeof saveToCloud === 'function') saveToCloud();
     updateSWQuestStatus();
+    updateWidgetStats();
+}
+
+// Ponte app -> widget Android (Etapa 4). No app nativo (Capacitor), grava um
+// resumo enxuto no SharedPreferences ("CapacitorStorage"/widget_stats) que o App
+// Widget lê, e dispara o refresh do widget. INERTE na web (window.Capacitor é
+// undefined no navegador) — não afeta o PWA/GitHub Pages. As atividades feitas/
+// total usam a MESMA regra do updateSWQuestStatus (isQuestActiveOnDay).
+function updateWidgetStats() {
+    try {
+        const cap = window.Capacitor;
+        if (!cap || typeof cap.isNativePlatform !== 'function' || !cap.isNativePlatform()) return;
+        const prefs = cap.Plugins && cap.Plugins.Preferences;
+        if (!prefs || typeof prefs.set !== 'function') return;
+
+        const todayDow = new Date().getDay();
+        const activeToday = (gameState.quests || []).filter(q => isQuestActiveOnDay(q, todayDow));
+        const activitiesDone = activeToday.filter(q => q.completed).length;
+        const activitiesTotal = activeToday.length;
+
+        const d = gameState.activeDungeon;
+        const hasDungeon = !!(d && !d.completed);
+        const stats = {
+            activitiesDone,
+            activitiesTotal,
+            dungeonTitle:     hasDungeon ? (d.title || '') : '',
+            dungeonProgress:  hasDungeon ? (d.progress || 0) : 0,
+            dungeonTarget:    hasDungeon ? (d.target || 0) : 0,
+            dungeonExpiresAt: hasDungeon ? (d.expiresAt || 0) : 0
+        };
+
+        prefs.set({ key: 'widget_stats', value: JSON.stringify(stats) })
+            .then(() => {
+                const bridge = cap.Plugins && cap.Plugins.WidgetBridge;
+                if (bridge && typeof bridge.refresh === 'function') bridge.refresh();
+            })
+            .catch(() => {});
+    } catch (e) {
+        // Nunca deixar o widget quebrar o save.
+        console.warn('[Widget] updateWidgetStats falhou:', e);
+    }
 }
 
 function fixEncoding(str) {

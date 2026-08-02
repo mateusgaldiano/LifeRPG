@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.49] — 2026-08-01
+- **Feat: ponte de dados app → widget Android (Etapa 4 do widget).** O App Widget deixa de mostrar placeholders e passa a refletir o estado real, ao vivo.
+  - `saveGameData()` agora chama `updateWidgetStats()`: no app nativo (Capacitor), grava `widget_stats` via `@capacitor/preferences` (SharedPreferences `CapacitorStorage`, chave `widget_stats`, sem prefixo) com `activitiesDone/activitiesTotal` (mesma regra do `updateSWQuestStatus` — `isQuestActiveOnDay`) e a masmorra ativa (`dungeonTitle/Progress/Target/ExpiresAt`). **Inerte na web** (`window.Capacitor` é undefined no navegador), então o PWA/GitHub Pages não muda.
+  - Plugin nativo mínimo `WidgetBridge` (`refresh()`) chama `LifeRPGWidget.updateAll()` — o widget re-renderiza **na hora** que uma missão é marcada/desmarcada. Registrado no `MainActivity`.
+  - Sem bundler: o plugin é chamado via `window.Capacitor.Plugins.Preferences` / `.WidgetBridge` direto (sem `import`).
+
 ## [v2.5.48] — 2026-07-31
 - **Fix: perda de progresso no sync multi-device (nível/XP some ao "atualizar").** Descoberto ao rodar o app num segundo aparelho (emulador): o nível de um jogador caiu de 14 → 13. Dois footguns que, juntos, apagavam progresso:
   - **Cliente — `forceLoadFromCloud` (botão "atualizar"):** sobrescrevia o estado local com o da nuvem **sem comparar**. Se a nuvem estivesse atrasada (ex.: um sync anterior foi rejeitado e o progresso bom ficou só no aparelho), o "atualizar" apagava esse progresso. Agora só sobrescreve quando a nuvem está **de fato à frente**; se o local está à frente, **sobe o local** em vez de apagar; iguais, não faz nada. A cascata de comparação (nível > streak > xp > ouro > timestamp) virou fonte única (`cloudIsAheadOfLocal`), compartilhada com `syncFromCloud`.
