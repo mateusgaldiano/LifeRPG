@@ -22,6 +22,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- Deep link do retorno do OAuth (Custom Tab -> volta pro app).
+                 Supabase redireciona para com.mateusgaldiano.liferpg://login-callback -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.mateusgaldiano.liferpg" />
+            </intent-filter>
+
         </activity>
 
         <provider

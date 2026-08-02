@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.50] — 2026-08-01
+- **Fix: login Google no app nativo (Capacitor) — sessão não voltava pro app.** No app, o Google bloqueia OAuth em WebView (`disallowed_useragent`), então o Capacitor abria o login no **Chrome externo**; o usuário logava lá, mas o redirect ia pra `https://localhost/…` (que só existe dentro do app) e a sessão **nunca voltava** — app seguia deslogado.
+  - Fluxo nativo agora usa **deep link**: `redirectTo = com.mateusgaldiano.liferpg://login-callback`, abre o OAuth no navegador do sistema via **`@capacitor/browser`** (Custom Tab) e escuta o retorno com **`@capacitor/app`** (`appUrlOpen`), estabelecendo a sessão via `exchangeCodeForSession` (PKCE) ou `setSession` (implicit) e fechando o Custom Tab. `onAuthStateChange` (SIGNED_IN) cuida do resto.
+  - Intent-filter do esquema `com.mateusgaldiano.liferpg` adicionado ao `MainActivity` no AndroidManifest.
+  - **Caminho web intacto** (só muda quando `Capacitor.isNativePlatform()` é true).
+  - ⚠️ Requer passo manual no painel do Supabase: adicionar `com.mateusgaldiano.liferpg://login-callback` nas **Redirect URLs**.
+
 ## [v2.5.49] — 2026-08-01
 - **Feat: ponte de dados app → widget Android (Etapa 4 do widget).** O App Widget deixa de mostrar placeholders e passa a refletir o estado real, ao vivo.
   - `saveGameData()` agora chama `updateWidgetStats()`: no app nativo (Capacitor), grava `widget_stats` via `@capacitor/preferences` (SharedPreferences `CapacitorStorage`, chave `widget_stats`, sem prefixo) com `activitiesDone/activitiesTotal` (mesma regra do `updateSWQuestStatus` — `isQuestActiveOnDay`) e a masmorra ativa (`dungeonTitle/Progress/Target/ExpiresAt`). **Inerte na web** (`window.Capacitor` é undefined no navegador), então o PWA/GitHub Pages não muda.

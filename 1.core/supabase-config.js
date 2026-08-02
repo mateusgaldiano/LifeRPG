@@ -121,7 +121,12 @@ window.loginWithGoogle = async function() {
   if (btn) { btn.disabled = true; btn.textContent = 'Abrindo Google...'; }
 
   try {
-    const redirectUrl = window.location.origin + window.location.pathname;
+    // No app nativo (Capacitor) o Google bloqueia OAuth em WebView; usamos um
+    // deep link como retorno e abrimos o login no navegador do sistema.
+    const isNative = isNativeCapacitor();
+    const redirectUrl = isNative
+      ? 'com.mateusgaldiano.liferpg://login-callback'
+      : (window.location.origin + window.location.pathname);
     const { data, error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -138,8 +143,15 @@ window.loginWithGoogle = async function() {
     }
 
     if (data && data.url) {
-      console.log('[Supabase Auth] Redirecionando para o Google OAuth...');
-      window.location.assign(data.url);  // navegação explícita e confiável
+      const Browser = isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser;
+      if (Browser && typeof Browser.open === 'function') {
+        console.log('[Supabase Auth] Abrindo OAuth no navegador do sistema (nativo)...');
+        await Browser.open({ url: data.url });   // o retorno volta via deep link (appUrlOpen)
+        restoreBtn();
+      } else {
+        console.log('[Supabase Auth] Redirecionando para o Google OAuth...');
+        window.location.assign(data.url);  // web: navegação explícita e confiável
+      }
       return;
     }
 
@@ -153,6 +165,67 @@ window.loginWithGoogle = async function() {
     restoreBtn();
   }
 };
+
+// Detecta o app nativo (Capacitor). Na web é sempre false → tudo abaixo é inerte.
+function isNativeCapacitor() {
+  return !!(window.Capacitor
+    && typeof window.Capacitor.isNativePlatform === 'function'
+    && window.Capacitor.isNativePlatform());
+}
+
+// Retorno do OAuth via deep link (app nativo). Estabelece a sessão a partir do
+// `code` (fluxo PKCE) ou dos tokens no hash (fluxo implicit), fecha o Custom Tab
+// e deixa o onAuthStateChange (SIGNED_IN) carregar dados/UI.
+async function handleNativeOAuthCallback(rawUrl) {
+  try {
+    const u = new URL(rawUrl);
+    const code = u.searchParams.get('code');
+    let error = null;
+
+    if (code) {
+      const res = await supabaseClient.auth.exchangeCodeForSession(code);
+      error = res && res.error;
+    } else {
+      const frag = (u.hash || '').replace(/^#/, '');
+      const p = new URLSearchParams(frag);
+      const access_token = p.get('access_token');
+      const refresh_token = p.get('refresh_token');
+      if (access_token && refresh_token) {
+        const res = await supabaseClient.auth.setSession({ access_token, refresh_token });
+        error = res && res.error;
+      } else {
+        error = { message: 'retorno sem code nem tokens' };
+      }
+    }
+
+    const Browser = window.Capacitor?.Plugins?.Browser;
+    if (Browser && typeof Browser.close === 'function') {
+      try { await Browser.close(); } catch (e) { /* Custom Tab já fechado */ }
+    }
+
+    if (error) {
+      console.error('[Supabase Auth] Falha ao concluir login nativo:', error.message);
+      if (typeof showSystemToast === 'function') showSystemToast('Erro ao concluir login: ' + error.message);
+    }
+  } catch (e) {
+    console.error('[Supabase Auth] Exceção no callback nativo:', e);
+  }
+}
+
+// Registra (uma vez) o listener de deep link do login no app nativo.
+let _nativeAuthDeepLinkReady = false;
+function setupNativeAuthDeepLink() {
+  if (_nativeAuthDeepLinkReady || !isNativeCapacitor()) return;
+  const App = window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+  if (!App || typeof App.addListener !== 'function') return;
+  _nativeAuthDeepLinkReady = true;
+  App.addListener('appUrlOpen', (event) => {
+    if (event && event.url && event.url.indexOf('login-callback') !== -1) {
+      handleNativeOAuthCallback(event.url);
+    }
+  });
+}
+setupNativeAuthDeepLink();
 
 window.logoutSupabase = async function() {
   if (presenceChannel) {
