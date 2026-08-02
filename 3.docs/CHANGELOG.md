@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.51] — 2026-08-02
+- **Feat: rede de segurança de sincronização com a nuvem.** Além do push imediato que já roda a cada `saveGameData()`, `startCloudSyncSafetyNet()` reenvia o estado pra nuvem: (1) **periodicamente** a cada 3 min, (2) ao **reconectar** a internet (evento `online`), e (3) no app nativo, ao **sair pro background** (`appStateChange` do @capacitor/app). Cada flush só roda se logado + online (`saveToSupabase`). Objetivo: nunca perder progresso por um save que falhou (offline/erro). Sem alterar o push imediato (que é mais seguro que esperar um intervalo).
+
 ## [v2.5.50] — 2026-08-01
 - **Fix: login Google no app nativo (Capacitor) — sessão não voltava pro app.** No app, o Google bloqueia OAuth em WebView (`disallowed_useragent`), então o Capacitor abria o login no **Chrome externo**; o usuário logava lá, mas o redirect ia pra `https://localhost/…` (que só existe dentro do app) e a sessão **nunca voltava** — app seguia deslogado.
   - Fluxo nativo agora usa **deep link**: `redirectTo = com.mateusgaldiano.liferpg://login-callback`, abre o OAuth no navegador do sistema via **`@capacitor/browser`** (Custom Tab) e escuta o retorno com **`@capacitor/app`** (`appUrlOpen`), estabelecendo a sessão via `exchangeCodeForSession` (PKCE) ou `setSession` (implicit) e fechando o Custom Tab. `onAuthStateChange` (SIGNED_IN) cuida do resto.

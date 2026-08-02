@@ -227,6 +227,41 @@ function setupNativeAuthDeepLink() {
 }
 setupNativeAuthDeepLink();
 
+// --------------------------------------------------------------------------
+// REDE DE SEGURANÇA DE SYNC — reenvia o estado pra nuvem periodicamente, ao
+// voltar a ficar online e ao sair do app (background). Complementa o push
+// IMEDIATO que já acontece a cada saveGameData(): pega saves que falharam por
+// estar offline/erro, pra nunca perder progresso.
+// --------------------------------------------------------------------------
+let _cloudSafetyNetStarted = false;
+function startCloudSyncSafetyNet() {
+  if (_cloudSafetyNetStarted) return;
+  _cloudSafetyNetStarted = true;
+
+  const flush = (motivo) => {
+    if (!window._currentUserDbId) return;   // não logado → nada a subir
+    if (!navigator.onLine) return;          // offline → tenta no próximo gatilho
+    if (typeof window.saveToSupabase !== 'function') return;
+    console.log('[Sync] flush de segurança (' + motivo + ')');
+    try { window.saveToSupabase(); } catch (e) { console.warn('[Sync] flush falhou:', e); }
+  };
+
+  // Periódico: a cada 3 min.
+  setInterval(() => flush('periodico'), 3 * 60 * 1000);
+
+  // Ao reconectar a internet.
+  window.addEventListener('online', () => flush('online'));
+
+  // No app nativo: ao sair pro background (garante o push ao fechar o app).
+  const App = window.Capacitor?.Plugins?.App;
+  if (App && typeof App.addListener === 'function') {
+    App.addListener('appStateChange', (state) => {
+      if (state && state.isActive === false) flush('background');
+    });
+  }
+}
+startCloudSyncSafetyNet();
+
 window.logoutSupabase = async function() {
   if (presenceChannel) {
     presenceChannel.unsubscribe();
