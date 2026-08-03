@@ -599,6 +599,31 @@ function cloudIsAheadOfLocal(cloudUser) {
 
 let syncStarted = false;
 
+// GUARDA MULTI-DEVICE: num aparelho que NUNCA sincronizou (PC/celular novo, sem
+// _lastSyncedAt) entrando numa conta que JÁ tem missões na nuvem, as missões
+// locais (onboarding/teste) NÃO são dados da conta. Limpa só o OUTBOX de missões
+// pra esse lixo não subir — o merge da nuvem (loadQuestsFromSupabase) então
+// substitui as locais pelas reais. NUNCA mexe em gameState.quests aqui, porque
+// syncQuestsToSupabase deleta órfãos (e apagaria a nuvem se o local esvaziasse).
+// Aparelho estabelecido (tem _lastSyncedAt) e conta nova (0 missões) não são tocados.
+async function ensureCleanFirstReconcile(userId) {
+  if (gameState._lastSyncedAt) return;            // aparelho já estabelecido → não mexe
+  if (!Array.isArray(gameState.questOps) || gameState.questOps.length === 0) return;
+  try {
+    const { count, error } = await supabaseClient
+      .from('quests')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId);
+    if (error) return;                            // sem certeza → não arrisca
+    if ((count || 0) === 0) return;               // conta nova → preserva onboarding
+    console.log('[Sync] Aparelho novo em conta existente — outbox de missões limpa (nuvem autoritativa).');
+    gameState.questOps = [];
+    localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
+  } catch (e) {
+    console.warn('[Sync] ensureCleanFirstReconcile falhou:', e);
+  }
+}
+
 window.syncFromCloud = async function() {
   if (!window._currentUserDbId) return;
   if (syncStarted) return;
@@ -607,6 +632,9 @@ window.syncFromCloud = async function() {
   const syncUserId = window._currentUserDbId;
 
   try {
+    // Guarda multi-device: aparelho novo em conta existente não empurra lixo local.
+    await ensureCleanFirstReconcile(syncUserId);
+    if (window._currentUserDbId !== syncUserId) return; // Abort check
     // Sobe a outbox ANTES de ler a nuvem: assim o que voltar já reflete as
     // adições/exclusões locais e nada é perdido nem ressuscitado.
     await window.flushQuestOps();
@@ -731,6 +759,9 @@ window.forceLoadFromCloud = async function() {
 
   const syncUserId = window._currentUserDbId;
 
+  // Guarda multi-device: aparelho novo em conta existente não empurra lixo local.
+  await ensureCleanFirstReconcile(syncUserId);
+  if (window._currentUserDbId !== syncUserId) return; // Abort check
   // Sobe a outbox ANTES de puxar, para a nuvem refletir as mutações locais.
   await window.flushQuestOps();
   if (window._currentUserDbId !== syncUserId) return; // Abort check
@@ -991,12 +1022,12 @@ async function syncQuestsToSupabase() {
       .not('local_id', 'in', `(${localIds.map(id => `"${id}"`).join(',')})`);
     if (delError) console.error('[Supabase] syncQuestsToSupabase delete orphans:', delError.message);
   } else {
-    // Nenhuma quest local — deletar tudo do usuário no Supabase
-    const { error: delAllError } = await supabaseClient
-      .from('quests')
-      .delete()
-      .eq('user_id', window._currentUserDbId);
-    if (delAllError) console.error('[Supabase] syncQuestsToSupabase delete all:', delAllError.message);
+    // BLINDAGEM ANTI-PERDA: lista local vazia NÃO apaga todas as missões da nuvem.
+    // Isso já foi um vetor de perda de dados (aparelho novo/bug com lista local
+    // vazia zerava a conta inteira). Exclusões REAIS sobem uma a uma pela outbox
+    // (queueQuestOp 'delete' → flushQuestOps), então este delete-em-massa é
+    // redundante — e perigoso demais. Pulamos de propósito.
+    console.warn('[Supabase] syncQuestsToSupabase: lista local vazia — NÃO apagando missões da nuvem (blindagem anti-perda).');
   }
 }
 

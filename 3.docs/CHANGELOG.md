@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.52] — 2026-08-03
+- **Fix: poluição de missões entre aparelhos (multi-device) + blindagem anti-perda.** Um aparelho novo (PC/celular/emulador) que passava pelo onboarding **antes** de logar numa conta que já tinha missões empurrava essas missões-padrão pra nuvem (e daí pro outro aparelho).
+  - `ensureCleanFirstReconcile()`: num aparelho que **nunca sincronizou** (`!_lastSyncedAt`) entrando numa conta que já tem missões na nuvem, limpa **só o outbox** de missões antes do flush — o lixo local não sobe e o merge da nuvem (`loadQuestsFromSupabase`) substitui as locais pelas reais. Aparelho **estabelecido** e **conta nova** (0 missões) ficam intocados. Chamado no início de `syncFromCloud` e `forceLoadFromCloud`.
+  - **Blindagem anti-perda:** `syncQuestsToSupabase` **não apaga mais TODAS** as missões da nuvem quando a lista local está vazia (era um vetor de perda de dados — aparelho novo/bug zerava a conta inteira). Exclusões reais continuam subindo uma a uma pela outbox.
+  - Nunca esvazia `gameState.quests` no reconcile (evita o delete-órfãos apagar a nuvem).
+
 ## [v2.5.51] — 2026-08-02
 - **Feat: rede de segurança de sincronização com a nuvem.** Além do push imediato que já roda a cada `saveGameData()`, `startCloudSyncSafetyNet()` reenvia o estado pra nuvem: (1) **periodicamente** a cada 3 min, (2) ao **reconectar** a internet (evento `online`), e (3) no app nativo, ao **sair pro background** (`appStateChange` do @capacitor/app). Cada flush só roda se logado + online (`saveToSupabase`). Objetivo: nunca perder progresso por um save que falhou (offline/erro). Sem alterar o push imediato (que é mais seguro que esperar um intervalo).
 
