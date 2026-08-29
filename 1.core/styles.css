@@ -4247,6 +4247,46 @@ body::before {
 }
 @media (max-width: 480px) { .caminho-view { margin: -16px; } }
 
+/* ── LAYOUT IMERSIVO DO CAMINHO (mobile/tablet ≤1023px) ──────────────────────
+   Na aba Caminho, o card de perfil (GALDIANO) + atributos somem — são
+   redundantes com o banner do Caminho, que já mostra rank/nível/ouro/streak — e
+   o mapa passa a ocupar toda a tela entre o header de ícones e a nav inferior.
+   As duas barras de chrome (header/nav) ficam; só o cabeçalho pesado sai.
+   Escopo mobile: no desktop a barra lateral fica ao lado (sem empilhar), então
+   não há o problema e o layout de dois painéis é preservado. */
+@media (max-width: 1023px) {
+  body.caminho-active .player-card,
+  body.caminho-active .attributes-section,
+  body.caminho-active .pwa-install-sidebar { display: none !important; }
+
+  body.caminho-active .tab-content-container { padding: 0 !important; }
+
+  /* A animação tabFade deixa um transform no .tab-content ativo, e QUALQUER
+     transform no ancestral vira o bloco de contenção do position:fixed abaixo
+     (o mapa ancoraria na aba, não na viewport). Anula na aba Caminho — ela é
+     tela cheia, não precisa do fade. */
+  body.caminho-active #tab-caminho { animation: none !important; transform: none !important; }
+
+  body.caminho-active .caminho-view {
+    position: fixed;
+    top: var(--cv-topbar, 52px);
+    left: 0;
+    right: 0;
+    bottom: var(--cv-bottomnav, 76px);
+    margin: 0 !important;
+    border-radius: 0 !important;
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+  }
+  /* O mapa (área rolável) preenche o que sobra abaixo do banner. */
+  body.caminho-active .cv-path-scroll {
+    height: auto !important;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+}
+
 .caminho-view.rank-candidato { --cv-accent: oklch(75% 0.02 260); --cv-accent-ink: oklch(20% 0.01 260); }
 .caminho-view.rank-e         { --cv-accent: oklch(74% 0.15 55);  --cv-accent-ink: oklch(22% 0.05 55); }
 .caminho-view.rank-d         { --cv-accent: oklch(50% 0.19 25);  --cv-accent-ink: oklch(18% 0.06 25); }
@@ -4266,6 +4306,13 @@ body::before {
 .cv-banner-title { font-family: var(--font-hud); font-size: 20px; font-weight: 700; letter-spacing: 1px; color: var(--cv-text); margin-top: 4px; }
 .cv-banner-day { font-family: var(--font-body); font-size: 11px; color: var(--cv-text-muted); margin-top: 4px; }
 .cv-banner-day b { color: var(--cv-accent); }
+/* Stats no banner (nível/ouro/streak) — herdam a função do card de perfil que
+   é escondido no layout imersivo. */
+.cv-banner-stats { display: flex; align-items: center; gap: 16px; margin-top: 9px; }
+.cv-stat { display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-body); font-size: 13px; color: var(--cv-text-muted); }
+.cv-stat b { color: var(--cv-text); font-weight: 700; }
+.cv-stat-k { font-family: var(--font-hud); font-size: 9px; letter-spacing: 1.5px; color: var(--cv-accent); }
+.cv-stat-i { font-size: 14px; line-height: 1; }
 
 .cv-path-scroll {
     position: relative;

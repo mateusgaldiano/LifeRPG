@@ -140,6 +140,11 @@ function initTabs() {
     const navButtons = document.querySelectorAll('.tab-link[data-tab]');
     const tabContents = document.querySelectorAll('.tab-content');
 
+    // Caminho é a aba padrão (marcada active no HTML). Sincroniza o flag que
+    // dispara o layout imersivo no mobile (esconde o cabeçalho de perfil e faz
+    // o mapa ocupar a tela). Ver body.caminho-active em styles.css.
+    document.body.classList.toggle('caminho-active', !!document.querySelector('#tab-caminho.active'));
+
     navButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const tabName = btn.getAttribute('data-tab');
@@ -155,6 +160,7 @@ function initTabs() {
 
             btn.classList.add('active');
             targetTab.classList.add('active');
+            document.body.classList.toggle('caminho-active', tabName === 'caminho');
 
             // Se for o Caminho, (re)renderiza o mapa de progressão
             if (tabName === 'caminho') {

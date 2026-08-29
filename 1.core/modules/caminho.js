@@ -165,16 +165,30 @@ function renderCaminho() {
     const info = getChapterInfo();
     root.className = 'caminho-view ' + info.rankInfo.css;
 
+    // Mede o chrome fixo (header de ícones + nav inferior) para o mapa preencher
+    // exatamente o espaço livre no layout imersivo do mobile. Ver body.caminho-active.
+    const topH = document.querySelector('.brand-header')?.offsetHeight || 52;
+    const navH = document.querySelector('.dashboard-tabs')?.offsetHeight || 76;
+    document.documentElement.style.setProperty('--cv-topbar', topH + 'px');
+    document.documentElement.style.setProperty('--cv-bottomnav', navH + 'px');
+
     const width = Math.max(280, Math.min(scrollEl.clientWidth || 390, 480));
     const built = buildNodes(info.chapterStart, info.todayStr, width);
     const { nodes, boss, pathD, side, isBlocked, totalHeight, targetTop } = built;
 
-    // banner
+    // banner — agora carrega os stats essenciais (o card de perfil some no
+    // layout imersivo, então nível/ouro/streak vivem aqui).
     const chapterLabel = info.rankInfo.rank;
+    const gold = gameState.gold || 0;
+    const streak = gameState.streak || 0;
     bannerEl.innerHTML = `
         <div class="cv-banner-eyebrow">${chapterLabel}</div>
         <div class="cv-banner-title">${isBlocked ? 'Você se afastou da trilha' : 'A Trilha'}</div>
-        <div class="cv-banner-day">NÍVEL <b>${info.level}</b></div>
+        <div class="cv-banner-stats">
+            <span class="cv-stat"><span class="cv-stat-k">NÍVEL</span><b>${info.level}</b></span>
+            <span class="cv-stat"><span class="cv-stat-i">🪙</span><b>${gold}</b></span>
+            <span class="cv-stat"><span class="cv-stat-i">🔥</span><b>${streak}</b></span>
+        </div>
     `;
 
     // boss node

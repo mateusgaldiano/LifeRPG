@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.54] — 2026-08-29
+- **Fix/UX: Caminho em tela cheia no mobile (chrome imersivo).** No mobile o mapa aparecia espremido embaixo do card de perfil (GALDIANO) + atributos e ainda com o banner próprio do Caminho — dois cabeçalhos empilhados, rank/nível repetidos, mapa num tira fina.
+  - Na aba Caminho (só `≤1023px`), o **card de perfil + atributos somem** (`body.caminho-active` → `display:none`); o mapa vira `position:fixed` preenchendo exatamente o espaço entre o header de ícones e a nav inferior (medidos em runtime via `--cv-topbar`/`--cv-bottomnav`).
+  - Os stats essenciais (**nível/ouro/streak**) foram dobrados no banner do Caminho, que antes ficava a cargo do card escondido.
+  - Neutralizada a animação `tabFade` na aba Caminho: o `transform` que ela deixava no `.tab-content` virava bloco de contenção e quebrava o `position:fixed` do mapa (ancorava na aba, não na viewport).
+  - A **nav inferior de abas foi mantida** (é o único acesso a Missões/Visão Geral/Taverna). No **desktop** nada muda: a barra lateral fica ao lado, sem empilhamento.
+
 ## [v2.5.53] — 2026-08-29
 - **Feat: mapa de progressão "Caminho" (nova aba padrão).** Trilha vertical estilo Duolingo/campanha de RPG, substituindo a tela inicial anterior.
   - Nova aba `CAMINHO` (agora a 1ª aba/default), reaproveitando o shell de abas já existente — sem mexer em sidebar/header.
