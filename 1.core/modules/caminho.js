@@ -171,6 +171,11 @@ function renderCaminho() {
     const navH = document.querySelector('.dashboard-tabs')?.offsetHeight || 76;
     document.documentElement.style.setProperty('--cv-topbar', topH + 'px');
     document.documentElement.style.setProperty('--cv-bottomnav', navH + 'px');
+    // Promove o accent do rank pro :root, pra o header e a nav (fora do
+    // .caminho-view) poderem tingir junto no layout imersivo escuro.
+    const cvCS = getComputedStyle(root);
+    document.documentElement.style.setProperty('--cv-accent-live', (cvCS.getPropertyValue('--cv-accent') || '').trim());
+    document.documentElement.style.setProperty('--cv-accent-ink-live', (cvCS.getPropertyValue('--cv-accent-ink') || '').trim());
 
     const width = Math.max(280, Math.min(scrollEl.clientWidth || 390, 480));
     const built = buildNodes(info.chapterStart, info.todayStr, width);

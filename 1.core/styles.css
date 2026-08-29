@@ -4285,6 +4285,36 @@ body::before {
     flex: 1 1 auto;
     min-height: 0;
   }
+
+  /* ── Chrome (header + nav) no tom escuro do mapa, só na aba Caminho ──
+     O accent do rank (--cv-accent-live) é promovido pro :root pelo caminho.js,
+     então header e nav tingem junto com o capítulo (ex.: vermelho no rank D). */
+  body.caminho-active .brand-header {
+    background: rgba(21, 24, 29, 0.97) !important;
+    border-bottom: 1px solid color-mix(in oklch, var(--cv-accent-live, #282d35) 55%, #282d35) !important;
+  }
+  body.caminho-active .brand-header .brand-title {
+    color: var(--cv-accent-live, #eceef2) !important;
+    text-shadow: 0 0 9px color-mix(in oklch, var(--cv-accent-live, #7B68EE) 55%, transparent);
+  }
+  body.caminho-active .brand-logo,
+  body.caminho-active .brand-logo svg { color: var(--cv-accent-live, #eceef2) !important; }
+  body.caminho-active .btn-header-icon { color: #aeb6c2 !important; }
+  body.caminho-active .btn-header-icon:hover { color: #eceef2 !important; }
+
+  body.caminho-active .dashboard-tabs {
+    background: rgba(21, 24, 29, 0.97) !important;
+    border-top: 1px solid #23272f !important;
+  }
+  body.caminho-active .tab-link { color: #7b8290 !important; }
+  body.caminho-active .tab-link.active {
+    color: var(--cv-accent-live, #eceef2) !important;
+    background: color-mix(in oklch, var(--cv-accent-live, #eceef2) 16%, transparent) !important;
+  }
+  body.caminho-active .tab-link.active::after {
+    background: var(--cv-accent-live, #eceef2) !important;
+    box-shadow: 0 0 10px color-mix(in oklch, var(--cv-accent-live, #eceef2) 50%, transparent) !important;
+  }
 }
 
 .caminho-view.rank-candidato { --cv-accent: oklch(75% 0.02 260); --cv-accent-ink: oklch(20% 0.01 260); }

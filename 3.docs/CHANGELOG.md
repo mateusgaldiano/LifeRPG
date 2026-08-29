@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.55] — 2026-08-29
+- **UX: chrome do Caminho no tom escuro do mapa (imersão coesa).** No mobile, a aba tinha header e nav claros (Neblina Ártica) com o mapa escuro no meio — um sanduíche claro-escuro-claro que quebrava a imersão.
+  - Só na aba Caminho (`body.caminho-active`, `≤1023px`), header e nav ficam escuros (`rgb(21,24,29)`) e **tingem com o accent do rank**: `caminho.js` promove `--cv-accent` do rank pra `:root` (`--cv-accent-live`), então "THE SYSTEM", a borda do header, a aba ativa e o traço da aba ativa saem na cor do capítulo (ex.: vermelho no RANK D "sangue"). Ícones do header em cinza-claro, abas inativas em muted.
+  - A **status bar** acompanha: `meta[name=theme-color]` alterna pra `#15181d` no Caminho e volta pra `#e8eef5` nas outras abas.
+  - Nas outras abas e no desktop, o tom claro normal é preservado (overrides escopados em `body.caminho-active` + media query mobile).
+
 ## [v2.5.54] — 2026-08-29
 - **Fix/UX: Caminho em tela cheia no mobile (chrome imersivo).** No mobile o mapa aparecia espremido embaixo do card de perfil (GALDIANO) + atributos e ainda com o banner próprio do Caminho — dois cabeçalhos empilhados, rank/nível repetidos, mapa num tira fina.
   - Na aba Caminho (só `≤1023px`), o **card de perfil + atributos somem** (`body.caminho-active` → `display:none`); o mapa vira `position:fixed` preenchendo exatamente o espaço entre o header de ícones e a nav inferior (medidos em runtime via `--cv-topbar`/`--cv-bottomnav`).

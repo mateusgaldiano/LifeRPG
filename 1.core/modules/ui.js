@@ -136,6 +136,14 @@ function checkFeatureUnlocks() {
 // ==========================================================================
 // SELEÇÃO E GERENCIAMENTO DE ABAS
 // ==========================================================================
+// Liga/desliga o chrome imersivo do Caminho: o flag body.caminho-active (que
+// dispara o layout e o tom escuro no CSS) + a cor da status bar (theme-color).
+function applyCaminhoChrome(isCaminho) {
+    document.body.classList.toggle('caminho-active', isCaminho);
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeMeta) themeMeta.setAttribute('content', isCaminho ? '#15181d' : '#e8eef5');
+}
+
 function initTabs() {
     const navButtons = document.querySelectorAll('.tab-link[data-tab]');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -143,7 +151,7 @@ function initTabs() {
     // Caminho é a aba padrão (marcada active no HTML). Sincroniza o flag que
     // dispara o layout imersivo no mobile (esconde o cabeçalho de perfil e faz
     // o mapa ocupar a tela). Ver body.caminho-active em styles.css.
-    document.body.classList.toggle('caminho-active', !!document.querySelector('#tab-caminho.active'));
+    applyCaminhoChrome(!!document.querySelector('#tab-caminho.active'));
 
     navButtons.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -160,7 +168,7 @@ function initTabs() {
 
             btn.classList.add('active');
             targetTab.classList.add('active');
-            document.body.classList.toggle('caminho-active', tabName === 'caminho');
+            applyCaminhoChrome(tabName === 'caminho');
 
             // Se for o Caminho, (re)renderiza o mapa de progressão
             if (tabName === 'caminho') {
