@@ -7,6 +7,12 @@ convert-avatars.mjs
 # Config local do MCP (contém o token do Supabase — NUNCA commitar)
 .mcp.json
 
+# Config local do Claude Code (não faz parte do app)
+.claude/
+
+# Backup local pesado (~67MB) — nunca vai pro repo
+/99 - Backup/
+
 # Upload temporário do Google Drive
 .tmp.driveupload/
 

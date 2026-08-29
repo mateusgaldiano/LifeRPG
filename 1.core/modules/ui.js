@@ -156,6 +156,10 @@ function initTabs() {
             btn.classList.add('active');
             targetTab.classList.add('active');
 
+            // Se for o Caminho, (re)renderiza o mapa de progressão
+            if (tabName === 'caminho') {
+                if (typeof window.renderCaminho === 'function') window.renderCaminho();
+            }
             // Se for a aba Global, renderiza os gráficos e o heatmap
             if (tabName === 'global') {
                 renderGlobalDashboard();

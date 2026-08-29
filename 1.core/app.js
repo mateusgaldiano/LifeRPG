@@ -133,6 +133,11 @@ import {
     setupOfflineBanner
 } from './modules/pwa.js';
 
+import {
+    renderCaminho,
+    initCaminho
+} from './modules/caminho.js';
+
 // Bind State
 window.gameState = gameState;
 window.ALL_HABITS_DATABASE = ALL_HABITS_DATABASE;
@@ -205,6 +210,8 @@ window.debouncedDrawRadarChart = debouncedDrawRadarChart;
 window.setupRadarToggle = setupRadarToggle;
 window.checkFeatureUnlocks = checkFeatureUnlocks;
 window.switchTrophiesTab = switchTrophiesTab;
+window.renderCaminho = renderCaminho;
+window.initCaminho = initCaminho;
 
 // Bind Game Logic
 window.spawnDungeon = spawnDungeon;
@@ -385,6 +392,8 @@ document.addEventListener('DOMContentLoaded', () => {
     checkDungeonSchedule(); // masmorras nascem por agendamento (sábado + 30% meio de semana)
     renderQuests();
     renderRewards();
+    initCaminho();
+    renderCaminho();
 
     updateUI();
     setupEventListeners();

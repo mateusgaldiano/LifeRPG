@@ -474,6 +474,10 @@ function checkAndActivateBossQuest() {
             gameState.bossQuest.completed = true;
             gameState.xp += bq.xpReward;
             gameState.gold += bq.goldReward;
+            // CAMINHO: derrotar a boss quest é o momento exato em que o capítulo
+            // (Rank) seguinte começa — reinicia a contagem de dias da trilha.
+            gameState.chapterStartDate = localDateStr();
+            gameState._reencontroResolvedDate = null;
             setTimeout(() => {
                 showSystemToast(`🏆 *BOSS QUEST CONCLUÍDA!*\n\n*${bq.title}* foi completada!\n\n_"${getBossVictoryQuote(bq.id)}"_\n\n+${bq.xpReward} XP · +${bq.goldReward} 💰 concedidos. ${bq.rankFrom} → ${bq.rankTo} desbloqueado por mérito!`);
 

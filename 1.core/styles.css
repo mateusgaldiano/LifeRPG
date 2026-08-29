@@ -4216,3 +4216,160 @@ body::before {
         font-size: 34px !important;
     }
 }
+
+/* ==========================================================================
+   CAMINHO — mapa de progressão por capítulo (Rank). Tema escuro próprio,
+   isolado do restante do app (Neblina Ártica) via prefixo .cv-. A base é
+   fixa; só o accent muda por capítulo (classe rank-* já usada no rank-badge).
+   ========================================================================== */
+.caminho-view {
+    --cv-bg-void:    #0a0c0f;
+    --cv-bg-surface: #15181d;
+    --cv-bg-surface2:#1c2027;
+    --cv-border:     #282d35;
+    --cv-text:       #eceef2;
+    --cv-text-muted: #7b8290;
+    --cv-text-dim:   #454b56;
+    --cv-fail:       oklch(46% 0.09 25);
+    --cv-fail-ink:   oklch(18% 0.03 25);
+    --cv-lost:       oklch(78% 0.045 265);
+    --cv-lost-ink:   oklch(20% 0.02 265);
+    /* accent default (Candidato) — sobrescrito pelas classes rank-* abaixo */
+    --cv-accent:     oklch(75% 0.02 260);
+    --cv-accent-ink: oklch(20% 0.01 260);
+
+    position: relative;
+    background: var(--cv-bg-void);
+    color: var(--cv-text);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin: -16px -24px;
+}
+@media (max-width: 480px) { .caminho-view { margin: -16px; } }
+
+.caminho-view.rank-candidato { --cv-accent: oklch(75% 0.02 260); --cv-accent-ink: oklch(20% 0.01 260); }
+.caminho-view.rank-e         { --cv-accent: oklch(74% 0.15 55);  --cv-accent-ink: oklch(22% 0.05 55); }
+.caminho-view.rank-d         { --cv-accent: oklch(50% 0.19 25);  --cv-accent-ink: oklch(18% 0.06 25); }
+.caminho-view.rank-c         { --cv-accent: oklch(58% 0.14 145); --cv-accent-ink: oklch(18% 0.05 145); }
+.caminho-view.rank-b         { --cv-accent: oklch(48% 0.17 300); --cv-accent-ink: oklch(16% 0.06 300); }
+.caminho-view.rank-a         { --cv-accent: oklch(55% 0.11 230); --cv-accent-ink: oklch(16% 0.04 230); }
+.caminho-view.rank-s         { --cv-accent: oklch(85% 0.01 90);  --cv-accent-ink: oklch(12% 0.005 90); }
+.caminho-view.rank-nacional  { --cv-accent: oklch(80% 0.14 95);  --cv-accent-ink: oklch(15% 0.04 95); }
+.caminho-view.rank-monarca   { --cv-accent: oklch(88% 0.17 95);  --cv-accent-ink: oklch(10% 0.02 95); }
+
+.cv-banner {
+    padding: 16px 18px;
+    background: linear-gradient(135deg, var(--cv-accent-ink), var(--cv-bg-surface) 70%);
+    border-bottom: 1px solid color-mix(in oklch, var(--cv-accent) 40%, transparent);
+}
+.cv-banner-eyebrow { font-family: var(--font-hud); font-size: 10px; letter-spacing: 3px; color: var(--cv-accent); }
+.cv-banner-title { font-family: var(--font-hud); font-size: 20px; font-weight: 700; letter-spacing: 1px; color: var(--cv-text); margin-top: 4px; }
+.cv-banner-day { font-family: var(--font-body); font-size: 11px; color: var(--cv-text-muted); margin-top: 4px; }
+.cv-banner-day b { color: var(--cv-accent); }
+
+.cv-path-scroll {
+    position: relative;
+    height: min(58vh, 560px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+.cv-path-inner { position: relative; width: 100%; }
+
+.cv-fog {
+    position: absolute; top: 0; left: 0; right: 0; height: 186px; z-index: 6; pointer-events: none;
+    background: linear-gradient(to bottom, var(--cv-bg-void) 0%, var(--cv-bg-void) 34%, rgba(10,12,15,0) 100%);
+}
+.cv-fog-label {
+    position: absolute; top: 34px; left: 0; right: 0; text-align: center; z-index: 7;
+    font-family: var(--font-body); font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--cv-text-dim);
+}
+.cv-path-svg { position: absolute; top: 0; left: 0; z-index: 1; }
+
+.cv-node { position: absolute; z-index: 5; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: default; }
+.cv-node-done { background: var(--cv-accent-ink); border: 2px solid var(--cv-accent); color: var(--cv-accent); }
+.cv-node-missed { background: var(--cv-fail-ink); border: 2px dashed var(--cv-fail); color: var(--cv-fail); opacity: 0.85; }
+.cv-node-missed .cv-node-badge {
+    position: absolute; top: -7px; right: -7px; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--cv-bg-surface2); border: 1px solid var(--cv-fail); color: var(--cv-fail);
+    display: flex; align-items: center; justify-content: center;
+}
+.cv-node-blocked { background: var(--cv-bg-surface); border: 2px solid var(--cv-border); color: var(--cv-text-dim); opacity: 0.55; cursor: pointer; }
+.cv-node-current {
+    background: radial-gradient(circle at 35% 30%, var(--cv-accent), var(--cv-accent-ink));
+    border: 2px solid var(--cv-accent); color: var(--cv-bg-void); cursor: pointer;
+    animation: cvPulse 2.4s ease-in-out infinite;
+}
+@keyframes cvPulse {
+    0%, 100% { box-shadow: 0 0 18px 3px color-mix(in oklch, var(--cv-accent) 45%, transparent); }
+    50%      { box-shadow: 0 0 28px 7px color-mix(in oklch, var(--cv-accent) 55%, transparent); }
+}
+.cv-node-label {
+    position: absolute; z-index: 6; text-align: center; font-family: var(--font-hud);
+    font-size: 8px; letter-spacing: 1.5px; color: var(--cv-accent); font-weight: 700;
+}
+
+.cv-boss { position: absolute; z-index: 4; display: flex; align-items: center; justify-content: center;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); cursor: pointer; }
+.cv-boss-dormant { background: var(--cv-bg-surface); border: 2px solid var(--cv-border); color: var(--cv-text-dim); }
+.cv-boss-ready { background: var(--cv-bg-surface); border: 2px solid var(--cv-accent); color: var(--cv-accent);
+    box-shadow: 0 0 30px 4px color-mix(in oklch, var(--cv-accent) 40%, transparent); }
+.cv-boss-label { position: absolute; z-index: 6; text-align: center; font-family: var(--font-hud); font-size: 8px; letter-spacing: 1.5px; color: var(--cv-text-dim); }
+
+.cv-side {
+    position: absolute; z-index: 6; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 35% 30%, var(--cv-lost), var(--cv-lost-ink));
+    border: 2px solid var(--cv-lost); color: var(--cv-bg-void); cursor: pointer;
+    animation: cvPulseLost 2.2s ease-in-out infinite;
+}
+@keyframes cvPulseLost {
+    0%, 100% { box-shadow: 0 0 16px 3px color-mix(in oklch, var(--cv-lost) 45%, transparent); }
+    50%      { box-shadow: 0 0 24px 6px color-mix(in oklch, var(--cv-lost) 55%, transparent); }
+}
+.cv-side-label { position: absolute; z-index: 6; text-align: center; font-family: var(--font-hud); font-size: 7.5px; letter-spacing: 1.5px; color: var(--cv-lost); font-weight: 700; }
+
+.cv-start-marker {
+    position: absolute; left: 0; right: 0; text-align: center; z-index: 2;
+    font-family: var(--font-hud); font-size: 8px; letter-spacing: 2px; color: var(--cv-text-dim);
+}
+
+/* Bottom sheet — missões de hoje */
+.cv-sheet-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9990;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+}
+.cv-sheet-overlay.cv-open { opacity: 1; pointer-events: auto; }
+.cv-sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 9991;
+    max-width: 480px; margin: 0 auto;
+    background: #15181d; color: #eceef2; border: 1px solid #282d35; border-bottom: none;
+    border-radius: 20px 20px 0 0; padding: 10px 18px 22px;
+    transform: translateY(105%); transition: transform 0.25s ease;
+    max-height: 70vh; display: flex; flex-direction: column;
+}
+.cv-sheet.cv-open { transform: translateY(0); }
+.cv-sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: #454b56; margin: 4px auto 12px; }
+.cv-sheet-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.cv-sheet-title { font-family: var(--font-hud); font-size: 12px; letter-spacing: 2px; color: #eceef2; }
+.cv-sheet-close { background: none; border: none; color: #7b8290; font-size: 16px; cursor: pointer; padding: 4px 8px; }
+.cv-sheet-hint {
+    display: flex; align-items: center; gap: 8px; background: oklch(20% 0.02 265);
+    border: 1px solid oklch(78% 0.045 265 / 0.4); border-radius: 10px; padding: 9px 11px;
+    font-size: 11px; color: #eceef2; margin-bottom: 10px; line-height: 1.35;
+}
+.cv-sheet-hint b { color: oklch(78% 0.045 265); }
+.cv-sheet-list { overflow-y: auto; }
+.cv-quest-row {
+    display: flex; align-items: center; gap: 10px; padding: 10px 6px; border-bottom: 1px solid #21252b;
+    cursor: pointer;
+}
+.cv-quest-row:last-child { border-bottom: none; }
+.cv-quest-check {
+    width: 20px; height: 20px; border-radius: 50%; border: 2px solid #454b56; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; color: #10b981;
+}
+.cv-quest-done .cv-quest-check { border-color: #10b981; background: rgba(16,185,129,0.15); }
+.cv-quest-title { flex: 1; font-size: 13px; color: #eceef2; }
+.cv-quest-done .cv-quest-title { color: #7b8290; text-decoration: line-through; }
+.cv-quest-xp { font-family: var(--font-hud); font-size: 10px; color: #7b8290; }
+.cv-empty { font-size: 12px; color: #7b8290; text-align: center; padding: 24px 0; }

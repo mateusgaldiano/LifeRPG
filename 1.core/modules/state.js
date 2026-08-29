@@ -121,6 +121,8 @@ export let gameState = {
     activeDungeon: null,    // dungeon ativa com prazo de 48h
     weeklyBoss: null,       // { spawnedAt, expiresAt, hp, defeated, penaltyApplied }
     lastCheckedDate: null,      // controle diário
+    chapterStartDate: null,     // CAMINHO: data (localDateStr) em que o rank atual começou
+    _reencontroResolvedDate: null, // CAMINHO: última data em que a Quest de Reencontro foi cumprida
     unlockedAchievements: [],   // troféus desbloqueados
     quests: [], // Populado dinamicamente com base no nível
     sideQuests: [],
@@ -537,6 +539,15 @@ function loadGameData() {
         // Migration: Ensure history exists
         if (!parsed.history) {
             parsed.history = {};
+        }
+
+        // CAMINHO: garante uma data de início de capítulo. Sem histórico anterior
+        // de rank-up para reconstruir retroativamente, usa o melhor palpite
+        // disponível (lastCheckedDate, senão hoje) — aceitável porque isso só
+        // afeta saves que nunca tiveram o campo (todos os saves novos a partir
+        // daqui já o recebem no momento certo, via checkAndActivateBossQuest).
+        if (!parsed.chapterStartDate) {
+            parsed.chapterStartDate = parsed.lastCheckedDate || localDateStr();
         }
 
         // (Removido em v2.5.8: geração de 90 dias de histórico FALSO quando o save

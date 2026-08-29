@@ -9,6 +9,17 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.53] — 2026-08-29
+- **Feat: mapa de progressão "Caminho" (nova aba padrão).** Trilha vertical estilo Duolingo/campanha de RPG, substituindo a tela inicial anterior.
+  - Nova aba `CAMINHO` (agora a 1ª aba/default), reaproveitando o shell de abas já existente — sem mexer em sidebar/header.
+  - Cada capítulo = um rank real (`RANK_THRESHOLDS`: Candidato/E/D/C/B/A/S/Nacional/Monarca). Só E e D têm paleta/nome de capítulo definidos por ora (C em diante fica com placeholder, por decisão explícita de escopo — foco em deixar E/D redondos antes de avançar).
+  - Estado de cada nó (dia) é derivado 100% do `gameState.history` já existente (mesmo limiar de 70% usado nas penalidades) — nenhum estado de progresso duplicado. `chapterStartDate` (novo campo em `gameState`) marca o início do capítulo atual e é resetado ao derrotar o chefe.
+  - **Fog of war real**: a trilha rolável termina logo após o próximo nó de chefe — não há nós "futuros" fabricados.
+  - **Mecânica de reencontro**: dia perdido (< 70%, sem freeze) gera um nó "lost" + o dia atual fica bloqueado até completar 1 daily qualquer, sem inventar conteúdo de quest novo (`gameState._reencontroResolvedDate`).
+  - **Portão do chefe**: reaproveita o sistema já existente de `BOSS_QUEST_BY_LEVEL`/`gameState.bossQuest` — só a representação visual é nova (portão de duas portas com 3 estados de proximidade).
+  - Conclusão de nó abre um bottom sheet (`#caminho-today-sheet`) com a checklist do dia, reaproveitando `toggleQuest()`.
+  - Novo módulo `1.core/modules/caminho.js`; CSS novo em `1.core/styles.css` (`.caminho-view`, `.cv-*`, paletas por rank via `oklch()`); tipografia self-hosted mantida (sem Google Fonts, preserva cache offline do PWA).
+
 ## [v2.5.52] — 2026-08-03
 - **Fix: poluição de missões entre aparelhos (multi-device) + blindagem anti-perda.** Um aparelho novo (PC/celular/emulador) que passava pelo onboarding **antes** de logar numa conta que já tinha missões empurrava essas missões-padrão pra nuvem (e daí pro outro aparelho).
   - `ensureCleanFirstReconcile()`: num aparelho que **nunca sincronizou** (`!_lastSyncedAt`) entrando numa conta que já tem missões na nuvem, limpa **só o outbox** de missões antes do flush — o lixo local não sobe e o merge da nuvem (`loadQuestsFromSupabase`) substitui as locais pelas reais. Aparelho **estabelecido** e **conta nova** (0 missões) ficam intocados. Chamado no início de `syncFromCloud` e `forceLoadFromCloud`.
