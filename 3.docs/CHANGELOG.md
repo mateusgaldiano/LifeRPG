@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.58] — 2026-08-29
+- **UX: próximo nível destacado como "alvo" na trilha do Caminho.** O 1º nível futuro (o imediatamente acima do HOJE) agora sai na **cor do rank** com brilho suave e rótulo **PRÓXIMO** (nó `cv-node-next`), enquanto os níveis mais distantes seguem pontilhados/apagados. Dá um alvo claro pra mirar. Só mudança visual — geometria e lógica dos nós iguais.
+
 ## [v2.5.57] — 2026-08-29
 - **Tweak: janela de dias passados do Caminho de ~14 → 7 dias.** A trilha ficava comprida demais; 7 dias mantém o histórico recente sem esticar. Só o valor de `PAST_WINDOW` em `caminho.js` (níveis futuros + chefe seguem iguais).
 

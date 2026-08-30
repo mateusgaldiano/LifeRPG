@@ -64,7 +64,7 @@ function getChapterInfo() {
 // sem histórico, os níveis futuros já dão caminho rumo ao portão.
 function buildNodes(chapterStart, todayStr, containerWidth, info) {
     const SPACING_Y = 92, AMPLITUDE_X = Math.min(62, containerWidth * 0.16);
-    const NODE = 50, CUR = 66, SIDE = 32, FUT = 46;
+    const NODE = 50, CUR = 66, SIDE = 32, FUT = 46, NEXT = 54;
     const centerX = containerWidth / 2;
     const PAST_WINDOW = 7; // janela deslizante de dias passados
 
@@ -102,7 +102,8 @@ function buildNodes(chapterStart, todayStr, containerWidth, info) {
     const raw = [];
     pastDates.forEach(d => raw.push({ kind: 'day', date: d, state: classifyPastDay(d) }));
     raw.push({ kind: 'today', date: todayStr, state: isBlocked ? 'blocked' : 'current' });
-    futureLevels.forEach(L => raw.push({ kind: 'future', level: L, state: 'future' }));
+    // O 1º nível futuro é o "próximo alvo" (destacado na cor do rank); o resto fica apagado.
+    futureLevels.forEach((L, i) => raw.push({ kind: 'future', level: L, state: i === 0 ? 'next' : 'future' }));
     raw.forEach((n, i) => { n.index = i; });
 
     const FOOTER = 56;
@@ -111,7 +112,7 @@ function buildNodes(chapterStart, todayStr, containerWidth, info) {
     let targetTop;
     const nodes = raw.map((n) => {
         const yFromBottom = n.index * SPACING_Y;
-        const size = n.state === 'current' ? CUR : (n.kind === 'future' ? FUT : NODE);
+        const size = n.state === 'current' ? CUR : (n.state === 'next' ? NEXT : (n.kind === 'future' ? FUT : NODE));
         const x = Math.sin((n.index / 2.4) * Math.PI) * AMPLITUDE_X;
         const cy = totalHeight - FOOTER - yFromBottom;
         const cx = centerX + x;
@@ -166,6 +167,13 @@ function nodeHtml(n) {
         return `<div class="cv-node cv-node-blocked" style="top:${n.top.toFixed(1)}px;left:${n.left.toFixed(1)}px;width:${n.size}px;height:${n.size}px;">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${svgIcon('compass')}</svg>
         </div>`;
+    }
+    if (n.state === 'next') {
+        // Próximo nível a alcançar — destacado na cor do rank ("próximo alvo").
+        return `<div class="cv-node cv-node-next" style="top:${n.top.toFixed(1)}px;left:${n.left.toFixed(1)}px;width:${n.size}px;height:${n.size}px;">
+            <span class="cv-node-lvl">${n.level}</span>
+        </div>
+        <div class="cv-node-label" style="top:${(n.top + n.size + 4).toFixed(1)}px;left:${(n.left - 18).toFixed(1)}px;width:${n.size + 36}px;">PRÓXIMO</div>`;
     }
     if (n.state === 'future') {
         // Nível ainda por alcançar rumo ao chefe — mostra o número do nível.

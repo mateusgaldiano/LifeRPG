@@ -4387,6 +4387,12 @@ body::before {
 .cv-node-future { background: var(--cv-bg-surface); border: 2px dashed var(--cv-border); color: var(--cv-text-dim); }
 .cv-node-lvl { font-family: var(--font-hud); font-size: 15px; font-weight: 700; color: var(--cv-text-muted); letter-spacing: 0.5px; }
 .cv-node-label-future { color: var(--cv-text-dim) !important; }
+/* Próximo nível — o alvo imediato: cor do rank + brilho suave. */
+.cv-node-next {
+    background: var(--cv-bg-surface2); border: 2px solid var(--cv-accent); color: var(--cv-accent);
+    box-shadow: 0 0 14px 1px color-mix(in oklch, var(--cv-accent) 32%, transparent);
+}
+.cv-node-next .cv-node-lvl { color: var(--cv-accent); }
 .cv-node-current {
     background: radial-gradient(circle at 35% 30%, var(--cv-accent), var(--cv-accent-ink));
     border: 2px solid var(--cv-accent); color: var(--cv-bg-void); cursor: pointer;
