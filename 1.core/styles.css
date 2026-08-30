@@ -4342,7 +4342,39 @@ body::before {
     padding: 16px 18px;
     background: linear-gradient(135deg, var(--cv-accent-ink), var(--cv-bg-surface) 70%);
     border-bottom: 1px solid color-mix(in oklch, var(--cv-accent) 40%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
 }
+.cv-banner-main { min-width: 0; }
+
+/* ── Estrela do Dia: anel de progresso das dailies de hoje ── */
+.cv-star { flex: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cv-star-ring { position: relative; width: 60px; height: 60px; }
+.cv-star-svg { width: 60px; height: 60px; display: block; transform: rotate(-90deg); }
+.cv-star-track { fill: none; stroke: var(--cv-border); stroke-width: 5; }
+.cv-star-fill {
+    fill: none; stroke: var(--cv-accent); stroke-width: 5; stroke-linecap: round;
+    transition: stroke-dashoffset 0.7s cubic-bezier(.22,1,.36,1);
+    filter: drop-shadow(0 0 4px color-mix(in oklch, var(--cv-accent) 45%, transparent));
+}
+.cv-star-center {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-hud); color: var(--cv-text); line-height: 1;
+}
+.cv-star-center b { font-weight: 700; font-size: 18px; }
+.cv-star-center span { color: var(--cv-text-muted); font-size: 13px; }
+.cv-star-label { font-family: var(--font-hud); font-size: 7.5px; letter-spacing: 1.5px; color: var(--cv-text-muted); }
+/* Dia Perfeito — estrela cheia */
+.cv-star-full .cv-star-fill { filter: drop-shadow(0 0 9px var(--cv-accent)); }
+.cv-star-full .cv-star-center { color: var(--cv-accent); font-size: 25px; }
+.cv-star-full .cv-star-label { color: var(--cv-accent); }
+/* Celebração (só na 1ª vez que fecha o dia) */
+.cv-star-celebrate .cv-star-center { animation: cvStarPop 0.55s cubic-bezier(.22,1.4,.4,1); }
+.cv-star-celebrate .cv-star-ring { animation: cvStarGlow 0.7s ease; }
+@keyframes cvStarPop { 0% { transform: scale(.55); } 60% { transform: scale(1.28); } 100% { transform: scale(1); } }
+@keyframes cvStarGlow { 0%,100% { filter: none; } 50% { filter: drop-shadow(0 0 14px var(--cv-accent)); } }
 .cv-banner-eyebrow { font-family: var(--font-hud); font-size: 10px; letter-spacing: 3px; color: var(--cv-accent); }
 .cv-banner-title { font-family: var(--font-hud); font-size: 20px; font-weight: 700; letter-spacing: 1px; color: var(--cv-text); margin-top: 4px; }
 .cv-banner-day { font-family: var(--font-body); font-size: 11px; color: var(--cv-text-muted); margin-top: 4px; }

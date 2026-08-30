@@ -9,6 +9,11 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.60] — 2026-08-30
+- **Feat: Estrela do Dia no Caminho (loop de curto prazo).** Endereça o descompasso "app de hábito ≠ Duolingo": a trilha andava só 1 nó por dia, sem progresso incremental dentro da sessão. Agora o banner do Caminho tem um **anel de progresso das dailies de hoje** que **enche a cada missão concluída** (por hábitos: `concluídas/total ativas hoje`), animando o **incremento** (ex.: 2/4 → 3/4) — o "estalo" de encher.
+  - Fechar **todas** as dailies do dia dispara o **Dia Perfeito**: estrela vira ★, brilho, animação de celebração e toast do Sistema. Guardado por `gameState._perfectDayDate` (uma vez por dia).
+  - Reaproveita o fluxo existente: completar no bottom sheet do Caminho re-renderiza e anima a estrela na hora. Só aparece se houver dailies ativas hoje.
+
 ## [v2.5.59] — 2026-08-30
 - **Fix: onboarding pulava etapas / ia direto pra tela inicial.** A decisão de mostrar o wizard estava (a) espalhada entre um caminho **sync** (guest) e outro **async** (pós-login), causando uma corrida em que o wizard aparecia e sumia sozinho; e (b) em [app.js](../1.core/app.js), bastava a conta **existir** na nuvem (`isReturningUser`) pra pular o onboarding — mesmo sem ele ter sido concluído.
   - Agora a decisão é **única** (`decideOnboarding`), tomada uma vez depois do `initSupabase()` resolver — acabou a corrida/piscada.

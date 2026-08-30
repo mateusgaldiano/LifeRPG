@@ -8,6 +8,10 @@ import { RANK_THRESHOLDS } from './game-math.js';
 import { toggleQuest, BOSS_QUEST_BY_LEVEL } from './game-logic.js';
 import { showSystemToast, updateUI } from './ui.js';
 
+// Guarda o preenchimento anterior da Estrela do Dia p/ animar o INCREMENTO
+// (ex.: 80%→100%) em vez de sempre redesenhar do zero. Reseta no reload.
+let _lastStarOffset = null;
+
 // ── datas locais (evita os bugs de fuso já documentados no CLAUDE.md: nunca
 //    usar toDateString()/Date parsing com string ISO direto) ────────────────
 function parseLocalDate(str) {
@@ -216,20 +220,69 @@ function renderCaminho() {
     const built = buildNodes(info.chapterStart, info.todayStr, width, info);
     const { nodes, boss, pathD, side, isBlocked, totalHeight, targetTop } = built;
 
-    // banner — agora carrega os stats essenciais (o card de perfil some no
-    // layout imersivo, então nível/ouro/streak vivem aqui).
+    // banner — stats essenciais + ESTRELA DO DIA (progresso das dailies de hoje).
+    // É o loop de curto prazo: cada daily concluída enche a estrela; fechar
+    // todas = Dia Perfeito.
     const chapterLabel = info.rankInfo.rank;
     const gold = gameState.gold || 0;
     const streak = gameState.streak || 0;
+
+    // Progresso do dia por HÁBITOS (não por XP): dailies ativas hoje × concluídas.
+    const dow = new Date().getDay();
+    const dailiesToday = (gameState.quests || []).filter(q => q.type === 'daily' && isQuestActiveOnDay(q, dow));
+    const doneToday = dailiesToday.filter(q => q.completed).length;
+    const totalToday = dailiesToday.length;
+    const ratio = totalToday > 0 ? doneToday / totalToday : 0;
+    const isFull = totalToday > 0 && doneToday === totalToday;
+
+    const STAR_R = 25, STAR_C = 2 * Math.PI * STAR_R;
+    const offsetTarget = STAR_C * (1 - ratio);
+    const startOffset = _lastStarOffset !== null ? _lastStarOffset : STAR_C; // 1ª vez enche do zero
+
+    const starHtml = totalToday > 0 ? `
+        <div class="cv-star ${isFull ? 'cv-star-full' : ''}">
+            <div class="cv-star-ring">
+                <svg viewBox="0 0 60 60" class="cv-star-svg" aria-hidden="true">
+                    <circle class="cv-star-track" cx="30" cy="30" r="${STAR_R}"></circle>
+                    <circle class="cv-star-fill" cx="30" cy="30" r="${STAR_R}" stroke-dasharray="${STAR_C.toFixed(1)}" stroke-dashoffset="${startOffset.toFixed(1)}"></circle>
+                </svg>
+                <div class="cv-star-center">${isFull ? '★' : `<b>${doneToday}</b><span>/${totalToday}</span>`}</div>
+            </div>
+            <div class="cv-star-label">${isFull ? 'DIA PERFEITO' : 'HOJE'}</div>
+        </div>` : '';
+
     bannerEl.innerHTML = `
-        <div class="cv-banner-eyebrow">${chapterLabel}</div>
-        <div class="cv-banner-title">${isBlocked ? 'Você se afastou da trilha' : 'A Trilha'}</div>
-        <div class="cv-banner-stats">
-            <span class="cv-stat"><span class="cv-stat-k">NÍVEL</span><b>${info.level}</b></span>
-            <span class="cv-stat"><span class="cv-stat-i">🪙</span><b>${gold}</b></span>
-            <span class="cv-stat"><span class="cv-stat-i">🔥</span><b>${streak}</b></span>
+        <div class="cv-banner-main">
+            <div class="cv-banner-eyebrow">${chapterLabel}</div>
+            <div class="cv-banner-title">${isBlocked ? 'Você se afastou da trilha' : 'A Trilha'}</div>
+            <div class="cv-banner-stats">
+                <span class="cv-stat"><span class="cv-stat-k">NÍVEL</span><b>${info.level}</b></span>
+                <span class="cv-stat"><span class="cv-stat-i">🪙</span><b>${gold}</b></span>
+                <span class="cv-stat"><span class="cv-stat-i">🔥</span><b>${streak}</b></span>
+            </div>
         </div>
+        ${starHtml}
     `;
+
+    // Anima a estrela do valor anterior até o atual (o "estalo" de encher).
+    requestAnimationFrame(() => {
+        const fill = bannerEl.querySelector('.cv-star-fill');
+        if (fill) fill.style.strokeDashoffset = offsetTarget.toFixed(1);
+    });
+    _lastStarOffset = offsetTarget;
+
+    // Dia Perfeito: 1ª vez que todas as dailies de hoje ficam prontas.
+    if (isFull && gameState._perfectDayDate !== info.todayStr) {
+        gameState._perfectDayDate = info.todayStr;
+        saveGameData();
+        requestAnimationFrame(() => {
+            const star = bannerEl.querySelector('.cv-star');
+            if (star) star.classList.add('cv-star-celebrate');
+        });
+        setTimeout(() => {
+            showSystemToast('🌟 *DIA PERFEITO!* Você fechou todas as missões de hoje. O Sistema registrou sua consistência — a chama continua.');
+        }, 450);
+    }
 
     // boss node
     const bossReady = info.bossId && gameState.bossQuest && gameState.bossQuest.id === info.bossId && !gameState.bossQuest.completed;
