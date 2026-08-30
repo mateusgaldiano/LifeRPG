@@ -4315,6 +4315,17 @@ body::before {
     background: var(--cv-accent-live, #eceef2) !important;
     box-shadow: 0 0 10px color-mix(in oklch, var(--cv-accent-live, #eceef2) 50%, transparent) !important;
   }
+
+  /* Toast no tom escuro + descido pra baixo do header (senão é uma caixa branca
+     colada no topo, sobre o mapa). */
+  body.caminho-active .toast-container { top: calc(var(--cv-topbar, 56px) + 10px) !important; }
+  body.caminho-active .toast {
+    background: rgba(28, 32, 39, 0.97) !important;
+    border-color: #282d35 !important;
+    color: #eceef2 !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+  }
+  body.caminho-active .toast-close { color: #7b8290 !important; }
 }
 
 .caminho-view.rank-candidato { --cv-accent: oklch(75% 0.02 260); --cv-accent-ink: oklch(20% 0.01 260); }
@@ -4372,6 +4383,10 @@ body::before {
     display: flex; align-items: center; justify-content: center;
 }
 .cv-node-blocked { background: var(--cv-bg-surface); border: 2px solid var(--cv-border); color: var(--cv-text-dim); opacity: 0.55; cursor: pointer; }
+/* Nível futuro (acima do HOJE, rumo ao chefe): traço pontilhado + número. */
+.cv-node-future { background: var(--cv-bg-surface); border: 2px dashed var(--cv-border); color: var(--cv-text-dim); }
+.cv-node-lvl { font-family: var(--font-hud); font-size: 15px; font-weight: 700; color: var(--cv-text-muted); letter-spacing: 0.5px; }
+.cv-node-label-future { color: var(--cv-text-dim) !important; }
 .cv-node-current {
     background: radial-gradient(circle at 35% 30%, var(--cv-accent), var(--cv-accent-ink));
     border: 2px solid var(--cv-accent); color: var(--cv-bg-void); cursor: pointer;

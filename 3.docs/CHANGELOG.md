@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.56] — 2026-08-29
+- **Fix/UX: trilha do Caminho não fica mais vazia (dias + níveis combinados).** Antes a trilha só desenhava "dias desde o início do capítulo" (`chapterStartDate`), campo novo que nunca foi gravado pros usuários existentes — então o app assumia "começou hoje" e mostrava **1 nó só**, com o chefe (próximo rank) longe. Tela vazia.
+  - Agora a trilha é combinada (de baixo p/ cima): **INÍCIO · dias passados · HOJE · níveis que faltam · CHEFE**.
+  - **Dias passados**: janela deslizante dos últimos ~14 dias do `history` real, limitada ao 1º dia com registro (não fabrica "perdidos" de antes da pessoa começar). Reusa done/perdido/hoje.
+  - **Níveis futuros**: um nó por nível do rank atual+1 até o limiar do chefe (ex.: nível 17 → nós 18, 19 → `CHEFE · Nv 20`), pontilhados/muted, dando direção rumo ao portão. Sempre populada mesmo sem histórico.
+  - Rótulo do chefe agora mostra o nível que o abre (`CHEFE · Nv 20`).
+- **Style: toast no tom escuro dentro do Caminho.** O aviso do Sistema (ex.: "🔒 O portão ainda está fechado") aparecia como caixa branca colada no topo, sobre o mapa. Em `body.caminho-active` ele fica escuro (`rgb(28,32,39)`, texto claro) e desce pra baixo do header.
+
 ## [v2.5.55] — 2026-08-29
 - **UX: chrome do Caminho no tom escuro do mapa (imersão coesa).** No mobile, a aba tinha header e nav claros (Neblina Ártica) com o mapa escuro no meio — um sanduíche claro-escuro-claro que quebrava a imersão.
   - Só na aba Caminho (`body.caminho-active`, `≤1023px`), header e nav ficam escuros (`rgb(21,24,29)`) e **tingem com o accent do rank**: `caminho.js` promove `--cv-accent` do rank pra `:root` (`--cv-accent-live`), então "THE SYSTEM", a borda do header, a aba ativa e o traço da aba ativa saem na cor do capítulo (ex.: vermelho no RANK D "sangue"). Ícones do header em cinza-claro, abas inativas em muted.

@@ -58,20 +58,30 @@ function getChapterInfo() {
     return { level, rankInfo, next, bossThresholdLevel, bossId, todayStr, chapterStart };
 }
 
-// ── monta a lista de nós (dias passados + hoje) com geometria ──────────────
-function buildNodes(chapterStart, todayStr, containerWidth) {
+// ── monta a lista de nós com geometria ─────────────────────────────────────
+// Trilha combinada (de baixo p/ cima): INÍCIO · dias passados (histórico real) ·
+// HOJE · níveis que faltam até o chefe · CHEFE. Assim nunca fica vazia: mesmo
+// sem histórico, os níveis futuros já dão caminho rumo ao portão.
+function buildNodes(chapterStart, todayStr, containerWidth, info) {
     const SPACING_Y = 92, AMPLITUDE_X = Math.min(62, containerWidth * 0.16);
-    const NODE = 50, CUR = 66, SIDE = 32;
+    const NODE = 50, CUR = 66, SIDE = 32, FUT = 46;
     const centerX = containerWidth / 2;
+    const PAST_WINDOW = 14; // janela deslizante de dias passados
 
-    const pastEnd = shiftDateStr(todayStr, -1);
-    const pastDates = pastEnd >= chapterStart ? datesBetween(chapterStart, pastEnd, 60) : [];
+    // ── dias passados: janela recente, limitada ao 1º dia com histórico real
+    //    (não fabrica "perdidos" de antes da pessoa começar a usar o app) ──
+    const yesterday = shiftDateStr(todayStr, -1);
+    const histKeys = Object.keys(gameState.history || {}).filter(k => k <= yesterday).sort();
+    const earliest = histKeys.length ? histKeys[0] : todayStr;
+    const windowStart = shiftDateStr(todayStr, -PAST_WINDOW);
+    const startStr = windowStart > earliest ? windowStart : earliest;
+    const pastDates = (histKeys.length && yesterday >= startStr)
+        ? datesBetween(startStr, yesterday, PAST_WINDOW + 2) : [];
 
-    // Reencontro: o dia de ontem (dentro do capítulo) foi perdido?
+    // Reencontro: ontem foi perdido?
     const lostYesterday = pastDates.length > 0
-        && pastDates[pastDates.length - 1] === pastEnd
-        && classifyPastDay(pastEnd) === 'missed';
-
+        && pastDates[pastDates.length - 1] === yesterday
+        && classifyPastDay(yesterday) === 'missed';
     if (lostYesterday) {
         const activeToday = (gameState.quests || []).some(q => q.type === 'daily' && q.completed);
         if (activeToday && gameState._reencontroResolvedDate !== todayStr) {
@@ -81,9 +91,19 @@ function buildNodes(chapterStart, todayStr, containerWidth) {
     }
     const isBlocked = lostYesterday && gameState._reencontroResolvedDate !== todayStr;
 
-    const raw = pastDates.map((d, i) => ({ date: d, index: i, state: classifyPastDay(d) }));
-    // "hoje" é sempre o próximo nó da trilha, com estado especial
-    raw.push({ date: todayStr, index: raw.length, state: isBlocked ? 'blocked' : 'current' });
+    // ── níveis futuros: do nível atual+1 até (limiar do chefe − 1) ──
+    const futureLevels = [];
+    if (info.bossThresholdLevel) {
+        for (let L = info.level + 1; L < info.bossThresholdLevel; L++) futureLevels.push(L);
+    }
+    const hasBoss = !!info.bossThresholdLevel;
+
+    // Ordena de baixo (passado) para cima (futuro).
+    const raw = [];
+    pastDates.forEach(d => raw.push({ kind: 'day', date: d, state: classifyPastDay(d) }));
+    raw.push({ kind: 'today', date: todayStr, state: isBlocked ? 'blocked' : 'current' });
+    futureLevels.forEach(L => raw.push({ kind: 'future', level: L, state: 'future' }));
+    raw.forEach((n, i) => { n.index = i; });
 
     const FOOTER = 56;
     const totalHeight = 40 + 186 + 88 + (raw.length - 1 + 1.25) * SPACING_Y + FOOTER;
@@ -91,7 +111,7 @@ function buildNodes(chapterStart, todayStr, containerWidth) {
     let targetTop;
     const nodes = raw.map((n) => {
         const yFromBottom = n.index * SPACING_Y;
-        const size = n.state === 'current' ? CUR : NODE;
+        const size = n.state === 'current' ? CUR : (n.kind === 'future' ? FUT : NODE);
         const x = Math.sin((n.index / 2.4) * Math.PI) * AMPLITUDE_X;
         const cy = totalHeight - FOOTER - yFromBottom;
         const cx = centerX + x;
@@ -107,18 +127,18 @@ function buildNodes(chapterStart, todayStr, containerWidth) {
 
     let pathD = '';
     nodes.forEach((n, i) => { pathD += (i === 0 ? 'M ' : 'L ') + n.cx.toFixed(1) + ' ' + n.cy.toFixed(1) + ' '; });
-    pathD += 'L ' + centerX.toFixed(1) + ' ' + boss.cy.toFixed(1);
+    if (hasBoss) pathD += 'L ' + centerX.toFixed(1) + ' ' + boss.cy.toFixed(1);
 
     let side = null;
     if (isBlocked) {
-        const todayNode = nodes[nodes.length - 1];
+        const todayNode = nodes.find(n => n.kind === 'today');
         const dx = todayNode.cx >= centerX ? -78 : 78;
         const sideCx = todayNode.cx + dx, sideCy = todayNode.cy - 4;
         side = { cx: sideCx, cy: sideCy, top: sideCy - SIDE / 2, left: sideCx - SIDE / 2, size: SIDE,
                  spurD: 'M ' + todayNode.cx.toFixed(1) + ' ' + todayNode.cy.toFixed(1) + ' L ' + sideCx.toFixed(1) + ' ' + sideCy.toFixed(1) };
     }
 
-    return { nodes, boss, pathD, side, isBlocked, totalHeight, targetTop };
+    return { nodes, boss, pathD, side, isBlocked, totalHeight, targetTop, hasBoss };
 }
 
 function svgIcon(name) {
@@ -146,6 +166,13 @@ function nodeHtml(n) {
         return `<div class="cv-node cv-node-blocked" style="top:${n.top.toFixed(1)}px;left:${n.left.toFixed(1)}px;width:${n.size}px;height:${n.size}px;">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${svgIcon('compass')}</svg>
         </div>`;
+    }
+    if (n.state === 'future') {
+        // Nível ainda por alcançar rumo ao chefe — mostra o número do nível.
+        return `<div class="cv-node cv-node-future" style="top:${n.top.toFixed(1)}px;left:${n.left.toFixed(1)}px;width:${n.size}px;height:${n.size}px;">
+            <span class="cv-node-lvl">${n.level}</span>
+        </div>
+        <div class="cv-node-label cv-node-label-future" style="top:${(n.top + n.size + 4).toFixed(1)}px;left:${(n.left - 18).toFixed(1)}px;width:${n.size + 36}px;">NÍVEL ${n.level}</div>`;
     }
     // current
     return `<div class="cv-node cv-node-current" id="cv-today-node" style="top:${n.top.toFixed(1)}px;left:${n.left.toFixed(1)}px;width:${n.size}px;height:${n.size}px;">
@@ -178,7 +205,7 @@ function renderCaminho() {
     document.documentElement.style.setProperty('--cv-accent-ink-live', (cvCS.getPropertyValue('--cv-accent-ink') || '').trim());
 
     const width = Math.max(280, Math.min(scrollEl.clientWidth || 390, 480));
-    const built = buildNodes(info.chapterStart, info.todayStr, width);
+    const built = buildNodes(info.chapterStart, info.todayStr, width, info);
     const { nodes, boss, pathD, side, isBlocked, totalHeight, targetTop } = built;
 
     // banner — agora carrega os stats essenciais (o card de perfil some no
@@ -203,7 +230,7 @@ function renderCaminho() {
              style="top:${boss.top.toFixed(1)}px;left:${boss.left.toFixed(1)}px;width:${boss.size}px;height:${boss.size}px;">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${svgIcon('swords')}</svg>
         </div>
-        <div class="cv-boss-label" style="top:${(boss.top + boss.size + 5).toFixed(1)}px;left:${boss.left.toFixed(1)}px;width:${boss.size}px;">CHEFE</div>
+        <div class="cv-boss-label" style="top:${(boss.top + boss.size + 5).toFixed(1)}px;left:${(boss.left - 20).toFixed(1)}px;width:${(boss.size + 40)}px;">CHEFE · Nv ${info.bossThresholdLevel}</div>
     ` : '';
 
     const sideHtml = side ? `
