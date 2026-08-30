@@ -12,6 +12,37 @@ import { showSystemToast, updateUI } from './ui.js';
 // (ex.: 80%→100%) em vez de sempre redesenhar do zero. Reseta no reload.
 let _lastStarOffset = null;
 
+// ── PROVAS DO DIA: os 6 atributos agrupados em 3 pilares ───────────────────
+// Cada pilar vira uma "prova" (nó) que a pessoa preenche com os hábitos daquele
+// grupo. Fechar as 3 = Dia Perfeito.
+const PILLARS = [
+    { id: 'corpo', name: 'Corpo', icon: '💪', skills: ['physical', 'routine'] },
+    { id: 'mente', name: 'Mente', icon: '🧠', skills: ['mental', 'wisdom'] },
+    { id: 'mundo', name: 'Mundo', icon: '🌐', skills: ['productivity', 'social'] },
+];
+// atributo → pilar (default 'mundo' p/ hábito sem skill conhecida, pra nenhum
+// hábito ficar de fora — assim a soma das provas bate com a Estrela do Dia).
+const SKILL_TO_PILLAR = {};
+PILLARS.forEach(p => p.skills.forEach(s => { SKILL_TO_PILLAR[s] = p.id; }));
+
+// Monta as 3 provas a partir das dailies de hoje. A 1ª prova ainda não cheia
+// (com hábitos) é a "atual" (destacada).
+function buildProvas(dailies) {
+    const provas = PILLARS.map(p => ({ id: p.id, name: p.name, icon: p.icon, done: 0, total: 0 }));
+    const byId = {}; provas.forEach(p => { byId[p.id] = p; });
+    dailies.forEach(q => {
+        const pv = byId[SKILL_TO_PILLAR[q.skill] || 'mundo'] || byId.mundo;
+        pv.total++; if (q.completed) pv.done++;
+    });
+    let currentSet = false;
+    provas.forEach(pv => {
+        pv.ratio = pv.total > 0 ? pv.done / pv.total : 0;
+        pv.state = pv.total === 0 ? 'prova-empty' : (pv.done >= pv.total ? 'prova-done' : 'prova-active');
+        if (!currentSet && pv.state === 'prova-active') { pv.isCurrent = true; currentSet = true; }
+    });
+    return provas;
+}
+
 // ── datas locais (evita os bugs de fuso já documentados no CLAUDE.md: nunca
 //    usar toDateString()/Date parsing com string ISO direto) ────────────────
 function parseLocalDate(str) {
@@ -66,9 +97,9 @@ function getChapterInfo() {
 // Trilha combinada (de baixo p/ cima): INÍCIO · dias passados (histórico real) ·
 // HOJE · níveis que faltam até o chefe · CHEFE. Assim nunca fica vazia: mesmo
 // sem histórico, os níveis futuros já dão caminho rumo ao portão.
-function buildNodes(chapterStart, todayStr, containerWidth, info) {
+function buildNodes(chapterStart, todayStr, containerWidth, info, provaData) {
     const SPACING_Y = 92, AMPLITUDE_X = Math.min(62, containerWidth * 0.16);
-    const NODE = 50, CUR = 66, SIDE = 32, FUT = 46, NEXT = 54;
+    const NODE = 50, CUR = 66, SIDE = 32, FUT = 46, NEXT = 54, PROVA = 56, PROVA_CUR = 64;
     const centerX = containerWidth / 2;
     const PAST_WINDOW = 7; // janela deslizante de dias passados
 
@@ -105,7 +136,9 @@ function buildNodes(chapterStart, todayStr, containerWidth, info) {
     // Ordena de baixo (passado) para cima (futuro).
     const raw = [];
     pastDates.forEach(d => raw.push({ kind: 'day', date: d, state: classifyPastDay(d) }));
-    raw.push({ kind: 'today', date: todayStr, state: isBlocked ? 'blocked' : 'current' });
+    // HOJE = 3 provas (Corpo · Mente · Mundo), uma por pilar. Substituem o antigo
+    // nó único de hoje: dá pra "andar" várias no mesmo dia.
+    (provaData || []).forEach(pv => raw.push({ kind: 'prova', prova: pv }));
     // O 1º nível futuro é o "próximo alvo" (destacado na cor do rank); o resto fica apagado.
     futureLevels.forEach((L, i) => raw.push({ kind: 'future', level: L, state: i === 0 ? 'next' : 'future' }));
     raw.forEach((n, i) => { n.index = i; });
@@ -116,15 +149,22 @@ function buildNodes(chapterStart, todayStr, containerWidth, info) {
     let targetTop;
     const nodes = raw.map((n) => {
         const yFromBottom = n.index * SPACING_Y;
-        const size = n.state === 'current' ? CUR : (n.state === 'next' ? NEXT : (n.kind === 'future' ? FUT : NODE));
+        const size = n.kind === 'prova'
+            ? (n.prova.isCurrent ? PROVA_CUR : PROVA)
+            : (n.state === 'next' ? NEXT : (n.kind === 'future' ? FUT : NODE));
         const x = Math.sin((n.index / 2.4) * Math.PI) * AMPLITUDE_X;
         const cy = totalHeight - FOOTER - yFromBottom;
         const cx = centerX + x;
         const top = cy - size / 2;
         const left = cx - size / 2;
-        if (n.state === 'current' || n.state === 'blocked') targetTop = top;
+        if (n.kind === 'prova' && n.prova.isCurrent) targetTop = top;
         return { ...n, size, cx, cy, top, left };
     });
+    // Sem prova "atual" (todas cheias ou vazias): centraliza na 1ª prova.
+    if (targetTop === undefined) {
+        const fp = nodes.find(n => n.kind === 'prova');
+        if (fp) targetTop = fp.top;
+    }
 
     const bossCy = totalHeight - FOOTER - (nodes.length - 1 + 1.25) * SPACING_Y;
     const bossSize = 88;
@@ -135,8 +175,8 @@ function buildNodes(chapterStart, todayStr, containerWidth, info) {
     if (hasBoss) pathD += 'L ' + centerX.toFixed(1) + ' ' + boss.cy.toFixed(1);
 
     let side = null;
-    if (isBlocked) {
-        const todayNode = nodes.find(n => n.kind === 'today');
+    const todayNode = nodes.find(n => n.kind === 'prova');
+    if (isBlocked && todayNode) {
         const dx = todayNode.cx >= centerX ? -78 : 78;
         const sideCx = todayNode.cx + dx, sideCy = todayNode.cy - 4;
         side = { cx: sideCx, cy: sideCy, top: sideCy - SIDE / 2, left: sideCx - SIDE / 2, size: SIDE,
@@ -186,11 +226,24 @@ function nodeHtml(n) {
         </div>
         <div class="cv-node-label cv-node-label-future" style="top:${(n.top + n.size + 4).toFixed(1)}px;left:${(n.left - 18).toFixed(1)}px;width:${n.size + 36}px;">NÍVEL ${n.level}</div>`;
     }
-    // current
-    return `<div class="cv-node cv-node-current" id="cv-today-node" style="top:${n.top.toFixed(1)}px;left:${n.left.toFixed(1)}px;width:${n.size}px;height:${n.size}px;">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" stroke="none"><path d="M12 2c1 3-2 4-2 7a4 4 0 1 0 8 0c0-1-.5-2-1-2 .5 2-1 3-2 3-1.5 0-2-1.5-1-3-2 .5-3 2.5-2 5a6 6 0 1 1-9-5c0-3 3-4 4-6 1 1 2 1 3 0z"/></svg>
-    </div>
-    <div class="cv-node-label" style="top:${(n.top + n.size + 5).toFixed(1)}px;left:${n.left.toFixed(1)}px;width:${n.size}px;">HOJE</div>`;
+    if (n.kind === 'prova') {
+        // Prova do dia (pilar): anel que enche com os hábitos daquele grupo.
+        const pv = n.prova;
+        const R = (n.size / 2) - 4, C = 2 * Math.PI * R;
+        const off = C * (1 - (pv.ratio || 0));
+        const done = pv.state === 'prova-done';
+        const empty = pv.state === 'prova-empty';
+        const cls = 'cv-prova cv-' + pv.state + (pv.isCurrent ? ' cv-prova-current' : '');
+        return `<div class="${cls}" data-pillar="${pv.id}" style="top:${n.top.toFixed(1)}px;left:${n.left.toFixed(1)}px;width:${n.size}px;height:${n.size}px;">
+            <svg class="cv-prova-ring" viewBox="0 0 ${n.size} ${n.size}" aria-hidden="true">
+                <circle class="cv-prova-track" cx="${n.size / 2}" cy="${n.size / 2}" r="${R.toFixed(1)}"></circle>
+                ${empty ? '' : `<circle class="cv-prova-fill" cx="${n.size / 2}" cy="${n.size / 2}" r="${R.toFixed(1)}" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"></circle>`}
+            </svg>
+            <span class="cv-prova-icon">${done ? '✓' : pv.icon}</span>
+        </div>
+        <div class="cv-prova-label" style="top:${(n.top + n.size + 5).toFixed(1)}px;left:${(n.left - 24).toFixed(1)}px;width:${n.size + 48}px;">${pv.name}${empty ? '' : ` <b>${pv.done}/${pv.total}</b>`}</div>`;
+    }
+    return '';
 }
 
 // ── render principal ─────────────────────────────────────────────────────
@@ -217,7 +270,13 @@ function renderCaminho() {
     document.documentElement.style.setProperty('--cv-accent-ink-live', (cvCS.getPropertyValue('--cv-accent-ink') || '').trim());
 
     const width = Math.max(280, Math.min(scrollEl.clientWidth || 390, 480));
-    const built = buildNodes(info.chapterStart, info.todayStr, width, info);
+
+    // Dailies de hoje → 3 provas (Corpo/Mente/Mundo). Alimentam os nós E a Estrela.
+    const dow = new Date().getDay();
+    const dailiesToday = (gameState.quests || []).filter(q => q.type === 'daily' && isQuestActiveOnDay(q, dow));
+    const provaData = buildProvas(dailiesToday);
+
+    const built = buildNodes(info.chapterStart, info.todayStr, width, info, provaData);
     const { nodes, boss, pathD, side, isBlocked, totalHeight, targetTop } = built;
 
     // banner — stats essenciais + ESTRELA DO DIA (progresso das dailies de hoje).
@@ -227,9 +286,7 @@ function renderCaminho() {
     const gold = gameState.gold || 0;
     const streak = gameState.streak || 0;
 
-    // Progresso do dia por HÁBITOS (não por XP): dailies ativas hoje × concluídas.
-    const dow = new Date().getDay();
-    const dailiesToday = (gameState.quests || []).filter(q => q.type === 'daily' && isQuestActiveOnDay(q, dow));
+    // Progresso do dia por HÁBITOS: reusa dailiesToday computado acima.
     const doneToday = dailiesToday.filter(q => q.completed).length;
     const totalToday = dailiesToday.length;
     const ratio = totalToday > 0 ? doneToday / totalToday : 0;
@@ -315,14 +372,12 @@ function renderCaminho() {
         <div class="cv-start-marker" style="bottom:18px;">INÍCIO</div>
     `;
 
-    // clique no nó de hoje (ou no nó de reencontro, se bloqueado)
-    const openHandler = () => openTodaySheet(isBlocked);
-    const todayNode = document.getElementById('cv-today-node');
-    if (todayNode) todayNode.addEventListener('click', openHandler);
-    const blockedNode = innerEl.querySelector('.cv-node-blocked');
-    if (blockedNode) blockedNode.addEventListener('click', openHandler);
+    // Cada prova abre o sheet filtrado no seu pilar; o nó de reencontro abre tudo.
+    innerEl.querySelectorAll('.cv-prova').forEach(el => {
+        el.addEventListener('click', () => openTodaySheet(isBlocked, el.getAttribute('data-pillar')));
+    });
     const sideNode = document.getElementById('cv-side-node');
-    if (sideNode) sideNode.addEventListener('click', () => openTodaySheet(true));
+    if (sideNode) sideNode.addEventListener('click', () => openTodaySheet(isBlocked));
 
     const bossNode = document.getElementById('cv-boss-node');
     if (bossNode) {
@@ -349,11 +404,11 @@ function renderCaminho() {
 }
 
 // ── bottom sheet de hoje (reaproveita toggleQuest existente) ───────────────
-function openTodaySheet(blocked) {
+function openTodaySheet(blocked, pillarId) {
     const sheet = document.getElementById('caminho-today-sheet');
     const overlay = document.getElementById('caminho-today-overlay');
     if (!sheet || !overlay) return;
-    renderTodaySheetList(blocked);
+    renderTodaySheetList(blocked, pillarId);
     overlay.classList.add('cv-open');
     sheet.classList.add('cv-open');
 }
@@ -363,16 +418,23 @@ function closeTodaySheet() {
     if (sheet) sheet.classList.remove('cv-open');
     if (overlay) overlay.classList.remove('cv-open');
 }
-function renderTodaySheetList(blocked) {
+function renderTodaySheetList(blocked, pillarId) {
     const list = document.getElementById('caminho-today-list');
     const hint = document.getElementById('caminho-today-hint');
     if (!list) return;
     if (hint) hint.style.display = blocked ? 'flex' : 'none';
 
+    const pillar = pillarId ? PILLARS.find(p => p.id === pillarId) : null;
+    // Título do sheet reflete a prova (pilar) ou "HOJE" se aberto sem filtro.
+    const titleEl = document.querySelector('#caminho-today-sheet .cv-sheet-title');
+    if (titleEl) titleEl.textContent = pillar ? `PROVA · ${pillar.name.toUpperCase()}` : 'HOJE';
+
     const dow = new Date().getDay();
-    const dailies = (gameState.quests || []).filter(q => q.type === 'daily' && isQuestActiveOnDay(q, dow));
+    let dailies = (gameState.quests || []).filter(q => q.type === 'daily' && isQuestActiveOnDay(q, dow));
+    if (pillar) dailies = dailies.filter(q => (SKILL_TO_PILLAR[q.skill] || 'mundo') === pillar.id);
+
     if (dailies.length === 0) {
-        list.innerHTML = '<div class="cv-empty">Nenhuma missão diária configurada.</div>';
+        list.innerHTML = `<div class="cv-empty">${pillar ? `Nenhuma missão de ${pillar.name} hoje.` : 'Nenhuma missão diária configurada.'}</div>`;
         return;
     }
     list.innerHTML = dailies.map(q => `
@@ -388,7 +450,7 @@ function renderTodaySheetList(blocked) {
             const id = row.getAttribute('data-quest-id');
             toggleQuest(id);
             updateUI();
-            renderTodaySheetList(blocked);
+            renderTodaySheetList(blocked, pillarId);
             renderCaminho();
         });
     });

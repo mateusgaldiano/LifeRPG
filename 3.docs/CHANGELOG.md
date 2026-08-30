@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.61] — 2026-08-30
+- **Feat: "hoje" da trilha vira 3 Provas (Corpo · Mente · Mundo).** Endereça o pedido de transformar as habilidades em partes de uma quest que a pessoa preenche — e dá o "andar vários nós no mesmo dia". O nó único de HOJE deu lugar a **3 nós-prova**, um por pilar (os 6 atributos agrupados: Corpo = Físico+Rotina · Mente = Mental+Sabedoria · Mundo = Foco+Conexão).
+  - Cada prova é um nó com **anel de progresso** que enche com os hábitos daquele pilar (ex.: Corpo 1/2). A 1ª prova incompleta é a "atual" (pulsa). Concluir uma acende (✓) e avança pra próxima.
+  - **Tocar numa prova abre o bottom sheet filtrado só naquele pilar** (título "PROVA · CORPO"), reaproveitando `toggleQuest`. Provas sem hábito hoje aparecem apagadas (nudge de equilíbrio), sem travar o Dia Perfeito.
+  - A soma das provas bate com a Estrela do Dia; fechar tudo = Dia Perfeito (mesma celebração). `caminho.js`: `PILLARS`/`buildProvas`; CSS `.cv-prova*`.
+
 ## [v2.5.60] — 2026-08-30
 - **Feat: Estrela do Dia no Caminho (loop de curto prazo).** Endereça o descompasso "app de hábito ≠ Duolingo": a trilha andava só 1 nó por dia, sem progresso incremental dentro da sessão. Agora o banner do Caminho tem um **anel de progresso das dailies de hoje** que **enche a cada missão concluída** (por hábitos: `concluídas/total ativas hoje`), animando o **incremento** (ex.: 2/4 → 3/4) — o "estalo" de encher.
   - Fechar **todas** as dailies do dia dispara o **Dia Perfeito**: estrela vira ★, brilho, animação de celebração e toast do Sistema. Guardado por `gameState._perfectDayDate` (uma vez por dia).
