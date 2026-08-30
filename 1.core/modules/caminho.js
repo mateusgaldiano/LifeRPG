@@ -11,6 +11,10 @@ import { showSystemToast, updateUI } from './ui.js';
 // Guarda o preenchimento anterior da Estrela do Dia p/ animar o INCREMENTO
 // (ex.: 80%→100%) em vez de sempre redesenhar do zero. Reseta no reload.
 let _lastStarOffset = null;
+// Mesma ideia por prova (anel de cada pilar) + último estado (pra "pop" só na
+// transição real active→done, não a cada render/reload).
+const _lastProvaOffset = {};
+const _lastProvaState = {};
 
 // ── PROVAS DO DIA: os 6 atributos agrupados em 3 pilares ───────────────────
 // Cada pilar vira uma "prova" (nó) que a pessoa preenche com os hábitos daquele
@@ -99,7 +103,7 @@ function getChapterInfo() {
 // sem histórico, os níveis futuros já dão caminho rumo ao portão.
 function buildNodes(chapterStart, todayStr, containerWidth, info, provaData) {
     const SPACING_Y = 92, AMPLITUDE_X = Math.min(62, containerWidth * 0.16);
-    const NODE = 50, CUR = 66, SIDE = 32, FUT = 46, NEXT = 54, PROVA = 56, PROVA_CUR = 64;
+    const NODE = 50, CUR = 66, SIDE = 32, FUT = 46, NEXT = 54, PROVA = 58;
     const centerX = containerWidth / 2;
     const PAST_WINDOW = 7; // janela deslizante de dias passados
 
@@ -150,7 +154,7 @@ function buildNodes(chapterStart, todayStr, containerWidth, info, provaData) {
     const nodes = raw.map((n) => {
         const yFromBottom = n.index * SPACING_Y;
         const size = n.kind === 'prova'
-            ? (n.prova.isCurrent ? PROVA_CUR : PROVA)
+            ? PROVA
             : (n.state === 'next' ? NEXT : (n.kind === 'future' ? FUT : NODE));
         const x = Math.sin((n.index / 2.4) * Math.PI) * AMPLITUDE_X;
         const cy = totalHeight - FOOTER - yFromBottom;
@@ -170,9 +174,16 @@ function buildNodes(chapterStart, todayStr, containerWidth, info, provaData) {
     const bossSize = 88;
     const boss = { cy: bossCy, cx: centerX, top: bossCy - bossSize / 2, left: centerX - bossSize / 2, size: bossSize };
 
-    let pathD = '';
-    nodes.forEach((n, i) => { pathD += (i === 0 ? 'M ' : 'L ') + n.cx.toFixed(1) + ' ' + n.cy.toFixed(1) + ' '; });
-    if (hasBoss) pathD += 'L ' + centerX.toFixed(1) + ' ' + boss.cy.toFixed(1);
+    // Divide a trilha em "percorrida" (até o nó atual, acesa) e "restante" (apagada).
+    let currentIdx = nodes.findIndex(n => n.kind === 'prova' && n.prova.isCurrent);
+    if (currentIdx === -1) currentIdx = nodes.length - 1; // tudo feito → tudo percorrido
+    let pathTraveled = '', pathRemaining = '';
+    nodes.forEach((n, i) => {
+        const pt = n.cx.toFixed(1) + ' ' + n.cy.toFixed(1) + ' ';
+        if (i <= currentIdx) pathTraveled += (i === 0 ? 'M ' : 'L ') + pt;
+        if (i >= currentIdx) pathRemaining += (i === currentIdx ? 'M ' : 'L ') + pt;
+    });
+    if (hasBoss) pathRemaining += 'L ' + centerX.toFixed(1) + ' ' + boss.cy.toFixed(1);
 
     let side = null;
     const todayNode = nodes.find(n => n.kind === 'prova');
@@ -183,7 +194,7 @@ function buildNodes(chapterStart, todayStr, containerWidth, info, provaData) {
                  spurD: 'M ' + todayNode.cx.toFixed(1) + ' ' + todayNode.cy.toFixed(1) + ' L ' + sideCx.toFixed(1) + ' ' + sideCy.toFixed(1) };
     }
 
-    return { nodes, boss, pathD, side, isBlocked, totalHeight, targetTop, hasBoss };
+    return { nodes, boss, pathTraveled, pathRemaining, side, isBlocked, totalHeight, targetTop, hasBoss };
 }
 
 function svgIcon(name) {
@@ -231,13 +242,16 @@ function nodeHtml(n) {
         const pv = n.prova;
         const R = (n.size / 2) - 4, C = 2 * Math.PI * R;
         const off = C * (1 - (pv.ratio || 0));
+        // Anima o anel do valor anterior até o atual (incremento). data-off = alvo.
+        const startOff = (_lastProvaOffset[pv.id] !== undefined) ? _lastProvaOffset[pv.id] : C;
+        _lastProvaOffset[pv.id] = off;
         const done = pv.state === 'prova-done';
         const empty = pv.state === 'prova-empty';
         const cls = 'cv-prova cv-' + pv.state + (pv.isCurrent ? ' cv-prova-current' : '');
         return `<div class="${cls}" data-pillar="${pv.id}" style="top:${n.top.toFixed(1)}px;left:${n.left.toFixed(1)}px;width:${n.size}px;height:${n.size}px;">
             <svg class="cv-prova-ring" viewBox="0 0 ${n.size} ${n.size}" aria-hidden="true">
                 <circle class="cv-prova-track" cx="${n.size / 2}" cy="${n.size / 2}" r="${R.toFixed(1)}"></circle>
-                ${empty ? '' : `<circle class="cv-prova-fill" cx="${n.size / 2}" cy="${n.size / 2}" r="${R.toFixed(1)}" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"></circle>`}
+                ${empty ? '' : `<circle class="cv-prova-fill" cx="${n.size / 2}" cy="${n.size / 2}" r="${R.toFixed(1)}" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${startOff.toFixed(1)}" data-off="${off.toFixed(1)}"></circle>`}
             </svg>
             <span class="cv-prova-icon">${done ? '✓' : pv.icon}</span>
         </div>
@@ -275,9 +289,12 @@ function renderCaminho() {
     const dow = new Date().getDay();
     const dailiesToday = (gameState.quests || []).filter(q => q.type === 'daily' && isQuestActiveOnDay(q, dow));
     const provaData = buildProvas(dailiesToday);
+    // Provas que ACABARAM de fechar (active→done) — "pop" só na transição real.
+    const justDone = provaData.filter(pv => _lastProvaState[pv.id] === 'prova-active' && pv.state === 'prova-done').map(pv => pv.id);
+    provaData.forEach(pv => { _lastProvaState[pv.id] = pv.state; });
 
     const built = buildNodes(info.chapterStart, info.todayStr, width, info, provaData);
-    const { nodes, boss, pathD, side, isBlocked, totalHeight, targetTop } = built;
+    const { nodes, boss, pathTraveled, pathRemaining, side, isBlocked, totalHeight, targetTop } = built;
 
     // banner — stats essenciais + ESTRELA DO DIA (progresso das dailies de hoje).
     // É o loop de curto prazo: cada daily concluída enche a estrela; fechar
@@ -363,7 +380,8 @@ function renderCaminho() {
         <div class="cv-fog"></div>
         <div class="cv-fog-label">Adiante · desconhecido</div>
         <svg class="cv-path-svg" width="${width}" height="${totalHeight.toFixed(0)}">
-            <path d="${pathD}" fill="none" stroke="var(--cv-border)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 16"/>
+            <path class="cv-path-remaining" d="${pathRemaining}" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 16"/>
+            <path class="cv-path-traveled" d="${pathTraveled}" fill="none" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="1 15"/>
             ${side ? `<path d="${side.spurD}" fill="none" stroke="var(--cv-lost)" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 7" opacity="0.75"/>` : ''}
         </svg>
         ${bossHtml}
@@ -371,6 +389,18 @@ function renderCaminho() {
         ${sideHtml}
         <div class="cv-start-marker" style="bottom:18px;">INÍCIO</div>
     `;
+
+    // Anima os anéis das provas (incremento) e dá o "pop" na que acabou de fechar.
+    requestAnimationFrame(() => {
+        innerEl.querySelectorAll('.cv-prova-fill').forEach(f => {
+            const t = f.getAttribute('data-off');
+            if (t !== null) f.style.strokeDashoffset = t;
+        });
+        justDone.forEach(id => {
+            const el = innerEl.querySelector('.cv-prova[data-pillar="' + id + '"]');
+            if (el) el.classList.add('cv-prova-justdone');
+        });
+    });
 
     // Cada prova abre o sheet filtrado no seu pilar; o nó de reencontro abre tudo.
     innerEl.querySelectorAll('.cv-prova').forEach(el => {

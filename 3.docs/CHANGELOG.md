@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.62] — 2026-08-30
+- **Polish: animações e visual da trilha do Caminho.** Pass de refino, tudo em CSS `transform`/`opacity`/`stroke-dashoffset` (GPU, sem loop de JS, sem animação ambiente contínua) e com guarda de `prefers-reduced-motion`.
+  - **Anel de cada prova enche animado** (incremental, do valor anterior até o novo — o "estalo") e **pop de brilho** na prova que acabou de fechar (só na transição real active→done). `_lastProvaOffset`/`_lastProvaState` em `caminho.js`.
+  - **Trilha percorrida acesa**: a linha do INÍCIO até o nó atual sai na **cor do rank com brilho**; o resto fica apagado (`.cv-path-traveled` vs `.cv-path-remaining`). A parte acesa cresce conforme você fecha as provas.
+  - **Provas do mesmo tamanho** (a atual pulsa em vez de crescer — mais limpo) + **feedback de toque** (`:active`).
+
 ## [v2.5.61] — 2026-08-30
 - **Feat: "hoje" da trilha vira 3 Provas (Corpo · Mente · Mundo).** Endereça o pedido de transformar as habilidades em partes de uma quest que a pessoa preenche — e dá o "andar vários nós no mesmo dia". O nó único de HOJE deu lugar a **3 nós-prova**, um por pilar (os 6 atributos agrupados: Corpo = Físico+Rotina · Mente = Mental+Sabedoria · Mundo = Foco+Conexão).
   - Cada prova é um nó com **anel de progresso** que enche com os hábitos daquele pilar (ex.: Corpo 1/2). A 1ª prova incompleta é a "atual" (pulsa). Concluir uma acende (✓) e avança pra próxima.
