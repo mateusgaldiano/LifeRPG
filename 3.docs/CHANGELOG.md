@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.57] — 2026-08-29
+- **Tweak: janela de dias passados do Caminho de ~14 → 7 dias.** A trilha ficava comprida demais; 7 dias mantém o histórico recente sem esticar. Só o valor de `PAST_WINDOW` em `caminho.js` (níveis futuros + chefe seguem iguais).
+
 ## [v2.5.56] — 2026-08-29
 - **Fix/UX: trilha do Caminho não fica mais vazia (dias + níveis combinados).** Antes a trilha só desenhava "dias desde o início do capítulo" (`chapterStartDate`), campo novo que nunca foi gravado pros usuários existentes — então o app assumia "começou hoje" e mostrava **1 nó só**, com o chefe (próximo rank) longe. Tela vazia.
   - Agora a trilha é combinada (de baixo p/ cima): **INÍCIO · dias passados · HOJE · níveis que faltam · CHEFE**.

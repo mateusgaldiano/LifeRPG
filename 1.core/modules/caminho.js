@@ -66,7 +66,7 @@ function buildNodes(chapterStart, todayStr, containerWidth, info) {
     const SPACING_Y = 92, AMPLITUDE_X = Math.min(62, containerWidth * 0.16);
     const NODE = 50, CUR = 66, SIDE = 32, FUT = 46;
     const centerX = containerWidth / 2;
-    const PAST_WINDOW = 14; // janela deslizante de dias passados
+    const PAST_WINDOW = 7; // janela deslizante de dias passados
 
     // ── dias passados: janela recente, limitada ao 1º dia com histórico real
     //    (não fabrica "perdidos" de antes da pessoa começar a usar o app) ──
