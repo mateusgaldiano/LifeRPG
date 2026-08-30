@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.59] — 2026-08-30
+- **Fix: onboarding pulava etapas / ia direto pra tela inicial.** A decisão de mostrar o wizard estava (a) espalhada entre um caminho **sync** (guest) e outro **async** (pós-login), causando uma corrida em que o wizard aparecia e sumia sozinho; e (b) em [app.js](../1.core/app.js), bastava a conta **existir** na nuvem (`isReturningUser`) pra pular o onboarding — mesmo sem ele ter sido concluído.
+  - Agora a decisão é **única** (`decideOnboarding`), tomada uma vez depois do `initSupabase()` resolver — acabou a corrida/piscada.
+  - Para quem está logado, a fonte de verdade é o **`tutorialCompleted` da nuvem** (`userRow.settings`), não o mero fato de a conta existir. Conta criada mas onboarding inacabado agora **retoma o onboarding** em vez de pular.
+  - Guest (não logado) continua usando o flag local.
+
 ## [v2.5.58] — 2026-08-29
 - **UX: próximo nível destacado como "alvo" na trilha do Caminho.** O 1º nível futuro (o imediatamente acima do HOJE) agora sai na **cor do rank** com brilho suave e rótulo **PRÓXIMO** (nó `cv-node-next`), enquanto os níveis mais distantes seguem pontilhados/apagados. Dá um alvo claro pra mirar. Só mudança visual — geometria e lógica dos nós iguais.
 

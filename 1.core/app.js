@@ -320,6 +320,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Carrega dados locais do jogo
     loadGameData();
 
+    // Decisão ÚNICA do onboarding (evita a corrida sync/async que fazia o wizard
+    // piscar e sumir). `done` = onboarding realmente concluído. Para quem está
+    // logado, a verdade vem da NUVEM (userRow.settings.tutorialCompleted); só
+    // existir conta NÃO conta como concluído.
+    const decideOnboarding = (done) => {
+        const wizardModal = document.getElementById('onboarding-wizard');
+        if (done) {
+            gameState.tutorialCompleted = true;
+            gameState.tutorialStep = null;
+            saveGameData();
+            if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
+            checkFeatureUnlocks();
+        } else {
+            initOnboardingWizard();
+        }
+    };
+
     // Ocultar overlay imediatamente se houver estado local em cache, garantindo o primeiro paint com 2x requestAnimationFrame
     const hasLocalState = !!(localStorage.getItem('lifeRPG_gameState') || localStorage.getItem('lifeRPG_gameState_Mateus'));
     if (hasLocalState) {
@@ -343,26 +360,10 @@ document.addEventListener('DOMContentLoaded', () => {
             isReturningUser = status?.isReturningUser || false;
             tutorialCompleted = status?.tutorialCompleted || false;
 
-            // Decisão do Onboarding Wizard com base no status do usuário após carregar Supabase
-            const wizardModal = document.getElementById('onboarding-wizard');
-            if (window._currentUserDbId) {
-                // Usuário logado
-                if (isReturningUser) {
-                    // Se já tiver conta (isReturningUser === true), pule o onboarding
-                    gameState.tutorialCompleted = true;
-                    gameState.tutorialStep = null;
-                    saveGameData();
-                    if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
-                    checkFeatureUnlocks();
-                } else {
-                    if (gameState.tutorialCompleted) {
-                        if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
-                        checkFeatureUnlocks();
-                    } else {
-                        initOnboardingWizard();
-                    }
-                }
-            }
+            // Decisão do Onboarding. Logado: fonte de verdade é a NUVEM
+            // (tutorialCompleted veio de userRow.settings — só existir conta NÃO
+            // conta como concluído). Guest (não logado): flag local.
+            decideOnboarding(window._currentUserDbId ? tutorialCompleted : gameState.tutorialCompleted);
 
             // Oculta o overlay se ainda estiver visível (ex: usuário novo sem dados salvos)
             const overlay = document.getElementById('app-loading-overlay');
@@ -381,10 +382,14 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('[App Bootstrap] Erro ao inicializar Supabase:', e);
             const overlay = document.getElementById('app-loading-overlay');
             if (overlay) overlay.style.display = 'none';
+            // Supabase falhou → decide como guest (flag local).
+            decideOnboarding(gameState.tutorialCompleted);
         });
     } else {
         const overlay = document.getElementById('app-loading-overlay');
         if (overlay) overlay.style.display = 'none';
+        // Sem Supabase → decide como guest (flag local).
+        decideOnboarding(gameState.tutorialCompleted);
     }
 
     // 3. Inicializa abas e renderiza a UI (com dados locais preliminares)
@@ -448,14 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Decisão inicial do Onboarding Wizard (Convidado/Guest)
-    const wizardModal = document.getElementById('onboarding-wizard');
-    if (!window._currentUserDbId) {
-        if (gameState.tutorialCompleted) {
-            if (wizardModal) wizardModal.style.cssText = 'display: none !important;';
-            checkFeatureUnlocks();
-        } else {
-            initOnboardingWizard();
-        }
-    }
+    // (A decisão do onboarding agora é ÚNICA e roda depois do initSupabase
+    // resolver — ver decideOnboarding lá em cima. Evita a corrida que fazia o
+    // wizard aparecer e sumir sozinho.)
 });
