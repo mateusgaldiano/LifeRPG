@@ -453,7 +453,6 @@
                 <div class="social-sub-tabs" style="margin-top: 15px; margin-bottom: 15px;">
                     <button class="sub-tab-btn active" data-subtab="chat">CHAT</button>
                     <button class="sub-tab-btn" data-subtab="friends">AMIGOS <span id="pending-requests-badge" class="badge-pending" style="display:none;">0</span></button>
-                    <button class="sub-tab-btn" data-subtab="duels">DUELOS</button>
                     <button class="sub-tab-btn" data-subtab="clan-details">CLÃ</button>
                 </div>
 
@@ -535,40 +534,6 @@
                         </div>
                     </div>
 
-                    <!-- SUB-ABA 4: DUELOS -->
-                    <div id="subtab-duels" class="sub-tab-content" style="display:none; flex: 1; overflow-y: auto;">
-                        <div class="community-grid-duels" style="display: flex; flex-direction: column; gap: 14px; padding: 4px;">
-                            <!-- Desafios Recebidos -->
-                            <div class="community-card">
-                                <div class="online-header" style="border-bottom: 1px solid var(--border-glass); padding-bottom: 6px; margin-bottom: 10px;">
-                                    <span class="font-hud online-title" style="color: var(--neon-gold);">DESAFIOS RECEBIDOS</span>
-                                </div>
-                                <div id="pvp-challenges-list" class="friends-list-v">
-                                    <div class="friends-empty-state">Nenhum desafio pendente.</div>
-                                </div>
-                            </div>
-
-                            <!-- Duelos Ativos -->
-                            <div class="community-card">
-                                <div class="online-header" style="border-bottom: 1px solid var(--border-glass); padding-bottom: 6px; margin-bottom: 10px;">
-                                    <span class="font-hud online-title" style="color: var(--neon-cyan);">DUELOS ATIVOS</span>
-                                </div>
-                                <div id="pvp-active-list" class="friends-list-v">
-                                    <div class="friends-empty-state">Nenhum duelo em andamento.</div>
-                                </div>
-                            </div>
-
-                            <!-- Histórico de Duelos -->
-                            <div class="community-card">
-                                <div class="online-header" style="border-bottom: 1px solid var(--border-glass); padding-bottom: 6px; margin-bottom: 10px;">
-                                    <span class="font-hud online-title">HISTÓRICO DE DUELOS</span>
-                                </div>
-                                <div id="pvp-history-list" class="friends-list-v">
-                                    <div class="friends-empty-state">Nenhum duelo finalizado ainda.</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -958,7 +923,6 @@
 
                 <!-- Botão de Ação do Perfil (Amizade) -->
                 <div class="profile-action-container" style="margin-top: 20px;">
-                    <button id="btn-profile-pvp-challenge" class="btn-submit" style="width:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);color:#000;margin-bottom:8px;display:none;">⚔️ DESAFIAR PARA DUELO</button>
                     <button id="btn-profile-friend-action" class="btn-submit" style="width: 100%;">ADICIONAR AMIGO</button>
                     <button id="btn-profile-friend-decline" class="btn-submit btn-secondary" style="width: 100%; display: none; margin-top: 8px;">RECUSAR SOLICITAÇÃO</button>
                 </div>
@@ -1218,23 +1182,6 @@
         </div>
     </div>
 
-    <!-- Modal: Desafio PvP -->
-    <div id="modal-pvp-challenge" class="modal" style="display:none;">
-        <div class="modal-box modal-box-sm" style="display: flex; flex-direction: column; gap: 14px;">
-            <span class="close-modal-btn" id="close-pvp-modal">&times;</span>
-            <h3 class="font-hud" style="color: var(--neon-gold); letter-spacing: 1.5px; margin-bottom: 5px;">⚔️ DUELO PVP</h3>
-            <p style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4;">
-                Aposte ouro em um duelo de consistência de 7 dias com seu amigo. Quem tiver mais dias perfeitos (perfect days) leva todo o pote!
-            </p>
-            <div class="form-field" style="display: flex; flex-direction: column; gap: 6px;">
-                <label for="pvp-gold-bet" style="font-family: var(--font-hud); font-size: 9px; color: var(--text-muted); letter-spacing: 1px;">QUANTIDADE DE OURO APOSTADA</label>
-                <input type="number" id="pvp-gold-bet" min="10" value="50" class="input-standard" style="background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 10px 14px; border-radius: var(--radius-md); font-size: 14px; width: 100%;">
-            </div>
-            <div class="modal-buttons" style="display: flex; gap: 10px; margin-top: 10px; width: 100%;">
-                <button class="btn-submit" id="btn-submit-pvp-challenge" style="flex: 1; padding: 12px; font-family: var(--font-hud); font-size: 11px; letter-spacing: 1.5px;">ENVIAR DESAFIO</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal: Relatório Semanal (Weekly Report) -->
     <div id="modal-weekly-report" class="modal" style="display:none;">

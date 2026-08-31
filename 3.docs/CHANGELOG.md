@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.67] — 2026-08-31
+- **Remoção (etapa 4/4): PvP + Masmorras + resquícios de Ouro.** Fecha o enxugamento.
+  - **PvP**: removido do HTML (sub-aba DUELOS + botão "Desafiar" + modal de aposta) e da nuvem (`checkAndFinalizeDuels` fora do sync). Modal social agora tem CHAT · AMIGOS · CLÃ. Funções de PvP no `social.js` ficam mortas/guardadas.
+  - **Masmorras**: `checkDungeonSchedule()` sai do boot (nenhuma nasce), modal de "nível 10" removido, e qualquer masmorra ativa **legada é limpa no load** (`app.js`).
+  - **Resquícios de Ouro**: baús diários (davam ouro/poção) escondidos, buff "foco lendário (x3 Ouro)" removido, payout de ouro nos cards de missão removido.
+  - Verificado a 375px: **zero ouro visível em qualquer aba**, 3 abas, sem masmorra/PvP, boot sem erros.
+
 ## [v2.5.66] — 2026-08-31
 - **Remoção (etapa 3/4): Ouro sai da experiência.** O valor interno `gameState.gold` fica dormente (não mexi no bookkeeping pra não arriscar o sync/desmarcar), mas o Ouro **some de tudo que a pessoa vê**:
   - Card de perfil (chip de Ouro removido), banner do Caminho (stat 🪙 removido), texto flutuante de conclusão (só +XP agora).

@@ -119,15 +119,6 @@ function checkFeatureUnlocks() {
         return;
     }
     
-    if (level >= 10 && localStorage.getItem('tutorial_dungeons_seen') !== 'true') {
-        localStorage.setItem('tutorial_dungeons_seen', 'true');
-        showFeatureUnlockModal(
-            '🔮 MASMORRAS DE ELITE ATIVADAS!',
-            'Você atingiu o Nível 10! Masmorras temporárias agora aparecerão periodicamente sob a sua lista de missões secundárias:\n\n' +
-            '• ⏳ **Tempo Limitado**: As Dungeons têm prazos rígidos de 48 horas para serem concluídas.\n\n' +
-            '• 🛡️ **Combate de Skill**: Elas estão associadas a um atributo específico e dão recompensas massivas ao serem concluídas, ajudando a especializar seu personagem!'
-        );
-    }
 }
 
 
@@ -975,7 +966,6 @@ function updateUI() {
         const dxpActive = (b.doubleXpExpiresAt && Date.now() < b.doubleXpExpiresAt) || b.doubleXp === true;
         const parts = [];
         if (dxpActive) parts.push(`<span class="buff-badge buff-xp">⚡ ${b.xpMult || 2}x XP</span>`);
-        if (b.legendaryFocus) parts.push('<span class="buff-badge buff-gold">x3 💰</span>');
 
         // Poção de Foco (Baús de Foco Diário): +50% XP por 30 min — mostra os minutos restantes.
         if (b.focusPotionExpiresAt && Date.now() < b.focusPotionExpiresAt) {
@@ -1225,7 +1215,11 @@ function renderSkills() {
 
 // Renderiza os Baús de Foco Diário (Early Bird / Night Owl) no topo das Missões.
 function renderDailyChests() {
+    // Baús de Foco Diário removidos junto do Ouro (davam ouro/poção de foco).
     const banner = document.getElementById('daily-chest-banner');
+    if (banner) { banner.style.display = 'none'; banner.innerHTML = ''; }
+    return;
+    // eslint-disable-next-line no-unreachable
     if (!banner) return;
 
     const buildChip = (which, status) => {
@@ -1448,7 +1442,6 @@ function renderQuests() {
                         <div class="quest-payouts">
                             <span class="diff-badge">${diffLabel}</span>
                             <span class="payout-xp">+${quest.xp} XP</span>
-                            <span class="payout-gold">+${quest.gold} 🪙</span>
                         </div>
                         ${extraHTML}
                     </div>
@@ -1488,7 +1481,6 @@ function renderQuests() {
                         <div class="quest-payouts">
                             <span class="diff-badge">${diffLabel}</span>
                             <span class="payout-xp">+${quest.xp} XP</span>
-                            <span class="payout-gold">+${quest.gold} 🪙</span>
                         </div>
                     </div>
                 </div>

@@ -728,12 +728,6 @@ window.syncFromCloud = async function() {
       console.error('[Supabase] Erro ao contar amigos:', err);
     }
 
-    // Finalizar duelos vencidos (lazy loading/finalizacao)
-    try {
-      await window.checkAndFinalizeDuels();
-    } catch (err) {
-      console.error('[Supabase] Erro ao finalizar duelos:', err);
-    }
   } finally {
     // Liberar lock apenas se o usuário atual do contexto for o mesmo do início do sync
     if (window._currentUserDbId === syncUserId) {

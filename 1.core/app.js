@@ -319,6 +319,8 @@ window.unsubscribeUserFromPush = unsubscribeUserFromPush;
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Carrega dados locais do jogo
     loadGameData();
+    // Masmorras removidas: limpa qualquer masmorra ativa legada (não aparece mais).
+    if (gameState.activeDungeon) gameState.activeDungeon = null;
 
     // Decisão ÚNICA do onboarding (evita a corrida sync/async que fazia o wizard
     // piscar e sumir). `done` = onboarding realmente concluído. Para quem está
@@ -394,7 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Inicializa abas e renderiza a UI (com dados locais preliminares)
     initTabs();
-    checkDungeonSchedule(); // masmorras nascem por agendamento (sábado + 30% meio de semana)
     renderQuests();
     initCaminho();
     renderCaminho();
