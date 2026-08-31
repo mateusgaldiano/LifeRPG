@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.68] — 2026-08-31
+- **Minimalismo: remove Conquistas e Desafio Semanal.** Recompensas órfãs (davam Ouro, que já saiu) — cortadas pra deixar o app mais enxuto.
+  - **Conquistas/Troféus**: removido o ícone de troféu do header, a aba `#tab-achievements` (Sala de Troféus + Ranking do Sistema) e o overlay de conquista. `checkAchievements()` e `renderAchievements()` viram no-op/guardadas.
+  - **Desafio Semanal**: o card não renderiza mais (banner sempre escondido); container removido do HTML.
+  - Header agora tem 4 ícones (chat, NEXUS, notificações, config); a aba Missões fica só com as colunas de atributos + missões.
+
 ## [v2.5.67] — 2026-08-31
 - **Remoção (etapa 4/4): PvP + Masmorras + resquícios de Ouro.** Fecha o enxugamento.
   - **PvP**: removido do HTML (sub-aba DUELOS + botão "Desafiar" + modal de aposta) e da nuvem (`checkAndFinalizeDuels` fora do sync). Modal social agora tem CHAT · AMIGOS · CLÃ. Funções de PvP no `social.js` ficam mortas/guardadas.

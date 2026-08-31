@@ -89,10 +89,6 @@
                 </div>
                 <span class="brand-title">THE SYSTEM</span>
                 <div class="brand-header-actions">
-                    <!-- Troféus -->
-                    <button id="btn-header-trophies" class="btn-header-icon" title="Troféus" aria-label="Conquistas">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M17 3H7l1 7a4 4 0 0 0 8 0l1-7z"/><path d="M5 3H3a1 1 0 0 0-1 1v1a4 4 0 0 0 4 4h1"/><path d="M19 3h2a1 1 0 0 1 1 1v1a4 4 0 0 1-4 4h-1"/></svg>
-                    </button>
                     <!-- Social / Chat -->
                     <button id="btn-header-social" class="btn-header-icon" title="Social e Chat Global" aria-label="Rede Social">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -251,7 +247,6 @@
                     <!-- Dungeon Ativa -->
                     <div id="dungeon-active-banner" style="display:none; margin-bottom: 20px;"></div>
                     <!-- Desafio Semanal -->
-                    <div id="weekly-challenge-banner" style="display:none; margin-bottom: 20px;"></div>
                     <!-- Baús de Foco Diário (Early Bird / Night Owl) -->
                     <div id="daily-chest-banner" style="display:none; margin-bottom: 20px;"></div>
                     <!-- Tutorial Questline -->
@@ -539,45 +534,6 @@
         </div>
 
                 <!-- ABA TROFÉUS (Achievements) -->
-                <section id="tab-achievements" class="tab-content">
-                    <div class="content-header">
-                        <div>
-                            <h2>SALA DE TROFÉUS</h2>
-                            <p style="color: var(--text-muted); font-size: 0.7rem; margin-top: 4px; font-family: var(--font-body);">💡 Seus feitos heroicos, conquistas especiais e ranking são registrados aqui.</p>
-                        </div>
-                        <span class="diff-badge" style="background:rgba(251,191,36,0.15); color:#fbbf24; border-color:rgba(251,191,36,0.4);">SISTEMA</span>
-                    </div>
-
-                    <!-- Sub-abas de Troféus/Ranking -->
-                    <div class="trophies-sub-tabs" style="display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">
-                        <button class="tab-link active" id="subtab-btn-trophies" style="flex: 1; justify-content: center; font-family: var(--font-hud); font-size: 0.75rem; letter-spacing: 1px;">SALA DE TROFÉUS</button>
-                        <button class="tab-link" id="subtab-btn-trophies-ranking" style="flex: 1; justify-content: center; font-family: var(--font-hud); font-size: 0.75rem; letter-spacing: 1px;">RANKING DO SISTEMA</button>
-                    </div>
-
-                    <!-- Painel 1: Conquistas -->
-                    <div id="panel-trophies" class="trophies-panel active">
-                        <div class="achievements-grid" id="achievements-container">
-                            <!-- Renderizado via JS -->
-                        </div>
-                    </div>
-
-                    <!-- Painel 2: Ranking (movido do social) -->
-                    <div id="panel-ranking" class="trophies-panel" style="display: none;">
-                        <div class="community-card" style="padding: 16px 20px; background: transparent; border: none; box-shadow: none;">
-                            <div class="online-header" style="margin-bottom: 15px; border-bottom: 1px solid var(--border-glass); padding-bottom: 8px;">
-                                <span class="font-hud online-title" style="color: var(--neon-gold); font-size: 11px; letter-spacing: 1.5px;">👑 CLASSIFICAÇÃO DO SISTEMA</span>
-                            </div>
-                            <!-- Alternância de Ranking: Global vs Amigos -->
-                            <div class="ranking-mode-tabs" style="display: flex; gap: 8px; margin-bottom: 15px;">
-                                <button id="btn-ranking-global" class="sub-tab-btn active" style="flex: 1; padding: 8px; font-size: 0.75rem; justify-content: center; height: 32px;">GLOBAL</button>
-                                <button id="btn-ranking-friends" class="sub-tab-btn" style="flex: 1; padding: 8px; font-size: 0.75rem; justify-content: center; height: 32px;">AMIGOS</button>
-                            </div>
-                            <div id="ranking-list-container" class="friends-list-v" style="display: flex; flex-direction: column; gap: 8px;">
-                                <div class="friends-empty-state">Carregando classificação do Sistema...</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
 
 
@@ -978,14 +934,6 @@
         </div>
 
         <!-- Overlay: CONQUISTA DESBLOQUEADA -->
-        <div id="achievement-unlocked-overlay" class="quest-cleared-overlay">
-            <div class="quest-cleared-content">
-                <div class="quest-cleared-check" style="color: var(--neon-gold); filter: drop-shadow(0 0 20px var(--neon-gold));">🏆</div>
-                <div class="quest-cleared-title" style="color: var(--neon-gold); text-shadow: 0 0 20px rgba(251,191,36,0.5);">CONQUISTA REVELADA!</div>
-                <div class="quest-cleared-rewards" id="achievement-unlocked-title" style="font-size: 16px; color: var(--text-primary); margin-bottom: 8px;">Conquista</div>
-                <div class="quest-cleared-attr" id="achievement-unlocked-rewards" style="color: var(--text-muted);">+100 Ouro</div>
-            </div>
-        </div>
 
 
         <!-- Overlay: PENALIDADE -->

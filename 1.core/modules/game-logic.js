@@ -653,6 +653,8 @@ const ACHIEVEMENTS_DEFS = [
 ];
 
 function checkAchievements() {
+    return; // Conquistas removidas (app minimalista).
+    // eslint-disable-next-line no-unreachable
     if (!gameState.unlockedAchievements) gameState.unlockedAchievements = [];
     let newlyUnlocked = false;
 

@@ -424,11 +424,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnRankGlobal) btnRankGlobal.addEventListener('click', () => { if (typeof window.switchRankingMode === 'function') window.switchRankingMode('global'); });
     if (btnRankFriends) btnRankFriends.addEventListener('click', () => { if (typeof window.switchRankingMode === 'function') window.switchRankingMode('friends'); });
 
-    const btnSubtabTrophies = document.getElementById('subtab-btn-trophies');
-    const btnSubtabTrophiesRanking = document.getElementById('subtab-btn-trophies-ranking');
-    if (btnSubtabTrophies) btnSubtabTrophies.addEventListener('click', () => { if (typeof window.switchTrophiesTab === 'function') window.switchTrophiesTab('trophies'); });
-    if (btnSubtabTrophiesRanking) btnSubtabTrophiesRanking.addEventListener('click', () => { if (typeof window.switchTrophiesTab === 'function') window.switchTrophiesTab('ranking'); });
-
     // Garante o primeiro draw do radar chart após DOM+fontes carregarem
     setTimeout(() => { drawRadarChart(); }, 150);
 
