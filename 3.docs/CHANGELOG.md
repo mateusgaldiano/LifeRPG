@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.63] — 2026-08-30
+- **Tema ESCURO no app inteiro (etapa 1 da unificação visual).** As abas eram claras (Neblina Ártica) e a Caminho escura — identidades distintas. Agora tudo segue o tom escuro do Sistema, no tom da Caminho.
+  - Paleta virada no `:root` (bg/text/border pra escuro; acentos `--neon-*`/`--text-*`/`--skill-*` que eram escuros-pra-fundo-claro foram clareados pra terem contraste no escuro).
+  - Header e nav inferior fixos passam a ser escuros (não só na Caminho); `meta[theme-color]` default → `#0a0c0f`.
+  - Radar (canvas) tinha cores chumbadas pro claro (grid/labels em navy `#0f1f35`, mental/foco escuros) — corrigidas pra ficarem legíveis no escuro.
+  - Próximas etapas (pedidas junto): remover Taverna, Ouro, PvP e Masmorras.
+
 ## [v2.5.62] — 2026-08-30
 - **Polish: animações e visual da trilha do Caminho.** Pass de refino, tudo em CSS `transform`/`opacity`/`stroke-dashoffset` (GPU, sem loop de JS, sem animação ambiente contínua) e com guarda de `prefers-reduced-motion`.
   - **Anel de cada prova enche animado** (incremental, do valor anterior até o novo — o "estalo") e **pop de brilho** na prova que acabou de fechar (só na transição real active→done). `_lastProvaOffset`/`_lastProvaState` em `caminho.js`.

@@ -59,7 +59,7 @@ function drawRadarChart() {
                     : ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
             }
             ctx.closePath();
-            ctx.strokeStyle = g === 5 ? 'rgba(15,31,53,0.15)' : 'rgba(15,31,53,0.05)';
+            ctx.strokeStyle = g === 5 ? 'rgba(255,255,255,0.16)' : 'rgba(255,255,255,0.06)';
             ctx.lineWidth = 1;
             ctx.stroke();
         }
@@ -70,7 +70,7 @@ function drawRadarChart() {
             ctx.beginPath();
             ctx.moveTo(cx, cy);
             ctx.lineTo(cx + maxR * Math.cos(a), cy + maxR * Math.sin(a));
-            ctx.strokeStyle = 'rgba(15,31,53,0.07)';
+            ctx.strokeStyle = 'rgba(255,255,255,0.08)';
             ctx.lineWidth = 1;
             ctx.stroke();
         }
@@ -112,11 +112,11 @@ function drawRadarChart() {
 
         // 5. Rótulos (nome + nível)
         const skillLabelColors = {
-            physical: '#f97316',
-            routine: '#fb923c',
-            mental: '#1e3a8a',
+            physical: '#fb923c',
+            routine: '#fbbf24',
+            mental: '#60a5fa',
             wisdom: '#38bdf8',
-            productivity: '#15803d',
+            productivity: '#34d399',
             social: '#4ade80'
         };
         for (let i = 0; i < N; i++) {
@@ -126,7 +126,7 @@ function drawRadarChart() {
             const lx   = cx + dist * Math.cos(a);
             const ly   = cy + dist * Math.sin(a);
             const cosA = Math.cos(a);
-            const color = skillLabelColors[skillTypes[i]] || '#0f1f35';
+            const color = skillLabelColors[skillTypes[i]] || '#8891a0';
 
             ctx.textBaseline = 'middle';
             ctx.textAlign    = Math.abs(cosA) < 0.15 ? 'center' : cosA > 0 ? 'left' : 'right';

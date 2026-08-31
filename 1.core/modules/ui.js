@@ -141,7 +141,7 @@ function checkFeatureUnlocks() {
 function applyCaminhoChrome(isCaminho) {
     document.body.classList.toggle('caminho-active', isCaminho);
     const themeMeta = document.querySelector('meta[name="theme-color"]');
-    if (themeMeta) themeMeta.setAttribute('content', isCaminho ? '#15181d' : '#e8eef5');
+    if (themeMeta) themeMeta.setAttribute('content', isCaminho ? '#15181d' : '#0a0c0f');
 }
 
 function initTabs() {
