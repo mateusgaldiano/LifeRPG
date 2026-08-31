@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.66] — 2026-08-31
+- **Remoção (etapa 3/4): Ouro sai da experiência.** O valor interno `gameState.gold` fica dormente (não mexi no bookkeeping pra não arriscar o sync/desmarcar), mas o Ouro **some de tudo que a pessoa vê**:
+  - Card de perfil (chip de Ouro removido), banner do Caminho (stat 🪙 removido), texto flutuante de conclusão (só +XP agora).
+  - **Reavaliação de Rank** (era compra com ouro) removida — `renderRankEvaluationBanner` só esconde o banner; o rank já sobe por nível/mérito.
+  - Ouro tirado dos toasts/telas que ficam: conclusão de quest, Boss Quest (desbloqueio/conclusão), Chefe Semanal (vitória/derrota), Desafio Semanal, Conquistas, Sintonia (relatório semanal), e o modal de nível 5 (que citava a Taverna).
+  - Resquícios de ouro em features ainda a remover (Masmorras/PvP e micro-features tipo baú/tributo/foco lendário) saem na **etapa 4** junto com PvP + Masmorras.
+
 ## [v2.5.65] — 2026-08-31
 - **Remoção (etapa 2/4): Taverna.** Enxugamento do app. Removida a **aba TAVERNA** do rodapé (agora 3 abas: Caminho · Missões · Visão Geral) e toda a seção `#tab-rewards` (loja/inventário/skins/tomos) do HTML. Tirados os hooks de boot: `renderRewards()`, listeners das sub-abas Loja/Inventário e o branch `rewards` no `initTabs`. Funções da loja no `ui.js` ficaram como código morto inofensivo (guardado por `if(!container) return`), a limpar num próximo passe. Próximas: Ouro, PvP, Masmorras.
 

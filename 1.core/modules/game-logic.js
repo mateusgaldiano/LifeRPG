@@ -357,7 +357,7 @@ function checkWeeklyBossExpiry() {
         saveGameData();
         updateUI();
         setTimeout(() => {
-            receiveMessage(`💀 *O CHEFE DA SEMANA NÃO FOI DERROTADO.*\n\nO Sistema cobrou o preço da sua fraqueza: -${goldLost} Ouro e -30 XP foram consumidos. Que isso sirva de lição.`);
+            receiveMessage(`💀 *O CHEFE DA SEMANA NÃO FOI DERROTADO.*\n\nO Sistema cobrou o preço da sua fraqueza: -30 XP foram consumidos. Que isso sirva de lição.`);
             showChatBadge();
         }, 600);
     }
@@ -377,7 +377,7 @@ function hitWeeklyBoss() {
         updateUI();
         renderWeeklyBoss();
         setTimeout(() => {
-            receiveMessage(`🏆 *CHEFE SEMANAL DERROTADO!*\n\nVocê enfrentou o Sistema e venceu. Recompensa: +150 XP e +80 Ouro. O streak continua protegido.`);
+            receiveMessage(`🏆 *CHEFE SEMANAL DERROTADO!*\n\nVocê enfrentou o Sistema e venceu. Recompensa: +150 XP. O streak continua protegido.`);
             showChatBadge();
         }, 800);
     } else {
@@ -424,7 +424,7 @@ function renderWeeklyBoss() {
                 <div class="boss-hp-bar-fill" style="width: ${hpPct}%"></div>
             </div>
             <div class="boss-hp-label">${wb.hp}/3 HP restantes</div>
-            <div class="boss-rewards-preview">Recompensa: +150 XP · +80 💰 · Streak protegido</div>
+            <div class="boss-rewards-preview">Recompensa: +150 XP · Streak protegido</div>
         </div>
     `;
 }
@@ -462,7 +462,7 @@ function checkAndActivateBossQuest() {
         };
         const bq = BOSS_QUESTS[bossId];
         setTimeout(() => {
-            showSystemToast(`⚔️ *BOSS QUEST DESBLOQUEADA!*\n\n*${bq.title}*\n_${bq.description}_\n\nRecompensa: +${bq.xpReward} XP · +${bq.goldReward} 💰\n\nProgresso atual: ${bq.progress()}`);
+            showSystemToast(`⚔️ *BOSS QUEST DESBLOQUEADA!*\n\n*${bq.title}*\n_${bq.description}_\n\nRecompensa: +${bq.xpReward} XP\n\nProgresso atual: ${bq.progress()}`);
 
         }, 2000);
     }
@@ -479,7 +479,7 @@ function checkAndActivateBossQuest() {
             gameState.chapterStartDate = localDateStr();
             gameState._reencontroResolvedDate = null;
             setTimeout(() => {
-                showSystemToast(`🏆 *BOSS QUEST CONCLUÍDA!*\n\n*${bq.title}* foi completada!\n\n_"${getBossVictoryQuote(bq.id)}"_\n\n+${bq.xpReward} XP · +${bq.goldReward} 💰 concedidos. ${bq.rankFrom} → ${bq.rankTo} desbloqueado por mérito!`);
+                showSystemToast(`🏆 *BOSS QUEST CONCLUÍDA!*\n\n*${bq.title}* foi completada!\n\n_"${getBossVictoryQuote(bq.id)}"_\n\n+${bq.xpReward} XP concedidos. ${bq.rankFrom} → ${bq.rankTo} desbloqueado por mérito!`);
 
             }, 1500);
             saveGameData();
@@ -663,7 +663,7 @@ function checkAchievements() {
                 gameState.gold = (gameState.gold || 0) + ach.rewardGold;
                 newlyUnlocked = true;
                 setTimeout(() => {
-                    showSystemToast(`🏆 *CONQUISTA DESBLOQUEADA!* Você obteve o troféu *"${ach.title}"*. Recompensa: +${ach.rewardGold} 💰.`);
+                    showSystemToast(`🏆 *CONQUISTA DESBLOQUEADA!* Você obteve o troféu *"${ach.title}"*.`);
 
                     // Dispara o overlay comemorativo
                     const achOverlay = document.getElementById('achievement-unlocked-overlay');
@@ -671,7 +671,7 @@ function checkAchievements() {
                     const achRewards = document.getElementById('achievement-unlocked-rewards');
                     if (achOverlay && achTitle && achRewards) {
                         achTitle.innerText = ach.title;
-                        achRewards.innerText = `+${ach.rewardGold} OURO`;
+                        achRewards.innerText = `🏆 Troféu conquistado`;
                         achOverlay.classList.add('show');
                         setTimeout(() => achOverlay.classList.remove('show'), 2200);
                     }
@@ -886,7 +886,7 @@ function toggleQuest(id) {
                 gameState.xp += gameState.weeklyChallenge.xpReward;
                 gameState.gold += gameState.weeklyChallenge.goldReward;
                 setTimeout(() => {
-                    showSystemToast(`🏆 *DESAFIO SEMANAL CONCLUÍDO!*\n\n*${gameState.weeklyChallenge.title}* foi completado!\n\n+${gameState.weeklyChallenge.xpReward} XP · +${gameState.weeklyChallenge.goldReward} 💰 concedidos.`);
+                    showSystemToast(`🏆 *DESAFIO SEMANAL CONCLUÍDO!*\n\n*${gameState.weeklyChallenge.title}* foi completado!\n\n+${gameState.weeklyChallenge.xpReward} XP concedidos.`);
                 }, 1500);
             }
         }
@@ -1034,11 +1034,7 @@ function addRewards(xpGained, goldGained) {
     gameState.xp += bonusXp;
     gameState.gold += bonusGold;
 
-    // Trigger animations and floating texts
-    if (bonusGold > 0) {
-        animateGoldGain();
-        spawnFloatingText(bonusGold, 'gold');
-    }
+    // Trigger animations and floating texts (Ouro removido — só XP aparece)
     if (bonusXp > 0) {
         spawnFloatingText(bonusXp, 'xp');
     }
@@ -1159,7 +1155,7 @@ function checkAllDailies() {
 function showQuestCleared(quest) {
     const skillLabel = (SKILL_LABELS[quest.skill] || quest.skill || 'ATRIBUTO').toUpperCase();
     const overlay = document.getElementById('quest-cleared-overlay');
-    document.getElementById('quest-cleared-rewards').innerText = `+${quest.xp} XP · +${quest.gold} OURO`;
+    document.getElementById('quest-cleared-rewards').innerText = `+${quest.xp} XP`;
     document.getElementById('quest-cleared-attr').innerText = `${skillLabel} ↑`;
     overlay.classList.add('show');
     setTimeout(() => overlay.classList.remove('show'), 1800);

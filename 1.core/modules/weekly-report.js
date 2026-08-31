@@ -329,8 +329,8 @@ function claimWeeklyReport(rewards, weekStr) {
     }
     
     let systemMessage = `🔔 *NOTIFICAÇÃO DE AVALIAÇÃO DO SISTEMA*\n\nSemana avaliada: *${weekStr}*\nResultado obtido: *${rank}*\n\n`;
-    if (gold > 0 || xp > 0) {
-        systemMessage += `Recompensa resgatada:\n+${xp} XP · +${gold} Ouro 🪙`;
+    if (xp > 0) {
+        systemMessage += `Recompensa resgatada:\n+${xp} XP`;
     } else {
         systemMessage += `Nenhuma recompensa concedida devido ao baixo desempenho.`;
     }

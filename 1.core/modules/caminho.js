@@ -300,7 +300,6 @@ function renderCaminho() {
     // É o loop de curto prazo: cada daily concluída enche a estrela; fechar
     // todas = Dia Perfeito.
     const chapterLabel = info.rankInfo.rank;
-    const gold = gameState.gold || 0;
     const streak = gameState.streak || 0;
 
     // Progresso do dia por HÁBITOS: reusa dailiesToday computado acima.
@@ -331,7 +330,6 @@ function renderCaminho() {
             <div class="cv-banner-title">${isBlocked ? 'Você se afastou da trilha' : 'A Trilha'}</div>
             <div class="cv-banner-stats">
                 <span class="cv-stat"><span class="cv-stat-k">NÍVEL</span><b>${info.level}</b></span>
-                <span class="cv-stat"><span class="cv-stat-i">🪙</span><b>${gold}</b></span>
                 <span class="cv-stat"><span class="cv-stat-i">🔥</span><b>${streak}</b></span>
             </div>
         </div>

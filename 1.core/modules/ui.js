@@ -71,8 +71,7 @@ function renderAchievements() {
                 <div class="ach-title">${ach.title}</div>
                 <div class="ach-desc">${ach.desc}</div>
                 ${isUnlocked
-                    ? `<div class="ach-rarity-badge" style="color:${rc.label}; border-color:${rc.border}">${ach.rarity.toUpperCase()}</div>
-                       <div class="ach-reward">+${ach.rewardGold} 💰</div>`
+                    ? `<div class="ach-rarity-badge" style="color:${rc.label}; border-color:${rc.border}">${ach.rarity.toUpperCase()}</div>`
                     : prog ? `<div class="ach-prog-track"><div class="ach-prog-fill" style="width:${progPct}%"></div></div>
                               <div class="ach-prog-label">${prog.cur}/${prog.max}</div>` : ''
                 }
@@ -113,10 +112,9 @@ function checkFeatureUnlocks() {
     if (level >= 5 && localStorage.getItem('tutorial_taverna_seen') !== 'true') {
         localStorage.setItem('tutorial_taverna_seen', 'true');
         showFeatureUnlockModal(
-            '⚔️ TAVERNA & BOSS QUESTS LIBERADAS!',
-            'Você atingiu o Nível 5 e destravou novas mecânicas do Sistema:\n\n' +
-            '• 🍻 **A Taverna**: Use seu Ouro acumulado para comprar Perks (como escudos e pergaminhos de dobro XP) e Skins premium para o seu avatar!\n\n' +
-            '• 💀 **Boss Quests**: Sempre que você sobe de Rank, um Chefe de Rank surge. Complete uma série de missões diárias seguidas para derrotá-lo e ganhar bônus gigantes de XP e Ouro!'
+            '⚔️ BOSS QUESTS LIBERADAS!',
+            'Você atingiu o Nível 5 e destravou uma nova mecânica do Sistema:\n\n' +
+            '• 💀 **Boss Quests**: Sempre que você sobe de Rank, um Chefe de Rank surge no Caminho. Complete uma série de missões diárias seguidas para derrotá-lo e ganhar um bônus gigante de XP!'
         );
         return;
     }
@@ -695,7 +693,7 @@ function setupFirstWinStep() {
         <span class="fw-icon">${q.icon || '🎯'}</span>
         <div>
             <div class="fw-title">${q.title}</div>
-            <div class="fw-reward">+${q.xp} XP · +${q.gold} OURO</div>
+            <div class="fw-reward">+${q.xp} XP</div>
         </div>`;
 }
 
@@ -856,22 +854,11 @@ function updateResetCountdown() {
 }
 setInterval(updateResetCountdown, 60000);
 
-// Banner da Reavaliação de Rank (aparece quando há uma disponível)
+// Reavaliação de Rank removida junto do Ouro (era uma compra com ouro).
+// O rank já sobe por nível/mérito; o banner some.
 function renderRankEvaluationBanner() {
     const banner = document.getElementById('rank-evaluation-banner');
-    if (!banner) return;
-    const ev = (typeof getPendingRankEvaluation === 'function') ? getPendingRankEvaluation() : null;
-    if (!ev) { banner.style.display = 'none'; banner.innerHTML = ''; return; }
-    const canAfford = (gameState.gold || 0) >= ev.cost;
-    banner.style.display = 'block';
-    banner.innerHTML = `
-        <div class="rank-eval-card">
-            <div class="rank-eval-info">
-                <div class="rank-eval-label">⚜️ REAVALIAÇÃO DE RANK ${ev.key.toUpperCase()} DISPONÍVEL</div>
-                <div class="rank-eval-desc">Reivindique sua promoção e receba o título <strong>"${ev.titleLabel}"</strong>.</div>
-            </div>
-            <button class="rank-eval-btn" ${canAfford ? '' : 'disabled'} onclick="buyRankEvaluation('${ev.key}')">${ev.cost} 🪙</button>
-        </div>`;
+    if (banner) { banner.style.display = 'none'; banner.innerHTML = ''; }
 }
 
 function updateUI() {
@@ -1353,7 +1340,7 @@ function renderQuests() {
                         </div>
                         <div style="text-align: right;">
                             <div class="font-hud" style="font-size: 16px; font-weight: bold; color: #3b82f6;">${wc.current}/${wc.target}</div>
-                            <div style="font-size: 9px; color: var(--text-secondary); margin-top: 2px;">+${wc.xpReward} XP · +${wc.goldReward} 💰</div>
+                            <div style="font-size: 9px; color: var(--text-secondary); margin-top: 2px;">+${wc.xpReward} XP</div>
                         </div>
                     </div>
                     <div class="progress-bar-track" style="width: 100%; height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-top: 4px;">
