@@ -178,10 +178,6 @@ function initTabs() {
             if (tabName === 'global') {
                 renderGlobalDashboard();
             }
-            // Se for a Taverna, reavalia a trava por nível das seções da Loja
-            if (tabName === 'rewards') {
-                refreshShopSections();
-            }
             if (tabName === 'community') {
                 if (typeof enterCommunityTab === 'function') {
                     enterCommunityTab();

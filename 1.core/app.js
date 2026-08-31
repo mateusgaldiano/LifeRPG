@@ -396,7 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initTabs();
     checkDungeonSchedule(); // masmorras nascem por agendamento (sábado + 30% meio de semana)
     renderQuests();
-    renderRewards();
     initCaminho();
     renderCaminho();
 
@@ -428,12 +427,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSubtabTrophiesRanking = document.getElementById('subtab-btn-trophies-ranking');
     if (btnSubtabTrophies) btnSubtabTrophies.addEventListener('click', () => { if (typeof window.switchTrophiesTab === 'function') window.switchTrophiesTab('trophies'); });
     if (btnSubtabTrophiesRanking) btnSubtabTrophiesRanking.addEventListener('click', () => { if (typeof window.switchTrophiesTab === 'function') window.switchTrophiesTab('ranking'); });
-
-    // Listeners da Taverna (BUG-005)
-    const btnTavernaShop = document.getElementById('subtab-btn-shop');
-    const btnTavernaInventory = document.getElementById('subtab-btn-inventory');
-    if (btnTavernaShop) btnTavernaShop.addEventListener('click', () => { if (typeof window.switchTavernaTab === 'function') window.switchTavernaTab('shop'); });
-    if (btnTavernaInventory) btnTavernaInventory.addEventListener('click', () => { if (typeof window.switchTavernaTab === 'function') window.switchTavernaTab('inventory'); });
 
     // Garante o primeiro draw do radar chart após DOM+fontes carregarem
     setTimeout(() => { drawRadarChart(); }, 150);

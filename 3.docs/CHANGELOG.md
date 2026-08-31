@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.65] — 2026-08-31
+- **Remoção (etapa 2/4): Taverna.** Enxugamento do app. Removida a **aba TAVERNA** do rodapé (agora 3 abas: Caminho · Missões · Visão Geral) e toda a seção `#tab-rewards` (loja/inventário/skins/tomos) do HTML. Tirados os hooks de boot: `renderRewards()`, listeners das sub-abas Loja/Inventário e o branch `rewards` no `initTabs`. Funções da loja no `ui.js` ficaram como código morto inofensivo (guardado por `if(!container) return`), a limpar num próximo passe. Próximas: Ouro, PvP, Masmorras.
+
 ## [v2.5.64] — 2026-08-31
 - **Fix: resquícios do tema claro (Neblina Ártica) no escuro.** Vários modais ficaram brancos porque usavam cor chumbada, não token.
   - `.modal-box { background: #f5f8fc }` → `var(--bg-card)`: conserta **todos os modais de uma vez** (NOVA QUEST/biblioteca de hábitos, onboarding, configurações, etc.).
