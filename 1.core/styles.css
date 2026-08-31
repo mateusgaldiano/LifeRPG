@@ -758,9 +758,9 @@ body::before {
 }
 .physical-col     .quest-column-header h3 { color: #f97316; }
 .wisdom-col       .quest-column-header h3 { color: #38bdf8; }
-.productivity-col .quest-column-header h3 { color: #15803d; }
+.productivity-col .quest-column-header h3 { color: #34d399; }
 .social-col       .quest-column-header h3 { color: #4ade80; }
-.mental-col       .quest-column-header h3 { color: #1e3a8a; }
+.mental-col       .quest-column-header h3 { color: #60a5fa; }
 .routine-col      .quest-column-header h3 { color: #fb923c; }
 
 .quests-actions-footer {
@@ -1145,7 +1145,7 @@ body::before {
     justify-content: center; align-items: center; padding: 24px;
 }
 .modal-box {
-    background: #f5f8fc;
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
     width: 100%; max-width: 380px;
     border-radius: var(--radius-lg); padding: 28px;
@@ -1194,7 +1194,7 @@ body::before {
 @keyframes modalIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
 
 /* Avatar zoom */
-.avatar-zoom-modal { background: rgba(232, 238, 245, 0.95); z-index: 2500; }
+.avatar-zoom-modal { background: rgba(10, 12, 15, 0.95); z-index: 2500; }
 .avatar-zoom-content { max-width: 340px; width: 100%; text-align: center; animation: modalIn 0.3s var(--ease-back) forwards; }
 .avatar-zoom-content img { width: 100%; aspect-ratio: 1; object-fit: cover; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); box-shadow: 0 0 12px var(--glow-purple); margin-bottom: 20px; }
 .avatar-level-title { font-family: var(--font-hud); font-size: 14px; color: var(--text-primary); letter-spacing: 2px; }
@@ -1202,7 +1202,7 @@ body::before {
 /* ── LEVEL UP OVERLAY (ARISE-STYLE) ──────────────────────────────────────── */
 .levelup-overlay {
     display: none; position: fixed; inset: 0;
-    background: rgba(232, 238, 245, 0.95);
+    background: rgba(10, 12, 15, 0.95);
     backdrop-filter: blur(20px);
     z-index: 3000;
     justify-content: center; align-items: center; padding: 24px;

@@ -9,6 +9,13 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.64] — 2026-08-31
+- **Fix: resquícios do tema claro (Neblina Ártica) no escuro.** Vários modais ficaram brancos porque usavam cor chumbada, não token.
+  - `.modal-box { background: #f5f8fc }` → `var(--bg-card)`: conserta **todos os modais de uma vez** (NOVA QUEST/biblioteca de hábitos, onboarding, configurações, etc.).
+  - Overlays de **avatar-zoom** e **level-up** eram `rgba(232,238,245,0.95)` (claro) → escuros.
+  - Cabeçalhos das colunas **FOCO** (`#15803d`) e **MENTAL** (`#1e3a8a`) eram escuros e sumiam → clareados (`#34d399`/`#60a5fa`).
+  - Varredura confirmou zero hex de Neblina Ártica restante no `styles.css`.
+
 ## [v2.5.63] — 2026-08-30
 - **Tema ESCURO no app inteiro (etapa 1 da unificação visual).** As abas eram claras (Neblina Ártica) e a Caminho escura — identidades distintas. Agora tudo segue o tom escuro do Sistema, no tom da Caminho.
   - Paleta virada no `:root` (bg/text/border pra escuro; acentos `--neon-*`/`--text-*`/`--skill-*` que eram escuros-pra-fundo-claro foram clareados pra terem contraste no escuro).
