@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.69] — 2026-08-31
+- **Fix/minimalismo: remove o tutorial in-game quebrado.** A "quest de aprendizado" de 2 passos ainda mandava *"compre uma skin na Taverna"* (removida) — podia travar usuário novo. Removido o banner `#tutorial-questline-banner` e os dois hooks ativos no `ui.js` (`renderTutorialBanner` no `updateUI` e `checkAndProgressTutorialStep1` ao criar missão). As funções em `social.js` ficam mortas/guardadas. Verificado: mesmo com `tutorialStep=1` injetado, nada aparece e não há mais menção à Taverna.
+
 ## [v2.5.68] — 2026-08-31
 - **Minimalismo: remove Conquistas e Desafio Semanal.** Recompensas órfãs (davam Ouro, que já saiu) — cortadas pra deixar o app mais enxuto.
   - **Conquistas/Troféus**: removido o ícone de troféu do header, a aba `#tab-achievements` (Sala de Troféus + Ranking do Sistema) e o overlay de conquista. `checkAchievements()` e `renderAchievements()` viram no-op/guardadas.

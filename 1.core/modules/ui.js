@@ -1032,10 +1032,6 @@ function updateUI() {
     renderSynergies();
     renderRankPerks();
     renderWeeklyBoss();
-    renderAchievements();
-    if (typeof renderTutorialBanner === 'function') {
-        renderTutorialBanner();
-    }
 
     // Renderiza Buffs Ativos no HUD
     const buffsListEl = document.getElementById('active-buffs-list');
@@ -2024,9 +2020,6 @@ function setupEventListeners() {
         saveGameData();
         renderQuests();
         updateUI();
-        if (typeof checkAndProgressTutorialStep1 === 'function') {
-            checkAndProgressTutorialStep1();
-        }
         modalSq.style.display = 'none';
         
         document.getElementById('form-sidequest').reset();
