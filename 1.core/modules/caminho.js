@@ -6,7 +6,7 @@ import { gameState, saveGameData, BOSS_QUESTS } from './state.js';
 import { localDateStr, getRankForLevel, isQuestActiveOnDay } from './utils.js';
 import { RANK_THRESHOLDS } from './game-math.js';
 import { toggleQuest, BOSS_QUEST_BY_LEVEL } from './game-logic.js';
-import { showSystemToast, updateUI } from './ui.js';
+import { showSystemToast, updateUI, openStreakModal } from './ui.js';
 
 // Guarda o preenchimento anterior da Estrela do Dia p/ animar o INCREMENTO
 // (ex.: 80%→100%) em vez de sempre redesenhar do zero. Reseta no reload.
@@ -330,11 +330,18 @@ function renderCaminho() {
             <div class="cv-banner-title">${isBlocked ? 'Você se afastou da trilha' : 'A Trilha'}</div>
             <div class="cv-banner-stats">
                 <span class="cv-stat"><span class="cv-stat-k">NÍVEL</span><b>${info.level}</b></span>
-                <span class="cv-stat"><span class="cv-stat-i">🔥</span><b>${streak}</b></span>
+                <span class="cv-stat cv-stat-streak" role="button" tabindex="0" title="Ver ofensiva"><span class="cv-stat-i">🔥</span><b>${streak}</b></span>
             </div>
         </div>
         ${starHtml}
     `;
+
+    // Streak do banner abre a tela de Ofensiva (o card de perfil some no Caminho).
+    const streakStat = bannerEl.querySelector('.cv-stat-streak');
+    if (streakStat) {
+        streakStat.addEventListener('click', openStreakModal);
+        streakStat.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStreakModal(); } });
+    }
 
     // Anima a estrela do valor anterior até o atual (o "estalo" de encher).
     requestAnimationFrame(() => {

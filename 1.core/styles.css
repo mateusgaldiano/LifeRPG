@@ -4421,6 +4421,8 @@ body::before {
 .cv-stat b { color: var(--cv-text); font-weight: 700; }
 .cv-stat-k { font-family: var(--font-hud); font-size: 9px; letter-spacing: 1.5px; color: var(--cv-accent); }
 .cv-stat-i { font-size: 14px; line-height: 1; }
+.cv-stat-streak { cursor: pointer; border-radius: 6px; padding: 2px 5px; margin: -2px -5px; transition: background .15s; }
+.cv-stat-streak:hover, .cv-stat-streak:focus-visible { background: rgba(255,255,255,0.07); outline: none; }
 
 .cv-path-scroll {
     position: relative;

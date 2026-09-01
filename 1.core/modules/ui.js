@@ -2485,6 +2485,7 @@ function switchTrophiesTab(tabName) {
 }
 
 export {
+    openStreakModal,
     renderAchievements,
     drawRadarChart,
     showFeatureUnlockModal,

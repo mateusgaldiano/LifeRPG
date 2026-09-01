@@ -9,6 +9,9 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.71] — 2026-08-31
+- **UX: streak do banner do Caminho abre a tela de Ofensiva.** No Caminho o card de perfil some (layout imersivo), então a tela de streak (v2.5.70) ficava inalcançável ali. Agora o **🔥 do banner é clicável** (cursor/hover/tecla Enter, `aria` de botão) e abre a Ofensiva. `openStreakModal` exportado do `ui.js` e importado no `caminho.js`.
+
 ## [v2.5.70] — 2026-08-31
 - **Feat: Sistema de Streak (tela dedicada de Ofensiva).** Agora que ouro/liga/conquista saíram, o streak é a alavanca nº1 de retenção — então virou um "objeto" de verdade. Tocar no chip de streak (🔥) no card abre a tela:
   - **Chama grande + contagem** ("12 dias de ofensiva").
