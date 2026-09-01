@@ -5,9 +5,8 @@
 import { gameState, saveGameData, HABIT_LIBRARY } from './state.js';
 import { showSystemToast } from './ui.js';
 
-// renderQuests e checkAndProgressTutorialStep1 vivem em outros módulos e são
-// expostos em window.* pelo app.js — acessados via window.* para evitar ciclos
-// de import (a UI e o tutorial dependem, direta ou indiretamente, deste fluxo).
+// renderQuests vive em outro módulo e é exposto em window.* pelo app.js —
+// acessado via window.* para evitar ciclos de import (a UI depende deste fluxo).
 
 let selectedLibraryHabit = null;
 let activeLibraryFilter = 'all';
@@ -215,9 +214,6 @@ function addHabitFromLibrary(h, type = 'daily', daysOfWeek = []) {
     if (typeof window.queueQuestOp === 'function') window.queueQuestOp(newQuest.id, 'upsert');
 
     saveGameData();
-    if (typeof window.checkAndProgressTutorialStep1 === 'function') {
-        window.checkAndProgressTutorialStep1();
-    }
     if (typeof window.renderQuests === 'function') window.renderQuests();
 
     const modalConfirm = document.getElementById('modal-confirm-habit');

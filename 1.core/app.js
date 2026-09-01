@@ -46,11 +46,9 @@ import {
 } from './modules/utils.js';
 
 import {
-    renderAchievements,
     drawRadarChart,
     showFeatureUnlockModal,
     initTabs,
-    switchTavernaTab,
     confirmRemoveQuest,
     equipItem,
     renderInventory,
@@ -63,7 +61,6 @@ import {
     updateAvatarImage,
     renderSkills,
     renderQuests,
-    renderRewards,
     showSystemToast,
     spawnFloatingText,
     animateGoldGain,
@@ -75,13 +72,11 @@ import {
     debouncedDrawRadarChart,
     setupRadarToggle,
     checkFeatureUnlocks,
-    switchTrophiesTab
 } from './modules/ui.js';
 
 import {
     spawnDungeon,
     checkDungeonExpiry,
-    checkDungeonSchedule,
     completeDungeon,
     spawnWeeklyBoss,
     checkWeeklyBossExpiry,
@@ -91,7 +86,6 @@ import {
     BOSS_QUEST_BY_LEVEL,
     checkAndActivateBossQuest,
     getBossVictoryQuote,
-    checkAchievements,
     addSkillXP,
     deductSkillXP,
     toggleQuest,
@@ -180,11 +174,9 @@ window.getPlayerTerm = () => getPlayerTerm(gameState.gender);
 window.isQuestActiveOnDay = isQuestActiveOnDay;
 
 // Bind UI
-window.renderAchievements = renderAchievements;
 window.drawRadarChart = drawRadarChart;
 window.showFeatureUnlockModal = showFeatureUnlockModal;
 window.initTabs = initTabs;
-window.switchTavernaTab = switchTavernaTab;
 window.confirmRemoveQuest = confirmRemoveQuest;
 window.equipItem = equipItem;
 window.renderInventory = renderInventory;
@@ -197,7 +189,6 @@ window.renderRankPerks = renderRankPerks;
 window.updateAvatarImage = updateAvatarImage;
 window.renderSkills = renderSkills;
 window.renderQuests = renderQuests;
-window.renderRewards = renderRewards;
 window.showSystemToast = showSystemToast;
 window.spawnFloatingText = spawnFloatingText;
 window.animateGoldGain = animateGoldGain;
@@ -209,7 +200,6 @@ window.renderGlobalDashboard = renderGlobalDashboard;
 window.debouncedDrawRadarChart = debouncedDrawRadarChart;
 window.setupRadarToggle = setupRadarToggle;
 window.checkFeatureUnlocks = checkFeatureUnlocks;
-window.switchTrophiesTab = switchTrophiesTab;
 window.renderCaminho = renderCaminho;
 window.initCaminho = initCaminho;
 
@@ -225,7 +215,6 @@ window.renderWeeklyBoss = renderWeeklyBoss;
 window.BOSS_QUEST_BY_LEVEL = BOSS_QUEST_BY_LEVEL;
 window.checkAndActivateBossQuest = checkAndActivateBossQuest;
 window.getBossVictoryQuote = getBossVictoryQuote;
-window.checkAchievements = checkAchievements;
 window.addSkillXP = addSkillXP;
 window.deductSkillXP = deductSkillXP;
 window.toggleQuest = toggleQuest;
@@ -274,8 +263,6 @@ function loadSocialModule() {
         window.handleFriendSearch = m.handleFriendSearch;
         window.updateOnlinePlayersUI = m.updateOnlinePlayersUI;
         window.switchRankingMode = m.switchRankingMode;
-        window.renderTutorialBanner = m.renderTutorialBanner;
-        window.checkAndProgressTutorialStep1 = m.checkAndProgressTutorialStep1;
         window.completeTutorialQuestline = m.completeTutorialQuestline;
         // Wire-up que antes rodava no boot
         if (typeof m.setupSocialModalListeners === 'function') m.setupSocialModalListeners();
@@ -285,7 +272,7 @@ function loadSocialModule() {
         // social.js é lazy e não é importado por ui.js. Por isso as sub-abas não trocavam.
         if (typeof m.initSocialSubTabs === 'function') m.initSocialSubTabs();
         if (typeof m.initFriendsSearchListeners === 'function') m.initFriendsSearchListeners();
-        // Re-render para refletir o banner de tutorial agora que o módulo existe
+        // Re-render agora que o módulo social existe (rankings, chat, etc.)
         if (typeof window.updateUI === 'function') window.updateUI();
         return m;
     }).catch(err => {

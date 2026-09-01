@@ -9,6 +9,17 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.73] — 2026-09-01
+- **Faxina de código morto — parte 1 (ENG-004).** Remoção de ~373 linhas de código órfão das features desligadas na minimalização, sem mudança de comportamento visível. Verificado: app boota limpo, `saveGameData`/social/habit-library carregam, e a celebração de marco (v2.5.72) segue funcionando.
+  - **Taverna:** `switchTavernaTab` + `renderRewards` (a loja não existe mais).
+  - **Conquistas:** `checkAchievements` (era no-op chamado a cada save) + `renderAchievements`; removida a chamada em `saveGameData`.
+  - **Troféus:** `switchTrophiesTab` + o ramo `if (tabName === 'achievements')` no roteador de abas (`pwa.js`).
+  - **Masmorras:** `checkDungeonSchedule` (sem chamador).
+  - **Duelos/PvP:** `checkAndFinalizeDuels` (sem chamador).
+  - **Baús diários:** `renderDailyChests` (era só um no-op que escondia o banner).
+  - **Tutorial:** `renderTutorialBanner` e `checkAndProgressTutorialStep1` + a chamada guardada em `habit-library.js`.
+  - Limpou imports, exports e bindings `window.*` correspondentes em `app.js`/`state.js`. **Preservada** a coluna `gold` dormante no DB (não mexer — quebraria o sync) e as máquinas de estado mais profundas (masmorra/desafio semanal/loja/`completeTutorialQuestline` dentro do `buyStoreItem`), que ficam para a **parte 2** por estarem entrelaçadas com boot/sync.
+
 ## [v2.5.72] — 2026-09-01
 - **Juice: celebração de marco de ofensiva (JUICE-002).** Ao cruzar **7 / 30 / 100 / 365 dias** de streak, um overlay comemorativo toma a tela: chama gigante, número enorme na fonte HUD com brilho de fogo, título por marco ("UMA SEMANA EM CHAMAS", "CEM DIAS. LENDA."…) e brasas subindo. Fecha no toque/CTA ou sozinho (~4s).
   - Disparo em `checkAllDailies()` (`game-logic.js`) logo após `streak++`, com atraso de 900ms pra deixar o "quest cleared" tocar antes. Trava anti-repetição por `gameState._lastMilestoneCelebrated`.

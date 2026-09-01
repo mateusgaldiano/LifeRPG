@@ -1,6 +1,6 @@
 // state.js
 import { localDateStr, getXpToNextForLevel, hasSkillLV3, initSkillsState, isQuestActiveOnDay } from './utils.js';
-import { syncQuestsByLevel, checkDungeonExpiry, checkWeeklyBossExpiry, spawnDungeon, checkAchievements, saveToCloud, checkWeeklyChallengeReset } from './game-logic.js';
+import { syncQuestsByLevel, checkDungeonExpiry, checkWeeklyBossExpiry, spawnDungeon, saveToCloud, checkWeeklyChallengeReset } from './game-logic.js';
 // RANK_THRESHOLDS agora vive no núcleo puro; re-exportado abaixo p/ compatibilidade.
 import { RANK_THRESHOLDS } from './game-math.js';
 
@@ -346,7 +346,6 @@ function queueQuestOp(id, op) {
 // PERSISTÊNCIA DE DADOS (LOCALSTORAGE)
 // ==========================================================================
 function saveGameData() {
-    checkAchievements();
     localStorage.setItem('lifeRPG_gameState', JSON.stringify(gameState));
     if (typeof saveToCloud === 'function') saveToCloud();
     updateSWQuestStatus();

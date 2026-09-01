@@ -56,15 +56,20 @@ Mensagem especial do Sistema ao detectar o retorno (a voz do próprio app, não 
 Commit: "feat: Modo Retorno — 1.5x XP por 3 dias após ausência de 7+ dias"
 ```
 
-### ENG-004 · Faxina de código morto das features removidas
+### ENG-004 · Faxina de código morto — PARTE 2 (máquinas de estado profundas)
 **Cluster:** Engenharia | **Esforço:** M | **Tipo:** Tech Debt | **Fase:** Próximas semanas
 
 ```
-Remover funções órfãs e DOM residual das features desligadas (Taverna/Ouro/PvP/Masmorras/Conquistas/Desafios/Tutorial),
-deixadas guardadas/no-op durante a minimalização.
-⚠️ MANTER a coluna `gold` DORMANTE no DB (não remover — quebraria o sync). Só remover o código de app.
-node --check em cada módulo ES antes do commit.
-Commit: "chore: faxina de código morto das features removidas"
+✅ Parte 1 (v2.5.73): ~373 linhas órfãs — Taverna/Conquistas/Troféus/Masmorra-schedule/Duelos/Baús/Tutorial
+   (funções órfãs + no-ops), imports/exports/window.* correspondentes.
+
+Falta a PARTE 2 — código woven em boot/sync, remover com cuidado:
+• Masmorras: spawnDungeon/checkDungeonExpiry/completeDungeon/DUNGEON_POOL/activeDungeon.
+• Desafio Semanal: WEEKLY_CHALLENGES_POOL/checkWeeklyChallengeReset + bloco no updateUI.
+• Loja: buyStoreItem/openDailyChest + completeTutorialQuestline (chamado dentro do buyStoreItem).
+• ACHIEVEMENTS_DEFS (dados órfãos).
+⚠️ MANTER a coluna `gold` DORMANTE no DB. node --check antes do commit.
+Commit: "chore: faxina de código morto — parte 2"
 ```
 
 ### ONB-001 · Polir onboarding (copy, progresso, tom escuro)

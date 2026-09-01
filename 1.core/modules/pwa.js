@@ -150,11 +150,6 @@ function setupSettingsListeners() {
         if (targetBtn) targetBtn.classList.add('active');
         targetTab.classList.add('active');
         if (tabName === 'global') renderGlobalDashboard();
-        if (tabName === 'achievements') {
-            if (typeof window.switchTrophiesTab === 'function') {
-                window.switchTrophiesTab('trophies');
-            }
-        }
         if (window.innerWidth <= 1023) {
             const offset = targetTab.getBoundingClientRect().top + window.scrollY - 130;
             window.scrollTo({ top: offset, behavior: 'smooth' });

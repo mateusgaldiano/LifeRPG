@@ -12,77 +12,6 @@ import { toggleQuest, buyStoreItem, completeDungeon, showQuestCleared, getPendin
 import { setupSettingsListeners } from './pwa.js';
 import { drawRadarChart } from './radar-chart.js';
 
-function renderAchievements() {
-    const container = document.getElementById('achievements-container');
-    if (!container) return;
-
-    const unlockedIds = gameState.unlockedAchievements || [];
-    const totalUnlocked = unlockedIds.length;
-    const totalAchs = ACHIEVEMENTS_DEFS.length;
-
-    // Agrupa por categoria
-    const categories = {
-        'consistência': { label: 'CONSISTÊNCIA', icon: '🔥' },
-        'rank':         { label: 'RANK & NÍVEL', icon: '🌟' },
-        'habilidades':  { label: 'HABILIDADES', icon: '✨' },
-        'masmorras':    { label: 'MASMORRAS & BOSS', icon: '⚔️' },
-        'missões':      { label: 'MISSÕES', icon: '📜' },
-        'social':       { label: 'SOCIAL & PVP', icon: '🤝' }
-    };
-
-    const rarityColors = {
-        'comum':     { bg: 'rgba(120,120,140,0.1)', border: 'rgba(120,120,140,0.3)', label: 'rgba(170,170,190,0.7)' },
-        'incomum':   { bg: 'rgba(34,197,94,0.08)',  border: 'rgba(34,197,94,0.35)',  label: 'rgba(34,197,94,0.8)' },
-        'raro':      { bg: 'rgba(99,102,241,0.1)',  border: 'rgba(99,102,241,0.4)',  label: 'rgba(129,140,248,0.9)' },
-        'lendário':  { bg: 'rgba(251,191,36,0.1)',  border: 'rgba(251,191,36,0.5)',  label: 'rgba(251,191,36,1)' }
-    };
-
-    let html = `
-        <div class="ach-summary-bar">
-            <span class="ach-summary-count">${totalUnlocked}<span class="ach-summary-total">/${totalAchs}</span></span>
-            <span class="ach-summary-label">CONQUISTAS DESBLOQUEADAS</span>
-            <div class="ach-summary-track"><div class="ach-summary-fill" style="width:${(totalUnlocked/totalAchs*100).toFixed(0)}%"></div></div>
-        </div>
-    `;
-
-    Object.entries(categories).forEach(([catKey, catInfo]) => {
-        const catAchs = ACHIEVEMENTS_DEFS.filter(a => a.category === catKey);
-        const catUnlocked = catAchs.filter(a => unlockedIds.includes(a.id)).length;
-
-        html += `<div class="ach-category">
-            <div class="ach-category-header">
-                <span class="ach-category-icon">${catInfo.icon}</span>
-                <span class="ach-category-label">${catInfo.label}</span>
-                <span class="ach-category-count">${catUnlocked}/${catAchs.length}</span>
-            </div>
-            <div class="ach-cards-row">`;
-
-        catAchs.forEach(ach => {
-            const isUnlocked = unlockedIds.includes(ach.id);
-            const prog = ach.progress ? ach.progress(gameState) : null;
-            const progPct = prog ? Math.min(100, Math.round((prog.cur / prog.max) * 100)) : 0;
-            const rc = rarityColors[ach.rarity] || rarityColors['comum'];
-
-            html += `
-            <div class="achievement-card ${isUnlocked ? 'unlocked' : ''}" style="
-                ${isUnlocked ? `background:${rc.bg}; border-color:${rc.border};` : ''}
-            ">
-                <div class="ach-icon">${isUnlocked ? ach.icon : '🔒'}</div>
-                <div class="ach-title">${ach.title}</div>
-                <div class="ach-desc">${ach.desc}</div>
-                ${isUnlocked
-                    ? `<div class="ach-rarity-badge" style="color:${rc.label}; border-color:${rc.border}">${ach.rarity.toUpperCase()}</div>`
-                    : prog ? `<div class="ach-prog-track"><div class="ach-prog-fill" style="width:${progPct}%"></div></div>
-                              <div class="ach-prog-label">${prog.cur}/${prog.max}</div>` : ''
-                }
-            </div>`;
-        });
-
-        html += `</div></div>`;
-    });
-
-    container.innerHTML = html;
-}
 
 //  Rank Perks 
 
@@ -246,28 +175,6 @@ function initShopCollapse() {
 // ==========================================================================
 // SUB-ABAS DA TAVERNA E INVENTÁRIO
 // ==========================================================================
-function switchTavernaTab(mode) {
-    const btnShop      = document.getElementById('subtab-btn-shop');
-    const btnInventory = document.getElementById('subtab-btn-inventory');
-    const panelShop      = document.getElementById('taverna-shop');
-    const panelInventory = document.getElementById('taverna-inventory');
-
-    if (!btnShop || !btnInventory || !panelShop || !panelInventory) return;
-
-    if (mode === 'shop') {
-        btnShop.classList.add('active');
-        btnInventory.classList.remove('active');
-        panelShop.style.display = 'block';
-        panelInventory.style.display = 'none';
-        refreshShopSections();
-    } else {
-        btnShop.classList.remove('active');
-        btnInventory.classList.add('active');
-        panelShop.style.display = 'none';
-        panelInventory.style.display = 'block';
-        renderInventory();
-    }
-};
 
 function confirmRemoveQuest(id, title) {
     // Pop-up nativo do browser — simples e funcional
@@ -1209,50 +1116,6 @@ function renderSkills() {
 
 // Inicializa a árvore de skills caso não esteja presente no estado (retrocompatibilidade robusta)
 
-// Renderiza os Baús de Foco Diário (Early Bird / Night Owl) no topo das Missões.
-function renderDailyChests() {
-    // Baús de Foco Diário removidos junto do Ouro (davam ouro/poção de foco).
-    const banner = document.getElementById('daily-chest-banner');
-    if (banner) { banner.style.display = 'none'; banner.innerHTML = ''; }
-    return;
-    // eslint-disable-next-line no-unreachable
-    if (!banner) return;
-
-    const buildChip = (which, status) => {
-        const isEarly = which === 'earlyBird';
-        const icon = isEarly ? '🌅' : '🌙';
-        const name = isEarly ? 'Caçador Matutino' : 'Patrulha Noturna';
-        if (status === 'ready') {
-            return `<div onclick="openDailyChest('${which}')" style="cursor:pointer; flex:1 1 160px; display:flex; align-items:center; gap:10px; background:linear-gradient(135deg, rgba(251,191,36,0.06), rgba(251,191,36,0.16)); border:1px solid var(--neon-gold); border-radius:8px; padding:12px 14px; box-shadow:0 0 14px rgba(251,191,36,0.15);">
-                    <span style="font-size:22px;">🎁</span>
-                    <div>
-                        <div style="font-size:10px; color:var(--neon-gold); font-family:var(--font-hud); letter-spacing:1px;">BAÚ PRONTO</div>
-                        <div style="font-size:13px; font-weight:bold; color:white;">${icon} ${name}</div>
-                        <div style="font-size:10px; color:var(--text-muted);">Toque para abrir</div>
-                    </div>
-                </div>`;
-        }
-        const hint = isEarly ? 'Abre após as 18h' : 'Resgate amanhã de manhã';
-        return `<div style="flex:1 1 160px; display:flex; align-items:center; gap:10px; background:rgba(255,255,255,0.03); border:1px dashed var(--border-glass); border-radius:8px; padding:12px 14px; opacity:0.8;">
-                    <span style="font-size:22px;">${icon}</span>
-                    <div>
-                        <div style="font-size:10px; color:var(--text-muted); font-family:var(--font-hud); letter-spacing:1px;">BAÚ GANHO</div>
-                        <div style="font-size:13px; font-weight:bold; color:var(--text-secondary);">${name}</div>
-                        <div style="font-size:10px; color:var(--text-muted);">🔒 ${hint}</div>
-                    </div>
-                </div>`;
-    };
-
-    const chips = [];
-    const eb = getEarlyBirdChestStatus();
-    const no = getNightOwlChestStatus();
-    if (eb === 'ready' || eb === 'locked') chips.push(buildChip('earlyBird', eb));
-    if (no === 'ready' || no === 'locked') chips.push(buildChip('nightOwl', no));
-
-    if (chips.length === 0) { banner.style.display = 'none'; return; }
-    banner.style.display = 'block';
-    banner.innerHTML = `<div style="display:flex; flex-wrap:wrap; gap:10px;">${chips.join('')}</div>`;
-}
 
 function renderQuests() {
     const colPhysical     = document.getElementById('quests-list-physical');
@@ -1343,8 +1206,6 @@ function renderQuests() {
         weeklyChallengeBanner.style.display = 'none';
     }
 
-    // Baús de Foco Diário (Early Bird / Night Owl)
-    renderDailyChests();
 
     // Helper para mapeamento direto de skill para coluna
     const SKILL_COLUMN_MAP = {
@@ -1554,30 +1415,6 @@ function renderAddictions() {
         <div class="addiction-list">${cards}</div>`;
 }
 
-// Renderiza a Taverna (Recompensas)
-
-/**
- * @deprecated Esta função é legada e foi substituída pelos cards estáticos no index.html.
- * Mantida apenas para compatibilidade de depuração ou inicialização secundária.
- */
-function renderRewards() {
-    const rewardsContainer = document.getElementById('rewards-list');
-    if (!rewardsContainer) return;
-    rewardsContainer.innerHTML = `
-        <div class="store-item" onclick="buyStoreItem('buff_autoHeal')">
-            <div class="store-info"><span>🧪 Poção de Cura</span><small>Protege o streak por 1 erro</small></div>
-            <button>800 🪙</button>
-        </div>
-        <div class="store-item" onclick="buyStoreItem('buff_doubleXp')">
-            <div class="store-info"><span>📜 Pergaminho de Dobro XP</span><small>XP x2 por um dia</small></div>
-            <button>500 🪙</button>
-        </div>
-        <div class="store-item" onclick="buyStoreItem('buff_shield')">
-            <div class="store-info"><span>🛡️ Carga de Escudo</span><small>Reforce sua defesa</small></div>
-            <button>1000 🪙</button>
-        </div>
-    `;
-}
 
 
 function triggerLevelUpOverlay() {
@@ -2511,44 +2348,13 @@ function setupRadarToggle() {
     });
 }
 
-function switchTrophiesTab(tabName) {
-    const btnTrophies = document.getElementById('subtab-btn-trophies');
-    const btnRanking = document.getElementById('subtab-btn-trophies-ranking');
-    const panelTrophies = document.getElementById('panel-trophies');
-    const panelRanking = document.getElementById('panel-ranking');
-
-    if (!btnTrophies || !btnRanking || !panelTrophies || !panelRanking) return;
-
-    if (tabName === 'trophies') {
-        btnTrophies.classList.add('active');
-        btnRanking.classList.remove('active');
-        panelTrophies.classList.add('active');
-        panelTrophies.style.display = '';
-        panelRanking.classList.remove('active');
-        panelRanking.style.display = 'none';
-    } else {
-        btnTrophies.classList.remove('active');
-        btnRanking.classList.add('active');
-        panelTrophies.classList.remove('active');
-        panelTrophies.style.display = 'none';
-        panelRanking.classList.add('active');
-        panelRanking.style.display = '';
-        
-        if (typeof window.switchRankingMode === 'function') {
-            window.switchRankingMode(window.currentRankingMode || 'global');
-        }
-    }
-}
 
 export {
     openStreakModal,
     celebrateStreakMilestone,
-    renderAchievements,
     drawRadarChart,
     showFeatureUnlockModal,
     initTabs,
-    switchTavernaTab,
-    switchTrophiesTab,
     confirmRemoveQuest,
     equipItem,
     renderInventory,
@@ -2561,7 +2367,6 @@ export {
     updateAvatarImage,
     renderSkills,
     renderQuests,
-    renderRewards,
     showSystemToast,
     spawnFloatingText,
     animateGoldGain,

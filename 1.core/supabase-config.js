@@ -696,7 +696,6 @@ window.syncFromCloud = async function() {
 
       // Re-renderiza todos os componentes de UI para refletir os dados carregados da nuvem imediatamente
       if (typeof window.renderQuests === 'function') window.renderQuests();
-      if (typeof window.renderRewards === 'function') window.renderRewards();
       if (typeof window.renderSkills === 'function') window.renderSkills();
       if (typeof window.drawRadarChart === 'function') window.drawRadarChart();
       if (typeof window.updateAvatarImage === 'function') window.updateAvatarImage();
@@ -840,7 +839,6 @@ window.forceLoadFromCloud = async function() {
   updateUI();
 
   if (typeof window.renderQuests === 'function') window.renderQuests();
-  if (typeof window.renderRewards === 'function') window.renderRewards();
   if (typeof window.renderSkills === 'function') window.renderSkills();
   if (typeof window.drawRadarChart === 'function') window.drawRadarChart();
   if (typeof window.updateAvatarImage === 'function') window.updateAvatarImage();
@@ -1567,10 +1565,6 @@ window.acceptPvpChallenge = async (duelId) => {
 
 window.rejectPvpChallenge = async (duelId) => {
   return await supabaseClient.rpc('reject_pvp_challenge', { p_duel_id: duelId });
-};
-
-window.checkAndFinalizeDuels = async () => {
-  return await supabaseClient.rpc('check_and_finalize_duels');
 };
 
 window.getUserDuelsWithScores = async () => {

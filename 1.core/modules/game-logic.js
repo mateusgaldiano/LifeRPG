@@ -8,7 +8,7 @@ import {
 } from './utils.js';
 import {
     showSystemToast, spawnFloatingText, animateGoldGain, triggerLevelUpOverlay,
-    showImpactQuote, renderQuests, updateUI, renderAchievements, checkFeatureUnlocks,
+    showImpactQuote, renderQuests, updateUI, checkFeatureUnlocks,
     celebrateStreakMilestone
 } from './ui.js';
 
@@ -243,42 +243,6 @@ function bumpDungeonProgress(skill, delta) {
     }
 }
 
-// Agenda o spawn das masmorras: 1 garantida no sabado + 30%/semana de uma extra num
-// dia entre segunda e quinta (com perdao: se voce nao abrir no dia, nasce no proximo
-// acesso da semana). Chamada no boot e na virada de dia.
-function checkDungeonSchedule() {
-    if (!hasSkillLV3()) return;
-
-    const now = new Date();
-    const dow = now.getDay(); // 0=Dom, 1=Seg ... 6=Sab
-    const monday = new Date(now);
-    monday.setDate(now.getDate() + (dow === 0 ? -6 : 1 - dow)); // segunda desta semana ISO
-    const weekKey = localDateStr(monday);
-
-    // Nova semana: reseta marcadores e rola a chance (30%) da masmorra do meio de semana.
-    if (gameState._dungeonWeek !== weekKey) {
-        gameState._dungeonWeek = weekKey;
-        gameState._dungeonSatDone = false;
-        gameState._dungeonMidDone = false;
-        gameState._dungeonMidDay = (Math.random() < 0.30) ? (1 + Math.floor(Math.random() * 4)) : 0; // Seg(1)-Qui(4)
-        saveGameData();
-    }
-
-    if (gameState.activeDungeon && !gameState.activeDungeon.completed) return; // uma por vez
-
-    // Masmorra do meio de semana (janela seg-sex, a partir do dia agendado).
-    if (gameState._dungeonMidDay && !gameState._dungeonMidDone && dow >= gameState._dungeonMidDay && dow <= 5) {
-        gameState._dungeonMidDone = true;
-        spawnDungeon();
-        return;
-    }
-
-    // Masmorra de sabado garantida (janela sab-dom).
-    if (!gameState._dungeonSatDone && (dow === 6 || dow === 0)) {
-        gameState._dungeonSatDone = true;
-        spawnDungeon();
-    }
-}
 
 
 // ==========================================================================
@@ -653,41 +617,6 @@ const ACHIEVEMENTS_DEFS = [
     },
 ];
 
-function checkAchievements() {
-    return; // Conquistas removidas (app minimalista).
-    // eslint-disable-next-line no-unreachable
-    if (!gameState.unlockedAchievements) gameState.unlockedAchievements = [];
-    let newlyUnlocked = false;
-
-    ACHIEVEMENTS_DEFS.forEach(ach => {
-        if (!gameState.unlockedAchievements.includes(ach.id)) {
-            if (ach.check(gameState)) {
-                gameState.unlockedAchievements.push(ach.id);
-                gameState.gold = (gameState.gold || 0) + ach.rewardGold;
-                newlyUnlocked = true;
-                setTimeout(() => {
-                    showSystemToast(`🏆 *CONQUISTA DESBLOQUEADA!* Você obteve o troféu *"${ach.title}"*.`);
-
-                    // Dispara o overlay comemorativo
-                    const achOverlay = document.getElementById('achievement-unlocked-overlay');
-                    const achTitle = document.getElementById('achievement-unlocked-title');
-                    const achRewards = document.getElementById('achievement-unlocked-rewards');
-                    if (achOverlay && achTitle && achRewards) {
-                        achTitle.innerText = ach.title;
-                        achRewards.innerText = `🏆 Troféu conquistado`;
-                        achOverlay.classList.add('show');
-                        setTimeout(() => achOverlay.classList.remove('show'), 2200);
-                    }
-                }, 1500);
-            }
-        }
-    });
-
-    if (newlyUnlocked) {
-        renderAchievements();
-        // saveGameData já é chamado em todos os pontos que alteram estado.
-    }
-}
 
 
 
@@ -1146,7 +1075,6 @@ function checkAllDailies() {
         saveGameData();
         updateUI();
 
-        // (Masmorras agora nascem por agendamento - ver checkDungeonSchedule.)
 
         setTimeout(() => {
             const todayStr = new Date().toDateString();
@@ -1824,7 +1752,6 @@ async function saveToCloud() {
 export {
     spawnDungeon,
     checkDungeonExpiry,
-    checkDungeonSchedule,
     completeDungeon,
     spawnWeeklyBoss,
     checkWeeklyBossExpiry,
@@ -1834,7 +1761,6 @@ export {
     BOSS_QUEST_BY_LEVEL,
     checkAndActivateBossQuest,
     getBossVictoryQuote,
-    checkAchievements,
     addSkillXP,
     deductSkillXP,
     toggleQuest,

@@ -1346,79 +1346,6 @@ function setupSocialModalListeners() {
     }
 }
 
-// Renderiza o banner dinâmico do tutorial questline
-function renderTutorialBanner() {
-    const banner = document.getElementById('tutorial-questline-banner');
-    
-    // Atualiza a visualização do card da skin "Mestre das Sombras" se estiver na etapa 2
-    const shadowMasterCard = document.querySelector('div[onclick="buyStoreItem(\'skin_shadow_master\')"]');
-    if (shadowMasterCard) {
-        const costEl = shadowMasterCard.querySelector('.reward-cost');
-        const descEl = shadowMasterCard.querySelector('p');
-        if (gameState.tutorialStep === 2) {
-            if (costEl) costEl.innerText = '50 OURO';
-            if (descEl) descEl.innerHTML = `Moldura roxa com brilho sombrio de alta intensidade. <span style="color: var(--neon-gold); font-weight: bold;">(Promoção do Tutorial - Sem trava de nível!)</span>`;
-        } else {
-            if (costEl) costEl.innerText = '2000 OURO';
-            if (descEl) descEl.innerText = `Moldura roxa com brilho sombrio de alta intensidade. (Requer Rank C)`;
-        }
-    }
-
-    if (!banner) return;
-
-    if (gameState.tutorialCompleted || !gameState.tutorialStep) {
-        banner.style.display = 'none';
-        return;
-    }
-
-    banner.style.display = 'block';
-
-    if (gameState.tutorialStep === 1) {
-        banner.innerHTML = `
-            <div class="tutorial-banner">
-                <div class="tutorial-header">
-                    <span class="tutorial-badge">QUEST DE APRENDIZADO</span>
-                    <span class="tutorial-step">ETAPA 1 de 2</span>
-                </div>
-                <h3 class="tutorial-title">⚔️ O Despertar da Produtividade</h3>
-                <p class="tutorial-desc">Comece sua jornada criando sua primeira tarefa! Adicione um hábito da biblioteca ou clique em <b>"+"</b> abaixo do radar para criar uma Side Quest personalizada.</p>
-                <div class="tutorial-footer">
-                    <span class="tutorial-reward">🎁 RECOMPENSA: <b>+50 Ouro 🪙</b></span>
-                </div>
-            </div>
-        `;
-    } else if (gameState.tutorialStep === 2) {
-        banner.innerHTML = `
-            <div class="tutorial-banner">
-                <div class="tutorial-header">
-                    <span class="tutorial-badge" style="color: var(--neon-purple); border-color: var(--neon-purple);">QUEST DE APRENDIZADO</span>
-                    <span class="tutorial-step">ETAPA 2 de 2</span>
-                </div>
-                <h3 class="tutorial-title">🎭 A Taverna e a Identidade</h3>
-                <p class="tutorial-desc">Excelente! Você ganhou 50 moedas de Ouro. Agora, navegue até a aba <b>TAVERNA</b> (no rodapé) e compre a <b>Borda: Mestre das Sombras</b> (liberada por apenas 50 Ouro e sem exigência de nível de compra durante o tutorial!). Ela será equipada imediatamente em volta do seu avatar do nível atual.</p>
-                <div class="tutorial-footer">
-                    <span class="tutorial-reward">🎁 RECOMPENSA FINAL: <b>+50 XP ⚡ +20 Ouro 🪙</b></span>
-                </div>
-            </div>
-        `;
-    }
-}
-
-// Progride o tutorial para a etapa 2 ao criar a primeira missão
-function checkAndProgressTutorialStep1() {
-    if (gameState.tutorialStep === 1) {
-        gameState.tutorialStep = 2;
-        gameState.gold = (gameState.gold || 0) + 50;
-        saveGameData();
-        updateUI();
-        
-        // Efeitos visuais
-        animateGoldGain();
-        spawnFloatingText(50, 'gold');
-        
-        showSystemToast("🏆 *TUTORIAL:* Missão criada! Você recebeu +50 🪙. Agora compre e equipe sua primeira skin na Taverna!");
-    }
-}
 
 // Conclui o tutorial ao comprar a skin Shadow Master no passo 2
 function completeTutorialQuestline() {
@@ -2313,8 +2240,6 @@ export {
     handleFriendSearch,
     updateOnlinePlayersUI,
     switchRankingMode,
-    renderTutorialBanner,
-    checkAndProgressTutorialStep1,
     completeTutorialQuestline,
     openPvpChallengeModal,
     closePvpChallengeModal,
