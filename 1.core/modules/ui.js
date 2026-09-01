@@ -1927,6 +1927,62 @@ function renderStreakModal() {
     }
 }
 
+// Copy por marco de ofensiva
+const MILESTONE_COPY = {
+    7:   { title: 'UMA SEMANA EM CHAMAS', sub: 'A chama pegou. Agora é não deixar apagar.' },
+    30:  { title: 'UM MÊS IMPARÁVEL',      sub: 'Trinta dias seguidos. Isso já virou identidade.' },
+    100: { title: 'CEM DIAS. LENDA.',      sub: 'Pouquíssimos chegam aqui. Você chegou.' },
+    365: { title: 'UM ANO INTEIRO',        sub: 'A prova viva de quem você se tornou.' },
+};
+
+// Overlay de celebração ao cruzar um marco de streak (7/30/100/365).
+// Auto-contido: cria/remonta o próprio DOM, não depende do index.html.
+function celebrateStreakMilestone(streak) {
+    if (!STREAK_MILESTONES.includes(streak)) return;
+    if (gameState._lastMilestoneCelebrated === streak) return; // trava anti-repetição
+    gameState._lastMilestoneCelebrated = streak;
+
+    const copy = MILESTONE_COPY[streak] || { title: `${streak} DIAS`, sub: 'Ofensiva lendária.' };
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.getElementById('streak-ms-overlay')?.remove();
+    const ov = document.createElement('div');
+    ov.id = 'streak-ms-overlay';
+    ov.className = 'streak-ms-overlay';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-label', `Marco de ${streak} dias de ofensiva`);
+    const embers = reduce ? '' : Array.from({ length: 14 }, (_, i) => `<span class="sms-ember" style="--i:${i}"></span>`).join('');
+    ov.innerHTML = `
+        <div class="sms-glow"></div>
+        <div class="sms-embers">${embers}</div>
+        <div class="sms-card">
+            <div class="sms-flame">🔥</div>
+            <div class="sms-num">${streak}</div>
+            <div class="sms-days">DIAS DE OFENSIVA</div>
+            <div class="sms-title">${copy.title}</div>
+            <div class="sms-sub">${copy.sub}</div>
+            <button class="sms-cta" type="button">CONTINUAR</button>
+        </div>`;
+    document.body.appendChild(ov);
+    requestAnimationFrame(() => ov.classList.add('show'));
+
+    let closed = false;
+    const close = () => {
+        if (closed) return;
+        closed = true;
+        clearTimeout(autoTimer);
+        ov.classList.remove('show');
+        setTimeout(() => ov.remove(), 400);
+    };
+    ov.addEventListener('click', (e) => {
+        if (e.target === ov || e.target.classList.contains('sms-cta')) close();
+    });
+    const autoTimer = setTimeout(close, reduce ? 2600 : 4400);
+
+    // Toque tátil comemorativo (raro — só em marcos). Ignorado onde não houver suporte.
+    try { navigator.vibrate && navigator.vibrate([0, 45, 70, 45]); } catch (_) {}
+}
+
 // ==========================================================================
 // PROCESSAMENTO DE EVENTOS E MODAIS
 // ==========================================================================
@@ -2486,6 +2542,7 @@ function switchTrophiesTab(tabName) {
 
 export {
     openStreakModal,
+    celebrateStreakMilestone,
     renderAchievements,
     drawRadarChart,
     showFeatureUnlockModal,

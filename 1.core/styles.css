@@ -1192,6 +1192,79 @@ body::before {
 .streak-day.frozen { color: #7dd3fc; background: rgba(56,189,248,0.12); }
 .streak-day.today { outline: 2px solid var(--text-primary); outline-offset: 1px; }
 
+/* ===== Celebração de marco de ofensiva (JUICE-002) ===== */
+.streak-ms-overlay {
+    position: fixed; inset: 0; z-index: 100000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px; overflow: hidden;
+    background: radial-gradient(circle at 50% 42%, rgba(249,115,22,0.22), rgba(0,0,0,0.86) 58%, rgba(0,0,0,0.94));
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    opacity: 0; transition: opacity 0.4s ease;
+}
+.streak-ms-overlay.show { opacity: 1; }
+.streak-ms-overlay .sms-glow {
+    position: absolute; left: 50%; top: 42%; width: 120vmax; height: 120vmax;
+    transform: translate(-50%, -50%); pointer-events: none;
+    background: radial-gradient(circle, rgba(251,146,60,0.28), transparent 55%);
+    animation: smsPulse 3.2s ease-in-out infinite;
+}
+@keyframes smsPulse {
+    0%, 100% { opacity: .5; transform: translate(-50%, -50%) scale(.9); }
+    50% { opacity: .9; transform: translate(-50%, -50%) scale(1.08); }
+}
+.streak-ms-overlay .sms-card {
+    position: relative; text-align: center; color: #fff;
+    opacity: 0; transform: scale(.82) translateY(12px);
+    transition: opacity .5s ease, transform .5s cubic-bezier(.2,.9,.25,1.2);
+}
+.streak-ms-overlay.show .sms-card { opacity: 1; transform: scale(1) translateY(0); }
+.sms-flame {
+    font-size: 84px; line-height: 1;
+    filter: drop-shadow(0 0 24px rgba(249,115,22,.8));
+    animation: smsFlame 1.6s ease-in-out infinite;
+}
+@keyframes smsFlame {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-6px) rotate(2deg); }
+}
+.sms-num {
+    font-family: var(--font-hud); font-weight: 900;
+    font-size: clamp(72px, 22vw, 136px); line-height: .9; margin-top: 4px;
+    color: #fdba74; text-shadow: 0 0 30px rgba(249,115,22,.7), 0 0 60px rgba(249,115,22,.4);
+}
+.sms-days { font-family: var(--font-hud); font-size: 12px; letter-spacing: 4px; color: #fb923c; margin-top: 2px; }
+.sms-title {
+    font-family: var(--font-hud); font-size: clamp(16px, 5vw, 24px); letter-spacing: 2px;
+    margin-top: 18px; color: #fff; text-wrap: balance;
+}
+.sms-sub { font-size: 14px; line-height: 1.4; color: rgba(255,255,255,.72); margin: 8px auto 0; max-width: 320px; }
+.sms-cta {
+    margin-top: 26px; padding: 12px 34px; border: none; border-radius: 999px; cursor: pointer;
+    font-family: var(--font-hud); font-size: 13px; font-weight: 700; letter-spacing: 2px;
+    color: #1a1206; background: linear-gradient(135deg, #fbbf24, #f97316);
+    box-shadow: 0 6px 24px rgba(249,115,22,.5);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.sms-cta:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(249,115,22,.6); }
+.sms-cta:active { transform: translateY(0); }
+.sms-embers { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.sms-ember {
+    position: absolute; bottom: -12px; left: calc(var(--i) * 7% + 2%);
+    width: 6px; height: 6px; border-radius: 50%;
+    background: radial-gradient(circle, #fdba74, #f97316);
+    box-shadow: 0 0 8px rgba(249,115,22,.8); opacity: 0;
+    animation: smsEmber 3.6s linear infinite; animation-delay: calc(var(--i) * .22s);
+}
+@keyframes smsEmber {
+    0% { transform: translateY(0) scale(.6); opacity: 0; }
+    12% { opacity: .9; }
+    100% { transform: translateY(-92vh) scale(1.1); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .streak-ms-overlay .sms-glow, .streak-ms-overlay .sms-flame, .sms-ember { animation: none !important; }
+    .streak-ms-overlay .sms-card { transition: opacity .2s ease; }
+}
+
 .form-field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
 .form-field label { font-family: var(--font-hud); font-size: 12px; color: var(--text-muted); letter-spacing: 1px; }
 .form-field input, .form-field select,

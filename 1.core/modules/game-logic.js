@@ -8,7 +8,8 @@ import {
 } from './utils.js';
 import {
     showSystemToast, spawnFloatingText, animateGoldGain, triggerLevelUpOverlay,
-    showImpactQuote, renderQuests, updateUI, renderAchievements, checkFeatureUnlocks
+    showImpactQuote, renderQuests, updateUI, renderAchievements, checkFeatureUnlocks,
+    celebrateStreakMilestone
 } from './ui.js';
 
 // Verifica se o Pergaminho de Double XP está ativo (dura até meia-noite, não consome na 1ª quest)
@@ -1095,12 +1096,16 @@ function checkAllDailies() {
         gameState._dailiesRewardedDate = localDateStr();
         gameState.streak++;
 
+        // Celebração de marco de ofensiva (7/30/100/365) — deixa o quest-cleared tocar antes
+        const _streakNow = gameState.streak;
+        setTimeout(() => celebrateStreakMilestone(_streakNow), 900);
+
         // Desbloqueia título especial com 30 dias de streak
         if (gameState.streak === 30) {
             if (!gameState.inventory.unlockedTitles.includes('Inabalável')) {
                 gameState.inventory.unlockedTitles.push('Inabalável');
                 setTimeout(() => {
-                    showSystemToast(`🏆 *NOVO TÍTULO DESBLOQUEADO!*\n\nVocê atingiu um Streak de 30 dias e conquistou o título: *Inabalável*! Equipe-o na Taverna.`);
+                    showSystemToast(`🏆 *NOVO TÍTULO DESBLOQUEADO!*\n\nVocê atingiu um Streak de 30 dias e conquistou o título: *Inabalável*! Equipe-o nas Configurações.`);
                 }, 3000);
             }
         }

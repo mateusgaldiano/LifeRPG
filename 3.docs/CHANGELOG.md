@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.72] — 2026-09-01
+- **Juice: celebração de marco de ofensiva (JUICE-002).** Ao cruzar **7 / 30 / 100 / 365 dias** de streak, um overlay comemorativo toma a tela: chama gigante, número enorme na fonte HUD com brilho de fogo, título por marco ("UMA SEMANA EM CHAMAS", "CEM DIAS. LENDA."…) e brasas subindo. Fecha no toque/CTA ou sozinho (~4s).
+  - Disparo em `checkAllDailies()` (`game-logic.js`) logo após `streak++`, com atraso de 900ms pra deixar o "quest cleared" tocar antes. Trava anti-repetição por `gameState._lastMilestoneCelebrated`.
+  - `celebrateStreakMilestone()` em `ui.js` (auto-contido: monta/remove o próprio DOM, sem depender do `index.html`); CSS `.streak-ms-*`. Respeita `prefers-reduced-motion` (sem brasas/animação) e dá um toque tátil leve (`navigator.vibrate`) onde houver suporte.
+  - De quebra: corrigido texto morto do título de 30 dias que ainda mandava "Equipe-o na **Taverna**" (removida) → agora "nas Configurações".
+
 ## [v2.5.71] — 2026-08-31
 - **UX: streak do banner do Caminho abre a tela de Ofensiva.** No Caminho o card de perfil some (layout imersivo), então a tela de streak (v2.5.70) ficava inalcançável ali. Agora o **🔥 do banner é clicável** (cursor/hover/tecla Enter, `aria` de botão) e abre a Ofensiva. `openStreakModal` exportado do `ui.js` e importado no `caminho.js`.
 
