@@ -353,7 +353,7 @@ function renderHabitLibrary(filter = 'all', search = '') {
                         msgExtra = '<br><br><span style="font-size: 0.75rem; color: #fbbf24; opacity: 0.9; display: block; text-align: center; margin-top: 10px; line-height: 1.3;">🌟 Parabéns por decidir dedicar mais tempo à sua evolução pessoal! Você está estendendo sua rotina diária planejada.</span>';
                     }
 
-                    confirmDesc.innerHTML = 'Deseja adicionar o hábito <b>"' + habit.title + '"</b>?<br><br>Recompensas ao concluir: <b>+' + xp + ' XP</b> · <b>+' + gold + ' Ouro</b> · <b>+' + xp + ' Skill XP</b>' + msgExtra;
+                    confirmDesc.innerHTML = 'Deseja adicionar o hábito <b>"' + habit.title + '"</b>?<br><br>Recompensas ao concluir: <b>+' + xp + ' XP</b> · <b>+' + xp + ' Skill XP</b>' + msgExtra;
 
                     const confirmDailyBtn = document.getElementById('btn-habit-confirm-daily');
                     const confirmSideBtn = document.getElementById('btn-habit-confirm-side');

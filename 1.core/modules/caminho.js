@@ -343,6 +343,16 @@ function renderCaminho() {
         streakStat.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStreakModal(); } });
     }
 
+    // A estrela "HOJE" abre a folha do dia (o alvo mais natural de "o que faço hoje").
+    const starEl = bannerEl.querySelector('.cv-star');
+    if (starEl) {
+        starEl.setAttribute('role', 'button');
+        starEl.setAttribute('tabindex', '0');
+        starEl.setAttribute('title', 'Ver missões de hoje');
+        starEl.addEventListener('click', () => openTodaySheet(isBlocked));
+        starEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openTodaySheet(isBlocked); } });
+    }
+
     // Anima a estrela do valor anterior até o atual (o "estalo" de encher).
     requestAnimationFrame(() => {
         const fill = bannerEl.querySelector('.cv-star-fill');
@@ -421,7 +431,7 @@ function renderCaminho() {
             const bq = BOSS_QUESTS[info.bossId];
             if (!bq) return;
             if (bossReady) {
-                showSystemToast(`⚔️ *${bq.title}*\n_${bq.description}_\n\nProgresso: ${bq.progress()}\nRecompensa: +${bq.xpReward} XP · +${bq.goldReward} 🪙`);
+                showSystemToast(`⚔️ *${bq.title}*\n_${bq.description}_\n\nProgresso: ${bq.progress()}\nRecompensa: +${bq.xpReward} XP`);
             } else {
                 showSystemToast(`🔒 O portão ainda está fechado. Alcance o nível ${info.bossThresholdLevel} para abri-lo.`);
             }

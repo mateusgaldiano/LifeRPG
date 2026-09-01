@@ -9,6 +9,12 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.74] — 2026-09-01
+- **Lote de ganhos pequenos** (poucos tokens, muitos pequenos):
+  - **Estrela "HOJE" clicável.** No banner do Caminho, a estrela de progresso do dia agora abre a folha de missões de hoje (o alvo mais natural de "o que faço hoje") — com `role="button"`, tecla Enter/Espaço, cursor e feedback de toque (`:active` encolhe). Verificado: clicar abre a folha.
+  - **Copy morta de Ouro removida (telas ao vivo):** o diálogo de adicionar hábito não mostra mais "+X **Ouro**" (só XP + Skill XP); o preview do **Chefe da Semana** não mostra mais "+X 🪙" (só XP). Ouro saiu do jogo — essas eram as últimas menções visíveis nas telas principais.
+  - **Limpeza:** removido o `#daily-chest-banner` órfão do `index.html` (os Baús de Foco saíram com o Ouro; a função que o escondia já tinha sido removida na v2.5.73).
+
 ## [v2.5.73] — 2026-09-01
 - **Faxina de código morto — parte 1 (ENG-004).** Remoção de ~373 linhas de código órfão das features desligadas na minimalização, sem mudança de comportamento visível. Verificado: app boota limpo, `saveGameData`/social/habit-library carregam, e a celebração de marco (v2.5.72) segue funcionando.
   - **Taverna:** `switchTavernaTab` + `renderRewards` (a loja não existe mais).

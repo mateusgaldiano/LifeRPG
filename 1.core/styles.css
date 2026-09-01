@@ -4458,7 +4458,8 @@ body::before {
 .cv-banner-main { min-width: 0; }
 
 /* ── Estrela do Dia: anel de progresso das dailies de hoje ── */
-.cv-star { flex: none; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cv-star { flex: none; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: transform .14s ease; }
+.cv-star:active { transform: scale(.94); }
 .cv-star-ring { position: relative; width: 60px; height: 60px; }
 .cv-star-svg { width: 60px; height: 60px; display: block; transform: rotate(-90deg); }
 .cv-star-track { fill: none; stroke: var(--cv-border); stroke-width: 5; }
