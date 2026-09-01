@@ -9,6 +9,14 @@ Registro de todas as mudanças relevantes do projeto. Formato baseado em
 
 ---
 
+## [v2.5.70] — 2026-08-31
+- **Feat: Sistema de Streak (tela dedicada de Ofensiva).** Agora que ouro/liga/conquista saíram, o streak é a alavanca nº1 de retenção — então virou um "objeto" de verdade. Tocar no chip de streak (🔥) no card abre a tela:
+  - **Chama grande + contagem** ("12 dias de ofensiva").
+  - **Escudos** (proteção que já existia: 1 a cada 7 dias, absorve 1 falha) mostrados como 🛡️ + progresso pro próximo.
+  - **Próximo marco** com barra de progresso e **marcos** 7/30/100/365 (acesos ao atingir).
+  - **Calendário do mês** com a chama nos dias mantidos (mesma régua de 70% do Caminho), ❄️ nos congelados, dia perdido apagado, hoje destacado.
+  - Novo `#streak-modal` + `renderStreakModal`/`openStreakModal` em `ui.js`; CSS `.streak-*`. Reusa `gameState.streak/shields/history` — sem estado novo.
+
 ## [v2.5.69] — 2026-08-31
 - **Fix/minimalismo: remove o tutorial in-game quebrado.** A "quest de aprendizado" de 2 passos ainda mandava *"compre uma skin na Taverna"* (removida) — podia travar usuário novo. Removido o banner `#tutorial-questline-banner` e os dois hooks ativos no `ui.js` (`renderTutorialBanner` no `updateUI` e `checkAndProgressTutorialStep1` ao criar missão). As funções em `social.js` ficam mortas/guardadas. Verificado: mesmo com `tutorialStep=1` injetado, nada aparece e não há mais menção à Taverna.
 

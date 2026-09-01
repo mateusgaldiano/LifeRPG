@@ -1827,9 +1827,118 @@ document.getElementById('close-quote-modal')?.addEventListener('click', () => {
 
 
 // ==========================================================================
+// STREAK / OFENSIVA — tela dedicada (calendário de chama + marcos + escudos)
+// ==========================================================================
+const STREAK_MILESTONES = [7, 30, 100, 365];
+
+// Um dia "manteve" a chama? Mesma régua do Caminho: 70% das dailies, ou
+// descanso/congelado ('frozen'), ou dia sem dailies.
+function streakDayKept(dateStr) {
+    const h = (gameState.history || {})[dateStr];
+    if (!h) return false;
+    if (h.status === 'skipped') return 'frozen';
+    const total = h.total || 0;
+    if (total === 0) return true;
+    return (h.count || 0) / total >= 0.70;
+}
+
+function openStreakModal() {
+    const modal = document.getElementById('streak-modal');
+    if (!modal) return;
+    renderStreakModal();
+    modal.style.display = 'flex'; // resto (backdrop/blur/posição) vem da classe .modal
+}
+function closeStreakModal() {
+    const modal = document.getElementById('streak-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function renderStreakModal() {
+    const streak = gameState.streak || 0;
+    const pad = n => String(n).padStart(2, '0');
+
+    const bigEl = document.getElementById('streak-big-num');
+    if (bigEl) bigEl.innerText = streak;
+    const flameEl = document.getElementById('streak-flame');
+    if (flameEl) flameEl.style.opacity = streak > 0 ? '1' : '0.3';
+
+    // Escudos (proteção que o app já tem: 1 a cada 7 dias, absorve 1 falha).
+    const shields = Math.max(0, Math.min(3, gameState.shields || 0));
+    const toward = gameState.consecutiveStreak7Days || 0;
+    const shieldsEl = document.getElementById('streak-shields');
+    if (shieldsEl) {
+        const icons = '🛡️'.repeat(shields) + '<span class="shield-empty">🛡️</span>'.repeat(3 - shields);
+        const desc = shields > 0
+            ? `${shields} escudo${shields > 1 ? 's' : ''} — cada um protege o streak de <b>1 falha</b>.`
+            : 'Sem escudos. Mantenha o ritmo pra ganhar um escudo que absorve <b>1 falha</b>.';
+        shieldsEl.innerHTML = `<div class="streak-shields-row">${icons}</div><div class="streak-shields-desc">${desc}${shields < 3 ? ` &nbsp;·&nbsp; ${toward}/7 pro próximo` : ''}</div>`;
+    }
+
+    // Próximo marco
+    const next = STREAK_MILESTONES.find(m => m > streak);
+    const nextEl = document.getElementById('streak-next');
+    if (nextEl) {
+        if (next) {
+            const prev = STREAK_MILESTONES.filter(m => m <= streak).pop() || 0;
+            const pct = Math.max(5, Math.round(((streak - prev) / (next - prev)) * 100));
+            const falta = next - streak;
+            nextEl.innerHTML = `<div class="streak-next-label">Faltam <b>${falta}</b> ${falta === 1 ? 'dia' : 'dias'} pro marco de <b>${next} 🔥</b></div><div class="streak-next-track"><div class="streak-next-fill" style="width:${pct}%"></div></div>`;
+        } else {
+            nextEl.innerHTML = `<div class="streak-next-label">🏆 Você passou de <b>365</b> dias. Lendário.</div>`;
+        }
+    }
+
+    // Marcos (7/30/100/365)
+    const msEl = document.getElementById('streak-milestones');
+    if (msEl) {
+        msEl.innerHTML = STREAK_MILESTONES.map(m => {
+            const hit = streak >= m;
+            return `<div class="streak-ms ${hit ? 'hit' : ''}"><div class="streak-ms-num">${m}</div><div class="streak-ms-cap">${hit ? '🔥' : 'dias'}</div></div>`;
+        }).join('');
+    }
+
+    // Calendário do mês atual
+    const now = new Date();
+    const y = now.getFullYear(), mo = now.getMonth();
+    const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const monthEl = document.getElementById('streak-cal-month');
+    if (monthEl) monthEl.innerText = `${months[mo]} ${y}`;
+    const calEl = document.getElementById('streak-calendar');
+    if (calEl) {
+        const firstDow = new Date(y, mo, 1).getDay();
+        const daysInMonth = new Date(y, mo + 1, 0).getDate();
+        const todayStr = `${y}-${pad(mo + 1)}-${pad(now.getDate())}`;
+        let html = '';
+        for (let i = 0; i < firstDow; i++) html += '<div class="streak-day empty"></div>';
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dsStr = `${y}-${pad(mo + 1)}-${pad(d)}`;
+            let cls = 'streak-day';
+            if (dsStr > todayStr) cls += ' future';
+            else {
+                const kept = streakDayKept(dsStr);
+                if (kept === 'frozen') cls += ' frozen';
+                else if (kept) cls += ' kept';
+                else if ((gameState.history || {})[dsStr]) cls += ' missed';
+            }
+            if (dsStr === todayStr) cls += ' today';
+            html += `<div class="${cls}">${d}</div>`;
+        }
+        calEl.innerHTML = html;
+    }
+}
+
+// ==========================================================================
 // PROCESSAMENTO DE EVENTOS E MODAIS
 // ==========================================================================
 function setupEventListeners() {
+    // Streak: toque no chip abre a tela de Ofensiva
+    const streakChip = document.querySelector('.streak-chip');
+    if (streakChip) { streakChip.style.cursor = 'pointer'; streakChip.addEventListener('click', openStreakModal); }
+    const closeStreakBtn = document.getElementById('close-streak-modal');
+    if (closeStreakBtn) closeStreakBtn.addEventListener('click', closeStreakModal);
+    const streakModalEl = document.getElementById('streak-modal');
+    if (streakModalEl) streakModalEl.addEventListener('click', (e) => { if (e.target === streakModalEl) closeStreakModal(); });
+
     // Quests
     document.getElementById('quests-list-physical')?.addEventListener('click', handleQuestAction);
     document.getElementById('quests-list-wisdom')?.addEventListener('click', handleQuestAction);
